@@ -1,10 +1,7 @@
 #!/bin/bash -ve
 
-if [ -z "$1" ]; then 
-    echo "MS not specified. Aborting"
-    exit
-else
-    MSNAME="$1"
+if [ -z "$CONFIG" ]; then 
+    export CONFIG="meqtrees_sim_params.json"
 fi
 
 if [ -z "$USER" ]; then

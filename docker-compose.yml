@@ -9,7 +9,7 @@ driver:
         - data
     links:
         - simms
-        - meqtrees_sim
+        - simulator
         - imager
 
 
@@ -21,6 +21,23 @@ simms:
     volumes:
         - .:/code
 
+
+# Creates empty MS using simms
+simulator:
+    build: ./containers/meqtrees_sim
+    ports:
+        - "5002:50002"
+    volumes:
+        - .:/code
+
+
+# Creates empty MS using simms
+imager:
+    build: ./containers/imager
+    ports:
+        - "5003:50003"
+    volumes:
+        - .:/code
 
 # This is the storage container
 data:

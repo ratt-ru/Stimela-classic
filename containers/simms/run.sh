@@ -1,8 +1,6 @@
 #!/bin/bash -ve
 
-if [ -z "$1" ]; then 
-    CONFIG="$1"
-else
+if [ -z "$CONFIG" ]; then 
     CONFIG="simms_params.json"
 fi
 

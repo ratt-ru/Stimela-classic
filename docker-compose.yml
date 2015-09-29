@@ -1,0 +1,29 @@
+# This is the driver container
+driver:
+    build: . 
+    ports:
+        - "5000:5000"
+    volumes:
+        - /storage
+    volumes_from:
+        - data
+    links:
+        - simms
+        - meqtrees_sim
+        - imager
+
+
+# Creates empty MS using simms
+simms:
+    build: ./containers/simms
+    ports:
+        - "5001:50001"
+    volumes:
+        - .:/code
+
+
+# This is the storage container
+data:
+    build: ./containers/data
+    volumes:
+        - /data

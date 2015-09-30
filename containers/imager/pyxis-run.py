@@ -3,8 +3,13 @@ import ms
 import lsm
 import im
 from Pyxis.ModSupport import *
-
+import os
 import json
+
+
+INDIR = os.environ["INDIR"]
+v.OUTDIR = os.environ["OUTDIR"]
+CONFIG = os.environ["CONFIG"]
 
 LOG = II("${OUTDIR>/}log-imaging.txt"}
 
@@ -23,7 +28,9 @@ def readJson(conf):
 
 def azishe():
 
-    jdict = readJson(CFG)
+    jdict = readJson(CONDFIG)
+
+    v.MS = "{:s}/{:s}".format(INDIR,jdict["msname"])
 
     im.cellsize = jdict.get("cellsize", "0.1arcsec")
     im.npix = jdict.get("npix", 8192)

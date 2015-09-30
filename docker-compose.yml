@@ -5,42 +5,53 @@ driver:
         - "5000:5000"
     volumes:
         - /storage
-    volumes_from:
-        - data
+        - code:/code
+        - data:/data
+        - input:/input
     links:
         - simms
         - simulator
         - imager
+    environment:
+        - CONFIG="default_config.json"
+        - STORAGE = "/storage"
+        - CONFIGS_DIR = "/configs"
+        - INPUT_DIR = "/data"
 
 
 # Creates empty MS using simms
 simms:
     build: ./containers/simms
     ports:
-        - "5001:50001"
+        - "5001:5001"
     volumes:
         - .:/code
+    environment:
+        - OUTDIR="/storage"
+        - CONFIG="/configs/simms_params.json"
 
 
 # Creates empty MS using simms
 simulator:
-    build: ./containers/meqtrees_sim
+    build: ./containers/simulator
     ports:
-        - "5002:50002"
+        - "5002:5002"
     volumes:
         - .:/code
+    environment:
+        - INDIR="/storage"
+        - OUTDIR="/storage"
+        - CONFIG="/configs/simulator_params.json"
 
 
 # Creates empty MS using simms
 imager:
     build: ./containers/imager
     ports:
-        - "5003:50003"
+        - "5003:5003"
     volumes:
         - .:/code
-
-# This is the storage container
-data:
-    build: ./containers/data
-    volumes:
-        - /data
+    environment:
+        - INDIR="/storage"
+        - OUTDIR="/storage"
+        - CONFIG="/configs/imager_params.json"

@@ -8,4 +8,4 @@ if [ -z "$USER" ]; then
     export USER=root
 fi
 
-pyxis $MSNAME OUTDIR=/output azishe
+pyxis azishe

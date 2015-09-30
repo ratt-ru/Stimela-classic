@@ -9,4 +9,4 @@ if [ -z "$CONFIG" ]; then
     export CONFIG="imaging_params.json"
 fi
 
-pyxis $MSNAME CFG=$CONFIG OUTDIR=/output azishe
+pyxis azishe

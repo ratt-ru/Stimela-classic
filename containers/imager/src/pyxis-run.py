@@ -7,11 +7,11 @@ import os
 import json
 
 
-INDIR = os.environ["INDIR"]
-v.OUTDIR = os.environ["OUTDIR"]
+INDIR = os.environ["INPUT"]
+v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
 
-LOG = II("${OUTDIR>/}log-imaging.txt"}
+LOG = II("${OUTDIR>/}log-imaging.txt")
 
 
 def readJson(conf):
@@ -28,16 +28,16 @@ def readJson(conf):
 
 def azishe():
 
-    jdict = readJson(CONDFIG)
+    jdict = readJson(CONFIG)
 
-    v.MS = "{:s}/{:s}".format(INDIR,jdict["msname"])
+    v.MS = "{:s}/{:s}".format(OUTDIR, jdict["msname"])
 
-    im.cellsize = jdict.get("cellsize", "0.1arcsec")
-    im.npix = jdict.get("npix", 8192)
+    im.cellsize = "{:f}arcsec".format( jdict.get("cellsize", 1) )
+    im.npix = jdict.get("npix", 4096)
     im.weight = jdict.get("weight", "briggs")
     im.robust = jdict.get("robust", 0)
-    imagers = jdict.get("imagers", ["casa"])
-    chanelise = jdict.get("channelise", 0)
+    imagers = jdict.get("imagers", ["wsclean"])
+    channelise = jdict.get("channelise", 0)
     dirty = jdict.get("dirty", True)
     clean = jdict.get("clean", False)
     psf = jdict.get("psf", False)

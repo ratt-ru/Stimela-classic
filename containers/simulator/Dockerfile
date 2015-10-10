@@ -1,9 +1,15 @@
-FROM radioastro/base
-RUN apt-get update && apt-get install -y meqtrees python-pyxis
+FROM penthesilea/base
+MAINTAINER sphemakh@gmail.com
 
-ADD . /code
+RUN apt-get build-dep meqtrees-timba -y && apt-get install meqtrees -y
+
+ENV USER root
+
+ADD src /code
+ADD data /input
+
+RUN mkdir /output
+
 WORKDIR /code
 
 CMD ./run.sh
-
-

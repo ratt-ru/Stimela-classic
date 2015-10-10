@@ -3,14 +3,16 @@
     "observation": {
         "tel": "meerkat",
         "synthesis" : 4,
-        "dtime" : 1,
+        "dtime" : 10,
         "freq0" : "700MHz",
-        "dfreq" : "500KHz",
-        "nchan" : 10
+        "dfreq" : "500kHz",
+        "nchan" : 10,
+        "direction": "J2000,0deg,-30deg"
     }, 
 
     "simulate": {
-        "skymodel" : "s-cubed_1deg_400uJy.lsm.html",
+        "skymodel" : "nvss1deg",
+        "recentre" : true,
         "addnoise" : true,
         "sefd" : 831,
         "reciever_gains" : false,
@@ -18,7 +20,7 @@
     },
 
     "image": {
-        "imager" : "wsclean",
+        "imagers" : ["wsclean"],
         "npix" : 4096,
         "cellsize" : 2,
         "weight" : "briggs",
@@ -28,7 +30,7 @@
         "psf" : false
     },
 
-    "calibrate" {
+    "calibrate": {
         "#": "Coming soon"
     },
 

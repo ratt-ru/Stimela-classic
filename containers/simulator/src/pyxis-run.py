@@ -2,13 +2,15 @@ import Pyxis
 import ms
 import lsm
 import mqt
+import std
 from Pyxis.ModSupport import *
 import os
 import json
 
 
-INDIR = os.environ["INDIR"]
-v.OUTDIR = os.environ["OUTDIR"]
+mqt.MULTITHREAD = 16
+INDIR = os.environ["INPUT"]
+v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
 
 LOG = II("${OUTDIR>/}log-meqtrees_sim.txt")
@@ -30,8 +32,16 @@ def azishe():
 
     jdict = readJson(CONFIG)
 
-    v.MS = "{:s}/{:s}".format(INDIR, jdict["msname")
-    v.LSM = "{:s}/{:s}".format(LSM, jdict["skymodel"])
+    v.MS = "{:s}/{:s}".format(OUTDIR, jdict["msname"])
+
+    lsmname = "{:s}/skymodels/{:s}".format(INDIR, jdict["skymodel"])
+    v.LSM = II("${lsmname:FILE}")
+    std.copy(lsmname, LSM)
+
+    direction = jdict["direction"]
+
+    if jdict["recentre"]:
+        x.sh("tigger-convert --recenter=$direction $LSM -f")
 
     options = {}
 
@@ -41,6 +51,7 @@ def azishe():
         noise = compute_vis_noise(sefd)
         options["noise_stddev"] = noise
 
+
     mqt.msrun(II("${mqt.CATTERY}/Siamese/turbo-sim.py"), 
               job = '_tdl_job_1_simulate_MS', 
               section = "sim", 
@@ -48,7 +59,7 @@ def azishe():
               args = ["${ms.MS_TDL}", "${lsm.LSM_TDL}"])
 
 
-def compute_vis_noise():
+def compute_vis_noise(sefd):
     """Computes nominal per-visibility noise"""
 
     tab = ms.ms()

@@ -2,7 +2,7 @@
     "sim_id" : "penthesilea_default",
     "observation": {
         "tel": "meerkat",
-        "synthesis" : 1,
+        "synthesis" : 4,
         "dtime" : 10,
         "freq0" : "700MHz",
         "dfreq" : "500kHz",

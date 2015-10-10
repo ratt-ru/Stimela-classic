@@ -1,0 +1,39 @@
+{
+    "sim_id" : "penthesilea_default",
+    "observation": {
+        "tel": "meerkat",
+        "synthesis" : 1,
+        "dtime" : 10,
+        "freq0" : "700MHz",
+        "dfreq" : "500kHz",
+        "nchan" : 10,
+        "direction": "J2000,0deg,-30deg"
+    }, 
+
+    "simulate": {
+        "skymodel" : "nvss1deg",
+        "recentre" : true,
+        "addnoise" : true,
+        "sefd" : 831,
+        "reciever_gains" : false,
+        "pbeam": false
+    },
+
+    "image": {
+        "imagers" : ["wsclean"],
+        "npix" : 4096,
+        "cellsize" : 2,
+        "weight" : "briggs",
+        "robust" : 0,
+        "dirty" : true,
+        "clean" : false,
+        "psf" : false
+    },
+
+    "calibrate": {
+        "#": "Coming soon"
+    },
+
+    "keep_ms": true
+
+}

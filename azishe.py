@@ -60,7 +60,7 @@ if __name__=="__main__":
 
     add = parser.add_argument
 
-    add("-c", "--config", default="configs/driver.json",
+    add("-c", "--config", default="input/configs/driver.json",
             help="Pipeline configuration file [json file]. \
 Default is './configs/driver.json'")
 
@@ -79,7 +79,7 @@ output will be dumped here")
     args = parser.parse_args()
 
     conf = readJson(args.config)
-    OBSERVATORIES_PATH = "{:s}/observatories".format(args.input)
+    OBSERVATORIES_PATH = "/input/observatories"
     
     msname = conf["sim_id"] + ".MS"
 
@@ -110,18 +110,18 @@ output will be dumped here")
         simms["pos_type"] = "ascii"
 
     # Setup data transfer between jobs
-    simms["outdir"] = args.outdir
-    simulator["indir"] = args.input
-    simulator["outdir"] = args.outdir
-    imager["indir"] = args.outdir
-    imager["outdir"] = args.outdir
+#   simms["outdir"] = args.outdir
+#   simulator["indir"] = args.input
+#   simulator["outdir"] = args.outdir
+#   imager["indir"] = args.outdir
+#   imager["outdir"] = args.outdir
 
     # Save configurations in respective places
     saveconf(simms, 
-             "containers/simms/src/{:s}-simms_params.json".format(args.prefix))
+             "input/configs/{:s}-simms_params.json".format(args.prefix))
 
     saveconf(simulator, 
-             "containers/simulator/src/{:s}-simulator_params.json".format(args.prefix))
+             "input/configs/{:s}-simulator_params.json".format(args.prefix))
 
     saveconf(imager, 
-             "containers/imager/src/{:s}-imager_params.json".format(args.prefix))
+             "input/configs/{:s}-imager_params.json".format(args.prefix))

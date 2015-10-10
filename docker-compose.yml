@@ -1,57 +1,18 @@
-# This is the driver container
-driver:
-    build: . 
-    ports:
-        - "5000:5000"
-    volumes:
-        - /storage
-        - code:/code
-        - data:/data
-        - input:/input
-    links:
-        - simms
-        - simulator
-        - imager
-    environment:
-        - CONFIG="default_config.json"
-        - STORAGE = "/storage"
-        - CONFIGS_DIR = "/configs"
-        - INPUT_DIR = "/data"
-
-
-# Creates empty MS using simms
-simms:
-    build: ./containers/simms
-    ports:
-        - "5001:5001"
-    volumes:
-        - .:/code
-    environment:
-        - OUTDIR="/storage"
-        - CONFIG="/configs/simms_params.json"
-
-
-# Creates empty MS using simms
-simulator:
-    build: ./containers/simulator
-    ports:
-        - "5002:5002"
-    volumes:
-        - .:/code
-    environment:
-        - INDIR="/storage"
-        - OUTDIR="/storage"
-        - CONFIG="/configs/simulator_params.json"
-
-
-# Creates empty MS using simms
-imager:
-    build: ./containers/imager
-    ports:
-        - "5003:5003"
-    volumes:
-        - .:/code
-    environment:
-        - INDIR="/storage"
-        - OUTDIR="/storage"
-        - CONFIG="/configs/imager_params.json"
+dray:                                                                                           
+  image: centurylink/dray
+  links:
+   - redis
+  environment:
+   - LOG_LEVEL="debug
+   - REDIS_PORT="6379:6379"
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock
+   - /tmp:/tmp
+   - input:/input
+   - storage:/storage
+  ports:
+   - "3000:3000"
+redis:
+  image: redis
+  ports:
+   - "6379:6379"

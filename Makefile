@@ -3,15 +3,22 @@
 PROJECT=penthesilea
 INPUT=`pwd`/input
 OUTPUT=`pwd`/output
+CONFIGS=/input/configs
+
+SIMMS="simms_`date +%d%m%y_%H%M`"
+SIMULATOR="simulator_`date +%d%m%y_%H%M`"
+IMAGER="imager_`date +%d%m%y_%H%M`"
+
+LOG=.active_containers.txt
 
 ifndef config
-    config=configs/driver.json
+    config=input/configs/driver.json
 endif
 
 
-.PHONY: all build run force-build
+.PHONY: all build force-build run stop kill
 
-all: build run
+all: build run stop kill
 
 build:
 		./azishe.py -c $(config) -in "/data" -out "/output" -p $(PROJECT)
@@ -25,19 +32,27 @@ force-build:
 		docker build -t $(PROJECT)/simms --no-cache=true containers/simms
 		docker build -t $(PROJECT)/simulator --no-cache=true containers/simulator
 		docker build -t $(PROJECT)/imager --no-cache=true containers/imager
+
+pull-images:
+		./azishe.py -c $(config) -in "/data" -out "/output" -p $(PROJECT)
+		docker pull $(PROJECT)/base
+		docker pull $(PROJECT)/simms
+		docker pull $(PROJECT)/simulator
+		docker pull $(PROJECT)/imager
         
 run:
-		docker run -v $(INPUT):/input:rw -v $(OUTPUT):/output:rw -e INPUT=/input -e OUTPUT=/output -e CONFIG=$(PROJECT)-simms_params.json  $(PROJECT)/simms && \
-		docker run -v $(INPUT):/input:rw -v $(OUTPUT):/output:rw -e INPUT=/input -e OUTPUT=/output -e CONFIG=$(PROJECT)-simulator_params.json  $(PROJECT)/simulator && \
-		docker run -v $(INPUT):/input:rw -v $(OUTPUT):/output:rw -e INPUT=/input -e OUTPUT=/output -e CONFIG=$(PROJECT)-imager_params.json  $(PROJECT)/imager
+		echo $(SIMMS) >> $(LOG) && \
+		docker run -v $(INPUT):/input:rw -v $(OUTPUT):/output:rw -e INPUT=/input -e OUTPUT=/output -e CONFIG=$(CONFIGS)/$(PROJECT)-simms_params.json --name $(SIMMS) $(PROJECT)/simms && \
+		head $(LOG) -n -1 > .temp-$(LOG) && mv .temp-$(LOG) $(LOG) && \
+		echo $(SIMULATOR) >> $(LOG) && \
+		docker run -v $(INPUT):/input:rw -v $(OUTPUT):/output:rw -e INPUT=/input -e OUTPUT=/output -e CONFIG=$(CONFIGS)/$(PROJECT)-simulator_params.json --name $(SIMULATOR) $(PROJECT)/simulator && \
+		head $(LOG) -n -1 > .temp-$(LOG) && mv .temp-$(LOG) $(LOG) && \
+		echo $(IMAGER) >> $(LOG) && \
+		docker run -v $(INPUT):/input:rw -v $(OUTPUT):/output:rw -e INPUT=/input -e OUTPUT=/output -e CONFIG=$(CONFIGS)/$(PROJECT)-imager_params.json --name $(IMAGER) $(PROJECT)/imager && \
+		head $(LOG) -n -1 > .temp-$(LOG) && mv .temp-$(LOG) $(LOG)
 
 stop:
-		docker stop $(PROJECT)/base
-		docker stop $(PROJECT)/simms 
-		docker stop $(PROJECT)/simulator 
-		docker stop $(PROJECT)/imager 
+		test -s $(LOG) && cat $(LOG) | xargs docker stop ; touch $(LOG)
 
-stop:
-		docker rm $(PROJECT)/simms 
-		docker rm $(PROJECT)/simulator 
-		docker rm $(PROJECT)/imager 
+kill:
+		test -s $(LOG) && cat $(LOG) | xargs docker kill ; touch $(LOG)

@@ -6,7 +6,6 @@ RUN pip install simms
 ENV USR root
 
 ADD src /code
-ADD data /data
 
 RUN mkdir /output
 

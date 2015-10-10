@@ -6,7 +6,6 @@ RUN apt-get build-dep meqtrees-timba -y && apt-get install meqtrees -y
 ENV USER root
 
 ADD src /code
-ADD data /input
 
 RUN mkdir /output
 

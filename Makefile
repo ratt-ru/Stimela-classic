@@ -12,16 +12,17 @@ IMAGER="imager_`date +%d%m%y_%H%M`"
 LOG=.active_containers.txt
 
 ifndef config
-    config=input/configs/driver.json
+    config=driver.json
 endif
 
+config_=input/configs/$(config)
 
 .PHONY: all build force-build run stop kill
 
 all: build run stop kill
 
 build:
-		./azishe.py -c $(config) -in "/data" -out "/output" -p $(PROJECT)
+		./azishe.py -c $(config_) -in "/data" -out "/output" -p $(PROJECT)
 		docker build -t $(PROJECT)/base containers/base
 		docker build -t $(PROJECT)/simms containers/simms
 		docker build -t $(PROJECT)/simulator containers/simulator
@@ -34,7 +35,7 @@ force-build:
 		docker build -t $(PROJECT)/imager --no-cache=true containers/imager
 
 pull-images:
-		./azishe.py -c $(config) -in "/data" -out "/output" -p $(PROJECT)
+		./azishe.py -c $(config_) -in "/data" -out "/output" -p $(PROJECT)
 		docker pull $(PROJECT)/base
 		docker pull $(PROJECT)/simms
 		docker pull $(PROJECT)/simulator

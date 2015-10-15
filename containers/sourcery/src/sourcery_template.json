@@ -1,0 +1,38 @@
+{
+    "imagename": "<input FITS image>",
+    "psfname" : null,
+    "prefix" : null,
+    "outdir" : null,
+    "reliability" : {
+       "sourcefinder_name" : "pybdsm",
+       "makeplots" : true,
+       "do_psf_corr" : false,
+       "do_local_var" : false,
+       "psf_corr_region" : 5,
+       "local_var_region" : 10,
+       "rel_excl_src" : null,
+       "pos_smooth" : 1.6,
+       "neg_smooth" : 0.9,
+       "loglevel" : 0,
+       "thresh_isl" : 2,
+       "thresh_pix" : 4,
+       "neg_thresh_isl" : 1,
+       "neg_thresh_pix" : 2
+    },
+    "dd_tagging" : {
+         "enable": false,
+         "snr_thresh" : 80,
+         "local_thresh" : 0.9,
+         "local_region" : 10,
+         "psfcorr_region" : 5,
+         "high_corr_thresh" : 0.5,
+         "negdetec_region" : 10,
+         "negatives_thresh" : 8,
+         "phasecenter_excl_radius" : null,
+         "loglevel" : 0
+    },
+    "source_finder_opts": {
+
+
+    }
+}

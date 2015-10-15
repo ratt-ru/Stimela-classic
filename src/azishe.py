@@ -96,11 +96,15 @@ output will be dumped here")
     imager = conf["image"]
     sourcery = conf["sourcery"]
 
+
     # setting up sourcery
     imagename = "results-{:s}-{:s}.restored.fits".format(conf["sim_id"],
                 imager["imager"])
 
-    sourcery["imagename"] = imager["imagename"] = imagename
+    imager["imagename"] = imagename
+
+    if sourcery["enable"]:
+        sourcery["imagename"] = imagename
 
     skymodel = simulator["skymodel"]
 
@@ -173,7 +177,8 @@ output will be dumped here")
     # Run imager
     run_script += _run("imager", imager, run_script)
     # Run imager
-    #run_script += _run("sourcery", sourcery, run_script)
+    if sourcery["enable"]:
+        run_script += _run("sourcery", sourcery, run_script)
 
     with open("src/run.sh", "w") as run_std:
         run_std.write(run_script[:-5])

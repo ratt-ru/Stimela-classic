@@ -23,7 +23,7 @@ def readJson(conf):
 
     for key,val in jdict.iteritems():
         if isinstance(val, unicode):
-            jdict[key] = val
+            jdict[key] = str(val)
 
     return jdict
 
@@ -31,6 +31,7 @@ def readJson(conf):
 def azishe():
 
     jdict = readJson(CONFIG)
+    add = jdict.get("add_component_model", False)
 
     v.MS = "{:s}/{:s}".format(OUTDIR, jdict["msname"])
 
@@ -51,10 +52,9 @@ def azishe():
         noise = compute_vis_noise(sefd)
         options["noise_stddev"] = noise
 
-
     mqt.msrun(II("${mqt.CATTERY}/Siamese/turbo-sim.py"), 
               job = '_tdl_job_1_simulate_MS', 
-              section = "sim", 
+              section = "add" if add else "sim", 
               options = options,
               args = ["${ms.MS_TDL}", "${lsm.LSM_TDL}"])
 

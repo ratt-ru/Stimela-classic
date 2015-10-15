@@ -1,8 +1,8 @@
 #!/bin/bash -ve
 
 if [ -z "$CONFIG" ]; then 
-    CONFIG="simms_params.json"
+    export CONFIG="simms_params.json"
 fi
 
-echo $CONFIG
+python fitsinfo.py
 simms -jc $CONFIG

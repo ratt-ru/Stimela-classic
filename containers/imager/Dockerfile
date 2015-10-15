@@ -1,10 +1,10 @@
-FROM penthesilea/base
+FROM penthesilea/casapy
 MAINTAINER sphemakh@gmail.com
 
 RUN apt-get update && apt-get install -y \
     casarest \
     wsclean \
-    python-pyxis \
+    python-casacore \
     python-tigger
 
 RUN mkdir /builds

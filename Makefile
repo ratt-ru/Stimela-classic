@@ -18,7 +18,8 @@ DRIVER=`pwd`/src/azishe.py
 
 all: build run stop kill
 
-build:
+build:  
+		touch $(LOG)
 		$(DRIVER) -c $(config_) -in $(INPUT) -out $(OUTPUT) -p $(PROJECT) -ts `date +%d%m%y_%H%M`
 		docker build -t $(PROJECT)/base containers/base
 		docker build -t $(PROJECT)/casapy containers/casapy
@@ -29,6 +30,7 @@ build:
 		docker build -t $(PROJECT)/sourcery containers/sourcery
 
 force-build:
+		touch $(LOG)
 		$(DRIVER) -c $(config_) -in $(INPUT) -out $(OUTPUT) -p $(PROJECT) -ts `date +%d%m%y_%H%M`
 		docker build -t $(PROJECT)/base --no-cache=true containers/base
 		docker build -t $(PROJECT)/casapy --nocache=true containers/casapy
@@ -39,6 +41,7 @@ force-build:
 		docker build -t $(PROJECT)/sourcery --no-cache=true containers/sourcery
 
 pull-images:
+		touch $(LOG)
 		$(DRIVER) -c $(config_) -in $(INPUT) -out $(OUTPUT) -p $(PROJECT) -ts `date +%d%m%y_%H%M`
 		docker pull $(PROJECT)/base
 		docker pull $(PROJECT)/simms

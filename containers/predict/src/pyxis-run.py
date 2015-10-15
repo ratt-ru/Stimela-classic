@@ -4,15 +4,16 @@ import im
 import std
 from Pyxis.ModSupport import *
 import im.lwimager
+import im.argo
 import pyfits
 
 import tempfile
 import json
 import numpy
+import os
 
-
-LOG_Template = "${OUTDIR>/}log-imaging.txt"
-
+import pyrap.measures
+dm = pyrap.measures.measures()
 
 def readJson(conf):
 
@@ -21,56 +22,52 @@ def readJson(conf):
 
     for key,val in jdict.iteritems():
         if isinstance(val, unicode):
-            jdict[key] = val
+            jdict[key] = str(val)
 
     return jdict
+
+OUTDIR = os.environ["OUTPUT"]
+INDIR = os.environ["INPUT"]
+CONFIG = os.environ["CONFIG"]
+LOG_Template = "${OUTDIR>/}log-imaging.txt"
+v.OUTFILE = II("${OUTDIR>/}results-${MS:BASE}")
 
 
 def azishe():
 
     # Get parameters
-    jdict = readJson(CFG)
-    v.INDIR = jdict("indir", ".")
-    v.OUTIDIR = jdict("outdir", ".")
+    jdict = readJson(CONFIG)
+
+    v.MS = "{:s}/{:s}".format(OUTDIR, jdict.get("msname"))
+
+    lsmname = "{:s}/skymodels/{:s}".format(INDIR, jdict["skymodel"])
+    v.LSM = II("${lsmname:FILE}")
     
+    std.copy(lsmname, LSM)
 
-    msname = jdict.get("msname", None)
-    if msname is False:
-        abort("MS not given")
-    v.MS = II("${INDIR>/}${msname:FILE}")
-    if not exists(MS):
-            abort("MS does not exist")
+    adaptFITS(LSM)
 
-    v.OUTFILE = II("${OUTDIR>/}results-${MS:BASE}"}
+    if jdict["recentre"]:
+        direction = jdict["direction"].split(",")
+        radec = dm.direction(*direction)
 
-    lsmname = jdict.get("skymodel", False)
-    if lsmname is False:
-        abort("Skymodel not given")
-    v.LSM = II("${INDIR>/}${lsmname:FILE}")
+        with pyfits.open(LSM) as hdu:
+            hdu[0].header["crval1"] = numpy.rad2deg( radec["m0"]["value"] )
+            hdu[0].header["crval2"] = numpy.rad2deg( radec["m1"]["value"] )
+            hdu.writeto(LSM, clobber=True)
 
-    if not exists(LSM):
-        abort("$LSM does not exist")
-
-    column = jdict.get("column", "DATA")
+    column = jdict.get("column", "CORRECTED_DATA")
     addnoise = jdict.get("addnoise", True)
 
     ms.set_default_spectral_info()
 
-    tmp = tempfile.NamedTemporaryFile(suffix=".fits", dir=".")
-    tmp.flush()
-    tname = tmp.name
-    std.copy(LSM, tname)
 
-    tname = adaptFITS(tname)
-
-    v.LSM = tname
     im.lwimager.predict_vis(image=LSM, padding=1.5, wprojplanes=128, column=column)
-    tmp.close()
 
     if addnoise:
         sefd = jdict.get("sefd", 831) # default is MeerKAT band 1
         noise = compute_vis_noise(sefd)
-        simnoise(noise, addToCol=column)
+        simnoise(noise, addToCol=column, column="CORRECTED_DATA")
 
 
 def simnoise (noise=0, rowchunk=100000, 
@@ -104,7 +101,7 @@ def simnoise (noise=0, rowchunk=100000,
 
 
 
-def compute_vis_noise():
+def compute_vis_noise(sefd):
     """Computes nominal per-visibility noise"""
 
     tab = ms.ms()
@@ -133,7 +130,7 @@ def adaptFITS(imagename):
     hdr = pyfits.open(imagename)[0].header
     naxis = hdr["NAXIS"]
     
-    # Figure if any axes have to be added be we proceed
+    # Figure out if any axes have to be added before we proceed
     if naxis>=2 and naxis < 4:
         _freq = "--add-axis=freq:$FREQ0:DFREQ:Hz"
         _stokes = "--add-axis=stokes:1:1:1:Jy/Beam"
@@ -144,10 +141,12 @@ def adaptFITS(imagename):
 
         elif naxis==3:
             if hdr["CTYPE3"].lower().startswith("freq"):
+                info("FITS Image missing FREQ axis. Adding it")
                 # Will also need to reorder if freq is 3rd axis
                 x.sh("fitstool.py ${_stokes} $imagename && fitstool.py --reorder=1,2,4,3 $imagename")
 
             elif hdr["CTYPE3"].lower().startswith("stokes"):
+                info("FITS Image missing STOKES axis. Adding it")
                 x.sh("fitstool.py ${_freq} $imagename")
 
     with pyfits.open(imagename) as hdu:

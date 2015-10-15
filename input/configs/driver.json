@@ -21,16 +21,16 @@
     },
 
     "image": {
-        "imager" : "casa",
+        "imager" : "wsclean",
         "npix" : 4096,
         "cellsize" : 2,
         "weight" : "briggs",
         "robust" : 0,
         "stokes" : "I",
-        "dirty" : true,
-        "clean" : false,
-        "channelise": 1,
-        "psf" : false
+        "dirty" : false,
+        "clean" : true,
+        "channelise": 0,
+        "psf" : true
     },
 
     "calibrate": {
@@ -38,6 +38,7 @@
     },
 
     "sourcery":{
+        "enable" : false,
         "thresh" : 3,
         "do_reliability" : true
     },

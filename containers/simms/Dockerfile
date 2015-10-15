@@ -1,14 +1,17 @@
-FROM radioastro/casapy
+FROM penthesilea/casapy
 
-RUN apt-get update && apt-get install -y python-pip python-numpy
+RUN apt-get update && apt-get install -y \
+        python-numpy \
+        python-pyfits
+
 RUN pip install simms
 
-ENV USR root
+ENV USER root
 
 ADD src /code
 
-RUN mkdir /output
+RUN mkdir /output /input
 
 WORKDIR /code
 
-CMD ./run.sh
+CMD sh run.sh

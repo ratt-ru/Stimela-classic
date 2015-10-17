@@ -10,7 +10,7 @@ RUN apt-get upgrade -y
 
 RUN apt-get install -y software-properties-common python-software-properties
 
-RUN add-apt-repository -y ppa:radio-astro/main -y
+RUN add-apt-repository -ys ppa:radio-astro/main
 
 RUN apt-get update && apt-get install -y \
         time \

@@ -45,7 +45,7 @@ def azishe():
     dirty = jdict.get("dirty", True)
     clean = jdict.get("clean", False)
     psf = jdict.get("psf", False)
-    restored = OUTDIR+"/"+jdict["imagename"]
+    im.IMAGE_BASE = OUTDIR+"/"+jdict["imageprefix"]
 
     ms.set_default_spectral_info()
 
@@ -63,5 +63,4 @@ def azishe():
     im.make_image(dirty=dirty, restore=clean, 
                   restore_lsm=False, psf=psf,
                   channelize=channelise,
-                  restored_image=restored,
                   **options)

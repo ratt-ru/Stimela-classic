@@ -46,17 +46,36 @@ def azishe():
 
     options = {}
 
-    addnoise = jdict["addnoise"]
+    addnoise = False if add else jdict["addnoise"]
     if addnoise:
         sefd = jdict["sefd"]
         noise = compute_vis_noise(sefd)
         options["noise_stddev"] = noise
 
+    _section = dict(sim = "sim",
+                    add_G = "sim:G")
+    #TODO(sphe) Add E-Jones option
+
+    if jdict.get("G_Jones", False):
+        section = "add_G"
+    else:
+        section = "sim"
+
+    column = jdict.get("column", "DATA")
+
+    mode = "add to MS" if add else "sim only"
+    options["sim_mode"] = mode
+    options["ms_sel.input_column"] = column
+    options["ms_sel.output_column"] = column
+
     mqt.msrun(II("${mqt.CATTERY}/Siamese/turbo-sim.py"), 
               job = '_tdl_job_1_simulate_MS', 
-              section = "add" if add else "sim", 
+              section = _section[section],
               options = options,
-              args = ["${ms.MS_TDL}", "${lsm.LSM_TDL}"])
+              args = ["${lsm.LSM_TDL}"])
+
+    if column!="CORRECTED_DATA":
+        ms.copycol(fromcol=column, tocol="CORRECTED_DATA")
 
 
 def compute_vis_noise(sefd):
@@ -80,4 +99,3 @@ def compute_vis_noise(sefd):
     info(">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy"%(sefd, noise*1000))
 
     return noise 
-

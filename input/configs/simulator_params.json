@@ -1,0 +1,11 @@
+{   
+    "pbeam": false, 
+    "direction": "J2000,0deg,-30deg", 
+    "recentre": true, 
+    "add_component_model": null, 
+    "G_jones": false, "sefd": 831, 
+    "msname": "penthesilea_default.MS", 
+    "addnoise": true, 
+    "skymodel": "nvss1deg.lsm.html", 
+    "column": "DATA"
+}

@@ -34,7 +34,10 @@
     },
 
     "calibrate": {
-        "#": "Coming soon"
+        "enable": false,
+        "gsolint_time": 1,
+        "gsolint_freq": 1,
+        "select": null
     },
 
     "sourcery":{

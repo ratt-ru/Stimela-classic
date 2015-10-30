@@ -56,7 +56,7 @@ def azishe():
             hdu[0].header["crval2"] = numpy.rad2deg( radec["m1"]["value"] )
             hdu.writeto(LSM, clobber=True)
 
-    column = jdict.get("column", "CORRECTED_DATA")
+    column = jdict.get("column", "DATA")
     addnoise = jdict.get("addnoise", True)
 
     ms.set_default_spectral_info()
@@ -67,7 +67,10 @@ def azishe():
     if addnoise:
         sefd = jdict.get("sefd", 831) # default is MeerKAT band 1
         noise = compute_vis_noise(sefd)
-        simnoise(noise, addToCol=column, column="CORRECTED_DATA")
+        simnoise(noise, addToCol=column, column=column)
+
+    if column!="CORRECTED_DATA":
+        ms.copycol(fromcol=column, tocol="CORRECTED_DATA")
 
 
 def simnoise (noise=0, rowchunk=100000, 

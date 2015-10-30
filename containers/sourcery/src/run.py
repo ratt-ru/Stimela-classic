@@ -42,9 +42,10 @@ jdict = readJson(CONFIG)
 template = readJson("sourcery_template.json")
 
 name = OUTDIR+"/"+jdict["imagename"]
+psf = OUTDIR+"/"+jdict["psf"]
 
 template["imagename"] = name
-template["psfimage"] = name.replace("restored.fits", "psf.fits")
+template["psfname"] = psf
 template["reliability"]["thresh_pix"] = jdict["thresh"]
 template["outdir"] = OUTDIR
 

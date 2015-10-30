@@ -6,17 +6,17 @@
     "reliability" : {
        "sourcefinder_name" : "pybdsm",
        "makeplots" : true,
-       "do_psf_corr" : false,
-       "do_local_var" : false,
+       "do_psf_corr" : true,
+       "do_local_var" : true,
        "psf_corr_region" : 5,
-       "local_var_region" : 10,
+       "local_var_region" : 5,
        "rel_excl_src" : null,
        "pos_smooth" : 1.6,
        "neg_smooth" : 0.9,
        "loglevel" : 0,
        "thresh_isl" : 2,
        "thresh_pix" : 4,
-       "neg_thresh_isl" : 1,
+       "neg_thresh_isl" : 2,
        "neg_thresh_pix" : 2
     },
     "dd_tagging" : {

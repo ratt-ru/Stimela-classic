@@ -1,4 +1,5 @@
 FROM penthesilea/casapy
+MAINTAINER <sphemakh@gmail.com>
 
 RUN apt-get update && apt-get install -y \
         python-numpy \
@@ -7,11 +8,3 @@ RUN apt-get update && apt-get install -y \
 RUN pip install simms
 
 ENV USER root
-
-ADD src /code
-
-RUN mkdir /output /input
-
-WORKDIR /code
-
-CMD sh run.sh

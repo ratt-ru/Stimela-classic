@@ -20,22 +20,22 @@ msname = "penthesilea_default.MS"
 pipeline = otrera.Define("test", configs_path)
 
 # Make empty MS 
-#pipeline.add("penthesilea/simms", "simms", simms_conf, input=input, output=output, 
-#             label="Creating MS")
+pipeline.add("penthesilea/simms", "simms", simms_conf, input=input, output=output, 
+             label="Creating MS")
 
 # Simulate visibilities into it
 # enable G-Jones first
 simulator_dict = utils.readJson(configs_path+"/"+simulator_conf)
 simulator_dict["G_jones"] = True
-#pipeline.add("penthesilea/simulator", "simulator", simulator_dict, input=input, output=output,
-#             label="Simulating visibilities")
+pipeline.add("penthesilea/simulator", "simulator", simulator_dict, input=input, output=output,
+             label="Simulating visibilities")
 
 # Image Data (to make calibration model)
 imager_dict = utils.readJson(configs_path+"/"+imager_conf)
 imager_dict["psf"] = True
 imager_dict["npix"] = 2048
-#pipeline.add("penthesilea/imager", "imager_cal_model", imager_dict, input=input, output=output, 
-#                 label="Imaging MS. Make cal. model")
+pipeline.add("penthesilea/imager", "imager_cal_model", imager_dict, input=input, output=output, 
+                 label="Imaging MS. Make cal. model")
 
 # Run source finder
 imageprefix = imager_dict["imageprefix"]

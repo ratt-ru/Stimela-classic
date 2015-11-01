@@ -1,6 +1,5 @@
 FROM radioastro/casapy
-MAINTAINER sphemakh@gmail.com
-# Also based on github.com/radio-astro/docker-images/base
+MAINTAINER <sphemakh@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 

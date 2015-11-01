@@ -1,4 +1,6 @@
 FROM radioastro/base
+MAINTAINER <sphemakh@gmail.com>
+
 RUN add-apt-repository -ys ppa:radio-astro/main && apt-get install -y \
         time \
         git \

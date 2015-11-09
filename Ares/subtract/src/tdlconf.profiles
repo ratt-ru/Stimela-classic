@@ -1,0 +1,37 @@
+[subtract]
+me.e_enable = 0
+me.g_enable = 0
+me.l_enable = 0
+me.ncorr_enable = 0
+me.p_enable = 0
+me.sky.siamese_agw_azel_sky = 0
+me.sky.siamese_oms_fitsimage_sky = 0
+me.sky.siamese_oms_gridded_sky = 0
+me.sky.siamese_oms_transient_sky = 0
+me.sky.tiggerskymodel = 1
+me.use_jones_inspectors = 1
+me.use_skyjones_visualizers = 0
+me.use_smearing = 0
+me.z_enable = 0
+ms_sel.input_column = DATA
+ms_sel.ms_corr_sel = 2x2
+ms_sel.ms_ifr_subset_str = all
+ms_sel.ms_taql_str = None
+ms_sel.msname = /home/makhathini/devel/Penthesilea/output/penthesilea_default.MS
+ms_sel.output_column = CORRECTED_DATA
+ms_sel.select_channels = 0
+ms_sel.tile_size = 8
+noise_from_sefd = 0
+noise_stddev = None
+random_seed = time
+read_ms_model = 0
+run_purr = 0
+sim_mode = subtract from MS
+tensormeqmaker.psv_class = PSVTensor
+tiggerlsm.filename = None
+tiggerlsm.lsm_subset = all
+tiggerlsm.null_subset = None
+tiggerlsm.solvable_sources = 0
+uvw_refant = default
+uvw_source = from MS
+

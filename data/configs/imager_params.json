@@ -1,0 +1,14 @@
+{
+    "msname": null,
+    "stokes": "I",
+    "weight": "briggs",
+    "npix": 4096,
+    "psf": true,
+    "cellsize": 1,
+    "channelise": 0,
+    "imageprefix": "results-penthesilea_default",
+    "dirty": false,
+    "clean": true,
+    "robust": -2,
+    "imager": "wsclean"
+}

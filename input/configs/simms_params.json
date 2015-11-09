@@ -1,1 +1,0 @@
-{"direction": "J2000,0deg,-30deg", "nchan": 10, "tel": "meerkat", "dtime": 2, "pos": "/input/observatories/MeerKAT64_ANTENNAS", "freq0": "700MHz", "dfreq": "500kHz", "msname": "/output/penthesilea_default.MS", "synthesis": 0.5}

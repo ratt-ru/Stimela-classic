@@ -17,7 +17,6 @@ pull:
 		docker pull $(PROJECT)/imager:stable.11.15
 		docker pull $(PROJECT)/sourcery:stable.11.15
 		docker pull $(PROJECT)/autoflagger:stable.11.15
-		docker pull $(PROJECT)/flagms:stable.11.15
 
 build-base:  
 		docker build -t $(PROJECT)/base containers/base
@@ -27,7 +26,6 @@ build-base:
 		docker build -t $(PROJECT)/imager containers/imager
 		docker build -t $(PROJECT)/sourcery containers/sourcery
 		docker build -t $(PROJECT)/autoflagger containers/autoflagger
-		docker build -t $(PROJECT)/flagms containers/flagms
 
 build:  
 		docker build -t $(PROJECT_LOCAL)/simms Ares/simms

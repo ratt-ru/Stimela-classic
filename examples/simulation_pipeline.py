@@ -14,7 +14,8 @@ simms_template = "simms_params.json"
 simulator_template = "simulator_params.json"
 imager_template = "imager_params.json"
 
-msname = "meerkat_simulation_example.ms"
+MS = "meerkat_simulation_example.ms"
+LSM = "nvss1deg.lsm.html"
 
 
 # start oterera instance
@@ -22,13 +23,14 @@ pipeline = Pipeline("Simulation Example", CONFIGS, data=DATA, ms_dir=MSDIR)
 
 # Make empty MS 
 simms_dict = pipeline.readJson(simms_template)
-simms_dict["msname"] = msname
+simms_dict["msname"] = MS
 pipeline.add("ares/simms", "simms_example", simms_dict, input=INPUT, output=OUTPUT, 
              label="Creating MS")
 
 # Simulate visibilities into it
 simulator_dict = pipeline.readJson(simulator_template)
-simulator_dict["msname"] = msname
+simulator_dict["msname"] = MS
+simulator_dict["skymodel"] = LSM
 pipeline.add("ares/simulator", "simulator_example", simulator_dict, input=INPUT, output=OUTPUT,
              label="Simulating visibilities")
 
@@ -42,7 +44,7 @@ briggs_robust = 2,0,-2
 prefix = imager_dict["imageprefix"]
 
 for i, robust in enumerate(briggs_robust):
-    imager_dict["msname"] = msname
+    imager_dict["msname"] = MS
     imager_dict["robust"] = robust
     imager_dict["imagename"] = "%s_robust-%d"%(prefix, i)
     pipeline.add("ares/imager", "imager_example_%d"%i, imager_dict, input=INPUT, output=OUTPUT, 

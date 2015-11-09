@@ -73,7 +73,8 @@ class Pipeline(object):
             self.active = container
             try:
                 container.start()
-            except SystemError:
+            except docker.DockerError:
+                self.rm()
                 raise docker.DockerError("The container [%s] failed to execute."
                                          "Please check the logs"%(container.name))
             self.active = None

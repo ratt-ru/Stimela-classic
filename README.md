@@ -13,7 +13,12 @@ This project is funded by the [SKA/AWS Astrocompute in the cloud ](https://www.s
 * Python
 
 ## Build
-Once you've installed Docker the build Penthesilea
+Download the repo.
+```
+git clone https://github.com/SpheMakh/Penthesilea
+```
+Then download and build docker images. The *make pull* will take a while, but it only needs to be done once.
+
 ```
 cd Penthesilea
 make pull # pull base containers

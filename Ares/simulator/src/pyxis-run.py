@@ -6,6 +6,12 @@ import std
 from Pyxis.ModSupport import *
 import os
 import json
+import glob
+
+def _loadconfs_Template():
+    deps = glob.glob("/utils/utils/pyxis-*.py")
+    for dep in deps:
+        Pyxis.loadconf(dep)
 
 
 mqt.MULTITHREAD = 16
@@ -34,6 +40,17 @@ def azishe():
     add = jdict.get("add_component_model", False)
 
     v.MS = "/msdir/{:s}".format(jdict["msname"])
+    column = jdict.get("column", "DATA")
+
+    if jdict["skymodel"] in [None, False]:
+        sefd = jdict["sefd"]
+        noise = compute_vis_noise(sefd)
+        simnoise(noise, column=column)
+
+        if column!="CORRECTED_DATA":
+            ms.copycol(fromcol=column, tocol="CORRECTED_DATA")
+
+        return
 
     for item in ["/input/", "/data/skymodels/"]:
         lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
@@ -79,7 +96,6 @@ def azishe():
     else:
         section = "sim"
 
-    column = jdict.get("column", "DATA")
 
     mode = "add to MS" if add else "sim only"
     options["sim_mode"] = mode
@@ -95,25 +111,3 @@ def azishe():
     if column!="CORRECTED_DATA":
         ms.copycol(fromcol=column, tocol="CORRECTED_DATA")
 
-
-def compute_vis_noise(sefd):
-    """Computes nominal per-visibility noise"""
-
-    tab = ms.ms()
-    spwtab = ms.ms(subtable="SPECTRAL_WINDOW")
-
-    freq0 = spwtab.getcol("CHAN_FREQ")[ms.SPWID, 0]
-    wavelength = 300e+6/freq0
-    bw = spwtab.getcol("CHAN_WIDTH")[ms.SPWID, 0]
-    dt = tab.getcol("EXPOSURE", 0, 1)[0]
-    dtf = (tab.getcol("TIME", tab.nrows()-1, 1)-tab.getcol("TIME", 0, 1))[0]
-
-    # close tables properly, else the calls below will hang waiting for a lock...
-    tab.close()
-    spwtab.close()
-
-    info(">>> $MS freq %.2f MHz (lambda=%.2fm), bandwidth %.2g kHz, %.2fs integrations, %.2fh synthesis"%(freq0*1e-6, wavelength, bw*1e-3, dt, dtf/3600))
-    noise = sefd/math.sqrt(abs(2*bw*dt))
-    info(">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy"%(sefd, noise*1000))
-
-    return noise 

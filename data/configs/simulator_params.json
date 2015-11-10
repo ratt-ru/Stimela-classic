@@ -1,16 +1,16 @@
 {   
     "msname": null, 
     "direction": "J2000,0deg,-30deg", 
+    "skymodel": null, 
     "recentre": true, 
-    "add_component_model": null, 
+    "addnoise": true, 
+    "sefd": 831, 
+    "column": "DATA",
     "G_jones": false,
     "E_jones": false,
     "beam_file_type": "emss",
-    "beam_files_pattern": "meerkat_emss/TU3e20_origin_$(hv)_$(freq)_$(label).pat",
+    "beam_files_pattern": null,
     "emss_labels": "a,b,c,d,e,f",
     "emss_freqs": "1440,1442,1445,1447",
-    "sefd": 831, 
-    "addnoise": true, 
-    "skymodel": "bright2deg.lsm.html", 
-    "column": "DATA"
+    "add_component_model": null
 }

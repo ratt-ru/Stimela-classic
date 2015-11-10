@@ -48,11 +48,18 @@ jdict = readJson(CONFIG)
 telescope = jdict.pop("telescope")
 jdict["outdir"] = "/msdir"
 jdict["tel"] = _OBS[telescope]
-jdict["pos"] = "/data/observatories/"+_ANTENNAS[telescope]
-if not os.path.isdir(jdict["pos"]):
-    jdict["pos_type"] = "ascii"
-    jdict["coords"] = "itrf"
 
+if jdict["antennas"]:
+    jdict["pos"] = "/input/"+jdict.get("antennas", "meetkat")
+    jdict["coords"] = jdict.get("coord_sys", "enu")
+else:
+    jdict["pos"] = "/data/observatories/"+_ANTENNAS[telescope]
+    if not os.path.isdir(jdict["pos"]):
+        jdict["pos_type"] = "ascii"
+        jdict["coords"] = "itrf"
+
+for item in ["antennas", "coord_sys"]:
+    jdict.pop(item, None)
 
 imagename = jdict.pop("skymodel", False)
 

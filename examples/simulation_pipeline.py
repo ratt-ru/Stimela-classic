@@ -46,7 +46,7 @@ prefix = imager_dict["imageprefix"]
 for i, robust in enumerate(briggs_robust):
     imager_dict["msname"] = MS
     imager_dict["robust"] = robust
-    imager_dict["imagename"] = "%s_robust-%d"%(prefix, i)
+    imager_dict["imageprefix"] = "%s_robust-%d"%(prefix, i)
     pipeline.add("ares/imager", "imager_example_%d"%i, imager_dict, input=INPUT, output=OUTPUT, 
                  label="Imaging MS, robust=%f"%robust)
 

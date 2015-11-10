@@ -43,7 +43,14 @@ def azishe():
     imager = jdict.get("imager", "wsclean")
     channelise = jdict.get("channelise", 0)
     dirty = jdict.get("dirty", True)
-    clean = jdict.get("clean", False)
+    niter = jdict.get("clean_iteration", 0)
+
+    if niter>0:
+        im.niter = niter
+        clean = True
+    else:
+        clean = False
+
     psf = jdict.get("psf", False)
     prefix = OUTDIR+"/"+jdict["imageprefix"]
 

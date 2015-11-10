@@ -9,10 +9,11 @@ This project is funded by the [SKA/AWS Astrocompute in the cloud ](https://www.s
 
 
 ## Requires 
-* Docker
+* [Docker](http://docs.docker.com/)
 * Python
 
 ## Build
+Once you've installed Docker the build Penthesilea
 ```
 cd Penthesilea
 make pull # pull base containers

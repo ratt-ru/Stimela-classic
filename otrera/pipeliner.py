@@ -32,7 +32,7 @@ class Pipeline(object):
         if build_first and build_dest:
             self.build(image, build_dest)
 
-        cont = docker.Load(image, name, label=label)
+        cont = docker.Load(image, name, label=label, logger=self.log)
         cont.add_volume(self.otrera_path, "/utils")
         cont.add_volume(self.configs_path, self.configs_path_container)
         cont.add_volume(self.data_path, "/data")

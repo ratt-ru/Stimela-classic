@@ -30,7 +30,7 @@ def compute_vis_noise(sefd):
     return noise 
 
 
- def simnoise (noise=0, rowchunk=100000, 
+def simnoise (noise=0, rowchunk=100000, 
               addToCol=None, scale_noise=1.0, 
               column='MODEL_DATA'):
     """ Simulate noise into an MS """

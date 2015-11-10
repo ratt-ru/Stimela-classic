@@ -71,8 +71,12 @@ class Load(object):
         try:
             utils.xrun("docker", ["rm", self.name])
         except SystemError:
-            self.log.debug("Could not remove stopped contianer [%s].\
-It may be still running or it doesn't exist"%(self.name))
+            message = "Could not remove stopped contianer [%s].\
+It may be still running or it doesn't exist"%(self.name)
+            if self.log:
+                self.log.debug(message)
+            else:
+                print message
 
 
     def pause(self):

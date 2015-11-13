@@ -49,7 +49,7 @@ telescope = jdict.pop("telescope")
 jdict["outdir"] = "/msdir"
 jdict["tel"] = _OBS[telescope]
 
-if jdict["antennas"]:
+if jdict.get("antennas", False):
     jdict["pos"] = "/input/"+jdict.get("antennas", "meetkat")
     jdict["coords"] = jdict.get("coord_sys", "enu")
 else:

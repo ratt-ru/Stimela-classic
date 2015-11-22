@@ -26,6 +26,8 @@ class Load(object):
     def  add_volume(self, host, container, perm="rw"):
 
         if os.path.exists(host):
+            if self.log:
+                self.log.debug("Mounting volume [%s] in container [%s] at [%s]"%(host, self.name, container))
             host = os.path.abspath(host)
         else:
             raise IOError("Directory [%s] cannot be mounted on container: File doesn't exist"%host)
@@ -34,6 +36,8 @@ class Load(object):
 
 
     def add_environ(self, key, value):
+        if self.log:
+            self.log.debug("Adding environ varaible [%s=%s] in container [%s]"%(key, value, self.name))
         self.environs.append("=".join([key, value]))
 
 

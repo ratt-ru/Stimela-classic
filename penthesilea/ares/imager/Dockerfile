@@ -7,4 +7,4 @@ RUN mkdir -p /input /output
 
 WORKDIR /code
 
-CMD ./run.sh
+CMD sh run.sh

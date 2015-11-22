@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+import penthesilea
+import otrera.utils as utils
+import otrera
+import os
+import sys
+from  argparse import ArgumentParser
+
+BASE = penthesilea.PENTHESILEA_BASE_PATH
+ARES = penthesilea.PENTHESILEA_ARES_PATH
+
+base = os.listdir(BASE)
+ares = os.listdir(ARES)
+
+
+if __name__ == "__main__":
+    for i, arg in enumerate(sys.argv):
+        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
+
+    parser = ArgumentParser(description='Dockerized Radio Interferometric Scripting Framework. Sphesihle Makhathini <sphemakh@gmail.com>')
+
+    add = parser.add_argument
+    add("-v","--version", action='version',version='{:s} version {:s}'.format(parser.prog, otrera.__version__))
+
+    add("-pull", action="store_true",
+            help="Pull base images from docker hub")
+
+    add("-build-base", dest="build_base", action="store_true",
+            help="Build base images locally")
+
+    add("-build", dest="build", action="store_true",
+            help="Build executor images locally")
+
+    add("-tag",
+            help="Build/pull images with a specific tag. Default is latest stable tag (images).")
+
+    add("images", nargs="?",
+            help="Pull/build specified images. A space seperated list of base images to pull/build\
+. The available base images are [{:s}]".format(", ".join(base)))
+
+    args = parser.parse_args()
+
+
+    tag = args.tag or penthesilea.STABLE_TAG
+    
+
+if args.pull or args.build_base:
+
+    for image in base:
+        if args.pull:
+            _cmd = ["pull", "penthesilea/{:s}:{:s}".format(image, tag)]
+        else:
+            _cmd = ["build", "-t", "penthesilea/{:s}:{:s}".format(image, tag), "{:s}/{:s}".format(BASE, image)]
+
+        utils.xrun("docker", _cmd)
+
+if args.build:
+    for image in ares:
+        utils.xrun("docker", ["build", "-t", "ares/"+image, "{:s}/{:s}".format(ARES, image)])

@@ -7,16 +7,18 @@ import codecs
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
 
+outfile = sys.argv[1]
+
 _ANTENNAS = {
-     "meerkat": "MeerKAT64_ANTENNAS",
-     "kat-7": "KAT7_ANTENNAS",
+     "meerkat": "meerkat.itrf.txt",
+     "kat-7": "kat-7.itrf.txt",
      "jvlaa": "vlaa.itrf.txt",
      "jvlab": "vlab.itrf.txt",
      "jvlac": "vlac.itrf.txt",
      "jvlad": "vlad.itrf.txt",
-     "wsrt": "WSRT_ANTENNAS",
-     "ska1mid254": "SKA1REF2_ANTENNAS",
-     "ska1mid197": "SKA197_ANTENNAS",
+     "wsrt": "wsrt.itrf.txt",
+     "ska1mid254": "skamid254.itrf.txt",
+     "ska1mid197": "skamid197.itrf.txt",
 }
 
 _OBS = {
@@ -38,14 +40,21 @@ def readJson(conf):
     with open(conf) as _std:
         jdict = json.load(_std)
 
-    for key,val in jdict.iteritems():
-        if isinstance(val, unicode):
-            jdict[key] = str(val)
+    out = {}
 
-    return jdict
+    for key,val in jdict.iteritems():
+
+        if isinstance(val, unicode):
+            val = str(val)
+
+        out[str(key)] = val
+
+    return out
+
 
 jdict = readJson(CONFIG)
-telescope = jdict.pop("telescope")
+telescope = jdict["telescope"]
+
 jdict["outdir"] = "/msdir"
 jdict["tel"] = _OBS[telescope]
 
@@ -58,7 +67,7 @@ else:
         jdict["pos_type"] = "ascii"
         jdict["coords"] = "itrf"
 
-for item in ["antennas", "coord_sys"]:
+for item in ["antennas", "coord_sys", "telescope"]:
     jdict.pop(item, None)
 
 imagename = jdict.pop("skymodel", False)
@@ -90,5 +99,5 @@ if jdict.pop("predict", False) and imagename:
         jdict["dfreq"] = dfreq
         jdict["nchan"] = nchan
 
-with codecs.open(CONFIG, "w", "utf8") as std:
+with codecs.open(outfile, "w", "utf8") as std:
     std.write( json.dumps(jdict, ensure_ascii=False) )

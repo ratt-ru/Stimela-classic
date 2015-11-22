@@ -1,14 +1,15 @@
 from otrera import Pipeline
-import os
+import penthesilea
 
 INPUT = "input"
 OUTPUT = "output"
-DATA = "../data"
+DATA = penthesilea.PENTHESILEA_DATA
 MSDIR = "msdir"
 
 
-## All  configuration files should be stored in the same place
-CONFIGS = "../data/configs"
+## There is a configuration template for all Penthesilea executor image
+CONFIGS = penthesilea.PENTHESILEA_CONFIG_TEMPLATES
+
 # These are the names
 simms_template = "simms_params.json"
 simulator_template = "simulator_params.json"
@@ -24,6 +25,7 @@ pipeline = Pipeline("Simulation Example", CONFIGS, data=DATA, ms_dir=MSDIR)
 # Make empty MS 
 simms_dict = pipeline.readJson(simms_template)
 simms_dict["msname"] = MS
+simms_dict["telescope"] = "meerkat"
 pipeline.add("ares/simms", "simms_example", simms_dict, input=INPUT, output=OUTPUT, 
              label="Creating MS")
 
@@ -40,6 +42,7 @@ pipeline.add("ares/simulator", "simulator_example", simulator_dict, input=INPUT,
 
 imager_dict = pipeline.readJson(imager_template)
 imager_dict["weight"] = "briggs"
+imager_dict["clean_iterations"] = 1000
 briggs_robust = 2,0,-2
 prefix = imager_dict["imageprefix"]
 

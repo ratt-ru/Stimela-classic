@@ -41,7 +41,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-
     tag = args.tag or penthesilea.STABLE_TAG
     
 

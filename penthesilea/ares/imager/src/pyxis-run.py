@@ -43,7 +43,7 @@ def azishe():
     imager = jdict.get("imager", "wsclean")
     channelise = jdict.get("channelise", 0)
     dirty = jdict.get("dirty", True)
-    niter = jdict.get("clean_iteration", 0)
+    niter = jdict.get("clean_iterations", 0)
 
     if niter>0:
         im.niter = niter

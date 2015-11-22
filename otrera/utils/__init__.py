@@ -6,8 +6,12 @@ import json
 import codecs
 
 
-def logger(level=0):
-    logging.basicConfig()
+def logger(level=0, logfile=None):
+
+    if logfile:
+        logging.basicConfig(filename=logfile)
+    else:
+        logging.basicConfig()
 
     LOGL = {"0": "INFO",
             "1": "DEBUG",

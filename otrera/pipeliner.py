@@ -4,13 +4,15 @@
 import os
 from otrera import penthesilea_docker as docker
 import otrera.utils as utils
+import tempfile
 
 class Pipeline(object):
 
     def __init__(self, name, configs, data, ms_dir=None):
         
         self.name = name
-        self.log = utils.logger(0)
+        self.log = utils.logger(0,
+                   logfile="log-%s.txt"%name.replace(" ","_").lower())
 
         self.containers = []
         self.active = None
@@ -27,15 +29,15 @@ class Pipeline(object):
 
     def add(self, image, name, config, 
             input=None, output=None, label="", 
-            build_first=False, build_dest=None):
+            build_first=False, build_dest=None, saveconf=None):
 
         if build_first and build_dest:
             self.build(image, build_dest)
 
         cont = docker.Load(image, name, label=label, logger=self.log)
-        cont.add_volume(self.otrera_path, "/utils")
-        cont.add_volume(self.configs_path, self.configs_path_container)
-        cont.add_volume(self.data_path, "/data")
+        cont.add_volume(self.otrera_path, "/utils", perm="ro")
+        cont.add_volume(self.data_path, "/data", perm="ro")
+
         if self.ms_dir:
             cont.add_volume(self.ms_dir, "/msdir")
 
@@ -51,12 +53,22 @@ class Pipeline(object):
             cont.add_environ("OUTPUT", "/output")
 
         if isinstance(config, dict):
-            confname_host = "%s/%s_config.json"%(self.configs_path, name)
-            confname_container = "%s/%s_config.json"%(self.configs_path_container, name)
-            utils.writeJson(confname_host, config)
+            if not os.path.exists("configs"):
+                os.mkdir("configs")
+
+            if not saveconf:
+                saveconf = "configs/%s-%s.json"%(self.name.replace(" ", "_").lower(), name)
+
+            confname_container = "%s/%s"%(self.configs_path_container, 
+                        os.path.basename(saveconf))
+
+            utils.writeJson(saveconf, config)
             config = confname_container
+            cont.add_volume("configs", self.configs_path_container, perm="ro")
         else:
+            cont.add_volume(self.configs_path, self.configs_path_container, perm="ro")
             config = self.configs_path_container+"/"+config 
+
         cont.add_environ("CONFIG", config)
 
         self.containers.append(cont)

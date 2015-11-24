@@ -8,7 +8,7 @@ import utils
 CONFIG = os.environ["CONFIG"]
 
 jdict = utils.readJson(CONFIG)
-msname = "%s/%s"%("msdir", utils.pop["msname"])
+msname = "%s/%s"%(os.environ["MSDIR"], utils.pop["msname"])
 
 
 flag_cmd = jdict.pop("command")

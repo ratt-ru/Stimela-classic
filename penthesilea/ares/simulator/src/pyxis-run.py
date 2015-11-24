@@ -18,6 +18,7 @@ mqt.MULTITHREAD = 16
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
+MSDIR = os.environ["MSDIR"]
 
 LOG = II("${OUTDIR>/}log-meqtrees_sim.txt")
 
@@ -37,9 +38,9 @@ def readJson(conf):
 def azishe():
 
     jdict = readJson(CONFIG)
-    add = jdict.get("add_component_model", False)
+    add = jdict.get("add_to_column", False)
 
-    v.MS = "/msdir/{:s}".format(jdict["msname"])
+    v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
     column = jdict.get("column", "DATA")
 
     if jdict["skymodel"] in [None, False]:
@@ -97,9 +98,9 @@ def azishe():
         section = "sim"
 
 
-    mode = "add to MS" if add else "sim only"
+    mode = '"add to MS"' if add else '"sim only"'
     options["sim_mode"] = mode
-    options["ms_sel.input_column"] = column
+    options["ms_sel.input_column"] = add
     options["ms_sel.output_column"] = column
 
     mqt.msrun(II("${mqt.CATTERY}/Siamese/turbo-sim.py"), 

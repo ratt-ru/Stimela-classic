@@ -12,6 +12,7 @@ mqt.MULTITHREAD = 16
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
+MSDIR = os.environ["MSDIR"]
 
 LOG = II("${OUTDIR>/}log-subtract.txt")
 
@@ -32,12 +33,19 @@ def azishe():
 
     jdict = readJson(CONFIG)
 
-    v.MS = "{:s}/{:s}".format("/msdir", jdict["msname"])
+    v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
 
-    for item in ["/input/", "/data/skymodels/"]:
-        lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
-        if os.path.exists(lsmname):
-            break
+
+    skymodels = ["{:s}/{:s}".format(item, jdict["skymodel"]) for item in [INDIR, "/data/skymodels"] ]
+
+    found = False
+    for skymodel in skymodels:
+        if os.path.exists(skymodel):
+            lsmname = skymodel
+            found = True
+
+    if not found:
+        abort("Could not find sky model $lsmname")
 
     v.LSM = lsmname
 

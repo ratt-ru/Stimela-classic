@@ -6,6 +6,7 @@ import codecs
 
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
+MSDIR = os.environ["MSDIR"]
 
 outfile = sys.argv[1]
 
@@ -55,11 +56,11 @@ def readJson(conf):
 jdict = readJson(CONFIG)
 telescope = jdict["telescope"]
 
-jdict["outdir"] = "/msdir"
+jdict["outdir"] = MSDIR
 jdict["tel"] = _OBS[telescope]
 
 if jdict.get("antennas", False):
-    jdict["pos"] = "/input/"+jdict.get("antennas", "meetkat")
+    jdict["pos"] = INDIR+"/"+jdict.get("antennas", "meetkat")
     jdict["coords"] = jdict.get("coord_sys", "enu")
 else:
     jdict["pos"] = "/data/observatories/"+_ANTENNAS[telescope]
@@ -74,7 +75,7 @@ imagename = jdict.pop("skymodel", False)
 
 if jdict.pop("predict", False) and imagename:
 
-    for item in ["/input", "/data/skymodels"]:
+    for item in [INDIR, "/data/skymodels"]:
         _imagename = "{:s}/{:s}".format(item, imagename)
         if os.path.exists(_imagename):
             break

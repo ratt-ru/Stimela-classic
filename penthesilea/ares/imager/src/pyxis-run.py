@@ -10,6 +10,7 @@ import json
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
+MSDIR = os.environ["MSDIR"]
 v.DESTDIR = "."
 
 OUTFILE_Template = "${OUTDIR>/}results-${MS:BASE}"
@@ -33,7 +34,7 @@ def azishe():
 
     jdict = readJson(CONFIG)
 
-    v.MS = "{:s}/{:s}".format("/msdir", jdict["msname"])
+    v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
 
     im.cellsize = "{:f}arcsec".format( jdict.get("cellsize", 1) )
     im.npix = jdict.get("npix", 4096)
@@ -56,7 +57,7 @@ def azishe():
 
     im.DIRTY_IMAGE = prefix + ".dirty.fits"
     im.MODEL_IMAGE = prefix + ".model.fits"
-    im.REDIDUAL_IMAGE = prefix + ".residual.fits"
+    im.RESIDUAL_IMAGE = prefix + ".residual.fits"
     im.RESTORED_IMAGE = prefix + ".restored.fits"
     im.FULLREST_IMAGE = prefix + ".fullrest.fits"
     im.PSF_IMAGE = prefix + ".psf.fits"

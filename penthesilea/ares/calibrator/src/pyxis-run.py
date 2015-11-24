@@ -13,6 +13,7 @@ mqt.MULTITHREAD = 16
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
+MSDIR = os.environ["MSDIR"]
 
 LOG = II("${OUTDIR>/}log-calibrator.txt")
 
@@ -34,9 +35,9 @@ def azishe():
     jdict = readJson(CONFIG)
     prefix = jdict.get("prefix", None)
 
-    v.MS = "{:s}/{:s}".format("/msdir", jdict["msname"])
+    v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
 
-    for item in ["/input/", "/data/skymodels/"]:
+    for item in [INDIR, "/data/skymodels/"]:
         lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
         if os.path.exists(lsmname):
             break

@@ -29,6 +29,7 @@ def readJson(conf):
 OUTDIR = os.environ["OUTPUT"]
 INDIR = os.environ["INPUT"]
 CONFIG = os.environ["CONFIG"]
+MSDIR = os.environ["MSDIR"]
 LOG_Template = "${OUTDIR>/}log-imaging.txt"
 v.OUTFILE = II("${OUTDIR>/}results-${MS:BASE}")
 
@@ -38,9 +39,9 @@ def azishe():
     # Get parameters
     jdict = readJson(CONFIG)
 
-    v.MS = "{:s}/{:s}".format("/msdir", jdict.get("msname"))
+    v.MS = "{:s}/{:s}".format(MSDIR, jdict.get("msname"))
 
-    for item in ["/input/", "/data/skymodels/"]:
+    for item in [INDIR, "/data/skymodels/"]:
         lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
         if os.path.exists(lsmname):
             break

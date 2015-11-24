@@ -12,5 +12,5 @@
     "beam_files_pattern": null,
     "emss_labels": "a,b,c,d,e,f",
     "emss_freqs": "1440,1442,1445,1447",
-    "add_component_model": null
+    "add_to_column": null
 }

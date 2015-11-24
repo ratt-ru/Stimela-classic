@@ -7,7 +7,7 @@
     "cellsize": 1,
     "channelise": 0,
     "imageprefix": "results-penthesilea_default",
-    "dirty": false,
+    "dirty": true,
     "clean_iterations": 0,
     "robust": -2,
     "imager": "wsclean"

@@ -6,7 +6,7 @@ The main goal of this project is to test the feasibilty of using the AWS system 
 This project is funded by the [SKA/AWS Astrocompute in the cloud ](https://www.skatelescope.org/ska-aws-astrocompute-call-for-proposals) initiative. 
 
 ## Overview
-This project is centred around two sets of docker images, i) *base images* have the required software tools installed in them, then ii) very light weight *executor images* are based on the *base* images and perform radio inteferometry related tasks like imaging, telescope simulations, and calibration. The base images can either be built locally or pulled from [docker hub](https://hub.docker.com/u/penthesilea), and the executor images must be built locally. Note that the (farily heavy) base images have to be pulled/built very rarely.
+This project is centred around two sets of docker images, i) *base images* have the required software tools installed in them, then ii) very light weight *executor images* are based on the *base* images and perform radio inteferometry related tasks like imaging, telescope simulations, and calibration. The base images can either be built locally or pulled from [docker hub](https://hub.docker.com/u/penthesilea), and the executor images must be built locally. Note that the (fairly heavy) base images have to be pulled/built very rarely.
 
 
 **Base Images**

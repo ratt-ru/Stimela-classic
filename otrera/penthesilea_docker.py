@@ -21,6 +21,9 @@ class Load(object):
         self.environs = environs or []
         self.awsEC2 = awsEC2
         self.log = logger
+        self.started = False
+        self.WORKDIR = None
+        self.COMMAND = None
 
 
     def  add_volume(self, host, container, perm="rw"):
@@ -61,10 +64,15 @@ class Load(object):
         try:
             utils.xrun("docker", ["run",
                  volumes, environs,
+                 "-w %s"%(self.WORKDIR) if self.WORKDIR else "",
                  "--name", self.name, 
-                 self.image])
+                 self.image,
+                 self.COMMAND or ""])
+
         except SystemError:
             raise DockerError("Container [%s:%s] returned non-zero exit status"%(self.image, self.name))
+
+        self.started = True
 
     
     def stop(self):
@@ -72,6 +80,11 @@ class Load(object):
                          "&&", "docker stop", self.name])
 
     def rm(self):
+
+        if not self.started :
+            self.log.info("Container [%s] was not started. Will not not attempt to remove"%(self.name))
+            return
+
         try:
             utils.xrun("docker", ["rm", self.name])
         except SystemError:

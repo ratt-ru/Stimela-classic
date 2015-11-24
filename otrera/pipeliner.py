@@ -2,6 +2,7 @@
 # Sphesihle Makhathini <sphemakh@gmail.com>
 
 import os
+import sys
 from otrera import penthesilea_docker as docker
 import otrera.utils as utils
 import tempfile
@@ -34,12 +35,16 @@ class Pipeline(object):
         if build_first and build_dest:
             self.build(image, build_dest)
 
+
         cont = docker.Load(image, name, label=label, logger=self.log)
+
+        # add standard volumes
         cont.add_volume(self.otrera_path, "/utils", perm="ro")
         cont.add_volume(self.data_path, "/data", perm="ro")
 
         if self.ms_dir:
             cont.add_volume(self.ms_dir, "/msdir")
+            cont.add_environ("MSDIR", "/msdir")
 
         if input:
             cont.add_volume( input,"/input")
@@ -74,15 +79,21 @@ class Pipeline(object):
         self.containers.append(cont)
 
 
-    def run(self):
+    def run(self, *args):
         """
             Run pipeline
         """
 
-        for i, container in enumerate(self.containers):
+        if args:
+            containers = [ self.containers[i-1] for i in args[:len(self.containers)]]
+        else:
+            containers = self.containers
+
+        for i, container in enumerate(containers):
             self.log.info("Running Container %s"%container.name)
             self.log.info("STEP %d :: %s"%(i, container.label))
             self.active = container
+
             try:
                 container.start()
             except docker.DockerError:
@@ -93,7 +104,7 @@ class Pipeline(object):
 
         self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))
 
-        self.rm()
+        self.rm(containers)
         
 
     def build(self, name, dest, use_cache=True):
@@ -113,11 +124,11 @@ class Pipeline(object):
             container.stop()
 
 
-    def rm(self):
+    def rm(self, containers=None):
         """
             Remove all stopped containers
         """
-        for container in self.containers:
+        for container in containers or self.containers:
             container.rm()
 
 
@@ -147,4 +158,3 @@ class Pipeline(object):
 
     def readJson(self, config):
         return utils.readJson(self.configs_path+"/"+config)
-    

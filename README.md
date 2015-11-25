@@ -43,6 +43,12 @@ Each of these executor images has an execution script (generally a pyxis script)
 * Python
 
 ## Install
+```
+pip install penthesilea
+```
+
+Or
+
 Download the repo.
 ```
 git clone https://github.com/SpheMakh/Penthesilea
@@ -50,15 +56,14 @@ git clone https://github.com/SpheMakh/Penthesilea
 Then install
 ```
 cd Penthesilea
-python setup.py install --record files.txt
+python setup.py install
 penthesilea -pull # This will take some time
 penthesilea -build
 ```
 
 ## Uninstall
 ```
-cd Penthesilea
-cat files.txt | xargs rm 
+pip uninstall penthesilea
 ```
 
 See the [wiki](../../wiki/) for tutorials. 

@@ -4,6 +4,10 @@ import sys
 import logging
 import json
 import codecs
+import time
+
+from multiprocessing import Process, Manager, Lock
+manager = Manager()
 
 
 def logger(level=0, logfile=None):
@@ -51,6 +55,59 @@ def xrun(command, options, log=None):
         process.wait()
     if process.returncode:
          raise SystemError('%s: returns errr code %d'%(command, process.returncode))
+
+
+def pper(iterable, command, cpus, stagger=2, logger=None):
+    """
+       Run command in parallel.
+       
+       iterable :  argument(s) to iterate over
+       command : callable command to run
+       cpus : number of cpus to use
+       stagger : stagger jobs (in seconds)
+       logger : logging instance
+    """
+
+    if not hasattr(iterable, "__iter__"):
+        raise TypeError("Can not iterate over [%s]. Make its iterable"%iterable)
+
+    if not callable(command):
+        raise TypeError("command [%] is not callable"%(command.func_name))
+
+    message = "Iterating over :: %s"%repr(iterable)
+
+    if logger:
+        logger.info(message)
+    else:
+        print message
+
+
+    active = manager.Value("d", 0)
+    
+    def worker(*args):
+        command(*args)
+        active.value -= 1
+
+    nprocs = len(iterable)
+    counter = 0
+    procs = []
+
+    while counter <= nprocs-1:
+        if active.value >= cpus:
+            continue
+        
+        time.sleep(stagger)
+        active.value += 1
+        
+        proc = Process(target=worker, args=(iterable[counter],))
+        procs.append(proc)
+        proc.start()
+        counter += 1
+
+
+    for proc in procs:
+        proc.join()
+
 
 
 def readJson(conf):

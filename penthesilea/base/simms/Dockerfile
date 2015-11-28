@@ -1,4 +1,4 @@
-FROM penthesilea/casapy
+FROM penthesilea/casapy:stable.11.15
 MAINTAINER <sphemakh@gmail.com>
 
 RUN apt-get update && apt-get install -y \

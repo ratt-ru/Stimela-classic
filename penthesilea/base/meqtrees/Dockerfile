@@ -1,4 +1,4 @@
-FROM penthesilea/base
+FROM penthesilea/base:stable.11.15
 MAINTAINER <sphemakh@gmail.com>
 
 RUN apt-get build-dep meqtrees-timba -y && apt-get install meqtrees -y

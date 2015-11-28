@@ -98,8 +98,12 @@ def pper(iterable, command, cpus, stagger=2, logger=None):
         
         time.sleep(stagger)
         active.value += 1
-        
-        proc = Process(target=worker, args=(iterable[counter],))
+        args = iterable[counter]
+
+        if not hasattr(args, "__iter__"):
+            args = (args,)
+
+        proc = Process(target=worker, args=args)
         procs.append(proc)
         proc.start()
         counter += 1

@@ -9,7 +9,7 @@ import tempfile
 
 class Pipeline(object):
 
-    def __init__(self, name, configs, data, ms_dir=None):
+    def __init__(self, name, configs, data, ms_dir=None, mac_os=False):
         
         self.name = name
         self.log = utils.logger(0,
@@ -21,6 +21,7 @@ class Pipeline(object):
         self.data_path = data
         self.configs_path_container = "/configs"
         self.otrera_path = os.path.dirname(docker.__file__)
+        self.MAC_OS = mac_os
 
         self.ms_dir = ms_dir
         if ms_dir:
@@ -37,6 +38,8 @@ class Pipeline(object):
 
 
         cont = docker.Load(image, name, label=label, logger=self.log)
+
+        cont.add_environ("MAC_OS", str(self.MAC_OS))
 
         # add standard volumes
         cont.add_volume(self.otrera_path, "/utils", perm="ro")

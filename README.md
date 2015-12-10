@@ -66,4 +66,58 @@ penthesilea -build
 pip uninstall penthesilea
 ```
 
-See the [wiki](../../wiki/) for tutorials. 
+See the [wiki](../../wiki/) for tutorials.
+
+
+## Installation on a Mac
+
+Using docker on a Mac requires a particular setup and have some
+limitations.
+If you want to use pip install, docker will not allow you to mount
+system directory in the docker machines. By default any directory in
+/Users/<YOU> can be mounted easily.
+
+However, Casacore is known to have I/O issues when trying to
+read/write a file in a mounted volume on a Mac OS host (see Issue
+[#5](https://github.com/SpheMakh/Penthesilea/issues/5)).
+
+So every I/O operation require additional data management to transfer
+the files in and out (hopefully without copying it...)
+
+In summary:
+- you will have to pull the "mac_os" branch of the git project.
+- you will have to install the package **locally** & alter PATH and PYTHONPATH.
+
+
+**Prerequisites**
+- install docker for Mac OS X (https://docs.docker.com/v1.8/installation/mac/)
+
+- open a terminal and do the following commands:
+
+```
+docker-machine env default
+eval "$(docker-machine env default)"
+```
+
+This will set up the default docker environment (report to the documentation for user specific environment settings))
+
+**Building on Mac**
+
+```
+# Cloning the mac_os branch
+git clone -b mac_os https://github.com/SpheMakh/Penthesilea.git
+# building and alter environment variables
+cd Penthesilea
+mkdir build
+python setup.py install --prefix=/absolute/path/to/Penthesilea/build
+export PATH=$PATH:/absolute/path/to/Penthesilea/build/bin
+export PYTHONPATH=$PYTHONPATH:/absolute/path/to/Penthesilea/build/lib/python2.7/site-packages
+# pull and build
+penthesilea -pull
+penthesilea -build
+```
+
+**Specifying your pipeline that you are using Mac OS**
+
+In the pipeline.add function calling, add the option "mac_os=True"
+

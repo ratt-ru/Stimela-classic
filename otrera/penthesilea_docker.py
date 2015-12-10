@@ -59,6 +59,8 @@ class Load(object):
         volumes = " -v " + " -v ".join(self.volumes)
         environs = " -e "+" -e ".join(self.environs)
 
+        self.started = True
+
         if self.awsEC2:
             pass
         try:
@@ -72,7 +74,6 @@ class Load(object):
         except SystemError:
             raise DockerError("Container [%s:%s] returned non-zero exit status"%(self.image, self.name))
 
-        self.started = True
 
     
     def stop(self):

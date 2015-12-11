@@ -46,7 +46,7 @@ pip install penthesilea
 ```
 Alternatively, you can do a local install by enbabling the `--user` flag
 ```
-pip instal penthesilea --user
+pip install penthesilea --user
 ```
 This will install the binaries in `$HOME/.local/bin` and the python packages at `$HOME/.local/lib//python2.7/site-packages`. Finally, add these paths to your *PATH* and *PYTHONPATH* respectively. 
 On my bash shell I add the following to `$HOME/.bashrc` (you do you):

@@ -90,5 +90,5 @@ def azishe():
                   channelize=channelise,
                   **options)
 
-if MAC_OS:
-    x.sh("mv $output/* $outdir")
+    if MAC_OS:
+        x.sh("mv $output/* $outdir")

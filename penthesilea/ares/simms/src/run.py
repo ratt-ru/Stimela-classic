@@ -114,11 +114,11 @@ if jdict.pop("predict", False) and imagename:
 with codecs.open(outfile, "w", "utf8") as std:
     std.write( json.dumps(jdict, ensure_ascii=False) )
 
-
 # Run simms
-
 utils.xrun("simms", ["-jc", outfile])
 
 # move to
 if MAC_OS:
+    if os.path.exists("{:s}/{:s}".format(MSDIR, msname)):
+        utils.xrun("rm", ["-fr", "{:s}/{:s}".format(MSDIR, msname)])
     utils.xrun("mv", [msname, MSDIR])

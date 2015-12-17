@@ -1,7 +1,7 @@
 import os
 import otrera
 
-__version__ = otrera.__version__
+#__version__ = otrera.__version__
 
 ekhaya = __path__[0]
 STABLE_TAG = "stable.11.15"

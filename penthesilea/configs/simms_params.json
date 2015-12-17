@@ -1,11 +1,11 @@
 {
     "telescope": "meerkat",
+    "pos": null, 
     "msname": null,
     "direction" :"J2000,0deg,-30deg",
-    "nchan" : 5, 
-    "dtime" : 10, 
-    "pos": null, 
+    "synthesis": 1,
     "freq0": "1400MHz",
-    "dfreq": "500kHz",
-    "synthesis": 1
+    "dtime" : 10, 
+    "nchan" : 5, 
+    "dfreq": "500kHz"
 }

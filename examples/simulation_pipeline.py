@@ -20,18 +20,26 @@ LSM = "nvss1deg.lsm.html"
 
 
 # start oterera instance
-pipeline = Pipeline("Simulation Example", CONFIGS, data=DATA, ms_dir=MSDIR)
+pipeline = Pipeline("Simulation Example", CONFIGS, data=DATA, ms_dir=MSDIR, mac_os=True)
 
 # Make empty MS 
 simms_dict = pipeline.readJson(simms_template)
 simms_dict["msname"] = MS
 simms_dict["telescope"] = "meerkat"
+simms_dict["synthesis"] = 0.5
+simms_dict["direction"] = "J2000,90deg,-45deg"
+simms_dict["dtime"] = 60
+simms_dict["freq0"] = "750MHz"
+simms_dict["dfreq"] = "1MHz"
+simms_dict["nchan"] = 10
 pipeline.add("ares/simms", "simms_example", simms_dict, input=INPUT, output=OUTPUT, 
              label="Creating MS")
 
 # Simulate visibilities into it
 simulator_dict = pipeline.readJson(simulator_template)
 simulator_dict["msname"] = MS
+simulator_dict["addnoise"] = True
+simulator_dict["sefd"] = 831
 simulator_dict["skymodel"] = LSM
 pipeline.add("ares/simulator", "simulator_example", simulator_dict, input=INPUT, output=OUTPUT,
              label="Simulating visibilities")
@@ -42,8 +50,9 @@ pipeline.add("ares/simulator", "simulator_example", simulator_dict, input=INPUT,
 
 imager_dict = pipeline.readJson(imager_template)
 imager_dict["weight"] = "briggs"
+imager_dict["imager"] = "wsclean"
 imager_dict["clean_iterations"] = 1000
-briggs_robust = 2,0,-2
+briggs_robust = 2, 0, -2
 prefix = imager_dict["imageprefix"]
 
 for i, robust in enumerate(briggs_robust):

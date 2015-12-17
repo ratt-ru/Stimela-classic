@@ -3,7 +3,7 @@ import otrera
 
 __version__ = otrera.__version__
 
-ekhaya = os.path.dirname(__file__)
+ekhaya = __path__[0]
 STABLE_TAG = "stable.11.15"
 
 # Path to base images
@@ -16,4 +16,5 @@ PENTHESILEA_ARES_PATH = "{:s}/ares".format(ekhaya)
 PENTHESILEA_DATA = "{:s}/data".format(ekhaya)
 
 # Path to config templates
-PENTHESILEA_CONFIG_TEMPLATES = "{:s}/configs".format(ekhaya)
+PENTHESILEA_CONFIG_TEMPLATES = configs = "{:s}/configs".format(ekhaya)
+

@@ -5,41 +5,22 @@ import pyfits
 import codecs
 import subprocess
 
+sys.path.append("/utils")
+import utils
+
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
 OUTDIR = os.environ["OUTPUT"]
+MAC_OS = os.environ["MAC_OS"]
+
+if MAC_OS.lower() in ["yes", "true", "yebo", "1"]:
+    MAC_OS = True
+else:
+    MAC_OS = False
 
 
-def _run(command, options):
-    cmd = " ".join([command]+options)
-    print('running: %s'%cmd)
-    process = subprocess.Popen(cmd,
-                  stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
-                  stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
-                  shell=True)
-    if process.stdout or process.stderr:
-        out,err = process.comunicate()
-        sys.stdout.write(out)
-        sys.stderr.write(err)
-        out = None
-    else:
-        process.wait()
-    if process.returncode:
-            raise SystemError('%s: returns errr code %d'%(command,process.returncode))
-
-def readJson(conf):
-
-    with open(conf) as _std:
-        jdict = json.load(_std)
-
-    for key,val in jdict.iteritems():
-        if isinstance(val, unicode):
-            jdict[key] = str(val)
-
-    return jdict
-
-jdict = readJson(CONFIG)
-template = readJson("sourcery_template.json")
+jdict = utils.readJson(CONFIG)
+template = utils.readJson("sourcery_template.json")
 
 name = INDIR+"/"+jdict["imagename"]
 psf = INDIR+"/"+jdict["psf"]
@@ -47,11 +28,18 @@ psf = INDIR+"/"+jdict["psf"]
 template["imagename"] = name
 template["psfname"] = psf
 template["reliability"]["thresh_pix"] = jdict["thresh"]
-template["outdir"] = OUTDIR
+
+output = "./temp-directory-xaba"
+template["outdir"] = output if MAC_OS else OUTDIR
 
 config = "run_me_now.json"
-with codecs.open(config, "w", "utf8") as std:
-    std.write( json.dumps(template, ensure_ascii=False) )
-_run("sourcery", ["-jc", config])
+utils.writeJson(config, template)
 
-_run("rm", ["-f", config])
+utils.xrun("sourcery", ["-jc", config])
+
+utils.xrun("rm", ["-f", config])
+
+if MAC_OS:
+    utils.xrun("mv", [output, OUTDIR])
+
+

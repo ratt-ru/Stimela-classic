@@ -5,11 +5,29 @@ import os
 import sys
 from otrera import penthesilea_docker as docker
 import otrera.utils as utils
+import penthesilea
 import tempfile
+import time
+
+
+ekhaya = penthesilea.__path__[0]
+
+CONFIGS_ = {
+    "ares/simms" : "{:s}/configs/simms_params.json".format(ekhaya),
+    "ares/simulator" : "{:s}/configs/simulator_params.json".format(ekhaya),
+    "ares/imager" : "{:s}/configs/imager_params.json".format(ekhaya),
+    "ares/predict" : "{:s}/configs/simulator_params.json".format(ekhaya),
+    "ares/calibrator" : "{:s}/configs/calibrator_params.json".format(ekhaya),
+    "ares/sourcery" : "{:s}/configs/sourcery_params.json".format(ekhaya),
+    "ares/flagms" : "{:s}/configs/flagms_params.json".format(ekhaya),
+    "ares/autoflagger" : "{:s}/configs/autoflagger_params.json".format(ekhaya),
+    "ares/subtract" : "{:s}/configs/subtract_params.json".format(ekhaya)
+}
+
 
 class Pipeline(object):
 
-    def __init__(self, name, configs, data, ms_dir=None):
+    def __init__(self, name, configs, data, ms_dir=None, mac_os=False):
         
         self.name = name
         self.log = utils.logger(0,
@@ -21,6 +39,7 @@ class Pipeline(object):
         self.data_path = data
         self.configs_path_container = "/configs"
         self.otrera_path = os.path.dirname(docker.__file__)
+        self.MAC_OS = mac_os
 
         self.ms_dir = ms_dir
         if ms_dir:
@@ -30,13 +49,18 @@ class Pipeline(object):
 
     def add(self, image, name, config, 
             input=None, output=None, label="", 
-            build_first=False, build_dest=None, saveconf=None):
+            build_first=False, build_dest=None,
+            saveconf=None, add_time_stamp=True):
 
         if build_first and build_dest:
             self.build(image, build_dest)
 
+        if add_time_stamp:
+            name = "%s-%s"%(name, str(time.time()).replace(".",""))
 
         cont = docker.Load(image, name, label=label, logger=self.log)
+
+        cont.add_environ("MAC_OS", str(self.MAC_OS))
 
         # add standard volumes
         cont.add_volume(self.otrera_path, "/utils", perm="ro")
@@ -67,7 +91,11 @@ class Pipeline(object):
             confname_container = "%s/%s"%(self.configs_path_container, 
                         os.path.basename(saveconf))
 
-            utils.writeJson(saveconf, config)
+
+            template = utils.readJson(CONFIGS_[image])
+            template.update(config)
+            utils.writeJson(saveconf, template)
+
             config = confname_container
             cont.add_volume("configs", self.configs_path_container, perm="ro")
         else:

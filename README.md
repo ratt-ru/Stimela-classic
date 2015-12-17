@@ -35,19 +35,28 @@ Each of these executor images has an execution script (generally a pyxis script)
 
 
 
-
-
-
 ## Requires 
 * [Docker](http://docs.docker.com/)
 * Python
 
 ## Install
+For a system wide install run (requires sudo powers) :
 ```
 pip install penthesilea
 ```
+Alternatively, you can do a local install by enbabling the `--user` flag
+```
+pip install penthesilea --user
+```
+This will install the binaries in `$HOME/.local/bin` and the python packages at `$HOME/.local/lib//python2.7/site-packages`. Finally, add these paths to your *PATH* and *PYTHONPATH* respectively. 
+On my bash shell I add the following to `$HOME/.bashrc` (you do you):
 
-Or
+```
+export PATH=$PATH:$HOME/.local/bin
+export PYTHONPATH=$PYTHONPATH:$HOME/.local/lib//python2.7/site-package
+```
+
+**Or**
 
 Download the repo.
 ```
@@ -57,13 +66,56 @@ Then install
 ```
 cd Penthesilea
 python setup.py install
-penthesilea -pull # This will take some time
-penthesilea -build
 ```
+Similarly, you can add the `--user` to `setup.py` flag to do a local install.
 
 ## Uninstall
 ```
 pip uninstall penthesilea
 ```
 
-See the [wiki](../../wiki/) for tutorials. 
+## For Mac Users
+
+**Prerequisites**
+- install docker for Mac OS X (https://docs.docker.com/v1.8/installation/mac/)
+
+- open a terminal and do the following commands:
+
+```
+docker-machine env default
+eval "$(docker-machine env default)"
+```
+
+This will set up the default docker environment (report to the documentation for user specific environment settings)
+
+
+Using docker on a Mac requires a particular setup and has some limitations
+- Mac OS does not allow folders not owned by the host user to be mounted onto containers. So, on a Mac you have to do the local install. 
+
+- Also, Casacore is known to have I/O issues when trying to read/write a file in a mounted volume on a Mac OS host (see Issue
+[#5](https://github.com/SpheMakh/Penthesilea/issues/5)).
+
+So every I/O operation require additional data management to transfer the files in and out. If you are using a Mac you will have tell penthesilea that. Do this by enabling the `mac_os` flag in the *Pipeline* instance when writing your penthesilea script. 
+
+```
+from otrera import Pipeline
+Pipeline("The one pipeline to rule them all", ..., mac_os=True)
+```
+
+## Building Penthesilea infrastructure
+As mentioned earlier, penthesilea is based on Docker. And before you start scripting penthesilea pipelines you first need to either build or pull the neccessary Docker images (base images). To pull the images from the Docker hub:
+```
+penthesilea pull 
+```
+or build them locally
+```
+penthesilea -build-base
+```
+
+Then finally, build the executor images
+```
+penthesilea -build
+```
+
+
+See the [wiki](../../wiki/) for tutorials.

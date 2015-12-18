@@ -62,19 +62,31 @@ def azishe():
             hdu.writeto(LSM, clobber=True)
 
     column = jdict.get("column", "DATA")
+    add_to_col = jdict.get("add_to_column", None)
+    copy = jdict.get("copy_to_CORRECTED_DATA", False)
     addnoise = jdict.get("addnoise", True)
 
     ms.set_default_spectral_info()
 
 
-    im.lwimager.predict_vis(image=LSM, padding=1.5, wprojplanes=128, column=column)
+    if add_to_col:
+        im.lwimager.predict_vis(image=LSM, padding=1.5, wprojplanes=128, column="MODEL_DATA")
+
+        tab = ms.msw()
+        data = tab.getcol("MODEL_DATA") + tab.getcol(add_to_col)
+        tab.putcol(column, data)
+
+        tab.close() 
+    else:
+        im.lwimager.predict_vis(image=LSM, padding=1.5, wprojplanes=128, column=column)
+
 
     if addnoise:
-        sefd = jdict.get("sefd", 831) # default is MeerKAT band 1
+        sefd = jdict.get("sefd", 551) # default is MeerKAT L-Band
         noise = compute_vis_noise(sefd)
         simnoise(noise, addToCol=column, column=column)
 
-    if column!="CORRECTED_DATA":
+    if copy and column!="CORRECTED_DATA":
         ms.copycol(fromcol=column, tocol="CORRECTED_DATA")
 
 

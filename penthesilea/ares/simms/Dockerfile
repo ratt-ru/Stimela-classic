@@ -6,4 +6,4 @@ RUN mkdir -p /output /input
 ADD src /code
 WORKDIR /code
 
-CMD sh run.sh
+CMD python run.py

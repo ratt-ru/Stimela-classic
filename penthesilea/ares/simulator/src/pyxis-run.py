@@ -42,13 +42,18 @@ def azishe():
 
     v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
     column = jdict.get("column", "DATA")
+    copy = jdict.get("copy_to_CORRECTED_DATA", False)
+
+    newcol = jdict.get("custom_data_column", None)
+    if newcol:
+        im.argo.addcol(newcol)
 
     if jdict["skymodel"] in [None, False]:
         sefd = jdict["sefd"]
         noise = compute_vis_noise(sefd)
         simnoise(noise, column=column)
 
-        if column!="CORRECTED_DATA":
+        if copy and column!="CORRECTED_DATA":
             ms.copycol(fromcol=column, tocol="CORRECTED_DATA")
 
         return
@@ -90,7 +95,6 @@ def azishe():
 
     _section = dict(sim = "sim",
                     add_G = "sim:G")
-    #TODO(sphe) Add E-Jones option
 
     if jdict.get("G_Jones", False):
         section = "add_G"
@@ -109,6 +113,6 @@ def azishe():
               options = options,
               args = ["${lsm.LSM_TDL}"])
 
-    if column!="CORRECTED_DATA":
+    if copy and column!="CORRECTED_DATA":
         ms.copycol(fromcol=column, tocol="CORRECTED_DATA")
 

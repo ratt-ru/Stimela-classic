@@ -95,9 +95,10 @@ if jdict.pop("predict", False) and imagename:
 
     with pyfits.open(imagename) as hdu:
         hdr = hdu[0].header
+        naxis = hdr["naxis"]
 
         freq = filter(lambda ind: hdr["ctype%d"%ind].startswith("FREQ"),
-                range(2, 5, 1))
+                range(2, naxis+1, 1))
         if freq:
             freq = freq[0]
         else:
@@ -105,7 +106,7 @@ if jdict.pop("predict", False) and imagename:
 
         nchan = hdr["naxis%d"%freq]
         freq0 = hdr["crval%d"%freq]
-        dfreq = hdr["cdelt%d"%freq]
+        dfreq = abs(hdr["cdelt%d"%freq])
 
         jdict["freq0"] = freq0
         jdict["dfreq"] = dfreq

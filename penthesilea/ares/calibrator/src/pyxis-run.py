@@ -46,6 +46,9 @@ def azishe():
 
     column = jdict.get("column", "DATA")
 
+    ms.DDID = jdict.get("spw_id", 0)
+    ms.FIELD = jdict.get("field_id", 0)
+
     options = {}
     options["tiggerlsm.lsm_subset"] = jdict.get("subset", "all")
     gtimeint, gfreqint = jdict.get("gjones_intervals", (1,1))

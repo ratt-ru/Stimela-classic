@@ -1,6 +1,8 @@
 {
     "skymodel":null,
     "msname": null,
+    "field_id": 0,
+    "spw_id": 0,
     "gjones_intervals": [1,1],
     "gjones_smoothing": null,
     "gjones_thresh_sigma": 5,

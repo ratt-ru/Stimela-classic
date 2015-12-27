@@ -47,7 +47,7 @@ class Pipeline(object):
                 os.mkdir(ms_dir)
 
 
-    def add(self, image, name, config, 
+    def add(self, image, name, config,
             input=None, output=None, label="", 
             build_first=False, build_dest=None,
             saveconf=None, add_time_stamp=True):

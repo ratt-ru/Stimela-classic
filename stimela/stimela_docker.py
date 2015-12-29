@@ -1,7 +1,7 @@
 ## Simple interface to Docker containers
 # Sphesihle Makhathini <sphemakh@gmail.com>
 
-import otrera.utils as utils
+import stimela.utils as utils
 import os
 
 

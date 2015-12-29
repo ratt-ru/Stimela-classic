@@ -8,6 +8,7 @@ import otrera.utils as utils
 import penthesilea
 import tempfile
 import time
+import inspect
 
 
 ekhaya = penthesilea.__path__[0]
@@ -27,8 +28,9 @@ CONFIGS_ = {
 
 class Pipeline(object):
 
-    def __init__(self, name, configs, data, ms_dir=None, mac_os=False):
-        
+    def __init__(self, name, data, configs=None,
+                 ms_dir=None, ares_tag=None, mac_os=False):
+
         self.name = name
         self.log = utils.logger(0,
                    logfile="log-%s.txt"%name.replace(" ","_").lower())
@@ -40,23 +42,39 @@ class Pipeline(object):
         self.configs_path_container = "/configs"
         self.otrera_path = os.path.dirname(docker.__file__)
         self.MAC_OS = mac_os
+        self.ARES_TAG = ares_tag
 
         self.ms_dir = ms_dir
         if ms_dir:
             if not os.path.exists(ms_dir):
                 os.mkdir(ms_dir)
 
+        self.penthesilea_context = inspect.currentframe().f_back.f_globals
+
 
     def add(self, image, name, config,
             input=None, output=None, label="", 
             build_first=False, build_dest=None,
-            saveconf=None, add_time_stamp=True):
+            saveconf=None, add_time_stamp=True, tag=None):
+
+        ares_tag = self.ARES_TAG or self.penthesilea_context.get("ARES_TAG", None)
+        ares_tag = tag if tag!=None else ares_tag
+
+        # Record base image info
+        dockerfile = penthesilea.PENTHESILEA_ARES_PATH +"/"+ image.split("/")[-1]
+        base_image = utils.get_Dockerfile_base_image(dockerfile)
+        self.log.info("<=BASE_IMAGE=> {:s}={:s}".format(image, base_image))
 
         if build_first and build_dest:
             self.build(image, build_dest)
 
         if add_time_stamp:
-            name = "%s-%s"%(name, str(time.time()).replace(".",""))
+            name = "%s-%s"%(name, str(time.time()).replace(".", ""))
+
+        # Add tag if its specified
+        if ares_tag:
+            image = image.split(":")[0]
+            image = "{:s}:{:s}".format(image, ares_tag)
 
         cont = docker.Load(image, name, label=label, logger=self.log)
 
@@ -92,7 +110,7 @@ class Pipeline(object):
                         os.path.basename(saveconf))
 
 
-            template = utils.readJson(CONFIGS_[image])
+            template = utils.readJson(CONFIGS_[image.split(":")[0]])
             template.update(config)
             utils.writeJson(saveconf, template)
 
@@ -133,6 +151,7 @@ class Pipeline(object):
         self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))
 
         self.rm(containers)
+        self.log.info("\n[================================DONE==========================]\n \n")
         
 
     def build(self, name, dest, use_cache=True):

@@ -5,6 +5,7 @@ import logging
 import json
 import codecs
 import time
+import tempfile
 
 from multiprocessing import Process, Manager, Lock
 manager = Manager()
@@ -129,3 +130,69 @@ def readJson(conf):
 def writeJson(config, dictionary):
     with codecs.open(config, 'w', 'utf8') as std:
         std.write(json.dumps(dictionary, ensure_ascii=False))
+
+
+def get_Dockerfile_base_image(image):
+
+    if os.path.isfile(image):
+        dockerfile = image
+    else:
+        dockerfile = "{:s}/Dockerfile".format(image)
+
+    with open(dockerfile, "r") as std:
+        _from = "" 
+        for line in std.readlines():
+            if line.startswith("FROM"):
+                _from = line
+        
+    return _from
+
+
+def change_Dockerfile_base_image(path, _from, label, destdir="."):
+    if os.path.isfile(path):
+        dockerfile = path
+        dirname = os.path.dirname(path)
+    else:
+        dockerfile = "{:s}/Dockerfile".format(path)
+        dirname = path
+
+    with open(dockerfile, "r") as std:
+        lines = std.readlines()
+        for line in lines:
+            if line.startswith("FROM"):
+                lines.remove(line)
+
+    temp_dir = tempfile.mkdtemp(prefix="tmp-penthesilea-{:s}-".format(label), dir=destdir)
+    xrun("cp", ["-r", "{:s}/Dockerfile {:s}/src".format(dirname, dirname), temp_dir])
+
+    dockerfile = "{:s}/Dockerfile".format(temp_dir)
+
+    with open(dockerfile, "w") as std:
+        std.write("{:s}\n".format(_from))
+
+        for line in lines:
+            std.write(line)
+
+    return temp_dir, dockerfile
+
+
+def get_base_images(logfile, index=1):
+    
+    with open(logfile) as std:
+        string = std.read()
+
+    separator = "[================================DONE==========================]"
+
+    log = string.split(separator)[index-1]
+
+    images = []
+
+
+    for line in log.split("\n"):
+        if line.find("<=BASE_IMAGE=>")>0:
+            tmp = line.split("<=BASE_IMAGE=>")[-1]
+            image, base = tmp.split("=")
+            images.append((image.strip(), base))
+    
+    return images
+

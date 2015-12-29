@@ -2,10 +2,10 @@
 
 import os
 from distutils.core import setup
-import otrera
+import penthesilea
 
 setup(name = "penthesilea",
-    version = otrera.__version__,
+    version = penthesilea.__version__,
     description = "Dockerized radio interferometry scripting framework",
     author = "Sphesihle Makhathini",
     author_email = "Sphesihle Makhathini <sphemakh@gmail.com>",

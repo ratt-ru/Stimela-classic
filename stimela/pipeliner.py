@@ -3,33 +3,35 @@
 
 import os
 import sys
-from otrera import penthesilea_docker as docker
-import otrera.utils as utils
-import penthesilea
+from stimela import stimela_docker as docker
+import stimela.utils as utils
+import cargo
 import tempfile
 import time
 import inspect
 
 
-ekhaya = penthesilea.__path__[0]
+ekhaya = cargo.__path__[0]
 
 CONFIGS_ = {
-    "ares/simms" : "{:s}/configs/simms_params.json".format(ekhaya),
-    "ares/simulator" : "{:s}/configs/simulator_params.json".format(ekhaya),
-    "ares/imager" : "{:s}/configs/imager_params.json".format(ekhaya),
-    "ares/predict" : "{:s}/configs/simulator_params.json".format(ekhaya),
-    "ares/calibrator" : "{:s}/configs/calibrator_params.json".format(ekhaya),
-    "ares/sourcery" : "{:s}/configs/sourcery_params.json".format(ekhaya),
-    "ares/flagms" : "{:s}/configs/flagms_params.json".format(ekhaya),
-    "ares/autoflagger" : "{:s}/configs/autoflagger_params.json".format(ekhaya),
-    "ares/subtract" : "{:s}/configs/subtract_params.json".format(ekhaya)
+    "cab/simms" : "{:s}/configs/simms_params.json".format(ekhaya),
+    "cab/simulator" : "{:s}/configs/simulator_params.json".format(ekhaya),
+    "cab/imager" : "{:s}/configs/imager_params.json".format(ekhaya),
+    "cab/predict" : "{:s}/configs/simulator_params.json".format(ekhaya),
+    "cab/calibrator" : "{:s}/configs/calibrator_params.json".format(ekhaya),
+    "cab/sourcery" : "{:s}/configs/sourcery_params.json".format(ekhaya),
+    "cab/flagms" : "{:s}/configs/flagms_params.json".format(ekhaya),
+    "cab/autoflagger" : "{:s}/configs/autoflagger_params.json".format(ekhaya),
+    "cab/subtract" : "{:s}/configs/subtract_params.json".format(ekhaya)
 }
 
 
 class Pipeline(object):
 
-    def __init__(self, name, data, configs=None,
-                 ms_dir=None, ares_tag=None, mac_os=False):
+    def __init__(self, name, data=None, configs=None,
+                 ms_dir=None, cab_tag=None, mac_os=False):
+
+        self.stimela_context = inspect.currentframe().f_back.f_globals
 
         self.name = name
         self.log = utils.logger(0,
@@ -38,18 +40,21 @@ class Pipeline(object):
         self.containers = []
         self.active = None
         self.configs_path = configs
-        self.data_path = data
+        self.data_path = data or self.stimela_context.get("STIMELA_DATA", None)
+        if self.data_path:
+            pass
+        else:
+            raise TypeError("'data' option has to be specified")
+
         self.configs_path_container = "/configs"
-        self.otrera_path = os.path.dirname(docker.__file__)
+        self.stimela_path = os.path.dirname(docker.__file__)
         self.MAC_OS = mac_os
-        self.ARES_TAG = ares_tag
+        self.CAB_TAG = cab_tag
 
-        self.ms_dir = ms_dir
-        if ms_dir:
-            if not os.path.exists(ms_dir):
-                os.mkdir(ms_dir)
-
-        self.penthesilea_context = inspect.currentframe().f_back.f_globals
+        self.ms_dir = ms_dir or self.stimela_context.get("STIMELA_MSDIR", None)
+        if self.ms_dir:
+            if not os.path.exists(self.ms_dir):
+                os.mkdir(self.ms_dir)
 
 
     def add(self, image, name, config,
@@ -57,11 +62,15 @@ class Pipeline(object):
             build_first=False, build_dest=None,
             saveconf=None, add_time_stamp=True, tag=None):
 
-        ares_tag = self.ARES_TAG or self.penthesilea_context.get("ARES_TAG", None)
-        ares_tag = tag if tag!=None else ares_tag
+
+        input = input or self.stimela_context.get("STIMELA_INPUT", None)
+        output = output or self.stimela_context.get("STIMELA_OUTPUT", None)
+
+        cab_tag = self.CAB_TAG or self.stimela_context.get("CAB_TAG", None)
+        cab_tag = tag if tag!=None else cab_tag
 
         # Record base image info
-        dockerfile = penthesilea.PENTHESILEA_ARES_PATH +"/"+ image.split("/")[-1]
+        dockerfile = cargo.STIMELA_CAB_PATH +"/"+ image.split("/")[-1]
         base_image = utils.get_Dockerfile_base_image(dockerfile)
         self.log.info("<=BASE_IMAGE=> {:s}={:s}".format(image, base_image))
 
@@ -72,16 +81,16 @@ class Pipeline(object):
             name = "%s-%s"%(name, str(time.time()).replace(".", ""))
 
         # Add tag if its specified
-        if ares_tag:
+        if cab_tag:
             image = image.split(":")[0]
-            image = "{:s}:{:s}".format(image, ares_tag)
+            image = "{:s}:{:s}".format(image, cab_tag)
 
         cont = docker.Load(image, name, label=label, logger=self.log)
 
         cont.add_environ("MAC_OS", str(self.MAC_OS))
 
         # add standard volumes
-        cont.add_volume(self.otrera_path, "/utils", perm="ro")
+        cont.add_volume(self.stimela_path, "/utils", perm="ro")
         cont.add_volume(self.data_path, "/data", perm="ro")
 
         if self.ms_dir:

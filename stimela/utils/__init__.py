@@ -23,7 +23,7 @@ def logger(level=0, logfile=None):
             "2": "ERROR",
             "3": "CRITICAL"}
 
-    log = logging.getLogger("OTRERA")
+    log = logging.getLogger("STIMELA")
     log.setLevel(eval("logging."+LOGL[str(level)]))
 
     return log
@@ -162,7 +162,7 @@ def change_Dockerfile_base_image(path, _from, label, destdir="."):
             if line.startswith("FROM"):
                 lines.remove(line)
 
-    temp_dir = tempfile.mkdtemp(prefix="tmp-penthesilea-{:s}-".format(label), dir=destdir)
+    temp_dir = tempfile.mkdtemp(prefix="tmp-stimela-{:s}-".format(label), dir=destdir)
     xrun("cp", ["-r", "{:s}/Dockerfile {:s}/src".format(dirname, dirname), temp_dir])
 
     dockerfile = "{:s}/Dockerfile".format(temp_dir)

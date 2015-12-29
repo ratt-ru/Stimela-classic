@@ -1,7 +1,7 @@
 import os
 import sys
-import otrera
-from otrera import utils
+import stimela
+from stimela import utils
 from  argparse import ArgumentParser
 
 __version__ = "0.0.6"
@@ -10,19 +10,19 @@ ekhaya = os.path.dirname(__file__)
 STABLE_TAG = "stable.11.15"
 
 # Path to base images
-PENTHESILEA_BASE_PATH = "{:s}/base".format(ekhaya)
+STIMELA_BASE_PATH = "{:s}/base".format(ekhaya)
 
 # Path to executor images
-PENTHESILEA_ARES_PATH = "{:s}/ares".format(ekhaya)
+STIMELA_CAB_PATH = "{:s}/cab".format(ekhaya)
 
 # Path to native data products
-PENTHESILEA_DATA = "{:s}/data".format(ekhaya)
+STIMELA_DATA = "{:s}/data".format(ekhaya)
 
 # Path to config templates
-PENTHESILEA_CONFIG_TEMPLATES = "{:s}/configs".format(ekhaya)
+STIMELA_CONFIG_TEMPLATES = "{:s}/configs".format(ekhaya)
 
-BASE = os.listdir(PENTHESILEA_BASE_PATH)
-ARES = os.listdir(PENTHESILEA_ARES_PATH)
+BASE = os.listdir(STIMELA_BASE_PATH)
+CAB = os.listdir(STIMELA_CAB_PATH)
 
 
 def build():
@@ -30,12 +30,12 @@ def build():
         if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
 
     parser = ArgumentParser(description='Build dcoker images. Call without arguments \n'
-                                        'to build default executor (a.k.a ares) images')
+                                        'to build default executor (a.k.a cab) images')
 
     add = parser.add_argument
 
-    add("-ares", action="store_true",
-            help="Build Ares images")
+    add("-cab", action="store_true",
+            help="Build cab images")
     
     add("-base", action="store_true",
             help="Build Base images")
@@ -44,14 +44,14 @@ def build():
 
     if args.base:
         for image in BASE:
-            utils.xrun("docker build", ["-t", "penthesilea/{:s}".format(image),
-                       "{:s}/{:s}".format(PENTHESILEA_BASE_PATH, image)])
+            utils.xrun("docker build", ["-t", "stimela/{:s}".format(image),
+                       "{:s}/{:s}".format(STIMELA_BASE_PATH, image)])
 
     else:
-        for image in ARES:
-            dockerfile = "{:s}/{:s}".format(PENTHESILEA_ARES_PATH, image)
+        for image in CAB:
+            dockerfile = "{:s}/{:s}".format(STIMELA_CAB_PATH, image)
 
-            utils.xrun("docker build", ["-t", "ares/{:s}".format(image),
+            utils.xrun("docker build", ["-t", "cab/{:s}".format(image),
                        dockerfile])
 
 
@@ -74,7 +74,7 @@ def run():
             help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
 
     add("-L", "--load-from-log", dest="from_log",  metavar="LOG:TAG[:DIR]",
-            help="Load base images from penthesilea log file. The resulting executor images will be tagged 'TAG', and the build contexts will be stored at 'DIR'")
+            help="Load base images from stimela log file. The resulting executor images will be tagged 'TAG', and the build contexts will be stored at 'DIR'")
 
     add("script",
             help="Penthesilea script")
@@ -100,17 +100,17 @@ def run():
         for image in images:
 
             image_, base = image
-            path = "{:s}/{:s}".format(PENTHESILEA_ARES_PATH, image_.split("/")[-1])
+            path = "{:s}/{:s}".format(STIMELA_CAB_PATH, image_.split("/")[-1])
             dirname, dockerfile = utils.change_Dockerfile_base_image(path, base, image_.split("/")[-1], destdir=destdir)
 
             # Build executor image
             utils.xrun("docker build", ["-t", 
-                       "{:s}:{:s}".format(image_, tag), 
+                       "cab/{:s}:{:s}".format(image_.split("/")[-1], tag), 
                        "-f", dockerfile, dirname])
 
-    _globals = dict(INPUT=args.input, OUTPUT=args.output, 
-                    DATA=PENTHESILEA_DATA, MSDIR=args.msdir,
-                    ARES_TAG=tag)
+    _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output, 
+                    STIMELA_DATA=STIMELA_DATA, STIMELA_MSDIR=args.msdir,
+                    CAB_TAG=tag)
 
 
     execfile(args.script, _globals)
@@ -120,17 +120,26 @@ def pull():
     for i, arg in enumerate(sys.argv):
         if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
     
-    parser = ArgumentParser(description='Pull docker penthesilea base images')
+    parser = ArgumentParser(description='Pull docker stimela base images')
 
     add = parser.add_argument
 
     add("-image", action="append", metavar="IMAGE[:TAG]",
             help="Pull base image along with its tag (or version). Can be called multiple times")
 
+    add("-t", "--tag",
+            help="Tag")
+
     args = parser.parse_args()
 
     if args.image:
         for image in args.image:
+            # still using penthesilea on docker hub
+            utils.xrun("docker pull", [image])
+    else:
+        for image in BASE:
+            if args.tag:
+                image = "{:s}:{:s}".format(image, args.tag)
             utils.xrun("docker pull", ["penthesilea/{:s}".format(image)])
 
 
@@ -140,9 +149,9 @@ def main():
 
     message = "Run a command. These can be:\n \n \
 help    : Prints out a help message about other commands\n \n \
-build   : Build a set of penthesilea images\n \n \
-pull    : pull a penthesilea base images\n \n \
-run     : Run a penthesilea script\n"
+build   : Build a set of stimela images\n \n \
+pull    : pull a stimela base images\n \n \
+run     : Run a stimela script\n"
 
     parser = ArgumentParser(description='Dockerized Radio Interferometric Scripting Framework.\n' 
                                         'Sphesihle Makhathini <sphemakh@gmail.com>\n \n \n{:s}'.format(message))
@@ -182,5 +191,5 @@ run     : Run a penthesilea script\n"
             _cmd = commands[command]
         except ValueError:
             raise ValueError("Command '{:s}' not recognized\n "
-                             "Run : 'penthesilea help' for help".format(command))
+                             "Run : 'stimela help' for help".format(command))
         _cmd()

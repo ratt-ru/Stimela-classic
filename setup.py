@@ -2,10 +2,10 @@
 
 import os
 from distutils.core import setup
-import cargo
+import stimela
 
 setup(name = "stimela",
-    version = cargo.__version__,
+    version = stimela.__version__,
     description = "Dockerized radio interferometry scripting framework",
     author = "Sphesihle Makhathini",
     author_email = "Sphesihle Makhathini <sphemakh@gmail.com>",

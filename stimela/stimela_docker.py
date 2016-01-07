@@ -1,8 +1,9 @@
-## Simple interface to Docker containers
+## Interface to Docker engine
 # Sphesihle Makhathini <sphemakh@gmail.com>
 
 import stimela.utils as utils
 import os
+import time
 
 
 class DockerError(Exception):
@@ -20,7 +21,7 @@ class Load(object):
         self.volumes = volumes or []
         self.environs = environs or []
         self.awsEC2 = awsEC2
-        self.log = logger
+        self.logger = logger
         self.started = False
         self.WORKDIR = None
         self.COMMAND = None
@@ -29,8 +30,8 @@ class Load(object):
     def  add_volume(self, host, container, perm="rw"):
 
         if os.path.exists(host):
-            if self.log:
-                self.log.debug("Mounting volume [%s] in container [%s] at [%s]"%(host, self.name, container))
+            if self.logger:
+                self.logger.debug("Mounting volume [%s] in container [%s] at [%s]"%(host, self.name, container))
             host = os.path.abspath(host)
         else:
             raise IOError("Directory [%s] cannot be mounted on container: File doesn't exist"%host)
@@ -39,8 +40,8 @@ class Load(object):
 
 
     def add_environ(self, key, value):
-        if self.log:
-            self.log.debug("Adding environ varaible [%s=%s] in container [%s]"%(key, value, self.name))
+        if self.logger:
+            self.logger.debug("Adding environ varaible [%s=%s] in container [%s]"%(key, value, self.name))
         self.environs.append("=".join([key, value]))
 
 
@@ -54,12 +55,13 @@ class Load(object):
         self.EC2_ram = ram
 
 
-    def start(self):
+    def start(self, logfile=None):
 
         volumes = " -v " + " -v ".join(self.volumes)
         environs = " -e "+" -e ".join(self.environs)
 
         self.started = True
+
 
         if self.awsEC2:
             pass
@@ -71,19 +73,27 @@ class Load(object):
                  self.image,
                  self.COMMAND or ""])
 
+            if logfile:
+                self.log(action="start", logfile=logfile)
+
         except SystemError:
             raise DockerError("Container [%s:%s] returned non-zero exit status"%(self.image, self.name))
+            if logfile:
+                self.log(action="failed", logfile=logfile)
 
 
     
-    def stop(self):
+    def stop(self, logfile=None):
         utils.xrun("test", ["`docker inspect -f {{.State.Running}} %s`"%self.name,
                          "&&", "docker stop", self.name])
+        if logfile:
+            self.log(action="stop", logfile=logfile)
 
-    def rm(self):
+
+    def rm(self, logfile=None):
 
         if not self.started :
-            self.log.info("Container [%s] was not started. Will not not attempt to remove"%(self.name))
+            self.logger.info("Container [%s] was not started. Will not not attempt to remove"%(self.name))
             return
 
         try:
@@ -91,10 +101,13 @@ class Load(object):
         except SystemError:
             message = "Could not remove stopped contianer [%s].\
 It may be still running or it doesn't exist"%(self.name)
-            if self.log:
-                self.log.debug(message)
+            if self.logger:
+                self.logger.debug(message)
             else:
                 print message
+
+        if logfile:
+            self.log(action="rm", logfile=logfile)
 
 
     def pause(self):
@@ -104,3 +117,89 @@ It may be still running or it doesn't exist"%(self.name)
     def resume(self):
         utils.xrun("test", ["`docker inspect -f {{.State.Running}} %s`"%self.name,
                          "&&", "docker unpause", self.name])
+
+    def status(self):
+        import subprocess
+    
+        xrun = lambda cmd: subprocess.Popen(cmd, stdout=subprocess.PIPE, 
+                        stderr=subprocess.PIPE, shell=True)
+    
+        status_ = xrun("docker inspect -f {{.State.Status}} " + self.name)
+        cont_id = xrun("docker inspect -f {{.Id}} " + self.name)
+        started = xrun("docker inspect -f {{.State.StartedAt}} " + self.name)
+    
+        out_status = status_.stdout.read()
+        err_status = status_.stderr.read()
+
+        if err_status:
+            raise DockerError("Could not inspect container [{:s}]. {:s}".format(self.name, err_status))
+    
+        out_id = cont_id.stdout.read()[:12]
+
+        out_started = started.stdout.read().split(".")[0]
+        started_tuple = time.strptime(out_started, "%Y-%m-%dT%H:%M:%S")
+        started = time.mktime(started_tuple)
+
+        if out_status != "running":
+            stopped = xrun("docker inspect -f {{.State.FinishedAt}} " + self.name)
+            out_stopped = stopped.stdout.read().split(".")[0]
+            stopped_tuple = time.strptime(out_stopped, "%Y-%m-%dT%H:%M:%S")
+            stopped = time.mktime(stopped_tuple)
+
+        else:
+            stopped = time.time()
+
+        uptime = (stopped - started)
+        h = (uptime - uptime%3600)
+        m = uptime - h
+        m -= m%60
+        s = uptime - (h + m)
+        uptime = "{:d}:{:d}:{:d}".format(int(h/3600), int(m/3600), int(s))
+
+        err_id = cont_id.stderr.read()
+
+        return out_status.strip(), out_id.strip(), uptime
+
+
+    def log(self, action, logfile, status=None, _id=None):
+        """
+            Actions are: start, stop, rm, clear
+            The logfile must exist. 
+        """
+        if action in ["start", "stop"]:
+            status, _id, uptime = self.status()
+
+        # open file
+        with open(logfile, "r") as std:
+            lines = std.readlines()
+
+        if action=="start":
+            lines.append( "{:s} {:s} {:s} {:s}\n".format(self.name, _id, uptime, status ) )
+        elif action in ["stop", "rm", "clear"]:
+            # Find container in logfile
+            cline_ = None
+            for line in lines:
+                if line.startswith(self.name):
+                    cline = line
+                    lines.remove(line)
+                    break
+
+            cline_ = cline.split()
+
+            if action=="stop":
+                mcline = " ".join(cline_[:3] + ["exited \n"])
+                lines.append(mcline)
+            elif action=="failed":
+                mcline = " ".join(cline_[:3] + ["failed \n"])
+            elif action=="rm":
+                mcline = " ".join(cline_[:3] + ["removed \n"])
+                lines.append(mcline)
+
+        else:
+            raise ValueError("action [{:s}] is not understood. Allowed actions are [start, stop, rm, clear]".format(action))
+                
+        with open(logfile, "w") as std:
+            # name id status
+            std.write("".join(lines))
+
+

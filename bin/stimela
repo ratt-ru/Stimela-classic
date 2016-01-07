@@ -1,5 +1,20 @@
 #!/usr/bin/env python
 
-import cargo
+import stimela
+import os
 
-cargo.main()
+# Ensure that logging infrastructure exists
+
+if not os.path.exists(stimela.LOG_HOME):
+    os.mkdir(stimela.LOG_HOME)
+
+if not os.path.exists(stimela.LOG_IMAGES):
+    with open(stimela.LOG_IMAGES, "w") as std:
+        pass
+
+
+if not os.path.exists(stimela.LOG_CONTAINERS):
+    with open(stimela.LOG_CONTAINERS, "w") as std:
+        pass
+
+stimela.main()

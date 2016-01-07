@@ -15,9 +15,9 @@ pipeline = Pipeline("Simulation Example", ms_dir=MSDIR)
 simms_dict = {}
 simms_dict["msname"] = MS
 simms_dict["telescope"] = "meerkat"
-simms_dict["synthesis"] = 0.5
+simms_dict["synthesis"] = 2
 simms_dict["direction"] = "J2000,90deg,-45deg"
-simms_dict["dtime"] = 60
+simms_dict["dtime"] = 10
 simms_dict["freq0"] = "750MHz"
 simms_dict["dfreq"] = "1MHz"
 simms_dict["nchan"] = 10

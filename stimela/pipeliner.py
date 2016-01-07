@@ -5,7 +5,7 @@ import os
 import sys
 from stimela import stimela_docker as docker
 import stimela.utils as utils
-import cargo
+import stimela.cargo as cargo
 import tempfile
 import time
 import inspect
@@ -29,7 +29,8 @@ CONFIGS_ = {
 class Pipeline(object):
 
     def __init__(self, name, data=None, configs=None,
-                 ms_dir=None, cab_tag=None, mac_os=False):
+                 ms_dir=None, cab_tag=None, mac_os=False,
+                 container_logfile=None):
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -56,6 +57,9 @@ class Pipeline(object):
             if not os.path.exists(self.ms_dir):
                 os.mkdir(self.ms_dir)
 
+        home = os.environ["HOME"] + "/.stimela/stimela_containers.log"
+        self.CONTAINER_LOGFILE = container_logfile or home
+
 
     def add(self, image, name, config,
             input=None, output=None, label="", 
@@ -70,7 +74,7 @@ class Pipeline(object):
         cab_tag = tag if tag!=None else cab_tag
 
         # Record base image info
-        dockerfile = cargo.STIMELA_CAB_PATH +"/"+ image.split("/")[-1]
+        dockerfile = cargo.CAB_PATH +"/"+ image.split("/")[-1]
         base_image = utils.get_Dockerfile_base_image(dockerfile)
         self.log.info("<=BASE_IMAGE=> {:s}={:s}".format(image, base_image))
 
@@ -134,13 +138,13 @@ class Pipeline(object):
         self.containers.append(cont)
 
 
-    def run(self, *args):
+    def run(self, steps=None, log=True):
         """
             Run pipeline
         """
 
-        if args:
-            containers = [ self.containers[i-1] for i in args[:len(self.containers)]]
+        if isinstance(steps, (list, tuple, set)):
+            containers = [ self.containers[i-1] for i in steps[:len(self.containers)]]
         else:
             containers = self.containers
 
@@ -150,12 +154,14 @@ class Pipeline(object):
             self.active = container
 
             try:
-                container.start()
+                container.start(logfile=self.CONTAINER_LOGFILE)
+
             except docker.DockerError:
                 self.rm()
                 raise docker.DockerError("The container [%s] failed to execute."
                                          "Please check the logs"%(container.name))
             self.active = None
+
 
         self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))
 
@@ -172,20 +178,20 @@ class Pipeline(object):
             raise docker.DockerError("Docker image failed to build")
 
 
-    def stop(self):
+    def stop(self, log=True):
         """
             Stop all running containers
         """
         for container in self.containers:
-            container.stop()
+            container.stop(logfile=self.CONTAINER_LOGFILE)
 
 
-    def rm(self, containers=None):
+    def rm(self, containers=None, log=True):
         """
             Remove all stopped containers
         """
         for container in containers or self.containers:
-            container.rm()
+            container.rm(logfile=self.CONTAINER_LOGFILE)
 
 
     def clear(self):

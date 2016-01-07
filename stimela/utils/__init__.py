@@ -47,11 +47,12 @@ def xrun(command, options, log=None):
                   stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
                   shell=True)
+
     if process.stdout or process.stderr:
-        out,err = process.comunicate()
+        out, err = process.comunicate()
         sys.stdout.write(out)
         sys.stderr.write(err)
-        out = None
+        return out
     else:
         process.wait()
     if process.returncode:
@@ -187,7 +188,6 @@ def get_base_images(logfile, index=1):
 
     images = []
 
-
     for line in log.split("\n"):
         if line.find("<=BASE_IMAGE=>")>0:
             tmp = line.split("<=BASE_IMAGE=>")[-1]
@@ -195,4 +195,3 @@ def get_base_images(logfile, index=1):
             images.append((image.strip(), base))
     
     return images
-

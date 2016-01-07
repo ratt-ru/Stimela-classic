@@ -236,7 +236,7 @@ def main():
 
 
     parser = ArgumentParser(description='Stimela: Dockerized Radio Interferometric Scripting Framework. ' 
-                                        '|n version {:s} |n Sphesihle Makhathini <sphemakh@gmail.com> |n '.format(__version__),
+                                        '|n version {:s} |n Sphesihle Makhathini <sphemakh@gmail.com>'.format(__version__),
                             formatter_class=MultilineFormatter, add_help=False)
 
     add = parser.add_argument

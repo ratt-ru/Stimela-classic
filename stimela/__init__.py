@@ -4,12 +4,15 @@ import argparse
 import time
 from  argparse import ArgumentParser
 import textwrap as _textwrap
+import tempfile
 
+import inspect
 import stimela
 from stimela import utils, cargo
 from pipeliner import Pipeline
+import stimela.stimela_docker as docker
 
-LOG_HOME = os.environ["HOME"] + "/.stimela"
+LOG_HOME = os.path.expanduser("~/.stimela")
 LOG_IMAGES = LOG_HOME + "/stimela_images.log"
 LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 
@@ -17,7 +20,7 @@ BASE = os.listdir(cargo.BASE_PATH)
 CAB = os.listdir(cargo.CAB_PATH)
 
 __version__ = "0.0.6"
-
+GLOBALS = {}
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):
@@ -29,6 +32,11 @@ class MultilineFormatter(argparse.HelpFormatter):
             multiline_text = multiline_text + formatted_paragraph
         return multiline_text
 
+
+def register_globals():
+    frame = inspect.currentframe().f_back
+    frame.f_globals.update(GLOBALS)
+    
 
 def build():
     for i, arg in enumerate(sys.argv):
@@ -49,15 +57,15 @@ def build():
 
     if args.base:
         for image in BASE:
-            utils.xrun("docker build", ["-t", "stimela/{:s}".format(image),
-                       "{:s}/{:s}".format(cargo.BASE_PATH, image)])
+            docker.build("penthesilea/{:s}".format(image),
+                         "{:s}/{:s}".format(cargo.BASE_PATH))
 
     else:
         for image in CAB:
             dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)
 
-            utils.xrun("docker build", ["-t", "cab/{:s}".format(image),
-                       dockerfile])
+            docker.build("cab/{:s}".format(image),
+                       dockerfile)
 
 
 def run():
@@ -78,11 +86,17 @@ def run():
     add("-ms", "--msdir",
             help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
 
+    add("-j", "--ncores", type=int,
+            help="Number of cores to when stimela parallesization (stimea.utils.pper function) ")
+
     add("-L", "--load-from-log", dest="from_log",  metavar="LOG:TAG[:DIR]",
             help="Load base images from stimela log file. The resulting executor images will be tagged 'TAG', and the build contexts will be stored at 'DIR'")
 
     add("script",
             help="Penthesilea script")
+
+    add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
+            help="Global variables to pass to script. The type is assumed to string unless specified")
 
     args = parser.parse_args()
 
@@ -109,13 +123,31 @@ def run():
             dirname, dockerfile = utils.change_Dockerfile_base_image(path, base, image_.split("/")[-1], destdir=destdir)
 
             # Build executor image
-            utils.xrun("docker build", ["-t", 
-                       "cab/{:s}:{:s}".format(image_.split("/")[-1], tag), 
-                       "-f", dockerfile, dirname])
+            docker.build("cab/{:s}:{:s}".format(image_.split("/")[-1], tag), 
+                       dirname)
 
     _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output, 
                     STIMELA_DATA=cargo.DATA_PATH, STIMELA_MSDIR=args.msdir,
                     CAB_TAG=tag)
+
+    nargs = len(args.globals)
+
+    global GLOBALS 
+
+    if nargs:
+        for arg in args.globals:
+            if arg.find("=") > 1:
+                key, value = arg.split("=")
+
+                try:
+                    value, _type = value.split(":")
+                except ValueError:
+                    _type = "str"
+                
+                GLOBALS[key] = eval("{:s}('{:s}')".format(_type, value))
+
+    if args.ncores:
+        utils.CPUS = args.ncores
 
     execfile(args.script, _globals)
 
@@ -134,12 +166,15 @@ def pull():
     add("-t", "--tag",
             help="Tag")
 
+    add("-f", "--force", action="store_true",
+            help="Pull image even if it already exists")
+
     args = parser.parse_args()
 
     if args.image:
         for image in args.image:
             # still using penthesilea on docker hub
-            utils.xrun("docker pull", [image])
+            docker.pull(image)
             _image = image.split(":")
 
             if len(_image)>1:
@@ -150,8 +185,7 @@ def pull():
             
             date = "{:d}/{:d}/{:d} {:d}:{:d}:{:d}".format(*time.localtime()[:6])
 
-            home = os.environ["HOME"] + "/.stimela/stimela_images.log"
-            with open(home, "r") as std:
+            with open(LOG_IMAGES, "r") as std:
                 lines = std.readlines()
 
             with open(home, "w") as std:
@@ -160,18 +194,38 @@ def pull():
 
     else:
         for image in BASE:
-            if args.tag:
+            tagged = len(image.split(":"))==2
+
+            if not tagged and args.tag:
                 image = "{:s}:{:s}".format(image, args.tag)
-            utils.xrun("docker pull", ["penthesilea/{:s}".format(image)])
+            elif not tagged:
+                image += ":latest"
+
+            with open(LOG_IMAGES, "r") as std:
+                lines = std.readlines()
+            
+            exists = False
+            cline = None
+            for line in lines:
+                new = image.split(":")
+                old = line.split()[:2]
+                old[0] = old[0].split(":")[0]
+
+                if new == old:
+                    if not args.force:
+                        print("Image [{:s}] already exists. Add --force/-f to pull it either way".format(image))
+                    exists = True
+                    cline = line
+                    break
+
+            if not exists or args.force:        
+                docker.pull("penthesilea/{:s}".format(image))
+                if exists:
+                    lines.remove(cline)
 
             date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
 
-            home = os.environ["HOME"] + "/.stimela/stimela_images.log"
-
-            with open(home, "r") as std:
-                lines = std.readlines()
-
-            with open(home, "w") as std:
+            with open(LOG_IMAGES, "w") as std:
                 newline = ["{:s} {:s} {:s}\n".format(image, args.tag or "latest", date)]
                 std.write( "".join( lines + newline) )
 

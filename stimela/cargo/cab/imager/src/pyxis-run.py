@@ -90,5 +90,8 @@ def azishe():
                   channelize=channelise,
                   **options)
 
+    if imager == "wsclean":
+       x.sh("rm -f ${im.BASENAME_IMAGE}-first-residual.fits")
+
     if MAC_OS:
         x.sh("mv $output/* $outdir")

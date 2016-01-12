@@ -1,4 +1,5 @@
 import subprocess
+import signal
 import os
 import sys
 import logging
@@ -6,10 +7,12 @@ import json
 import codecs
 import time
 import tempfile
+import inspect
 
 from multiprocessing import Process, Manager, Lock
 manager = Manager()
 
+CPUS = 1
 
 def logger(level=0, logfile=None):
 
@@ -29,7 +32,11 @@ def logger(level=0, logfile=None):
     return log
 
 
-def xrun(command, options, log=None):
+def assign(key, value):
+    frame = inspect.currentframe().f_back
+    frame.f_globals[key] = value
+
+def xrun(command, options, log=None, _log_container_as_started=False, logfile=None):
     """
         Run something on command line.
 
@@ -48,7 +55,17 @@ def xrun(command, options, log=None):
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
                   shell=True)
 
+    time.sleep(2)
+    # Pause if we need to log container
+    os.kill(process.pid, signal.SIGSTOP)
+    if _log_container_as_started and logfile:
+        _log_container_as_started.log("start", logfile=logfile)
+    # Get on with it again
+    os.kill(process.pid, signal.SIGCONT)
+
+
     if process.stdout or process.stderr:
+
         out, err = process.comunicate()
         sys.stdout.write(out)
         sys.stderr.write(err)
@@ -59,7 +76,7 @@ def xrun(command, options, log=None):
          raise SystemError('%s: returns errr code %d'%(command, process.returncode))
 
 
-def pper(iterable, command, cpus, stagger=2, logger=None):
+def pper(iterable, command, cpus=None, stagger=2, logger=None):
     """
        Run command in parallel.
        
@@ -69,6 +86,8 @@ def pper(iterable, command, cpus, stagger=2, logger=None):
        stagger : stagger jobs (in seconds)
        logger : logging instance
     """
+
+    cpus = cpus or CPUS
 
     if not hasattr(iterable, "__iter__"):
         raise TypeError("Can not iterate over [%s]. Make its iterable"%iterable)

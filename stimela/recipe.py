@@ -3,6 +3,7 @@
 
 import os
 import sys
+import stimela
 from stimela import stimela_docker as docker
 import stimela.utils as utils
 import stimela.cargo as cargo
@@ -26,11 +27,20 @@ CONFIGS_ = {
 }
 
 
-class Pipeline(object):
+class Recipe(object):
 
     def __init__(self, name, data=None, configs=None,
                  ms_dir=None, cab_tag=None, mac_os=False,
                  container_logfile=None):
+
+        # LOG recipe
+        with open(stimela.LOG_PROCESS, "r") as std:
+            lines = std.readlines()
+
+        with open(stimela.LOG_PROCESS, "w") as std:
+            date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
+            lines.append("{:s} {:s} {:d}\n".format(name.replace(" ","_"), date, os.getpid()))
+            std.write("".join(lines))
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -167,6 +177,19 @@ class Pipeline(object):
 
         self.rm(containers)
         self.log.info("\n[================================DONE==========================]\n \n")
+
+        # Remove from log
+        with open(stimela.LOG_PROCESS) as std:
+            lines = std.readlines()
+
+        with open(stimela.LOG_PROCESS, "w") as std:
+
+            for line in lines:
+                pid = int(line.split()[-1])
+                if pid == os.getpid():
+                    lines.remove(line)
+
+            std.write("".join(lines))
         
 
     def build(self, name, dest, use_cache=True):

@@ -9,6 +9,44 @@ import time
 class DockerError(Exception):
     pass
 
+
+def build(image, build_path, tag=None):
+    """ build a docker image"""
+
+    if tag:
+        image = ":".join([image, tag])
+    try:
+        utils.xrun("docker build", ["-t", image, 
+                    build_path])
+    except SystemError:
+        raise DockerError("Container [{:s}] returned non-zero exit status".format(image))
+
+ 
+def pull(image, tag=None):
+    """ pull a docker image """
+
+    if tag:
+        image = ":".join([image, tag])
+    try:
+        utils.xrun("docker pull", [image])
+    except SystemError:
+        raise DockerError("Container [{:s}] returned non-zero exit status".format(image))
+
+
+def stop_container(container):
+    print "STOPING"
+    utils.xrun("test", ["`docker inspect -f {{.State.Running}} {:s}`".format(container),
+                         "&&", "docker stop", container])
+
+
+def rm_container(container):
+    try:
+        utils.xrun("docker", ["rm", container])
+    except SystemError:
+        raise DockerError("Could not remove stopped contianer [{:s}].\
+It may be still running or it doesn't exist".format(container))
+  
+
 class Load(object):
 
     def __init__(self, image, name, 
@@ -71,23 +109,23 @@ class Load(object):
                  "-w %s"%(self.WORKDIR) if self.WORKDIR else "",
                  "--name", self.name, 
                  self.image,
-                 self.COMMAND or ""])
-
-            if logfile:
-                self.log(action="start", logfile=logfile)
+                 self.COMMAND or ""],
+                 _log_container_as_started=self, logfile=logfile)
 
         except SystemError:
             raise DockerError("Container [%s:%s] returned non-zero exit status"%(self.image, self.name))
             if logfile:
                 self.log(action="failed", logfile=logfile)
 
+        self.log(action="stop", logfile=logfile)
 
     
     def stop(self, logfile=None):
-        utils.xrun("test", ["`docker inspect -f {{.State.Running}} %s`"%self.name,
-                         "&&", "docker stop", self.name])
+
+        stop_container(self.name)
+
         if logfile:
-            self.log(action="stop", logfile=logfile)
+            self.log(action="start", logfile=logfile)
 
 
     def rm(self, logfile=None):
@@ -97,10 +135,11 @@ class Load(object):
             return
 
         try:
-            utils.xrun("docker", ["rm", self.name])
-        except SystemError:
+            rm_container(self.name)
+        except DockerError:
             message = "Could not remove stopped contianer [%s].\
 It may be still running or it doesn't exist"%(self.name)
+
             if self.logger:
                 self.logger.debug(message)
             else:
@@ -137,10 +176,11 @@ It may be still running or it doesn't exist"%(self.name)
         out_id = cont_id.stdout.read()[:12]
 
         out_started = started.stdout.read().split(".")[0]
+        print out_id, out_started
         started_tuple = time.strptime(out_started, "%Y-%m-%dT%H:%M:%S")
         started = time.mktime(started_tuple)
 
-        if out_status != "running":
+        if out_status.find("running")<0:
             stopped = xrun("docker inspect -f {{.State.FinishedAt}} " + self.name)
             out_stopped = stopped.stdout.read().split(".")[0]
             stopped_tuple = time.strptime(out_stopped, "%Y-%m-%dT%H:%M:%S")
@@ -174,8 +214,12 @@ It may be still running or it doesn't exist"%(self.name)
             lines = std.readlines()
 
         if action=="start":
-            lines.append( "{:s} {:s} {:s} {:s}\n".format(self.name, _id, uptime, status ) )
+            lines.append( "{:s} {:s} {:s} {:d} {:s}\n".format(self.name, _id, uptime, os.getpid(), status ) )
         elif action in ["stop", "rm", "clear"]:
+            if lines:
+                pass
+            else:
+                raise ValueError("Action [{:s}] cannot be perfomed. There are no logged containers".format(self.name))
             # Find container in logfile
             cline_ = None
             for line in lines:
@@ -187,12 +231,12 @@ It may be still running or it doesn't exist"%(self.name)
             cline_ = cline.split()
 
             if action=="stop":
-                mcline = " ".join(cline_[:3] + ["exited \n"])
+                mcline = " ".join(cline_[:4] + ["exited \n"])
                 lines.append(mcline)
             elif action=="failed":
-                mcline = " ".join(cline_[:3] + ["failed \n"])
+                mcline = " ".join(cline_[:4] + ["failed \n"])
             elif action=="rm":
-                mcline = " ".join(cline_[:3] + ["removed \n"])
+                mcline = " ".join(cline_[:4] + ["removed \n"])
                 lines.append(mcline)
 
         else:
@@ -201,5 +245,3 @@ It may be still running or it doesn't exist"%(self.name)
         with open(logfile, "w") as std:
             # name id status
             std.write("".join(lines))
-
-

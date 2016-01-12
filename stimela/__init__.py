@@ -5,16 +5,19 @@ import time
 from  argparse import ArgumentParser
 import textwrap as _textwrap
 import tempfile
+import signal
 
 import inspect
 import stimela
 from stimela import utils, cargo
-from pipeliner import Pipeline
+from recipe import Recipe as Pipeline
+from recipe import Recipe
 import stimela.stimela_docker as docker
 
 LOG_HOME = os.path.expanduser("~/.stimela")
 LOG_IMAGES = LOG_HOME + "/stimela_images.log"
 LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
+LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 
 BASE = os.listdir(cargo.BASE_PATH)
 CAB = os.listdir(cargo.CAB_PATH)
@@ -257,7 +260,7 @@ def images():
         print("{:<48} {:<32} {:<12}".format(image, tag, date) )
 
 
-def ps():
+def cabs():
     for i, arg in enumerate(sys.argv):
         if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
     
@@ -277,12 +280,93 @@ def ps():
     with open(stimela.LOG_CONTAINERS, "r") as std:
         lines = std.readlines()
 
-    print("{:<48} {:<24} {:<24} {:>12}".format("CONTAINER", "ID", "UP TIME", "STATUS") )
+    print("{:<48} {:<24} {:<24} {:<24} {:>12}".format("CONTAINER", "ID", "UP TIME", "PID", "STATUS") )
 
     for line in lines:
-        cont, status, _id, uptime = line.split()
-        print("{:<48} {:<24} {:<24} {:>12}".format(cont, status, _id, uptime) )
+        cont, _id, uptime, pid, status = line.split()
+        print("{:<48} {:<24} {:<24} {:<24} {:>12}".format(cont, _id, uptime, pid, status) )
 
+
+def ps():
+    for i, arg in enumerate(sys.argv):
+        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
+    
+    parser = ArgumentParser(description='List all running stimela processes')
+
+    add = parser.add_argument
+    
+    add("-c", "--clear", action="store_true",
+            help="Clear Log file")
+
+    args = parser.parse_args()
+
+    with open(stimela.LOG_PROCESS, "r") as std:
+        lines = std.readlines()
+
+    print("{:<48} {:<24} {:>12}".format("NAME", "DATE", "PID") )
+
+    for line in lines:
+        name, date, pid = line.split()
+        print("{:<48} {:<24} {:>12}".format(name, date, pid) )
+
+    if args.clear:
+        with open(stimela.LOG_PROCESS, "w") as std:
+            pass
+    
+
+
+def kill():
+    for i, arg in enumerate(sys.argv):
+        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
+    
+    parser = ArgumentParser(description='List all active stimela containers.')
+
+    add = parser.add_argument
+
+    add("pid", nargs="*",
+            help="Process ID")
+
+    args = parser.parse_args()
+
+
+    with open(stimela.LOG_PROCESS) as std:
+        procs = std.readlines()
+
+    def found_pid(pid):
+        for proc in procs:
+            _pid = proc.split()[-1]
+            if int(_pid) == int(pid):
+                return True, proc
+        return False, None
+
+    with open(stimela.LOG_CONTAINERS, "r") as std:
+        lines = std.readlines()
+
+    for pid in args.pid:
+        pip = int(pid)
+
+        found, proc = found_pid(pid)
+        if not found:
+            print "Could not find process {0}".format(pid)
+            continue
+
+        sucess = False
+        for line in lines:
+            cont, _id, utime, _pid, status, = line.split()
+            if int(pid) == int(_pid):
+                if status.find("removed")<0:
+                    cont_ = docker.Load(None, cont)
+                    cont_.started = True
+                    cont_.stop()
+                    cont_.rm()
+        procs.remove(proc)
+
+        os.kill(int(pid), signal.SIGKILL)
+
+
+        with open(stimela.LOG_PROCESS, "w") as std:
+            std.write("".join(procs))
+                
 
 def main():
     for i, arg in enumerate(sys.argv):
@@ -305,7 +389,10 @@ def main():
             help="Stimela command to execute. For example, 'stimela help run'")
 
     options = []
-    commands = dict(pull=pull, build=build, run=run, images=images, ps=ps)
+    commands = dict(pull=pull, build=build, run=run, 
+                    images=images, cabs=cabs, ps=ps,
+                    kill=kill)
+
     command = "help"
 
     for cmd in commands:
@@ -331,7 +418,10 @@ build   : Build a set of stimela images
 pull    : pull a stimela base images
 run     : Run a stimela script
 images  : List stimela images
-ps      : List initiated containers
+cabs    : List active stimela containers
+ps      : List running stimela scripts
+kill    : Gracefully kill runing stimela process
+
 """)
 
         sys.exit(0)

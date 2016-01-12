@@ -1,4 +1,4 @@
-from stimela import Pipeline
+from stimela import Recipe
 
 INPUT = "input"
 OUTPUT = "output"
@@ -9,13 +9,13 @@ LSM = "nvss1deg.lsm.html"
 
 
 # start oterera instance
-pipeline = Pipeline("Simulation Example", ms_dir=MSDIR)
+pipeline = Recipe("Simulation Example", ms_dir=MSDIR)
 
 # Make empty MS 
 simms_dict = {}
 simms_dict["msname"] = MS
 simms_dict["telescope"] = "meerkat"
-simms_dict["synthesis"] = 2
+simms_dict["synthesis"] = 1
 simms_dict["direction"] = "J2000,90deg,-45deg"
 simms_dict["dtime"] = 10
 simms_dict["freq0"] = "750MHz"

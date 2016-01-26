@@ -11,7 +11,7 @@ LSM = "nvss1deg.lsm.html"
 # start oterera instance
 pipeline = Recipe("Simulation Example", ms_dir=MSDIR)
 
-# Make empty MS 
+## 1: Make empty MS 
 simms_dict = {}
 simms_dict["msname"] = MS
 simms_dict["telescope"] = "meerkat"
@@ -25,7 +25,7 @@ pipeline.add("cab/simms", "simms_example", simms_dict, input=INPUT, output=OUTPU
              label="Creating MS")
 
 
-# Simulate visibilities into it
+## 2: Simulate visibilities into it
 simulator_dict = {}
 simulator_dict["msname"] = MS
 simulator_dict["addnoise"] = True
@@ -35,20 +35,20 @@ pipeline.add("cab/simulator", "simulator_example", simulator_dict, input=INPUT, 
              label="Simulating visibilities")
 
 
-## Image
+## 3: Image
 # Make things a bit interesting by imaging with different weights 
 imager_dict = {}
 imager_dict["weight"] = "briggs"
-imager_dict["imager"] = "wsclean"
+#imager_dict["imager"] = "casa"
 imager_dict["clean_iterations"] = 1000
-briggs_robust = 2, 0, -2
+briggs_robust = [2] #, 0, -2
 prefix = "stimela-example"
 
 for i, robust in enumerate(briggs_robust):
     imager_dict["msname"] = MS
     imager_dict["robust"] = robust
     imager_dict["imageprefix"] = "%s_robust-%d"%(prefix, i)
-    pipeline.add("cab/imager", "imager_example_%d"%i, imager_dict, input=INPUT, output=OUTPUT, 
+    pipeline.add("cab/casa", "imager_example_%d"%i, imager_dict, input=INPUT, output=OUTPUT, 
                  label="Imaging MS, robust=%f"%robust)
 
-pipeline.run()
+pipeline.run(steps=[3])

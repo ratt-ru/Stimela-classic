@@ -17,7 +17,9 @@ ekhaya = cargo.__path__[0]
 CONFIGS_ = {
     "cab/simms" : "{:s}/configs/simms_params.json".format(ekhaya),
     "cab/simulator" : "{:s}/configs/simulator_params.json".format(ekhaya),
-    "cab/imager" : "{:s}/configs/imager_params.json".format(ekhaya),
+    "cab/lwimager" : "{:s}/configs/imager_params.json".format(ekhaya),
+    "cab/wsclean" : "{:s}/configs/imager_params.json".format(ekhaya),
+    "cab/casa" : "{:s}/configs/imager_params.json".format(ekhaya),
     "cab/predict" : "{:s}/configs/simulator_params.json".format(ekhaya),
     "cab/calibrator" : "{:s}/configs/calibrator_params.json".format(ekhaya),
     "cab/sourcery" : "{:s}/configs/sourcery_params.json".format(ekhaya),
@@ -25,6 +27,7 @@ CONFIGS_ = {
     "cab/autoflagger" : "{:s}/configs/autoflagger_params.json".format(ekhaya),
     "cab/subtract" : "{:s}/configs/subtract_params.json".format(ekhaya)
 }
+
 
 
 class Recipe(object):
@@ -77,16 +80,13 @@ class Recipe(object):
             saveconf=None, add_time_stamp=True, tag=None):
 
 
+
         input = input or self.stimela_context.get("STIMELA_INPUT", None)
         output = output or self.stimela_context.get("STIMELA_OUTPUT", None)
 
         cab_tag = self.CAB_TAG or self.stimela_context.get("CAB_TAG", None)
         cab_tag = tag if tag!=None else cab_tag
 
-        # Record base image info
-        dockerfile = cargo.CAB_PATH +"/"+ image.split("/")[-1]
-        base_image = utils.get_Dockerfile_base_image(dockerfile)
-        self.log.info("<=BASE_IMAGE=> {:s}={:s}".format(image, base_image))
 
         if build_first and build_dest:
             self.build(image, build_dest)
@@ -122,6 +122,23 @@ class Recipe(object):
             cont.add_volume(output, "/output")
             cont.add_environ("OUTPUT", "/output")
 
+
+        # Check if imager image was selected. React accordingly
+        if image == "cab/imager":
+            if isinstance(config, dict):
+                imager = config.get("imager", None)
+            else:
+                config_ = self.readJson(config)
+                imager = config_.get("imager", None)
+
+            print "<<>><<>>><<<>> [%s] <<>><<>><"%imager
+
+            imager = imager or "lwimager"
+
+            image = "cab/" + imager
+            cont.image = image
+
+
         if isinstance(config, dict):
             if not os.path.exists("configs"):
                 os.mkdir("configs")
@@ -146,6 +163,11 @@ class Recipe(object):
         cont.add_environ("CONFIG", config)
 
         self.containers.append(cont)
+
+        # Record base image info
+        dockerfile = cargo.CAB_PATH +"/"+ image.split("/")[-1]
+        base_image = utils.get_Dockerfile_base_image(dockerfile)
+        self.log.info("<=BASE_IMAGE=> {:s}={:s}".format(image, base_image))
 
 
     def run(self, steps=None, log=True):

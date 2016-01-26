@@ -1,4 +1,4 @@
-FROM radioastro/casapy
+FROM radioastro/casa
 MAINTAINER <sphemakh@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -13,7 +13,12 @@ RUN add-apt-repository -ys ppa:radio-astro/main
 
 RUN apt-get update && apt-get install -y \
         time \
-        git \
         subversion \
-        python-pip
+        python-pip \
+        python-pyxis \
+        python-scipy \
+        python-astlib
 
+RUN pip install owlcat meqtrees_cattery astro-kittens -U
+
+ENV USER root

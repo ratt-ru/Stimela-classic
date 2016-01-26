@@ -22,7 +22,7 @@ LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 BASE = os.listdir(cargo.BASE_PATH)
 CAB = os.listdir(cargo.CAB_PATH)
 
-__version__ = "0.0.6"
+__version__ = "0.1.0"
 GLOBALS = {}
 
 class MultilineFormatter(argparse.HelpFormatter):
@@ -58,10 +58,15 @@ def build():
 
     args = parser.parse_args()
 
+    new = ["base", "casa", "meqtrees", "lwimager"]
+    for image in BASE:
+        if image not in new:
+            new.append(image)
+
     if args.base:
-        for image in BASE:
-            docker.build("penthesilea/{:s}".format(image),
-                         "{:s}/{:s}".format(cargo.BASE_PATH))
+        for image in new:
+            docker.build("stimela/{:s}".format(image),
+                         "{:s}/{:s}".format(cargo.BASE_PATH, image))
 
     else:
         for image in CAB:

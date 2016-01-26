@@ -1,4 +1,4 @@
-FROM penthesilea/meqtrees:stable.11.15
+FROM stimela/meqtrees
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

@@ -1,4 +1,4 @@
-FROM penthesilea/imager:stable.11.15
+FROM stimela/predict
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

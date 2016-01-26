@@ -1,15 +1,4 @@
-FROM penthesilea/base:stable.11.15
+FROM radioastro/sourcery
 MAINTAINER <sphemakh@gmail.com>
 
-RUN apt-get update && apt-get install -y \
-        lofar \
-        python-scipy \
-        python-numpy \
-        python-matplotlib \
-        python-tigger
-
-RUN mkdir /builds
-RUN pip install sourcery
-RUN git clone https://github.com/ska-sa/tigger.git /builds/tigger
-RUN cd /builds/tigger && python setup.py install
 ENV USER root

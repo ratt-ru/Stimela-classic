@@ -1,12 +1,7 @@
 FROM radioastro/base
 MAINTAINER <sphemakh@gmail.com>
 
-RUN add-apt-repository -ys ppa:radio-astro/main && apt-get install -y \
-        time \
-        git \
-        subversion \
-        python-pip
-
+RUN apt-get update && apt-get install git subversion time -ys
 RUN pip install setuptools
 
 # make sure child images have latest deb package cache

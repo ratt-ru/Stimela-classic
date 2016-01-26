@@ -1,4 +1,4 @@
-FROM penthesilea/simms:stable.11.15
+FROM stimela/simms
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /output /input

@@ -1,4 +1,5 @@
 # Stimela
+*Stimela* is the IsiZulu word for the train (vehicle)
 
 Tools for flexible and system independent (as much docker allows) radio interferometric simulations and reductions.
 The main goal of this project is to test the feasibilty of using the AWS system to do SKA1-MID scale simulations and reductions. The simulations and reduction framework is largely based on [Pyxis](https://github.com/ska-sa/pyxis) and [Docker](https://www.docker.com/).

@@ -39,16 +39,15 @@ pipeline.add("cab/simulator", "simulator_example", simulator_dict, input=INPUT, 
 # Make things a bit interesting by imaging with different weights 
 imager_dict = {}
 imager_dict["weight"] = "briggs"
-#imager_dict["imager"] = "casa"
 imager_dict["clean_iterations"] = 1000
-briggs_robust = [2] #, 0, -2
+briggs_robust = 2, 0, -2
 prefix = "stimela-example"
 
 for i, robust in enumerate(briggs_robust):
     imager_dict["msname"] = MS
     imager_dict["robust"] = robust
     imager_dict["imageprefix"] = "%s_robust-%d"%(prefix, i)
-    pipeline.add("cab/casa", "imager_example_%d"%i, imager_dict, input=INPUT, output=OUTPUT, 
+    pipeline.add("cab/lwimager", "imager_example_%d"%i, imager_dict, input=INPUT, output=OUTPUT, 
                  label="Imaging MS, robust=%f"%robust)
 
-pipeline.run(steps=[3])
+pipeline.run()

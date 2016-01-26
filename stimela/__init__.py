@@ -227,7 +227,7 @@ def pull():
                     break
 
             if not exists or args.force:        
-                docker.pull("penthesilea/{:s}".format(image))
+                docker.pull("stimela/{:s}".format(image))
                 if exists:
                     lines.remove(cline)
 

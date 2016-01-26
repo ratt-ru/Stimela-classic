@@ -1,0 +1,1 @@
+{"weight": "briggs", "npix": 4096, "psf": false, "cellsize": 2, "dirty": true, "clean": false, "robust": 0, "imager": "wsclean", "outdir": "/output", "indir": "/output"}

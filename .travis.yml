@@ -11,7 +11,7 @@ deploy:
   user: sphemakh
   password:
   on:
-    tags: true
+    tags: false
 env:
   global:
     secure: SozyooMPNsN4dwtIM64ZwTBzAAeito3SvSAZ3jzyoXlc0ESRdaZZSi9k3sC3n/vltTcpXNDcOMum7jBfpbKICedfe16dpnyVyu86b0DqTTDgw539I8faD4mH+wcpaaJdOHTruZ9ecPgURhASIrtB/Suv+ymbySC4rV/i3Nz7C1D1dXfGgDeRQaUnvd7D/tMBJLB3tZW/dTt3j66LkxX73VKLbB/vjp6d7wnPn/vt9T0Bt+wX4xsu/IxjjO0h7afkOI56gvXiA1KZDmoBVt+uSvGeptPzhrqaMp/1qIMXeTWJTsVw0y2OxYOYxnYfeUkf8FM1rcWnYOhjjE6SKt3uF00ZkRCRYGyb5mD0r7n7oo8R/oUkrPNed/kOFeoQX3xFWpwIe3NFPCQONzlseGirpMpAqB6uaEgHik3UnbO7GHB3YLtn5RSQYqop5bs+h/XTOTOQSHH1OQD3en3a+nlWQ93Gpoaf047kT6hUq1glE5r8YmAaUyDabtxJdCL8xL1XDqUwSbZYeVFlBMipcO73D0YtBManM7IxIkhftu5rhkj+7qfaP4odR/++sLPMLyRaj7pEEl9fgVit66TljR675ZrNZDMyiL+eUg8RwCAx4PwLyN3U0NyLOVO+S0q/EZQUFNLNBXBw3ceS8sylZZK5LgEGulwWu2eHZiXnTUN5OOM=

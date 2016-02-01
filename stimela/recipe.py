@@ -131,8 +131,6 @@ class Recipe(object):
                 config_ = self.readJson(config)
                 imager = config_.get("imager", None)
 
-            print "<<>><<>>><<<>> [%s] <<>><<>><"%imager
-
             imager = imager or "lwimager"
 
             image = "cab/" + imager

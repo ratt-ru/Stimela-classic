@@ -1,4 +1,4 @@
-FROM stimela/meqtrees
+FROM radioastro/meqtrees
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

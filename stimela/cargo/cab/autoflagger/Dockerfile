@@ -1,4 +1,4 @@
-FROM penthesilea/autoflagger:stable.11.15
+FROM radioastro/aoflagger
 MAINTAINER <sphemakh@gmial.com>
 
 RUN mkdir -p /input /output

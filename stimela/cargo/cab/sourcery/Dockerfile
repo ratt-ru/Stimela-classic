@@ -1,4 +1,4 @@
-FROM penthesilea/sourcery:stable.11.15
+FROM radioastro/sourcery
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

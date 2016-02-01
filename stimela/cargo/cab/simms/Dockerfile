@@ -1,4 +1,4 @@
-FROM stimela/simms
+FROM radioastro/simms
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /output /input

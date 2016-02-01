@@ -19,7 +19,7 @@ LOG_IMAGES = LOG_HOME + "/stimela_images.log"
 LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 
-BASE = os.listdir(cargo.BASE_PATH)
+BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery".split()
 CAB = os.listdir(cargo.CAB_PATH)
 
 __version__ = "0.1.0"
@@ -47,32 +47,11 @@ def build():
 
     parser = ArgumentParser(description='Build dcoker images. Call without arguments \n'
                                         'to build default executor (a.k.a cab) images')
-
-    add = parser.add_argument
-
-    add("-cab", action="store_true",
-            help="Build cab images")
-    
-    add("-base", action="store_true",
-            help="Build Base images")
-
     args = parser.parse_args()
 
-    new = ["base", "casa", "meqtrees", "lwimager"]
-    for image in BASE:
-        if image not in new:
-            new.append(image)
-
-    if args.base:
-        for image in new:
-            docker.build("stimela/{:s}".format(image),
-                         "{:s}/{:s}".format(cargo.BASE_PATH, image))
-
-    else:
-        for image in CAB:
-            dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)
-
-            docker.build("cab/{:s}".format(image),
+    for image in CAB:
+        dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)
+        docker.build("cab/{:s}".format(image),
                        dockerfile)
 
 
@@ -181,7 +160,6 @@ def pull():
 
     if args.image:
         for image in args.image:
-            # still using penthesilea on docker hub
             docker.pull(image)
             _image = image.split(":")
 
@@ -201,13 +179,14 @@ def pull():
                 std.write( "".join( lines + newline) )
 
     else:
-        for image in BASE:
-            tagged = len(image.split(":"))==2
+        base = []
+        for cab in CAB:
+            image = "{:s}/{:s}".format(cargo.CAB_PATH, cab)
+            base.append( utils.get_Dockerfile_base_image(image).split()[-1] )
 
-            if not tagged and args.tag:
-                image = "{:s}:{:s}".format(image, args.tag)
-            elif not tagged:
-                image += ":latest"
+        base = set(base)
+
+        for image in base:
 
             with open(LOG_IMAGES, "r") as std:
                 lines = std.readlines()
@@ -227,7 +206,7 @@ def pull():
                     break
 
             if not exists or args.force:        
-                docker.pull("stimela/{:s}".format(image))
+                docker.pull(image)
                 if exists:
                     lines.remove(cline)
 

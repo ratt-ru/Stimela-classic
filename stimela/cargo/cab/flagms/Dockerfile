@@ -1,4 +1,4 @@
-FROM stimela/owlcat
+FROM radioastro/owlcat
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

@@ -1,4 +1,4 @@
-FROM stimela/lwimager
+FROM radioastro/casarest
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code

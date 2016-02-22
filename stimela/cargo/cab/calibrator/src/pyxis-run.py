@@ -55,9 +55,9 @@ def azishe():
 
     options["stefcal_gain.timeint"] = gtimeint
     options["stefcal_gain.freqint"] = gfreqint
-    options["stefcal_gain.flag_chisq_threshold"] = jdict.get("gjones_thresh_sigma", 100)
-    options["stefcal_gain.flag_ampl_low"] = jdict.get("gjones_flag_ampl_low", 0)
-    options["stefcal_gain.flag_ampl_high"] = jdict.get("gjones_flag_ampl_high", 5)
+    options["stefcal_gain.flag_chisq_threshold"] = jdict.get("gjones_thresh_sigma", 10)
+    options["stefcal_gain.flag_ampl_low"] = jdict.get("gjones_flag_ampl_low", 0.5)
+    options["stefcal_gain.flag_ampl_high"] = jdict.get("gjones_flag_ampl_high", 2)
 
     stefcal.STEFCAL_DIFFGAIN_INTERVALS = jdict.get("ejones_intervals", None)
     stefcal.STEFCAL_DIFFGAIN_SMOOTHING = jdict.get("ejones_smoothing", None)
@@ -68,7 +68,7 @@ def azishe():
 
     stefcal.stefcal(section="stefcal", gain_plot_prefix=prefix,
                     reset=True, dirty=False, 
-                    diffgain=ejones,
+                    diffgains=ejones,
                     options=options,
                     output=jdict.get("output_column", "CORR_RES"))
 

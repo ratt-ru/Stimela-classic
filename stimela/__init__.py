@@ -45,8 +45,7 @@ def build():
     for i, arg in enumerate(sys.argv):
         if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
 
-    parser = ArgumentParser(description='Build dcoker images. Call without arguments \n'
-                                        'to build default executor (a.k.a cab) images')
+    parser = ArgumentParser(description='Build executor (a.k.a cab) images')
     args = parser.parse_args()
 
     for image in CAB:
@@ -377,7 +376,7 @@ def main():
                     images=images, cabs=cabs, ps=ps,
                     kill=kill)
 
-    command = "help"
+    command = "failed"
 
     for cmd in commands:
        if cmd in sys.argv:
@@ -417,7 +416,7 @@ kill    : Gracefully kill runing stimela process
             sys.argv = options
         try:
             _cmd = commands[command]
-        except ValueError:
-            raise ValueError("Command '{:s}' not recognized\n "
-                             "Run : 'stimela help' for help".format(command))
+        except KeyError:
+            raise KeyError("Command '{:s}' not recognized\n "
+                             "Run : 'stimela help' for help".format(args.command))
         _cmd()

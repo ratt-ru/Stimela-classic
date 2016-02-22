@@ -53,6 +53,7 @@ def readJson(conf):
     return out
 
 
+direction = jdict.get("direction", None)
 jdict = readJson(CONFIG)
 telescope = jdict["telescope"]
 
@@ -100,5 +101,15 @@ if jdict.pop("predict", False) and imagename:
         jdict["dfreq"] = dfreq
         jdict["nchan"] = nchan
 
+        # get direction
+        if not direction:
+            ra0 = hdr["crval1"]
+            dec0 = hdr["crval2"]
+
+            jdict["direction"] = "J2000,%fdeg,%fdeg"%(ra0, dec0)
+            raise SystemExit(direction)
+
 with codecs.open(outfile, "w", "utf8") as std:
     std.write( json.dumps(jdict, ensure_ascii=False) )
+
+raise SystemExit("adfhgsdjsadjfkhsd sdfkhgsdgfhsgf")

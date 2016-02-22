@@ -1,4 +1,4 @@
-FROM stimela/predict
+FROM radioastro/casa
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

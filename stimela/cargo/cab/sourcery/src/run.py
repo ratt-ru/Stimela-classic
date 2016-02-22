@@ -23,8 +23,11 @@ jdict = utils.readJson(CONFIG)
 template = utils.readJson("sourcery_template.json")
 
 name = INDIR+"/"+jdict["imagename"]
-psf = INDIR+"/"+jdict["psf"]
+psf = jdict.get("psfname", None)
+if psf:
+    psf = INDIR+"/"+psf
 
+template["prefix"] = jdict.get("prefix", None)
 template["imagename"] = name
 template["psfname"] = psf
 template["reliability"]["thresh_pix"] = jdict["thresh"]

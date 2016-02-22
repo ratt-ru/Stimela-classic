@@ -148,9 +148,11 @@ class Recipe(object):
                         os.path.basename(saveconf))
 
 
-            template = utils.readJson(CONFIGS_[image.split(":")[0]])
-            template.update(config)
-            utils.writeJson(saveconf, template)
+            if image.split(":")[0] in CONFIGS_:
+                template = utils.readJson(CONFIGS_[image.split(":")[0]])
+                template.update(config)
+                config = template
+            utils.writeJson(saveconf, config)
 
             config = confname_container
             cont.add_volume("configs", self.configs_path_container, perm="ro")

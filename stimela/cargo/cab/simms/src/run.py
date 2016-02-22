@@ -64,6 +64,7 @@ def readJson(conf):
 
 jdict = readJson(CONFIG)
 telescope = jdict["telescope"]
+direction = jdict.get("direction", None)
 
 
 jdict["outdir"] = "." if MAC_OS else MSDIR
@@ -111,6 +112,9 @@ if jdict.pop("predict", False) and imagename:
         jdict["freq0"] = freq0
         jdict["dfreq"] = dfreq
         jdict["nchan"] = nchan
+
+        if not direction:
+            jdict["direction"] = "J2000,%fdeg,%fdeg"%(hdr["crval1"], hdr["crval2"])
 
 with codecs.open(outfile, "w", "utf8") as std:
     std.write( json.dumps(jdict, ensure_ascii=False) )

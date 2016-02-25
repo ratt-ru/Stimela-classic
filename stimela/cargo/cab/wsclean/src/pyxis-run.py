@@ -13,10 +13,14 @@ MAC_OS = os.environ["MAC_OS"]
 
 if MAC_OS.lower() in ["yes", "true", "yebo", "1"]:
     MAC_OS = True
+    x.sh("mkdir msdir-tmp && cp -r $MSDIR /msdir-tmp")
+    x.sh("mkdir input-tmp && cp -r $MSDIR /input-tmp")
+    v.MSDIR = "/msdir-tmp"
+    v.INPUT = "/input-tmp"
 else:
     MAC_OS = False
 
-output = "./temp-output-xaba"
+output = "./temp-output"
 v.OUTDIR = output if MAC_OS else os.environ["OUTPUT"]
 outdir = os.environ["OUTPUT"]
 
@@ -43,7 +47,7 @@ def azishe():
 
     jdict = readJson(CONFIG)
 
-    v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
+    v.MS = "%s/%s"%(MSDIR, jdict["msname"])
 
     im.cellsize = "{:f}arcsec".format( jdict.get("cellsize", 1) )
     im.npix = jdict.get("npix", 4096)

@@ -10,6 +10,7 @@ import stimela.cargo as cargo
 import tempfile
 import time
 import inspect
+import platform
 
 
 ekhaya = cargo.__path__[0]
@@ -62,7 +63,7 @@ class Recipe(object):
 
         self.configs_path_container = "/configs"
         self.stimela_path = os.path.dirname(docker.__file__)
-        self.MAC_OS = mac_os
+        self.MAC_OS = platform.system() == "Darwin"
         self.CAB_TAG = cab_tag
 
         self.ms_dir = ms_dir or self.stimela_context.get("STIMELA_MSDIR", None)

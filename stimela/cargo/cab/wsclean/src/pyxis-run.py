@@ -54,7 +54,8 @@ def azishe():
     im.weight = jdict.get("weight", "briggs")
     im.robust = jdict.get("robust", 0)
     im.stokes = jdict.get("stokes", "I")
-    channelise = jdict.get("channelise", 0)
+    channelise = jdict.get("channelize", 0)
+    column = jdict.get("column", "CORRECTED_DATA")
     dirty = jdict.get("dirty", True)
     niter = jdict.get("clean_iterations", 0)
 
@@ -63,9 +64,10 @@ def azishe():
         clean = True
     else:
         clean = False
+        dirty = True
 
     psf = jdict.get("psf", False)
-    prefix = OUTDIR+"/"+jdict["imageprefix"]
+    prefix = OUTDIR+"/"+jdict.get("imageprefix", MS.split("/")[-1][:-3])
 
     im.DIRTY_IMAGE = prefix + ".dirty.fits"
     im.MODEL_IMAGE = prefix + ".model.fits"
@@ -82,7 +84,7 @@ def azishe():
     im.make_image(dirty=dirty, restore=clean, 
                   restore_lsm=False, psf=psf,
                   channelize=channelise,
-                  mgain=0.75)
+                  mgain=0.75, column=column)
 
     x.sh("rm -f ${im.BASENAME_IMAGE}-first-residual.fits")
 

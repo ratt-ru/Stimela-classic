@@ -35,7 +35,7 @@ class Recipe(object):
 
     def __init__(self, name, data=None, configs=None,
                  ms_dir=None, cab_tag=None, mac_os=False,
-                 container_logfile=None):
+                 container_logfile=None, shared_memory=1024):
 
         # LOG recipe
         with open(stimela.LOG_PROCESS, "r") as std:
@@ -73,6 +73,9 @@ class Recipe(object):
 
         home = os.environ["HOME"] + "/.stimela/stimela_containers.log"
         self.CONTAINER_LOGFILE = container_logfile or home
+
+
+        self.shared_memory = shared_memory
 
 
     def add(self, image, name, config,
@@ -187,7 +190,7 @@ class Recipe(object):
             self.active = container
 
             try:
-                container.start(logfile=self.CONTAINER_LOGFILE)
+                container.start(logfile=self.CONTAINER_LOGFILE, shared_memory=self.shared_memory)
 
             except docker.DockerError:
                 self.rm()

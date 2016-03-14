@@ -30,12 +30,12 @@ def readJson(conf):
     return jdict
 
 
-def azishe():
 
-    jdict = readJson(CONFIG)
+def calibrate(jdict):
+
+    x.sh("addbitflagcol $MS")
+
     prefix = jdict.get("prefix", None)
-
-    v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
 
     for item in [INDIR, "/data/skymodels/"]:
         lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
@@ -72,3 +72,19 @@ def azishe():
                     options=options,
                     output=jdict.get("output_column", "CORR_RES"))
 
+ 
+def azishe():
+    jdict = readJson(CONFIG)
+
+    msnames = jdict.get("msnames", jdict["msname"])
+
+    if isinstance(msnames, (str, unicode)):
+        msnames = [str(msnames)]
+
+
+    v.MS_List = ["{:s}/{:s}".format(MSDIR, msname) for msname in msnames]
+
+    cores = jdict.get("cpus", 1)
+    Pyxis.Context["JOBS"] = cores
+
+    per_ms(lambda: calibrate(jdict))

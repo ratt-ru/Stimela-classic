@@ -93,13 +93,12 @@ class Load(object):
         self.EC2_ram = ram
 
 
-    def start(self, logfile=None):
+    def start(self, logfile=None, shared_memory=1024):
 
         volumes = " -v " + " -v ".join(self.volumes)
         environs = " -e "+" -e ".join(self.environs)
 
         self.started = True
-
 
         if self.awsEC2:
             pass
@@ -107,7 +106,7 @@ class Load(object):
             utils.xrun("docker", ["run",
                  volumes, environs,
                  "-w %s"%(self.WORKDIR) if self.WORKDIR else "",
-                 "--name", self.name, 
+                 "--name", self.name, "--shm-size=%dMB"%shared_memory,
                  self.image,
                  self.COMMAND or ""],
                  _log_container_as_started=self, logfile=logfile)

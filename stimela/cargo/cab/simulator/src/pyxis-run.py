@@ -7,6 +7,7 @@ from Pyxis.ModSupport import *
 import os
 import json
 import glob
+import numpy
 
 def _loadconfs_Template():
     deps = glob.glob("/utils/utils/pyxis-*.py")
@@ -20,7 +21,7 @@ v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
 MSDIR = os.environ["MSDIR"]
 
-LOG = II("${OUTDIR>/}log-meqtrees_sim.txt")
+v.LOG = II("${OUTDIR>/}log-simulation.txt")
 
 
 def readJson(conf):
@@ -40,7 +41,15 @@ def azishe():
     jdict = readJson(CONFIG)
     add = jdict.get("add_to_column", False)
 
+
+
+    addnoise = jdict.get("addnoise", False)
+    sefd = jdict.get("sefd", 500)
+
     v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
+    
+    v.LOG = II("${OUTDIR>/}log-${MS:BASE}-simulation.txt")
+
     column = jdict.get("column", "DATA")
     copy = jdict.get("copy_to_CORRECTED_DATA", False)
 
@@ -48,8 +57,7 @@ def azishe():
     if newcol:
         im.argo.addcol(newcol)
 
-    if jdict["skymodel"] in [None, False]:
-        sefd = jdict["sefd"]
+    if jdict["skymodel"] in [None, False] and addnoise:
         noise = compute_vis_noise(sefd)
         simnoise(noise, column=column)
 
@@ -73,30 +81,35 @@ def azishe():
 
     options = {}
 
-    addnoise = False if add else jdict["addnoise"]
     if addnoise:
-        sefd = jdict["sefd"]
         noise = compute_vis_noise(sefd)
         options["noise_stddev"] = noise
 
-    beam = jdict["E_jones"]
+    beam = jdict.get("ejones", False)
     if beam:
         options["me.e_enable"] = 1
         options["me.p_enable"] = 1
 
-        if jdict["beam_file_type"] == "fits":
-            options["pybeams_fits.filename_pattern"] = "/data/beams/" + jdict["beam_files_pattern"]
-            options["me.e_module"] = "Siamese_OMS_pybeams_fits"
-        elif jdict["beam_file_type"] == "emss":
-            options["me.e_module"] = "Siamese_OMS_emss_beams_emss_polar_beams"
-            options["emss_polar_beams.filename_pattern"] = "/data/beams/" + jdict["beam_files_pattern"]
-            options["emss_polar_beams.pattern_labels"] = jdict["emss_labels"]
-            options["emss_polar_beams.freq_labels"] = jdict["emss_freqs"]
+        rms_perr = jdict.get("pointing_accuracy", 0)
+        # Include pointing errors if needed
+        if rms_perr:
+            anttab = ms.ms(subtable="ANTENNA")
+            NANT = anttab.nrows()
+
+            options["me.epe_enable"] = 1
+            perr = numpy.random.randn(NANT)*rms_perr, numpy.random.randn(NANT)*rms_perr
+            ll, mm = " ".join( map(str, perr[0]) ), " ".join( map(str, perr[-1]) )
+            options['oms_pointing_errors.pe_l.values_str'] = "'%s'"%ll
+            options['oms_pointing_errors.pe_m.values_str'] = "'%s'"%mm
+
+
+        options["pybeams_fits.filename_pattern"] = "%s/%s"%(INDIR, jdict["beam_files_pattern"])
+        options["me.e_module"] = "Siamese_OMS_pybeams_fits"
 
     _section = dict(sim = "sim",
                     add_G = "sim:G")
 
-    if jdict.get("G_Jones", False):
+    if jdict.get("gjones", False):
         section = "add_G"
     else:
         section = "sim"

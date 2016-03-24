@@ -33,6 +33,8 @@ def readJson(conf):
 
 def calibrate(jdict):
 
+    v.LOG = II("${OUTDIR>/}log-${MS:BASE}-calibration.txt")
+
     x.sh("addbitflagcol $MS")
 
     prefix = jdict.get("prefix", None)
@@ -64,6 +66,14 @@ def calibrate(jdict):
     stefcal.STEFCAL_GAIN_SMOOTHING = jdict.get("gjones_smoothing", None)
 
     ejones = jdict.get("ejones", False)
+
+    beam = jdict.get("add_beam", False)
+    if beam:
+        options["me.e_enable"] = 1
+        options["me.p_enable"] = 1
+        options["me.e_module"] = "Siamese_OMS_pybeams_fits"
+        options["pybeams_fits.filename_pattern"] =  "%s/%s"%(INDIR, jdict["beam_files_pattern"])
+
     options["ms_sel.input_column"] = column
 
     stefcal.stefcal(section="stefcal", gain_plot_prefix=prefix,

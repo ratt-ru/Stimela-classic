@@ -43,7 +43,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         Example: _run("ls", ["-lrt", "../"])
     """
 
-    cmd = " ".join([command]+options)
+    cmd = " ".join([command]+ map(str, options) )
 
     if log:
         log.info("Running: %s"%cmd)

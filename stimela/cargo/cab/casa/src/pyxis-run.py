@@ -16,7 +16,7 @@ if MAC_OS.lower() in ["yes", "true", "yebo", "1"]:
 else:
     MAC_OS = False
 
-output = "./temp-output-xaba"
+output = "./temp-output-tmp"
 v.OUTDIR = output if MAC_OS else os.environ["OUTPUT"]
 outdir = os.environ["OUTPUT"]
 
@@ -24,7 +24,7 @@ v.DESTDIR = "."
 
 OUTFILE_Template = "${OUTDIR>/}results-${MS:BASE}"
 
-LOG = II("${OUTDIR>/}log-imaging.txt")
+LOG = II("${OUTDIR>/}log-casa.txt")
 
 
 def readJson(conf):
@@ -44,6 +44,9 @@ def azishe():
     jdict = readJson(CONFIG)
 
     v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
+    prefix = jdict.get("imageprefix", MS.split("/")[-1][:-3])
+    v.LOG = II("${OUTDIR>/}log-${prefix}-casa.txt")
+    prefix = OUTDIR +"/"+ prefix
 
     im.cellsize = "{:f}arcsec".format( jdict.get("cellsize", 1) )
     im.npix = jdict.get("npix", 4096)
@@ -61,7 +64,6 @@ def azishe():
         clean = False
 
     psf = jdict.get("psf", False)
-    prefix = OUTDIR+"/"+jdict["imageprefix"]
 
     im.DIRTY_IMAGE = prefix + ".dirty.fits"
     im.MODEL_IMAGE = prefix + ".model.fits"

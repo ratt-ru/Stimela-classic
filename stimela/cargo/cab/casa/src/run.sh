@@ -8,7 +8,7 @@ fi
 RAN_OPERATION=$(python run.py)
 
 if [ "$RAN_OPERATION" = "no" ]; then
-    echo "pyxis azishe"
+    pyxis azishe -f
 else
     echo ""
 fi

@@ -28,7 +28,7 @@ v.DESTDIR = "."
 
 OUTFILE_Template = "${OUTDIR>/}results-${MS:BASE}"
 
-LOG = II("${OUTDIR>/}log-imaging.txt")
+LOG = II("${OUTDIR>/}log-wsclean.txt")
 
 
 def readJson(conf):
@@ -49,6 +49,10 @@ def azishe():
 
     v.MS = "%s/%s"%(MSDIR, jdict["msname"])
 
+    prefix = jdict.get("imageprefix", MS.split("/")[-1][:-3])
+    v.LOG = II("${OUTDIR>/}log-${prefix}-wsclean.txt")
+    prefix = OUTDIR +"/"+ prefix
+
     im.cellsize = "{:f}arcsec".format( jdict.get("cellsize", 1) )
     im.npix = jdict.get("npix", 4096)
     im.weight = jdict.get("weight", "briggs")
@@ -67,7 +71,6 @@ def azishe():
         dirty = True
 
     psf = jdict.get("psf", False)
-    prefix = OUTDIR+"/"+jdict.get("imageprefix", MS.split("/")[-1][:-3])
 
     im.DIRTY_IMAGE = prefix + ".dirty.fits"
     im.MODEL_IMAGE = prefix + ".model.fits"

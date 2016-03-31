@@ -6,7 +6,7 @@
     "psf": true,
     "cellsize": 1,
     "channelise": 0,
-    "imageprefix": "results-penthesilea_default",
+    "imageprefix": null,
     "dirty": true,
     "clean_iterations": 0,
     "robust": -2,

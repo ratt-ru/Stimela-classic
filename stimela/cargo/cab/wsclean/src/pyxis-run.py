@@ -49,7 +49,7 @@ def azishe():
 
     v.MS = "%s/%s"%(MSDIR, jdict["msname"])
 
-    prefix = jdict.get("imageprefix", MS.split("/")[-1][:-3])
+    prefix = jdict.pop("imageprefix", None) or II("${MS:BASE}")
     v.LOG = II("${OUTDIR>/}log-${prefix}-wsclean.txt")
     prefix = OUTDIR +"/"+ prefix
 

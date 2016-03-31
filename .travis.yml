@@ -7,6 +7,9 @@ install:
 script:
 - true
 deploy:
+  on:
+    tags: true
+    all_branches: true
   provider: pypi
   user: sphemakh
   password:

@@ -265,6 +265,9 @@ def kill():
         conts = stimela_logger.Container(LOG_CONTAINERS)
         lines = []
 
+        procs.rm(found)
+        procs.write()
+
         for cont in conts.lines:
             if cont.find(str(pid)) > 0:
                 lines.append(cont)
@@ -277,7 +280,9 @@ def kill():
                 cont_.stop()
                 cont_.rm()
 
-        procs.rm(found)
+                conts.rm(line)
+
+        conts.write()
 
         try:
             os.kill(pid, signal.SIGKILL)

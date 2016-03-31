@@ -36,6 +36,7 @@ def assign(key, value):
     frame = inspect.currentframe().f_back
     frame.f_globals[key] = value
 
+
 def xrun(command, options, log=None, _log_container_as_started=False, logfile=None):
     """
         Run something on command line.

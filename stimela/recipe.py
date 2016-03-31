@@ -11,6 +11,7 @@ import tempfile
 import time
 import inspect
 import platform
+from stimela.utils import stimela_logger
 
 
 ekhaya = cargo.__path__[0]
@@ -38,13 +39,11 @@ class Recipe(object):
                  container_logfile=None, shared_memory=1024):
 
         # LOG recipe
-        with open(stimela.LOG_PROCESS, "r") as std:
-            lines = std.readlines()
+        procs = stimela_logger.Process(stimela.LOG_PROCESS)
 
-        with open(stimela.LOG_PROCESS, "w") as std:
-            date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
-            lines.append("{:s} {:s} {:d}\n".format(name.replace(" ","_"), date, os.getpid()))
-            std.write("".join(lines))
+        date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
+        procs.add( dict(name=name.replace(" ", "_"), date=date, pid=os.getpid()) )
+        procs.write()
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -198,25 +197,16 @@ class Recipe(object):
                                          "Please check the logs"%(container.name))
             self.active = None
 
-
         self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))
 
         self.rm(containers)
         self.log.info("\n[================================DONE==========================]\n \n")
 
         # Remove from log
-        with open(stimela.LOG_PROCESS) as std:
-            lines = std.readlines()
+        procs = stimela_logger.Process(stimela.LOG_PROCESS)
+        procs.rm(os.getpid())
+        procs.write()
 
-        with open(stimela.LOG_PROCESS, "w") as std:
-
-            for line in lines:
-                pid = int(line.split()[-1])
-                if pid == os.getpid():
-                    lines.remove(line)
-
-            std.write("".join(lines))
-        
 
     def build(self, name, dest, use_cache=True):
         try:

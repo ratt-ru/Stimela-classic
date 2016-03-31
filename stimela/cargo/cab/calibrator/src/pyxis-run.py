@@ -30,12 +30,14 @@ def readJson(conf):
     return jdict
 
 
-def azishe():
 
-    jdict = readJson(CONFIG)
+def calibrate(jdict):
+
+    v.LOG = II("${OUTDIR>/}log-${MS:BASE}-calibration.txt")
+
+    x.sh("addbitflagcol $MS")
+
     prefix = jdict.get("prefix", None)
-
-    v.MS = "{:s}/{:s}".format(MSDIR, jdict["msname"])
 
     for item in [INDIR, "/data/skymodels/"]:
         lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
@@ -64,6 +66,14 @@ def azishe():
     stefcal.STEFCAL_GAIN_SMOOTHING = jdict.get("gjones_smoothing", None)
 
     ejones = jdict.get("ejones", False)
+
+    beam = jdict.get("add_beam", False)
+    if beam:
+        options["me.e_enable"] = 1
+        options["me.p_enable"] = 1
+        options["me.e_module"] = "Siamese_OMS_pybeams_fits"
+        options["pybeams_fits.filename_pattern"] =  "%s/%s"%(INDIR, jdict["beam_files_pattern"])
+
     options["ms_sel.input_column"] = column
 
     stefcal.stefcal(section="stefcal", gain_plot_prefix=prefix,
@@ -72,3 +82,19 @@ def azishe():
                     options=options,
                     output=jdict.get("output_column", "CORR_RES"))
 
+ 
+def azishe():
+    jdict = readJson(CONFIG)
+
+    msnames = jdict.get("msnames", jdict["msname"])
+
+    if isinstance(msnames, (str, unicode)):
+        msnames = [str(msnames)]
+
+
+    v.MS_List = ["{:s}/{:s}".format(MSDIR, msname) for msname in msnames]
+
+    cores = jdict.get("cpus", 1)
+    Pyxis.Context["JOBS"] = cores
+
+    per_ms(lambda: calibrate(jdict))

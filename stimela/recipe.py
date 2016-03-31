@@ -10,6 +10,8 @@ import stimela.cargo as cargo
 import tempfile
 import time
 import inspect
+import platform
+from stimela.utils import stimela_logger
 
 
 ekhaya = cargo.__path__[0]
@@ -34,16 +36,14 @@ class Recipe(object):
 
     def __init__(self, name, data=None, configs=None,
                  ms_dir=None, cab_tag=None, mac_os=False,
-                 container_logfile=None):
+                 container_logfile=None, shared_memory=1024):
 
         # LOG recipe
-        with open(stimela.LOG_PROCESS, "r") as std:
-            lines = std.readlines()
+        procs = stimela_logger.Process(stimela.LOG_PROCESS)
 
-        with open(stimela.LOG_PROCESS, "w") as std:
-            date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
-            lines.append("{:s} {:s} {:d}\n".format(name.replace(" ","_"), date, os.getpid()))
-            std.write("".join(lines))
+        date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
+        procs.add( dict(name=name.replace(" ", "_"), date=date, pid=os.getpid()) )
+        procs.write()
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -62,7 +62,7 @@ class Recipe(object):
 
         self.configs_path_container = "/configs"
         self.stimela_path = os.path.dirname(docker.__file__)
-        self.MAC_OS = mac_os
+        self.MAC_OS = platform.system() == "Darwin"
         self.CAB_TAG = cab_tag
 
         self.ms_dir = ms_dir or self.stimela_context.get("STIMELA_MSDIR", None)
@@ -72,6 +72,9 @@ class Recipe(object):
 
         home = os.environ["HOME"] + "/.stimela/stimela_containers.log"
         self.CONTAINER_LOGFILE = container_logfile or home
+
+
+        self.shared_memory = shared_memory
 
 
     def add(self, image, name, config,
@@ -186,7 +189,7 @@ class Recipe(object):
             self.active = container
 
             try:
-                container.start(logfile=self.CONTAINER_LOGFILE)
+                container.start(logfile=self.CONTAINER_LOGFILE, shared_memory=self.shared_memory)
 
             except docker.DockerError:
                 self.rm()
@@ -194,25 +197,16 @@ class Recipe(object):
                                          "Please check the logs"%(container.name))
             self.active = None
 
-
         self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))
 
         self.rm(containers)
         self.log.info("\n[================================DONE==========================]\n \n")
 
         # Remove from log
-        with open(stimela.LOG_PROCESS) as std:
-            lines = std.readlines()
+        procs = stimela_logger.Process(stimela.LOG_PROCESS)
+        procs.rm(os.getpid())
+        procs.write()
 
-        with open(stimela.LOG_PROCESS, "w") as std:
-
-            for line in lines:
-                pid = int(line.split()[-1])
-                if pid == os.getpid():
-                    lines.remove(line)
-
-            std.write("".join(lines))
-        
 
     def build(self, name, dest, use_cache=True):
         try:

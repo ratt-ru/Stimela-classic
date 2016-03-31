@@ -4,4 +4,4 @@ if [ -z "$CONFIG" ]; then
     export CONFIG="caibrator_params.json"
 fi
 
-pyxis azishe
+pyxis azishe -f

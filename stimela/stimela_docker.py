@@ -4,6 +4,7 @@
 import stimela.utils as utils
 import os
 import time
+from stimela.utils import stimela_logger
 
 
 class DockerError(Exception):
@@ -93,13 +94,12 @@ class Load(object):
         self.EC2_ram = ram
 
 
-    def start(self, logfile=None):
+    def start(self, logfile=None, shared_memory=1024):
 
         volumes = " -v " + " -v ".join(self.volumes)
         environs = " -e "+" -e ".join(self.environs)
 
         self.started = True
-
 
         if self.awsEC2:
             pass
@@ -107,7 +107,7 @@ class Load(object):
             utils.xrun("docker", ["run",
                  volumes, environs,
                  "-w %s"%(self.WORKDIR) if self.WORKDIR else "",
-                 "--name", self.name, 
+                 "--name", self.name, "--shm-size=%dMB"%shared_memory,
                  self.image,
                  self.COMMAND or ""],
                  _log_container_as_started=self, logfile=logfile)
@@ -176,7 +176,7 @@ It may be still running or it doesn't exist"%(self.name)
         out_id = cont_id.stdout.read()[:12]
 
         out_started = started.stdout.read().split(".")[0]
-        print out_id, out_started
+
         started_tuple = time.strptime(out_started, "%Y-%m-%dT%H:%M:%S")
         started = time.mktime(started_tuple)
 
@@ -210,38 +210,25 @@ It may be still running or it doesn't exist"%(self.name)
             status, _id, uptime = self.status()
 
         # open file
-        with open(logfile, "r") as std:
-            lines = std.readlines()
+        conts = stimela_logger.Container(logfile)
 
         if action=="start":
-            lines.append( "{:s} {:s} {:s} {:d} {:s}\n".format(self.name, _id, uptime, os.getpid(), status ) )
+            conts.add( dict(name=self.name, id=_id,uptime= uptime, pid=os.getpid(), status=status) )
+
         elif action in ["stop", "rm", "clear"]:
-            if lines:
+            if conts.lines:
                 pass
             else:
                 raise ValueError("Action [{:s}] cannot be perfomed. There are no logged containers".format(self.name))
-            # Find container in logfile
-            cline_ = None
-            for line in lines:
-                if line.startswith(self.name):
-                    cline = line
-                    lines.remove(line)
-                    break
-
-            cline_ = cline.split()
 
             if action=="stop":
-                mcline = " ".join(cline_[:4] + ["exited \n"])
-                lines.append(mcline)
+                conts.update(self.name, status="exited")
             elif action=="failed":
-                mcline = " ".join(cline_[:4] + ["failed \n"])
+                conts.update(self.name, status="failed")
             elif action=="rm":
-                mcline = " ".join(cline_[:4] + ["removed \n"])
-                lines.append(mcline)
+                conts.rm(self.name)
 
         else:
             raise ValueError("action [{:s}] is not understood. Allowed actions are [start, stop, rm, clear]".format(action))
-                
-        with open(logfile, "w") as std:
-            # name id status
-            std.write("".join(lines))
+        
+        conts.write() 

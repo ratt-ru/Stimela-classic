@@ -4,4 +4,4 @@ if [ -z "$CONFIG" ]; then
     export CONFIG="imaging_params.json"
 fi
 
-pyxis azishe
+pyxis azishe -f

@@ -14,6 +14,8 @@ from recipe import Recipe as Pipeline
 from recipe import Recipe
 import stimela.stimela_docker as docker
 
+from stimela.utils import stimela_logger
+
 LOG_HOME = os.path.expanduser("~/.stimela")
 LOG_IMAGES = LOG_HOME + "/stimela_images.log"
 LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
@@ -152,32 +154,18 @@ def pull():
     add("-t", "--tag",
             help="Tag")
 
-    add("-f", "--force", action="store_true",
-            help="Pull image even if it already exists")
-
     args = parser.parse_args()
 
     if args.image:
         for image in args.image:
-            docker.pull(image)
-            _image = image.split(":")
+            img = stimela_logger.Images(LOG_IMAGES)
 
-            if len(_image)>1:
-                image = _image[0]
-                tag = _image[1]
-            else:
-                tag = "latest"
-            
-            date = "{:d}/{:d}/{:d} {:d}:{:d}:{:d}".format(*time.localtime()[:6])
-
-            with open(LOG_IMAGES, "r") as std:
-                lines = std.readlines()
-
-            with open(home, "w") as std:
-                newline = ["{:s} {:s} {:s}\n".format(image, tag, date)]
-                std.write( "".join( lines + newline) )
+            if not img.find(image):
+                docker.pull(image)
+                img.add(dict(image=image, tag=tag))
 
     else:
+
         base = []
         for cab in CAB:
             image = "{:s}/{:s}".format(cargo.CAB_PATH, cab)
@@ -186,35 +174,11 @@ def pull():
         base = set(base)
 
         for image in base:
+            img = stimela_logger.Images(LOG_IMAGES)
 
-            with open(LOG_IMAGES, "r") as std:
-                lines = std.readlines()
-            
-            exists = False
-            cline = None
-            for line in lines:
-                new = image.split(":")
-                old = line.split()[:2]
-                old[0] = old[0].split(":")[0]
-
-                if new == old:
-                    if not args.force:
-                        print("Image [{:s}] already exists. Add --force/-f to pull it either way".format(image))
-                    exists = True
-                    cline = line
-                    break
-
-            if not exists or args.force:        
+            if not img.find(image):
                 docker.pull(image)
-                if exists:
-                    lines.remove(cline)
-
-            date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
-
-            with open(LOG_IMAGES, "w") as std:
-                newline = ["{:s} {:s} {:s}\n".format(image, args.tag or "latest", date)]
-                std.write( "".join( lines + newline) )
-
+                img.add(dict(image=image, tag=tag))
 
 def images():
     for i, arg in enumerate(sys.argv):
@@ -229,18 +193,11 @@ def images():
 
     args = parser.parse_args()
 
+    img = stimela_logger.Image(stimela.LOG_IMAGES)
+    img.display()
+
     if args.clear:
-        with open(stimela.LOG_IMAGES, "w") as std:
-           return
-
-
-    with open(stimela.LOG_IMAGES, "r") as std:
-        lines = std.readlines()
-
-    print("{:<48} {:<32} {:<12}".format("IMAGE", "TAG", "TIME STAMP") )
-    for line in lines:
-        image, tag, date = line.split()
-        print("{:<48} {:<32} {:<12}".format(image, tag, date) )
+        img.clear()
 
 
 def cabs():
@@ -256,18 +213,10 @@ def cabs():
 
     args = parser.parse_args()
 
+    conts = stimela_logger.Container(stimela.LOG_CONTAINERS)
+    conts.display()
     if args.clear:
-        with open(stimela.LOG_CONTAINERS, "w") as std:
-           return
-
-    with open(stimela.LOG_CONTAINERS, "r") as std:
-        lines = std.readlines()
-
-    print("{:<48} {:<24} {:<24} {:<24} {:>12}".format("CONTAINER", "ID", "UP TIME", "PID", "STATUS") )
-
-    for line in lines:
-        cont, _id, uptime, pid, status = line.split()
-        print("{:<48} {:<24} {:<24} {:<24} {:>12}".format(cont, _id, uptime, pid, status) )
+        conts.clear()
 
 
 def ps():
@@ -283,26 +232,18 @@ def ps():
 
     args = parser.parse_args()
 
-    with open(stimela.LOG_PROCESS, "r") as std:
-        lines = std.readlines()
-
-    print("{:<48} {:<24} {:>12}".format("NAME", "DATE", "PID") )
-
-    for line in lines:
-        name, date, pid = line.split()
-        print("{:<48} {:<24} {:>12}".format(name, date, pid) )
-
+    procs = stimela_logger.Process(stimela.LOG_PROCESS)
+    procs.display()
     if args.clear:
-        with open(stimela.LOG_PROCESS, "w") as std:
-            pass
-    
+        procs.clear()
+
 
 
 def kill():
     for i, arg in enumerate(sys.argv):
         if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
     
-    parser = ArgumentParser(description='List all active stimela containers.')
+    parser = ArgumentParser(description='Gracefully kill stimela process(s).')
 
     add = parser.add_argument
 
@@ -311,44 +252,42 @@ def kill():
 
     args = parser.parse_args()
 
+    procs = stimela_logger.Process(LOG_PROCESS)
 
-    with open(stimela.LOG_PROCESS) as std:
-        procs = std.readlines()
+    for pid in map(int, args.pid):
 
-    def found_pid(pid):
-        for proc in procs:
-            _pid = proc.split()[-1]
-            if int(_pid) == int(pid):
-                return True, proc
-        return False, None
-
-    with open(stimela.LOG_CONTAINERS, "r") as std:
-        lines = std.readlines()
-
-    for pid in args.pid:
-        pip = int(pid)
-
-        found, proc = found_pid(pid)
+        found = procs.find(pid)
+        
         if not found:
             print "Could not find process {0}".format(pid)
             continue
 
-        sucess = False
+        conts = stimela_logger.Container(LOG_CONTAINERS)
+        lines = []
+
+        procs.rm(found)
+        procs.write()
+
+        for cont in conts.lines:
+            if cont.find(str(pid)) > 0:
+                lines.append(cont)
+        
         for line in lines:
-            cont, _id, utime, _pid, status, = line.split()
-            if int(pid) == int(_pid):
-                if status.find("removed")<0:
-                    cont_ = docker.Load(None, cont)
-                    cont_.started = True
-                    cont_.stop()
-                    cont_.rm()
-        procs.remove(proc)
+            cont, _id, utime, _pid, status = line.split()
+            if status.find("removed")<0:
+                cont_ = docker.Load(None, cont)
+                cont_.started = True
+                cont_.stop()
+                cont_.rm()
 
-        os.kill(int(pid), signal.SIGKILL)
+                conts.rm(line)
 
+        conts.write()
 
-        with open(stimela.LOG_PROCESS, "w") as std:
-            std.write("".join(procs))
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except OSError:
+            pass
                 
 
 def main():

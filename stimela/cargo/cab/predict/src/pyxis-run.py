@@ -30,7 +30,7 @@ OUTDIR = os.environ["OUTPUT"]
 INDIR = os.environ["INPUT"]
 CONFIG = os.environ["CONFIG"]
 MSDIR = os.environ["MSDIR"]
-LOG_Template = "${OUTDIR>/}log-imaging.txt"
+LOG_Template = "${OUTDIR>/}log-lwimager_predict.txt"
 v.OUTFILE = II("${OUTDIR>/}results-${MS:BASE}")
 
 
@@ -40,6 +40,7 @@ def azishe():
     jdict = readJson(CONFIG)
 
     v.MS = "{:s}/{:s}".format(MSDIR, jdict.get("msname"))
+    v.LOG_Template = "${OUTDIR>/}log-${MS:BASE}-lwimager_predict.txt"
 
     for item in [INDIR, "/data/skymodels/"]:
         lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
@@ -62,6 +63,9 @@ def azishe():
             hdu.writeto(LSM, clobber=True)
 
     column = jdict.get("column", "DATA")
+    if column not in ["DATA", "CORRECTED_DATA", "MODEL_DATA"]:
+        im.argo.addcol(colname=column)
+
     add_to_col = jdict.get("add_to_column", None)
     copy = jdict.get("copy_to_CORRECTED_DATA", False)
     addnoise = jdict.get("addnoise", True)

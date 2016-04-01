@@ -1,12 +1,13 @@
-FROM radioastro/sourcery
+FROM radioastro/ddfacet
 MAINTAINER <sphemakh@gmail.com>
-
-ADD sourcery /sourcery
-RUN cd /sourcery && pip install -U .
 
 RUN mkdir -p /input /output
 
+ENV TERM xterm
+
 ADD src /code
+ADD tmpfs /etc/defaults/tmpfs
+
 WORKDIR /code
 
 CMD python run.py

@@ -1,9 +1,6 @@
 FROM radioastro/sourcery
 MAINTAINER <sphemakh@gmail.com>
 
-ADD sourcery /sourcery
-RUN cd /sourcery && pip install -U .
-
 RUN mkdir -p /input /output
 
 ADD src /code

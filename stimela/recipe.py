@@ -13,6 +13,8 @@ import inspect
 import platform
 from stimela.utils import stimela_logger
 
+USER = os.environ["USER"]
+
 
 ekhaya = cargo.__path__[0]
 
@@ -102,6 +104,7 @@ class Recipe(object):
             image = image.split(":")[0]
             image = "{:s}:{:s}".format(image, cab_tag)
 
+
         cont = docker.Load(image, name, label=label, logger=self.log)
 
         cont.add_environ("MAC_OS", str(self.MAC_OS))
@@ -163,6 +166,7 @@ class Recipe(object):
             cont.add_volume(self.configs_path, self.configs_path_container, perm="ro")
             config = self.configs_path_container+"/"+config 
 
+        cont.image = "{:s}_{:s}".format(USER, image)
         cont.add_environ("CONFIG", config)
 
         self.containers.append(cont)

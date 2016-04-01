@@ -20,9 +20,12 @@ LOG_HOME = os.path.expanduser("~/.stimela")
 LOG_IMAGES = LOG_HOME + "/stimela_images.log"
 LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 LOG_PROCESS = LOG_HOME + "/stimela_process.log"
+LOG_CABS = LOG_HOME + "/stimela_cab.log"
 
 BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery".split()
 CAB = os.listdir(cargo.CAB_PATH)
+
+USER = os.environ["USER"]
 
 __version__ = "0.1.4"
 
@@ -51,10 +54,29 @@ def build():
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
     args = parser.parse_args()
 
+    # clear old cabs
+    img = stimela_logger.Image(LOG_CABS)
+    img.clear()
+    
     for image in CAB:
         dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)
-        docker.build("cab/{:s}".format(image),
+        image = "{:s}_cab/{:s}".format(USER, image)
+        docker.build(image,
                        dockerfile)
+        img.add(dict(name=image))
+
+    img.write()
+
+        
+def cabs():
+    for i, arg in enumerate(sys.argv):
+        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
+
+    parser = ArgumentParser(description='List executor (a.k.a cab) images')
+    args = parser.parse_args()
+
+    img = stimela_logger.Image(LOG_CABS)
+    img.display()
 
 
 def run():
@@ -201,7 +223,7 @@ def images():
         img.clear()
 
 
-def cabs():
+def containers():
     for i, arg in enumerate(sys.argv):
         if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
     
@@ -314,7 +336,7 @@ def main():
     options = []
     commands = dict(pull=pull, build=build, run=run, 
                     images=images, cabs=cabs, ps=ps,
-                    kill=kill)
+                    containers=containers, kill=kill)
 
     command = "failed"
 

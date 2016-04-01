@@ -24,7 +24,8 @@ LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery".split()
 CAB = os.listdir(cargo.CAB_PATH)
 
-__version__ = "0.1.1"
+__version__ = "0.1.4"
+
 GLOBALS = {}
 
 class MultilineFormatter(argparse.HelpFormatter):

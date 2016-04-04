@@ -1,4 +1,4 @@
-FROM radioastro/ddfacet
+FROM radioastro/ddfacet:oms
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output
@@ -6,7 +6,6 @@ RUN mkdir -p /input /output
 ENV TERM xterm
 
 ADD src /code
-ADD tmpfs /etc/defaults/tmpfs
 
 WORKDIR /code
 

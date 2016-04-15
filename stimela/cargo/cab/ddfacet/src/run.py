@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy
+from pyrap.tables import table
 
 sys.path.append("/utils")
 import utils
@@ -10,10 +11,10 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = dict(npix=2048, nfacets=11, MaxMajorIter=5, cellsize=5, Enable=False)
+jdict = dict(npix=2048, nfacets=11, MaxMajorIter=5, cellsize=5, Enable=False, weight="briggs", robust=0,
+             WeightCol="WEIGHT_SPECTRUM")
 
 jdict.update( utils.readJson(CONFIG) )
-
 
 def find_closest(A, target):
     #A must be sorted
@@ -38,28 +39,50 @@ STANDARD_OPTS = {
 }
 
 niter = jdict.pop("clean_iterations", 0)
+parset = jdict.pop("parset", None)
+
+if parset:
+    parset = ["%s/%s"%(INPUT, parset)]
+else:
+    parset = []
 
 mode = "Dirty"
 if niter:
     mode = "Clean"
+
+addToCol = jdict.pop("add_to_column", None)
 
 if jdict.pop("predict", False):
     skymodel = jdict.pop("skymodel", None)
     if skymodel:
         mode = "Predict"
         skymodel = INPUT + "/" + skymodel
+        column = jdict.get("column", None)
+        if column == None:
+            column = jdict.get("ColName", None)
+        if column == None:
+            jdict["column"] = "MODEL_DATA"
+
 
 
 msname = jdict.pop("msname")
-prefix = OUTPUT + "/" + jdict.pop("imageprefix", os.path.basename(msname)[:-3])
-msname = MSDIR + "/" + msname
+if not isinstance(msname, (tuple, list)):
+    msname = [msname]
+    
+prefix = OUTPUT + "/" + jdict.pop("imageprefix", os.path.basename(msname[0])[:-3])
+
+with open("mslist.txt", "w") as std:
+    for ms in msname:
+        std.write("{:s}/{:s}\n".format(MSDIR, ms))
 
 options = {}
-options["MSName"] = msname
+options["MSName"] = "mslist.txt"
 options["ImageName"] = prefix
-options["SaveIms"] = "[Dirty]"
+options["SaveImages"] = "all"
 if niter:
     options["MaxMinorIter"] = niter
+
+
 
 for key, value in jdict.iteritems():
     key = STANDARD_OPTS.get(key, key)
@@ -69,12 +92,17 @@ for key, value in jdict.iteritems():
     if key in options and options[key] == None:
         del options[key]
 
+column = options.get("ColName", "MODEL_DATA")
+
+upfirst = lambda a: a[0].upper() + a[1:]
+options["Weighting"] = upfirst(options["Weighting"])
+
 if options.pop("add_beam", False):
     pattern = options.pop("beam_files_pattern", None)
     if pattern:
         options["BeamModel"] = "FITS"
-        options["FITSLAxis"] = options.pop("fits_l_axis", "L")
-        options["FITSMAxis"] = options.pop("fits_m_axis", "M")
+        options["FITSLAxis"] = options.pop("beam_l_axis", "L")
+        options["FITSMAxis"] = options.pop("beam_m_axis", "M")
         options["FITSFile"] = "'%s/%s'"%(INPUT, pattern)
 
 
@@ -133,7 +161,7 @@ if mode=="Predict":
     options["Cell"] = cell
 
     cmd = [ "--%s=%s"%(key, value) for (key, value) in options.iteritems() ]
-    utils.xrun("DDF.py", cmd)
+    utils.xrun("DDF.py", parset + cmd)
 
     with pyfits.open("%s.dirty.fits"%prefix) as hdu:
         hdu[0].data = data
@@ -149,9 +177,29 @@ if mode=="Predict":
     options["PredictModelName"] = "%s.dirty.fits"%prefix
 
     cmd = [ "--%s=%s"%(key, value) for (key, value) in options.iteritems() ]
-    utils.xrun("DDF.py", cmd)
+    utils.xrun("DDF.py", parset + cmd)
+
+    if column != "MODEL_DATA":
+        print("Copying data from MODEL_DATA to %s"%(column))
+        for ms_ in msname:
+            msn = "%s/%s"%(MSDIR, ms_)
+            tab = table(msn, readonly=False)
+            data = tab.getcol(column)
+
+            if addToCol:
+                data = tab.getcol(addToCol) + data
+
+            nrows = tab.nrows()
+            rowchunk = nrows//10
+            
+            for row0 in range(0, nrows, rowchunk):
+                nr = min(rowchunk, nrows-row0)
+                print("Moving data form MODEL_DATA to %s (rows %d to %d)"%(column, row0, row0+nr-1))
+                tab.putcol(column, data[row0:(row0+nr)], row0, nr)
+
+            tab.close()
 
 else:
     options["Mode"] = mode
     cmd = [ "--%s=%s"%(key, value) for (key, value) in options.iteritems() ]
-    utils.xrun("DDF.py", cmd)
+    utils.xrun("DDF.py", parset + cmd)

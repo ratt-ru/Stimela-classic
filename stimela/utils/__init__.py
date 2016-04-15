@@ -143,7 +143,7 @@ def readJson(conf):
 
    for key,val in jdict.iteritems():
        if isinstance(val, unicode):
-           jdict[key] = val
+           jdict[key] = str(val)
 
    return jdict
 

@@ -183,7 +183,20 @@ class Recipe(object):
         """
 
         if isinstance(steps, (list, tuple, set)):
-            containers = [ self.containers[i-1] for i in steps[:len(self.containers)]]
+            if isinstance(steps[0], str):
+                labels = [ cont.label.split("::")[0] for cont in self.containers]
+                containers = []
+
+                for step in steps:
+                    try:
+                        idx = labels.index(step)
+                    except ValueError:
+                        raise ValueError("Recipe label ID [{:s}] doesn't exist".format(step))
+
+                    containers.append( self.containers[idx] )
+            else:
+
+                containers = [ self.containers[i-1] for i in steps[:len(self.containers)] ]
         else:
             containers = self.containers
 

@@ -1,4 +1,4 @@
-FROM radioastro/ddfacet:oms
+FROM radioastro/ddfacet
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

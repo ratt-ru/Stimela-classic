@@ -9,7 +9,7 @@ import os
 import json
 
 
-mqt.MULTITHREAD = 16
+mqt.MULTITHREAD = 4
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
@@ -33,16 +33,22 @@ def readJson(conf):
 
 def calibrate(jdict):
 
-    v.LOG = II("${OUTDIR>/}log-${MS:BASE}-calibration.txt")
+    v.MS = "%s/%s"%(MSDIR, ITER[0])
+    skymodel = ITER[1]
+    
+    prefix = jdict.get("prefix", None)
+    if prefix:
+        v.LOG = II("${OUTDIR>/}log-${prefix}.txt")
+    else:
+        v.LOG = II("${OUTDIR>/}log-${MS:BASE}-calibration.txt")
 
     x.sh("addbitflagcol $MS")
 
     ms.set_default_spectral_info()
 
-    prefix = jdict.get("prefix", None)
 
     for item in [INDIR, "/data/skymodels/"]:
-        lsmname = "{:s}/{:s}".format(item, jdict["skymodel"])
+        lsmname = "{:s}/{:s}".format(item, skymodel)
         if os.path.exists(lsmname):
             break
 
@@ -54,6 +60,7 @@ def calibrate(jdict):
     ms.FIELD = jdict.get("field_id", 0)
 
     options = {}
+    kw = {}
     options["tiggerlsm.lsm_subset"] = jdict.get("subset", "all")
     gtimeint, gfreqint = jdict.get("Gjones_intervals", (1,1))
 
@@ -83,7 +90,7 @@ def calibrate(jdict):
     DDjones = jdict.get("DDjones", False)
 
     if jdict.get("IFR_gains"):
-        options["stefcal_ifr_gains"] = 1
+        kw["stefcal_ifr_gains"] = 1
     
     gains = {
         "Gjones" : "gain",
@@ -98,10 +105,10 @@ def calibrate(jdict):
 
         for item in reset:
             if item =="all":
-                options["stefcal_reset_all"] = True
+                kw["stefcal_reset_all"] = True
                 break
             else:
-                options["%s_reset"%gains[item]] = True
+                kw["%s_reset"%gains[item]] = True
 
 
     apply_ = jdict.get("apply", None)
@@ -111,36 +118,48 @@ def calibrate(jdict):
     
         for item in apply_:
             if item=="all":
-                options["gain_apply_only"] = True
-                options["ifrgain_apply_only"] = True
-                options["diffgain_apply_only"] = True
+                kw["gain_apply_only"] = True
+                kw["ifrgain_apply_only"] = True
+                kw["diffgain_apply_only"] = True
+                # make sure gains are not reset
+                kw["gain_reset"] = False
+                kw["ifrgain_reset"] = False
+                kw["diffgain_reset"] = False
                 break
             else:
-                options["%s_apply_only"%gains[item]] = True
+                kw["%s_apply_only"%gains[item]] = True
+                kw["%s_reset"%gains[item]] = False
 
     # Include UV model if specified
     if jdict.pop("add_uvmodel", False):
-        options.update( {'read_ms_model':1,'ms_sel.model_column':'MODEL_DATA'} )
+        options.update( {'read_ms_model':1, 'ms_sel.model_column':'MODEL_DATA'} )
 
     stefcal.stefcal(section="stefcal", gain_plot_prefix=prefix,
                     reset=True, dirty=False, 
                     diffgains=DDjones,
                     options=options,
-                    output=jdict.get("output_column", "CORR_RES"))
+                    output=jdict.get("output_column", "CORR_RES"),
+                    **kw)
 
  
 def azishe():
     jdict = readJson(CONFIG)
 
     msnames = jdict.get("msnames", jdict["msname"])
+    lsmnames = jdict.get("skymodels", jdict["skymodel"])
 
     if isinstance(msnames, (str, unicode)):
         msnames = [str(msnames)]
 
+    if isinstance(lsmnames, (str, unicode)):
+        lsmnames = [str(lsmnames)]
 
-    v.MS_List = ["{:s}/{:s}".format(MSDIR, msname) for msname in msnames]
+    if len(lsmnames)==1:
+        lsmnames = lsmnames*len(msnames)
 
-    cores = jdict.get("cpus", 1)
+    v.ITER_List = [ map(str, [msname, lsmname]) for (msname, lsmname) in zip(msnames, lsmnames) ]
+
+    cores = jdict.get("ncpu", 1)
     Pyxis.Context["JOBS"] = cores
 
-    per_ms(lambda: calibrate(jdict))
+    pper("ITER", lambda: calibrate(jdict))

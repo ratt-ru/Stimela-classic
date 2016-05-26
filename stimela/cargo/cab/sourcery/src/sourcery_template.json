@@ -28,7 +28,6 @@
     "dd_tagging" : {
          "enable": true,
          "snr_thresh" : 100,
-         "local_thresh" : 0.8,
          "high_corr_thresh" : 0.75,
          "negdetec_region" : 5,
          "negatives_thresh" : 5,

@@ -181,11 +181,11 @@ def pull():
 
     if args.image:
         for image in args.image:
-            img = stimela_logger.Images(LOG_IMAGES)
+            img = stimela_logger.Image(LOG_IMAGES)
 
             if not img.find(image):
                 docker.pull(image)
-                img.add(dict(image=image, tag=tag))
+                img.add(dict(name=image, tag=tagargs.tag))
 
     else:
 
@@ -197,11 +197,11 @@ def pull():
         base = set(base)
 
         for image in base:
-            img = stimela_logger.Images(LOG_IMAGES)
+            img = stimela_logger.Image(LOG_IMAGES)
 
-            if not img.find(image):
+            if not img.find(image) and image!="radioastro/ddfacet":
                 docker.pull(image)
-                img.add(dict(image=image, tag=tag))
+                img.add(dict(name=image, tag=args.tag))
 
 def images():
     for i, arg in enumerate(sys.argv):

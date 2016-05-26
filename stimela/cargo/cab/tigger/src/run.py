@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+from pyrap.tables import table
 
 sys.path.append("/utils")
 import utils
@@ -8,6 +9,7 @@ import utils
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
+MSDIR = os.environ["MSDIR"]
 
 jdict = utils.readJson(CONFIG)
 

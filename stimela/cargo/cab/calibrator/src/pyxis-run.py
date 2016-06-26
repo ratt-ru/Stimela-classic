@@ -134,7 +134,7 @@ def calibrate(jdict):
     if jdict.pop("add_uvmodel", False):
         options.update( {'read_ms_model':1, 'ms_sel.model_column':'MODEL_DATA'} )
 
-    stefcal.stefcal(section="stefcal", gain_plot_prefix=prefix,
+    stefcal.stefcal(section="stefcal",
                     reset=True, dirty=False, 
                     diffgains=DDjones,
                     options=options,

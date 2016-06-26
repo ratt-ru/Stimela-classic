@@ -23,11 +23,11 @@ simms_dict = {
     "msname"   :   MS,                     
     "telescope" :   "meerkat",              # Telescope name
     "direction" :   "J2000,90deg,-45deg",   # Phase tracking centre of observation
-    "synthesis" :   4,                      # Synthesis time of observation
-    "dtime"     :   5,                      # Exposure time
+    "synthesis" :   0.125,                      # Synthesis time of observation
+    "dtime"     :   30,                      # Exposure time
     "freq0"     :   "750MHz",               # Start frequency of observation
     "dfreq"     :   "1MHz",                 # Channel width
-    "nchan"     :   10                      # Number of channels
+    "nchan"     :   1                      # Number of channels
     }
 
 pipeline.add("cab/simms",                   # Executor image to start container from 
@@ -43,6 +43,7 @@ simulator_dict = {
     "msname"    :   MS,
     "skymodel"  :   LSM,                    # Sky model to simulate into MS
     "addnoise"  :   True,                   # Add thermal noise to visibilities
+    "column"    :   "CORRECTED_DATA",
     "sefd"      :   831,                    # Compute noise from this SEFD
     "recenter"  :   True                    # Recentre sky model to phase tracking centre of MS
     }

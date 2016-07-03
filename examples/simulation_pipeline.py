@@ -66,14 +66,14 @@ imager_dict = {
     }
 
 # Briggs robust values to use for each image
-briggs_robust = 2, 0, -2
+briggs_robust = [2] #, 0, -2
 
 for i, robust in enumerate(briggs_robust):
 
     imager_dict["robust"] = robust # update Briggs robust parameter
     imager_dict["imageprefix"] = "%s_robust-%d"%(PREFIX, i) # Prefix for output images
 
-    pipeline.add("cab/wsclean",
+    pipeline.add("cab/casa",
                  "imager_example_%d"%i, 
                  imager_dict, 
                  input=INPUT, 
@@ -82,4 +82,4 @@ for i, robust in enumerate(briggs_robust):
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were addedd
-pipeline.run()
+pipeline.run([3])

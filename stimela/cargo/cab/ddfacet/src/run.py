@@ -50,16 +50,16 @@ mode = "Dirty"
 if niter:
     mode = "Clean"
 
-addToCol = jdict.pop("add_to_column", None)
+addToCol = str(jdict.pop("add_to_column", None))
 
 if jdict.pop("predict", False):
     skymodel = jdict.pop("skymodel", None)
     if skymodel:
         mode = "Predict"
         skymodel = INPUT + "/" + skymodel
-        column = jdict.get("column", None)
+        column = str(jdict.get("column", None))
         if column == None:
-            column = jdict.get("ColName", None)
+            column = str(jdict.get("ColName", None))
         if column == None:
             jdict["column"] = "MODEL_DATA"
 
@@ -181,10 +181,11 @@ if mode=="Predict":
 
     if column != "MODEL_DATA":
         print("Copying data from MODEL_DATA to %s"%(column))
-        for ms_ in msname:
+        for ms_ in map(str, msname):
             msn = "%s/%s"%(MSDIR, ms_)
             tab = table(msn, readonly=False)
-            data = tab.getcol(column)
+            column = str(column)
+            data = tab.getcol("MODEL_DATA")
 
             if addToCol:
                 data = tab.getcol(addToCol) + data

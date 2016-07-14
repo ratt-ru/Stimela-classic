@@ -105,7 +105,9 @@ class Recipe(object):
             image = "{:s}:{:s}".format(image, cab_tag)
 
 
-        cont = docker.Load(image, name, label=label, logger=self.log)
+        cont = docker.Load(image, name,
+                INPUT=input,OUTPUT=output,
+                label=label, logger=self.log)
 
         cont.add_environ("MAC_OS", str(self.MAC_OS))
 

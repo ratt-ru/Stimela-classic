@@ -298,7 +298,7 @@ def kill():
         for line in lines:
             cont, _id, utime, _pid, status = line.split()
             if status.find("removed")<0:
-                cont_ = docker.Load(None, cont)
+                cont_ = docker.Load(None, cont, None, None)
                 cont_.started = True
                 cont_.stop()
                 cont_.rm()

@@ -13,7 +13,7 @@ MSDIR = os.environ["MSDIR"]
 
 jdict = dict(npix=2048, clean_iterations=1000, cellsize=2, 
              weight="briggs", robust=0, spw_id=0, 
-             field_id=0, stokes="I", mgain=0.85)
+             field_id=0, stokes="I", mgain=0.85, column="CORRECTED_DATA")
 
 jdict.update( utils.readJson(CONFIG) )
 
@@ -34,6 +34,7 @@ STANDARD_OPTS = {
     "cellsize": "scale",
     "clean_iterations" : "niter",
     "stokes" : "pol",
+    "column" : "datacolumn",
 }
 
 options = {}
@@ -55,7 +56,7 @@ for key, value in jdict.items():
         options[key] = ""
 
     if key in ["field", "spw"]:
-        options[key] = str(options.get("fiels", 0))
+        options[key] = str(options.get("field", 0))
     if key in ["psf", "dirty"]:
         options.pop(key, None)
 
@@ -72,5 +73,6 @@ else:
 prefix = options["name"] = OUTPUT + "/" + options.pop("name", os.path.basename(vis[:-3]))
 
 args = ["-%s %s"%(a,b) for a,b in options.iteritems()]
+print args
 
 utils.xrun("wsclean", args + [mslist])

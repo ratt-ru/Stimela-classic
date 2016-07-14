@@ -39,6 +39,7 @@ STANDARD_OPTS = {
 }
 
 niter = jdict.pop("clean_iterations", 0)
+niter = jdict.pop("MaxMinorIter", niter)
 parset = jdict.pop("parset", None)
 
 if parset:

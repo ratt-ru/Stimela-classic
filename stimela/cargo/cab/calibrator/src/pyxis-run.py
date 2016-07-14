@@ -17,6 +17,8 @@ MSDIR = os.environ["MSDIR"]
 
 LOG = II("${OUTDIR>/}log-calibrator.txt")
 
+MULTI = False
+
 
 def readJson(conf):
 
@@ -31,13 +33,13 @@ def readJson(conf):
 
 
 
-def calibrate(jdict):
+def calibrate(jdict, multi=MULTI):
 
     v.MS = "%s/%s"%(MSDIR, ITER[0])
     skymodel = ITER[1]
     
     prefix = jdict.get("prefix", None)
-    if prefix:
+    if prefix and not multi:
         v.LOG = II("${OUTDIR>/}log-${prefix}.txt")
     else:
         v.LOG = II("${OUTDIR>/}log-${MS:BASE}-calibration.txt")
@@ -67,6 +69,7 @@ def calibrate(jdict):
     options["stefcal_gain.timeint"] = gtimeint
     options["stefcal_gain.freqint"] = gfreqint
     options["stefcal_gain.flag_ampl"] = jdict.get("gjones_ampl_clipping", 0)
+    options["stefcal_gain.flag_chisq"] = jdict.get("gjones_chisq_clipping", 0)
     options["stefcal_gain.flag_chisq_threshold"] = jdict.get("Gjones_thresh_sigma", 10)
     options["stefcal_gain.flag_ampl_low"] = jdict.get("Gjones_flag_ampl_low", 0.3)
     options["stefcal_gain.flag_ampl_high"] = jdict.get("Gjones_flag_ampl_high", 2)
@@ -134,25 +137,32 @@ def calibrate(jdict):
     if jdict.pop("add_uvmodel", False):
         options.update( {'read_ms_model':1, 'ms_sel.model_column':'MODEL_DATA'} )
 
+    args = map(str, jdict.get("args", [""]))
+
     stefcal.stefcal(section="stefcal",
                     reset=True, dirty=False, 
                     diffgains=DDjones,
                     options=options,
                     output=jdict.get("output_column", "CORR_RES"),
+                    args = args,
                     **kw)
 
  
 def azishe():
     jdict = readJson(CONFIG)
-
+    
+    global MULTI
     msnames = jdict.get("msnames", jdict["msname"])
     lsmnames = jdict.get("skymodels", jdict["skymodel"])
 
     if isinstance(msnames, (str, unicode)):
         msnames = [str(msnames)]
+    elif len(msnames)>1:
+        MULTI = True
 
     if isinstance(lsmnames, (str, unicode)):
         lsmnames = [str(lsmnames)]
+	
 
     if len(lsmnames)==1:
         lsmnames = lsmnames*len(msnames)

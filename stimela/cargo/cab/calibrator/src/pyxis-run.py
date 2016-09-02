@@ -9,13 +9,15 @@ import os
 import json
 
 
-mqt.MULTITHREAD = 4
+mqt.MULTITHREAD = 8
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
 MSDIR = os.environ["MSDIR"]
 
 LOG = II("${OUTDIR>/}log-calibrator.txt")
+
+MULTI = False
 
 
 def readJson(conf):
@@ -31,13 +33,13 @@ def readJson(conf):
 
 
 
-def calibrate(jdict):
+def calibrate(jdict, multi=MULTI):
 
     v.MS = "%s/%s"%(MSDIR, ITER[0])
     skymodel = ITER[1]
     
     prefix = jdict.get("prefix", None)
-    if prefix:
+    if prefix and not multi:
         v.LOG = II("${OUTDIR>/}log-${prefix}.txt")
     else:
         v.LOG = II("${OUTDIR>/}log-${MS:BASE}-calibration.txt")
@@ -67,6 +69,7 @@ def calibrate(jdict):
     options["stefcal_gain.timeint"] = gtimeint
     options["stefcal_gain.freqint"] = gfreqint
     options["stefcal_gain.flag_ampl"] = jdict.get("gjones_ampl_clipping", 0)
+    options["stefcal_gain.flag_chisq"] = jdict.get("gjones_chisq_clipping", 0)
     options["stefcal_gain.flag_chisq_threshold"] = jdict.get("Gjones_thresh_sigma", 10)
     options["stefcal_gain.flag_ampl_low"] = jdict.get("Gjones_flag_ampl_low", 0.3)
     options["stefcal_gain.flag_ampl_high"] = jdict.get("Gjones_flag_ampl_high", 2)
@@ -81,6 +84,8 @@ def calibrate(jdict):
         options["me.e_enable"] = 1
         options["me.p_enable"] = 1
         options["me.e_module"] = "Siamese_OMS_pybeams_fits"
+        options["me.e_advanced"] = 1 
+        options["me.e_all_stations"] = 1
         options["pybeams_fits.l_axis"] = jdict.get("beam_l_axis", "L")
         options["pybeams_fits.m_axis"] = jdict.get("beam_m_axis", "M")
         options["pybeams_fits.filename_pattern"] =  "%s/%s"%(INDIR, jdict["beam_files_pattern"])
@@ -88,9 +93,13 @@ def calibrate(jdict):
     options["ms_sel.input_column"] = column
 
     DDjones = jdict.get("DDjones", False)
+    if DDjones:
+        options["stefcal_diffgain.flag_ampl"] = 0
+        options["stefcal_diffgain.flag_chisq"] = 0
 
-    if jdict.get("IFR_gains"):
-        kw["stefcal_ifr_gains"] = 1
+    if jdict.get("IFRjones"):
+        options["stefcal_ifr_gains"] = 1
+        options["stefcal_per_chan_ifr_gains"] = 1
     
     gains = {
         "Gjones" : "gain",
@@ -105,18 +114,28 @@ def calibrate(jdict):
 
         for item in reset:
             if item =="all":
-                kw["stefcal_reset_all"] = True
+                kw["reset"] = True
                 break
             else:
                 kw["%s_reset"%gains[item]] = True
 
+            if item == "IFRjones":
+                options["stefcal_reset_ifr_gains"] = 1
+                options["stefcal_ifr_gain_reset"] = 1
 
     apply_ = jdict.get("apply", None)
     if apply_ :
         if isinstance(apply_, (str, unicode)):
             apply_ = map(str, apply_.split(","))
-    
+
+        if "IFRjones" in apply_:
+            options["stefcal_ifr_gains"] = 1
+            options["stefcal_per_chan_ifr_gains"] = 1
+            options["stefcal_reset_ifr_gains"] = 0
+            options["stefcal_ifr_gain_reset"] = 0
+
         for item in apply_:
+            kw["reset"] = False
             if item=="all":
                 kw["gain_apply_only"] = True
                 kw["ifrgain_apply_only"] = True
@@ -134,25 +153,33 @@ def calibrate(jdict):
     if jdict.pop("add_uvmodel", False):
         options.update( {'read_ms_model':1, 'ms_sel.model_column':'MODEL_DATA'} )
 
-    stefcal.stefcal(section="stefcal",
-                    reset=True, dirty=False, 
+    args = map(str, jdict.get("args", [""]))
+    reset = kw.pop("reset", True)
+
+    stefcal.stefcal(section="stefcal", reset=reset,
+                    dirty=False, 
                     diffgains=DDjones,
                     options=options,
                     output=jdict.get("output_column", "CORR_RES"),
+                    args = args,
                     **kw)
 
  
 def azishe():
     jdict = readJson(CONFIG)
-
+    
+    global MULTI
     msnames = jdict.get("msnames", jdict["msname"])
     lsmnames = jdict.get("skymodels", jdict["skymodel"])
 
     if isinstance(msnames, (str, unicode)):
         msnames = [str(msnames)]
+    elif len(msnames)>1:
+        MULTI = True
 
     if isinstance(lsmnames, (str, unicode)):
         lsmnames = [str(lsmnames)]
+	
 
     if len(lsmnames)==1:
         lsmnames = lsmnames*len(msnames)

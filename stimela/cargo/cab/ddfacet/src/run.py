@@ -36,9 +36,11 @@ STANDARD_OPTS = {
     "cellsize": "Cell",
     "nfacets" : "NFacets",
     "column" : "ColName",
+    "clean_mask" : "CleanMaskImage",
 }
 
 niter = jdict.pop("clean_iterations", 0)
+niter = jdict.pop("MaxMinorIter", niter)
 parset = jdict.pop("parset", None)
 
 if parset:
@@ -93,6 +95,9 @@ for key, value in jdict.iteritems():
         del options[key]
 
 column = options.get("ColName", "MODEL_DATA")
+mask = options.get("CleanMaskImage", None)
+if mask:
+    options["CleanMaskImage"] = utils.substitute_globals(mask) or "%s/%s"%(INPUT, mask)
 
 upfirst = lambda a: a[0].upper() + a[1:]
 options["Weighting"] = upfirst(options["Weighting"])

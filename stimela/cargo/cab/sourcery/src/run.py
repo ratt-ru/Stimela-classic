@@ -86,7 +86,6 @@ def pybdsm(image, prefix, *args, **kw):
 name = INDIR+"/"+jdict.pop("imagename")
 dimage = jdict.pop("detection_image", None)
 prefix = jdict.pop("prefix", None) or name.split("/")[-1]
-prefix = OUTDIR + "/" + prefix 
 
 if dimage:
     dimage = INDIR + "/" + dimage
@@ -94,6 +93,7 @@ if dimage:
 go = jdict.pop("pybdsm", False)
 
 if go:
+    prefix = OUTDIR + "/" + prefix 
     if dimage:
         jdict["detection_image"] = dimage
     pybdsm(name, prefix, **jdict)
@@ -103,8 +103,9 @@ psf = jdict.pop("psfname", None)
 if psf:
     psf = INDIR+"/"+psf
 
-template["prefix"] = jdict.pop("prefix", None)
+template["prefix"] = prefix
 template["imagename"] = name
+
 template["psfname"] = psf
 template["reliability"]["thresh_pix"] = jdict.pop("thresh_pix", 4)
 template["reliability"]["thresh_isl"] = jdict.pop("thresh_isl", 3)
@@ -130,6 +131,7 @@ config = "run_me_now.json"
 utils.writeJson(config, template)
 
 utils.xrun("sourcery", ["-jc", config])
+utils.xrun("tigger-convert", ["%s/%s.lsm.html"%(OUTDIR,prefix), "--rename -f"])
 
 utils.xrun("rm", ["-f", config])
 

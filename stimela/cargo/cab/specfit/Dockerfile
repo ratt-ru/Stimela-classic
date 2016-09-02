@@ -1,13 +1,11 @@
-FROM radioastro/meqtrees
+FROM radioastro/tigger
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output
-ADD src /code
 
 ENV MEQTREES_CATTERY_PATH /usr/lib/python2.7/dist-packages/Cattery
 
-RUN ulimit -c unlimited
-
+ADD src /code
 WORKDIR /code
 
-CMD sh run.sh
+CMD python run.py

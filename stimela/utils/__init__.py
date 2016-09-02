@@ -9,6 +9,7 @@ import time
 import tempfile
 import inspect
 import warnings
+import re
 
 from multiprocessing import Process, Manager, Lock
 manager = Manager()
@@ -138,18 +139,23 @@ def pper(iterable, command, cpus=None, stagger=2, logger=None):
 
 
 def readJson(conf):
+   import collections
 
    with open(conf) as _std:
        jdict = json.load(_std)
 
+   ndict = {}
    for key,val in jdict.items():
-       if isinstance(val, unicode):
-           jdict[key] = str(val)
-       if isinstance(key, unicode):
-           del jdict[key]
-           jdict[str(key)] = val
+        if isinstance(val, unicode):
+            val = str(val)
 
-   return jdict
+        elif isinstance(val, (list,tuple)):
+            for i,v in enumerate(val):
+                if isinstance(v, unicode):
+                    val[i] = str(v)
+       
+        ndict[str(key)] = val
+   return ndict
 
 
 def writeJson(config, dictionary):
@@ -302,7 +308,7 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
        ctype: Axis label in the fits header (if given, axis will be ignored)
        keep_old: Keep component files after combining?
     """
-
+    import numpy
     try:
         import pyfits
     except ImportError:
@@ -353,3 +359,15 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
     if not keep_old:
         for fits in fitslist:
             os.system('rm -f %s'%fits)
+
+
+def substitute_globals(string):
+    sub = set(re.findall('\{(.*?)\}', string))
+    globs = inspect.currentframe().f_back.f_globals
+    if sub:
+        for item in map(str, sub):
+            string = string.replace("${%s}"%item, globs[item])
+        return string
+    else:
+        return False
+

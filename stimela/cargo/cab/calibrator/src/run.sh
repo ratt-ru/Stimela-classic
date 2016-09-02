@@ -5,3 +5,7 @@ if [ -z "$CONFIG" ]; then
 fi
 
 pyxis azishe -f
+
+if [ -f "core" ]; then 
+    cp core /ouput/core
+fi

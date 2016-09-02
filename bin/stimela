@@ -20,4 +20,9 @@ if not os.path.exists(stimela.LOG_CONTAINERS):
 if not os.path.exists(stimela.LOG_PROCESS):
     with open(stimela.LOG_PROCESS, "w") as std:
         pass
+
+if not os.path.exists(stimela.LOG_CABS):
+    with open(stimela.LOG_CABS, "w") as std:
+        pass
+
 stimela.main()

@@ -13,6 +13,8 @@ import inspect
 import platform
 from stimela.utils import stimela_logger
 
+USER = os.environ["USER"]
+
 
 ekhaya = cargo.__path__[0]
 
@@ -102,7 +104,10 @@ class Recipe(object):
             image = image.split(":")[0]
             image = "{:s}:{:s}".format(image, cab_tag)
 
-        cont = docker.Load(image, name, label=label, logger=self.log)
+
+        cont = docker.Load(image, name,
+                INPUT=input,OUTPUT=output,
+                label=label, logger=self.log)
 
         cont.add_environ("MAC_OS", str(self.MAC_OS))
 
@@ -163,6 +168,7 @@ class Recipe(object):
             cont.add_volume(self.configs_path, self.configs_path_container, perm="ro")
             config = self.configs_path_container+"/"+config 
 
+        cont.image = "{:s}_{:s}".format(USER, image)
         cont.add_environ("CONFIG", config)
 
         self.containers.append(cont)
@@ -179,7 +185,20 @@ class Recipe(object):
         """
 
         if isinstance(steps, (list, tuple, set)):
-            containers = [ self.containers[i-1] for i in steps[:len(self.containers)]]
+            if isinstance(steps[0], str):
+                labels = [ cont.label.split("::")[0] for cont in self.containers]
+                containers = []
+
+                for step in steps:
+                    try:
+                        idx = labels.index(step)
+                    except ValueError:
+                        raise ValueError("Recipe label ID [{:s}] doesn't exist".format(step))
+
+                    containers.append( self.containers[idx] )
+            else:
+
+                containers = [ self.containers[i-1] for i in steps[:len(self.containers)] ]
         else:
             containers = self.containers
 

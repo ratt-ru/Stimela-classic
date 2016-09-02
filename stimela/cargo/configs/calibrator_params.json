@@ -8,8 +8,8 @@
     "gjones_intervals": [1,1],
     "gjones_smoothing": null,
     "gjones_thresh_sigma": 5,
-    "gjones_flag_ampl_low": 0.5,
-    "gjones_flag_ampl_high": 1.5,
+    "gjones_flag_ampl_low": 0.0,
+    "gjones_flag_ampl_high": 10.0,
     "ejones_intervals": null,
     "ejones_smoothing": null
 }

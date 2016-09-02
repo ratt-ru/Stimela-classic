@@ -62,7 +62,7 @@ def readJson(conf):
     return out
 
 
-jdict = readJson(CONFIG)
+jdict = utils.readJson(CONFIG)
 telescope = jdict["telescope"]
 direction = jdict.get("direction", None)
 

@@ -7,4 +7,4 @@ RUN mkdir -p /input /output
 
 WORKDIR /code
 
-CMD sh run.sh
+CMD python run.py

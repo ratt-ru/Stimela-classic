@@ -5,6 +5,7 @@ import stimela.utils as utils
 import os
 import time
 from stimela.utils import stimela_logger
+import logging
 
 
 class DockerError(Exception):
@@ -50,7 +51,7 @@ It may be still running or it doesn't exist".format(container))
 
 class Load(object):
 
-    def __init__(self, image, name, 
+    def __init__(self, image, name, INPUT, OUTPUT, 
                  volumes=None, environs=None,
                  label="", awsEC2=False, logger=None):
     
@@ -58,6 +59,8 @@ class Load(object):
         self.name = name
         self.label = label
         self.volumes = volumes or []
+        self.INPUT = INPUT
+        self.OUTPUT = OUTPUT
         self.environs = environs or []
         self.awsEC2 = awsEC2
         self.logger = logger
@@ -95,6 +98,11 @@ class Load(object):
 
 
     def start(self, logfile=None, shared_memory=1024):
+        
+        logging.basicConfig(filename="%s/log-%s.txt"%(self.OUTPUT, self.name))
+        stderrLogger = logging.StreamHandler()
+        stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+        logging.getLogger().addHandler(stderrLogger)
 
         volumes = " -v " + " -v ".join(self.volumes)
         environs = " -e "+" -e ".join(self.environs)

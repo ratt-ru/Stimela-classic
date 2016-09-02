@@ -9,7 +9,7 @@ import os
 import json
 
 
-mqt.MULTITHREAD = 4
+mqt.MULTITHREAD = 8
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
@@ -84,6 +84,8 @@ def calibrate(jdict, multi=MULTI):
         options["me.e_enable"] = 1
         options["me.p_enable"] = 1
         options["me.e_module"] = "Siamese_OMS_pybeams_fits"
+        options["me.e_advanced"] = 1 
+        options["me.e_all_stations"] = 1
         options["pybeams_fits.l_axis"] = jdict.get("beam_l_axis", "L")
         options["pybeams_fits.m_axis"] = jdict.get("beam_m_axis", "M")
         options["pybeams_fits.filename_pattern"] =  "%s/%s"%(INDIR, jdict["beam_files_pattern"])
@@ -91,9 +93,13 @@ def calibrate(jdict, multi=MULTI):
     options["ms_sel.input_column"] = column
 
     DDjones = jdict.get("DDjones", False)
+    if DDjones:
+        options["stefcal_diffgain.flag_ampl"] = 0
+        options["stefcal_diffgain.flag_chisq"] = 0
 
-    if jdict.get("IFR_gains"):
-        kw["stefcal_ifr_gains"] = 1
+    if jdict.get("IFRjones"):
+        options["stefcal_ifr_gains"] = 1
+        options["stefcal_per_chan_ifr_gains"] = 1
     
     gains = {
         "Gjones" : "gain",
@@ -108,18 +114,28 @@ def calibrate(jdict, multi=MULTI):
 
         for item in reset:
             if item =="all":
-                kw["stefcal_reset_all"] = True
+                kw["reset"] = True
                 break
             else:
                 kw["%s_reset"%gains[item]] = True
 
+            if item == "IFRjones":
+                options["stefcal_reset_ifr_gains"] = 1
+                options["stefcal_ifr_gain_reset"] = 1
 
     apply_ = jdict.get("apply", None)
     if apply_ :
         if isinstance(apply_, (str, unicode)):
             apply_ = map(str, apply_.split(","))
-    
+
+        if "IFRjones" in apply_:
+            options["stefcal_ifr_gains"] = 1
+            options["stefcal_per_chan_ifr_gains"] = 1
+            options["stefcal_reset_ifr_gains"] = 0
+            options["stefcal_ifr_gain_reset"] = 0
+
         for item in apply_:
+            kw["reset"] = False
             if item=="all":
                 kw["gain_apply_only"] = True
                 kw["ifrgain_apply_only"] = True
@@ -138,9 +154,10 @@ def calibrate(jdict, multi=MULTI):
         options.update( {'read_ms_model':1, 'ms_sel.model_column':'MODEL_DATA'} )
 
     args = map(str, jdict.get("args", [""]))
+    reset = kw.pop("reset", True)
 
-    stefcal.stefcal(section="stefcal",
-                    reset=True, dirty=False, 
+    stefcal.stefcal(section="stefcal", reset=reset,
+                    dirty=False, 
                     diffgains=DDjones,
                     options=options,
                     output=jdict.get("output_column", "CORR_RES"),

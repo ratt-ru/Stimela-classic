@@ -22,7 +22,5 @@ setup(name = "stimela",
                                    "cab/*/src/tdlconf.profiles"]},
     requires = ["docker", "python"],
     scripts = ["bin/" + i for i in os.listdir("bin")], 
-    licence = "This program should come with the GNU General Public Licence. "\
-            "If not, find it at http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html",
     classifiers = [],
      )

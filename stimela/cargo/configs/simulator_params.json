@@ -2,7 +2,7 @@
     "msname": null, 
     "direction": "J2000,0deg,-30deg", 
     "skymodel": null, 
-    "recentre": true, 
+    "recentre": false, 
     "addnoise": true, 
     "sefd": 831, 
     "column": "DATA",

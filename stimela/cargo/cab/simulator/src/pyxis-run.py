@@ -89,6 +89,13 @@ def azishe():
     if beam:
         options["me.e_enable"] = 1
         options["me.p_enable"] = 1
+        options["me.e_module"] = "Siamese_OMS_pybeams_fits"
+        options["me.e_advanced"] = 1 
+        options["me.e_all_stations"] = 1
+        options["pybeams_fits.l_axis"] = jdict.get("beam_l_axis", "L")
+        options["pybeams_fits.m_axis"] = jdict.get("beam_m_axis", "M")
+        options["pybeams_fits.filename_pattern"] =  "%s/%s"%(INDIR, jdict["beam_files_pattern"])
+
 
         rms_perr = jdict.get("pointing_accuracy", 0)
         # Include pointing errors if needed
@@ -102,9 +109,6 @@ def azishe():
             options['oms_pointing_errors.pe_l.values_str'] = "'%s'"%ll
             options['oms_pointing_errors.pe_m.values_str'] = "'%s'"%mm
 
-
-        options["pybeams_fits.filename_pattern"] = "%s/%s"%(INDIR, jdict["beam_files_pattern"])
-        options["me.e_module"] = "Siamese_OMS_pybeams_fits"
 
     _section = dict(sim = "sim",
                     add_G = "sim:G")

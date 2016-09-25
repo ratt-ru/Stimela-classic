@@ -85,7 +85,7 @@ def azishe():
         noise = compute_vis_noise(sefd)
         options["noise_stddev"] = noise
 
-    beam = jdict.get("ejones", False)
+    beam = jdict.get("Ejones", False)
     if beam:
         options["me.e_enable"] = 1
         options["me.p_enable"] = 1
@@ -108,7 +108,6 @@ def azishe():
 
     _section = dict(sim = "sim",
                     add_G = "sim:G")
-
     if jdict.get("gjones", False):
         section = "add_G"
     else:

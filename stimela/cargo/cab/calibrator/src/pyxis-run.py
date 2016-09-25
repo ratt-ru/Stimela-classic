@@ -9,7 +9,7 @@ import os
 import json
 
 
-mqt.MULTITHREAD = 8
+mqt.MULTITHREAD = 4
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
@@ -55,6 +55,8 @@ def calibrate(jdict, multi=MULTI):
             break
 
     v.LSM = lsmname
+    if jdict.get("label", ""):
+        v.LABEL = jdict["label"]
 
     column = jdict.get("column", "DATA")
 

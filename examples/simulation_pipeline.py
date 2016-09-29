@@ -22,7 +22,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
 simms_dict = {
     "msname"   :   MS,                     
     "telescope" :   "meerkat",              # Telescope name
-    "direction" :   "J2000,90deg,-45deg",   # Phase tracking centre of observation
+    "direction" :   "J2000,0deg,-30deg",   # Phase tracking centre of observation
     "synthesis" :   0.125,                      # Synthesis time of observation
     "dtime"     :   30,                      # Exposure time
     "freq0"     :   "750MHz",               # Start frequency of observation
@@ -66,14 +66,14 @@ imager_dict = {
     }
 
 # Briggs robust values to use for each image
-briggs_robust = [2] #, 0, -2
+briggs_robust = 2, 0, -2
 
 for i, robust in enumerate(briggs_robust):
 
     imager_dict["robust"] = robust # update Briggs robust parameter
     imager_dict["imageprefix"] = "%s_robust-%d"%(PREFIX, i) # Prefix for output images
 
-    pipeline.add("cab/casa",
+    pipeline.add("cab/wsclean",
                  "imager_example_%d"%i, 
                  imager_dict, 
                  input=INPUT, 
@@ -82,4 +82,4 @@ for i, robust in enumerate(briggs_robust):
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were addedd
-pipeline.run([3])
+pipeline.run()

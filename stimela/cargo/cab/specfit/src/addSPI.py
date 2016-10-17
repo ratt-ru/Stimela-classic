@@ -89,10 +89,13 @@ def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile
 
     # may supply FITS file for freq0, in which case just pull ref frequency from FITS file,
     # else explicit frequency, else get frequency from alpha image
+    print "FREQ0:0", freq0
     if type(freq0) is str:
         freq0 = fitsInfo(freq0)['freq0']
+        print "FREQ0:1", freq0
     else:
         freq0 = freq0 or fits_alpha['freq0']
+    print "FREQ0:2", freq0
 
     model = Tigger.load(lsmname)    # load sky model
     rad = lambda a: a*(180/np.pi) # convert radians to degrees
@@ -108,24 +111,27 @@ def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile
             ddec = rad(src.shape.ex) if src.shape  else beam # assume source extent equal to the Gaussian major axis along both ra and dec axes
             rgn = sky2px(fits_alpha["wcs"],ra,dec,dra,ddec,fits_alpha["dra"]) # Determine region of interest
 
-            subIm_alpha_nonan = []
-            subIm_alpha_error_nonan = []
+            imslice = slice(rgn[2], rgn[3]), slice(rgn[0], rgn[3])
+            alpha = image_alpha[imslice]
+            alpha_error = image_alpha_error[imslice]
+            good = np.where( np.logical_and(alpha!=0, alpha!=np.nan))
+            alpha = alpha[good]
+            alpha_error = alpha_error[good]
+            good = np.where( np.logical_and(alpha_error!=np.nan, alpha_error!=np.inf))
 
-            for (x,y) in zip(range(rgn[2],rgn[3]), range(rgn[0],rgn[1])):
-                if np.isnan(image_alpha[x,y])==False and np.isnan(image_alpha_error[x,y])==False:
-                    subIm_alpha_nonan.append(image_alpha[x,y])
-                    subIm_alpha_error_nonan.append(image_alpha_error[x,y])
+            alpha = alpha[good]
+            alpha_error = alpha_error[good]
 
-            subIm_weight = [1.0/subIm_alpha_error_nonan[i] for i in range(len(subIm_alpha_error_nonan))]
-            subIm_weighted = [subIm_alpha_nonan[i]*subIm_weight[i] for i in range(len(subIm_alpha_nonan))]
-
+            subIm_weight = 1/alpha_error
+            subIm_weighted = alpha*subIm_weight
 
             if len(subIm_weighted)>0:
                 subIm_normalization = np.sum(subIm_weight)
 
-                spi = np.sum(subIm_weighted)/subIm_normalization
+                spi = float(np.sum(subIm_weighted)/subIm_normalization)
+                print "SPI", spi
                 if spi > spitol[0] or spi < spitol[-1]:
-                    print "INFO: Adding spi: %.2g (at %.3g MHz) to source %s"%(spi, freq0/1e6, src.name)
+                    print "INFO: Adding spi: %.3f (at %.3g MHz) to source %s"%(spi, freq0/1e6, src.name)
                     src.spectrum = Tigger.Models.ModelClasses.SpectralIndex(spi, freq0)
             else:
                 print "ALERT: no spi info found in %s for source %s"%(fitsname_alpha, src.name)

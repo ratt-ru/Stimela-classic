@@ -74,9 +74,15 @@ def azishe():
     v.LSM = II("${lsmname:FILE}")
     std.copy(lsmname, LSM)
 
-    direction = jdict["direction"]
 
-    if jdict["recentre"]:
+    if jdict.get("recenter", False):
+        direction = jdict.get("direction", False)
+        if direction:
+            ftab = ms.ms(subtable="FIELD")
+            ra,dec = ftab.getcol("PHASE_DIR")[jdict.get("field_id",0)][0]
+
+            direction = "J2000,%frad,%frad"%(ra,dec)
+
         x.sh("tigger-convert --recenter=$direction $LSM -f")
 
     options = {}

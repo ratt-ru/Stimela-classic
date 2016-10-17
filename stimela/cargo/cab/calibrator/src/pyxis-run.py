@@ -162,7 +162,7 @@ def calibrate(jdict, multi=MULTI):
                     dirty=False, 
                     diffgains=DDjones,
                     options=options,
-                    output=jdict.get("output_column", "CORR_RES"),
+                    output=jdict.get("output", "CORR_RES"),
                     args = args,
                     **kw)
 

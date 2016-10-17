@@ -8,17 +8,38 @@ from utils import stimela_logger
 import stimela
 import time
 import datetime
+import tempfile
 
 class DockerError(Exception):
     pass
 
 
-def build(image, build_path, tag=None):
+def build(image, build_path, tag=None, build_args=None):
     """ build a docker image"""
+
     if tag:
         image = ":".join([image, tag])
 
-    utils.xrun("docker build", ["-t", image, 
+    if build_args:
+        stdw = tempfile.NamedTemporaryFile(dir=build_path)
+        with open("%s/Dockerfile"%build_path) as std:
+            dfile = std.readlines()
+
+        for line in dfile:
+            if line.lower().startswith("cmd"):
+                for arg in build_args:
+                    stdw.write(arg+"\n")
+                stdw.write(line)
+            else:
+                stdw.write(line)
+        stdw.flush()
+        utils.xrun("docker build", ["-f", stdw.name, 
+                    "-t", image, 
+                    build_path])
+
+        stdw.close()
+    else:
+        utils.xrun("docker build", ["-t", image, 
                     build_path])
 
 def pull(image, tag=None):
@@ -78,7 +99,8 @@ class Container(object):
         self.environs.append("=".join([key, value]))
 
 
-    def create(self):
+    def create(self, *args):
+
         if self.volumes: 
             volumes = " -v " + " -v ".join(self.volumes)
         else:
@@ -90,7 +112,7 @@ class Container(object):
 
         
         self._print("Instantiating container [%s]. The container ID is printed bellow."%self.name)
-        utils.xrun("docker create", [volumes, environs,
+        utils.xrun("docker create", list(args) + [volumes, environs,
                         "-w %s"%(self.WORKDIR) if self.WORKDIR else "",
                         "--name", self.name, "--shm-size", self.shared_memory,
                         self.image,

@@ -207,7 +207,7 @@ class Recipe(object):
             self.log.info("Running Container %s"%container.name)
             self.log.info("STEP %d :: %s"%(i, container.label))
             self.active = container
-
+            
             container.create()
             container.start()
             container.stop()

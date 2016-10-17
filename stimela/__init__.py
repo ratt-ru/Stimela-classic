@@ -61,8 +61,10 @@ def build():
     for image in CAB:
         dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)
         image = "{:s}_cab/{:s}".format(USER, image)
+        build_args = ["RUN groupadd -g 1000 %s"%USER,
+                      "RUN useradd -u 1000 -g 1000 %s"%USER]
         docker.build(image,
-                       dockerfile)
+                       dockerfile, build_args=build_args)
         img.add(dict(name=image))
 
     img.write()

@@ -33,7 +33,7 @@ def build(image, build_path, tag=None, build_args=None):
             else:
                 stdw.write(line)
         stdw.flush()
-        utils.xrun("docker build", ["-f", stdw.name, 
+        utils.xrun("docker build", ["--force-rm","-f", stdw.name, 
                     "-t", image, 
                     build_path])
 

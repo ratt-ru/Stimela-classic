@@ -23,7 +23,7 @@ simms_dict = {
     "msname"   :   MS,                     
     "telescope" :   "meerkat",              # Telescope name
     "direction" :   "J2000,90deg,-45deg",   # Phase tracking centre of observation
-    "synthesis" :   0.125,                      # Synthesis time of observation
+    "synthesis" :   0.128,                      # Synthesis time of observation
     "dtime"     :   30,                      # Exposure time
     "freq0"     :   "750MHz",               # Start frequency of observation
     "dfreq"     :   "1MHz",                 # Channel width
@@ -66,7 +66,7 @@ imager_dict = {
     }
 
 # Briggs robust values to use for each image
-briggs_robust = [2] #, 0, -2
+briggs_robust = 2, 0, -2
 
 for i, robust in enumerate(briggs_robust):
 
@@ -82,4 +82,4 @@ for i, robust in enumerate(briggs_robust):
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were addedd
-pipeline.run([3])
+pipeline.run()

@@ -4,7 +4,7 @@
 import os
 import sys
 import stimela
-from stimela import stimela_docker as docker
+from stimela import docker
 import stimela.utils as utils
 import stimela.cargo as cargo
 import tempfile
@@ -82,7 +82,8 @@ class Recipe(object):
     def add(self, image, name, config,
             input=None, output=None, label="", 
             build_first=False, build_dest=None,
-            saveconf=None, add_time_stamp=True, tag=None):
+            saveconf=None, add_time_stamp=True, 
+            shared_memory="1gb", tag=None):
 
 
 
@@ -105,9 +106,9 @@ class Recipe(object):
             image = "{:s}:{:s}".format(image, cab_tag)
 
 
-        cont = docker.Load(image, name,
-                INPUT=input,OUTPUT=output,
-                label=label, logger=self.log)
+        cont = docker.Container(image, name,
+                label=label, logger=self.log,
+                shared_memory=shared_memory)
 
         cont.add_environ("MAC_OS", str(self.MAC_OS))
 
@@ -207,18 +208,14 @@ class Recipe(object):
             self.log.info("STEP %d :: %s"%(i, container.label))
             self.active = container
 
-            try:
-                container.start(logfile=self.CONTAINER_LOGFILE, shared_memory=self.shared_memory)
+            container.create()
+            container.start()
+            container.stop()
+            container.remove()
 
-            except docker.DockerError:
-                self.rm()
-                raise docker.DockerError("The container [%s] failed to execute."
-                                         "Please check the logs"%(container.name))
-            self.active = None
 
         self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))
 
-        self.rm(containers)
         self.log.info("\n[================================DONE==========================]\n \n")
 
         # Remove from log

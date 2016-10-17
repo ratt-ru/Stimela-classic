@@ -14,13 +14,12 @@ class Container(object):
         self.num = len(lines)
 
 
-    def add(self, cont):
+    def add(self, cont, pid):
         
-        name = cont["name"]
-        cid = cont["id"]
-        uptime = cont["uptime"]
-        pid = cont["pid"]
-        status = cont["status"]
+        name = cont["Name"]
+        cid = cont["Id"]
+        uptime = "00:00:00"
+        status = cont["State"]["Status"]
 
         line = "%(name)s %(cid)s %(uptime)s %(pid)s %(status)s\n"%locals()
 
@@ -36,10 +35,13 @@ class Container(object):
                 break
 
 
-    def update(self, name, status):
-        
+    def update(self, cont, uptime):
+        name = cont["Name"]
+        status = cont["State"]["Status"]
+
         for line in self.lines:
-            _name, cid, uptime, pid, _status = line.split()
+            _name, cid, _, pid, _status = line.split()
+
             if name == _name:
                 self.lines.remove(line)
                 _line = "%(name)s %(cid)s %(uptime)s %(pid)s %(status)s\n"%locals()
@@ -49,10 +51,10 @@ class Container(object):
         return True
 
 
-
     def write(self):
         with open(self.name, "w") as std:
             std.write( "".join(self.lines) )
+
 
     def display(self):
 

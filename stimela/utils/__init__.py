@@ -58,15 +58,6 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
                   shell=True)
 
-    time.sleep(2)
-    # Pause if we need to log container
-    os.kill(process.pid, signal.SIGSTOP)
-    if _log_container_as_started and logfile:
-        _log_container_as_started.log("start", logfile=logfile)
-    # Get on with it again
-    os.kill(process.pid, signal.SIGCONT)
-
-
     if process.stdout or process.stderr:
 
         out, err = process.comunicate()

@@ -12,7 +12,7 @@ import stimela
 from stimela import utils, cargo
 from recipe import Recipe as Pipeline
 from recipe import Recipe
-import stimela.stimela_docker as docker
+from stimela import docker
 
 from stimela.utils import stimela_logger
 
@@ -298,10 +298,10 @@ def kill():
         for line in lines:
             cont, _id, utime, _pid, status = line.split()
             if status.find("removed")<0:
-                cont_ = docker.Load(None, cont, None, None)
+                cont_ = docker.Container(None, cont, None, None)
                 cont_.started = True
                 cont_.stop()
-                cont_.rm()
+                cont_.remove()
 
                 conts.rm(line)
 

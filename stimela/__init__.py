@@ -22,8 +22,10 @@ LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 LOG_CABS = LOG_HOME + "/stimela_cab.log"
 
-BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery".split()
+BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery tigger".split()
 CAB = os.listdir(cargo.CAB_PATH)
+
+NOT_PUBLIC = ["ddfacet"]
 
 USER = os.environ["USER"]
 
@@ -52,19 +54,48 @@ def build():
         if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
 
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
+    parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
+            help="executor image name, location of executor image files")
+
     args = parser.parse_args()
+
+    build_args = ["RUN groupadd -g 1000 %s"%USER,
+                  "RUN useradd -u 1000 -g 1000 %s"%USER]
+
+    if args.cab:
+        cab_args = args.cab.split(",")
+
+        if len(cab_args)==2:
+            cab, path = cab_args
+        else:
+            raise ValueError("Not enough arguments for build command.")
+
+        image = "{:s}_cab/{:s}".format(USER, cab)
+
+        docker.build(cab,
+                     path,
+                     build_args=build_args)
+
+        img = stimela_logger.Image(LOG_CABS)
+        img.add(dict(name=cab))
+        img.write()
+        return 
+        
 
     # clear old cabs
     img = stimela_logger.Image(LOG_CABS)
     img.clear()
-    
+
     for image in CAB:
+        if image in NOT_PUBLIC:
+            continue
+
         dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)
         image = "{:s}_cab/{:s}".format(USER, image)
-        build_args = ["RUN groupadd -g 1000 %s"%USER,
-                      "RUN useradd -u 1000 -g 1000 %s"%USER]
         docker.build(image,
-                       dockerfile, build_args=build_args)
+                     dockerfile,
+                     build_args=build_args)
+
         img.add(dict(name=image))
 
     img.write()

@@ -111,7 +111,7 @@ class Container(object):
             environs = ""
 
         
-        self._print("Instantiating container [%s]. The container ID is printed bellow."%self.name)
+        self._print("Instantiating container [%s]. The container ID is printed below."%self.name)
         utils.xrun("docker create", list(args) + [volumes, environs,
                         "-w %s"%(self.WORKDIR) if self.WORKDIR else "",
                         "--name", self.name, "--shm-size", self.shared_memory,
@@ -120,6 +120,7 @@ class Container(object):
 
         self.log_container.add(self.info(), self.PID)
         self.status = "created"
+        self.log_container.write()
 
     def info(self):
 
@@ -148,6 +149,7 @@ class Container(object):
             uptime = seconds_hms(time.time() - tstart)
             self.log_container.update(self.info(), uptime=uptime)
             self.uptime = uptime
+            self.log_container.write()
 
             status = self.info()["State"]["Status"]
             if status != "running":
@@ -163,6 +165,7 @@ class Container(object):
         
         self.container_logger = self.get_log()
         self.status = "exited"
+        self.log_container.write()
 
     
     def stop(self):
@@ -173,6 +176,7 @@ class Container(object):
 
         self._print("Container [self.name] has been")
         self.log_container.update(self.info(), self.uptime)
+        self.log_container.write()
 
 
     def remove(self):
@@ -184,14 +188,10 @@ class Container(object):
             raise DockerError("Container [%s] has not been stopped, cannot remove"%(self.name))
 
         self.log_container.rm(self.name)
+        self.log_container.write()
 
     def _print(self, message):
         if self.logger:
             self.logger.info(message)
         else:
             print(message)
-
-
-
-
-

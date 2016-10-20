@@ -321,7 +321,7 @@ def kill():
         conts = stimela_logger.Container(LOG_CONTAINERS)
         lines = []
 
-        procs.rm(found)
+        procs.rm(pid)
         procs.write()
 
         for cont in conts.lines:

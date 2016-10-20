@@ -16,8 +16,8 @@ class Container(object):
 
     def add(self, cont, pid):
         
-        name = cont["Name"]
-        cid = cont["Id"]
+        name = cont["Name"][1:]
+        cid = cont["Id"][:16]
         uptime = "00:00:00"
         status = cont["State"]["Status"]
 
@@ -170,6 +170,8 @@ class Process(object):
         
         for line in self.lines:
             _pid = line.split()[-1]
+            print "FROM FILE:", int(_pid)
+            print "FORM input:", pid
             if int(_pid)==pid:
                 return line
 

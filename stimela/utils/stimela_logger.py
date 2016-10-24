@@ -170,8 +170,6 @@ class Process(object):
         
         for line in self.lines:
             _pid = line.split()[-1]
-            print "FROM FILE:", int(_pid)
-            print "FORM input:", pid
             if int(_pid)==pid:
                 return line
 

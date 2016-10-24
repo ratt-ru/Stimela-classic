@@ -43,6 +43,16 @@ _OBS = {
      "ska1mid197": "meerkat",
 }
 
+# possible combinations for specifying VLA configurations
+VLA_CONFS = ["vla"]+["vla-%s"%s for s in "abcd"] + ["vla%s"%s for s in "abcd"] + ["jvla-%s"%s for s in "abcd"] + ["jvla%s"%s for s in "abcd"]
+def which_vla(name):
+    name = name.lower()
+    if name in ["vla", "jvla"]:
+        return "jvlad"
+    elif name in VLA_CONFS:
+        return "jvla%s"%(name[-1])
+    else:
+        raise NameError("Telescope name could not recognised")
 
 
 def readJson(conf):
@@ -64,11 +74,13 @@ def readJson(conf):
 
 jdict = utils.readJson(CONFIG)
 telescope = jdict["telescope"]
+if telescope[:3] in ["vla", "jvl"] and jdict.get("antennas", None) in [None, False, ""]:
+    telescope = which_vla(telescope)
+
 direction = jdict.get("direction", None)
 
 
 jdict["outdir"] = "." if MAC_OS else MSDIR
-jdict["tel"] = _OBS[telescope]
 msname = jdict["msname"]
 
 if jdict.get("antennas", False):
@@ -79,6 +91,8 @@ else:
     if not os.path.isdir(jdict["pos"]):
         jdict["pos_type"] = "ascii"
         jdict["coords"] = "itrf"
+
+jdict["tel"] = _OBS[telescope]
 
 for item in ["antennas", "coord_sys", "telescope"]:
     jdict.pop(item, None)

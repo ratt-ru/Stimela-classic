@@ -202,7 +202,7 @@ class Recipe(object):
                 containers = [ self.containers[i-1] for i in steps[:len(self.containers)] ]
         else:
             containers = self.containers
-
+        
         for i, container in enumerate(containers):
             self.log.info("Running Container %s"%container.name)
             self.log.info("STEP %d :: %s"%(i, container.label))

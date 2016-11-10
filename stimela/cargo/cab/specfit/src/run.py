@@ -32,6 +32,9 @@ substitute = utils.substitute_globals
 
 if spi_image:
     spi_image = substitute(spi_image) or "%s/%s"%(INPUT, spi_image)
+    if spi_err:
+        spi_err = substitute(spi_err) or "%s/%s"%(INPUT, spi_err)
+                
 
     if make_spi:
         spi_image = spi_image + ".alpha.fits"

@@ -60,8 +60,8 @@ if image and make_spi:
 
 if add_spi and lsmname:
     print "Extracting spi from image"
-    if not made_spi:
-        spi_image = substitute(spi_image) or "%s/%s"%(INPUT, spi_image)
+#    if not made_spi:
+#        spi_image = substitute(spi_image) or "%s/%s"%(INPUT, spi_image)
 
     if isinstance(freq0, (str, unicode)):
         freq0 = str(freq0)

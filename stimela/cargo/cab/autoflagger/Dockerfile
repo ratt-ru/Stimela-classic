@@ -1,4 +1,4 @@
-FROM radioastro/aoflagger
+FROM stimela/aoflagger
 MAINTAINER <sphemakh@gmial.com>
 
 RUN mkdir -p /input /output

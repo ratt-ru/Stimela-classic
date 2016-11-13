@@ -1,4 +1,4 @@
-FROM radioastro/moresane
+FROM stimela/moresane
 MAINTAINER Sphesihle Makhathini <sphemakh@gmail>
 
 RUN mkdir -p /input /output

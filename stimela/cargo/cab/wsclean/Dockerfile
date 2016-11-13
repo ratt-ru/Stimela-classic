@@ -1,4 +1,4 @@
-FROM radioastro/wsclean
+FROM stimela/wsclean
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code

@@ -1,4 +1,4 @@
-FROM radioastro/tigger
+FROM stimela/tigger
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

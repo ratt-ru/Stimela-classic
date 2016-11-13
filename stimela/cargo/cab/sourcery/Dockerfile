@@ -1,4 +1,4 @@
-FROM radioastro/sourcery
+FROM stimela/sourcery
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

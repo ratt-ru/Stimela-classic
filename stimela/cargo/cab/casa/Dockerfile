@@ -1,4 +1,4 @@
-FROM radioastro/casa:4.6.0
+FROM stimela/casa
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code

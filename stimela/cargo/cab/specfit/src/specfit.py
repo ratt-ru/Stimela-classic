@@ -61,10 +61,12 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
         for im in cube:
             with pyfits.open(im) as hdu:
                 hdr = hdu[0].header
+                hdu_data = hdu[0].data
                 ndim = hdr["NAXIS"]
                 freq_axis = fitsFreqInd(hdr)
+                ind = freq_axis
                 freqs.append( hdr["CRVAL%d"%freq_axis])
-                ims.append( im[get_imslice(ndim)]  )
+                ims.append( hdu_data[get_imslice(ndim)]  )
 
         data = numpy.vstack(ims)
         ndim = data.ndim

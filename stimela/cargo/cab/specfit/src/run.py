@@ -49,6 +49,7 @@ if image and make_spi:
     elif isinstance(image, (list, tuple)):
         for i,im in enumerate(image):
             image[i] = substitute(im) or "%s/%s"%(INPUT, im)
+        cube = image
     else:
         raise TypeError("Image has to be either a string or list of strings")
 

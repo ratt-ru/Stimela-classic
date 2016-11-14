@@ -34,7 +34,6 @@ if spi_image:
     spi_image = substitute(spi_image) or "%s/%s"%(INPUT, spi_image)
     if spi_err:
         spi_err = substitute(spi_err) or "%s/%s"%(INPUT, spi_err)
-                
 
     if make_spi:
         spi_image = spi_image + ".alpha.fits"
@@ -44,7 +43,7 @@ made_spi = False
 
 if image and make_spi:
     if isinstance(image, (str, unicode)):
-        cube = substitute(image) or "%s/%s"%(INPUT,image) 
+        cube = substitute(image) or "%s/%s"%(INPUT,image)
 
     elif isinstance(image, (list, tuple)):
         for i,im in enumerate(image):
@@ -57,7 +56,7 @@ if image and make_spi:
     if mask:
             mask = substitute(mask) or "%s/%s"%(INPUT, mask)
     import specfit
-    specfit.spifit(cube, mask=mask, sigma=sigma, 
+    specfit.spifit(cube, mask=mask, sigma=sigma,
                   spi_image=spi_image,
                   spi_err_image=spi_err)
 

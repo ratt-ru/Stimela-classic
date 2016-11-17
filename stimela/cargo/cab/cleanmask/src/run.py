@@ -4,6 +4,10 @@ import numpy
 import sys
 import os
 import concurrent.futures as cf
+from skimage import measure
+import scipy.ndimage as ndimage
+
+morph = ndimage.morphology
 
 sys.path.append('/utils')
 import utils
@@ -20,6 +24,10 @@ iters = jdict.get("iters", 3)
 kernel = jdict.get("kernel", 11)
 overlap = jdict.get("overlap", 0.2)
 mask_value = jdict.get("mask_value", 0)
+diter = jdict.get("diter", 50)
+tol = jdict.get("tol", 0.05)
+dilate = jdict.get("dilate", True)
+include_negatives = jdict.get("include_negatives", False)
 
 outname = jdict.get("outname", None) or image[:-5]+"-masked.fits" 
 
@@ -65,6 +73,7 @@ def work(i):
         slice_list.append([i, imslice, stats.sigma_clip(tmp, sigma=sigma, iters=iters).mask])
     return slice_list
 
+print "Creating mask..."
 for i in xrange(kernel):
     f = ex.submit(work, i)
     futures.append(f)
@@ -72,6 +81,69 @@ for i in xrange(kernel):
 for i, f in enumerate(cf.as_completed(futures)):
     for j, imslice, submask in f.result():
         mask[imslice] = submask
+
+if not include_negatives:
+    mask[im<0] = 0
+
+islands = measure.label(mask, background=0)
+labels = set(islands.flatten())
+labels.remove(0)
+
+centre = lambda island : map(int, [island[0].mean(), island[1].mean()])
+def extent(isl):
+    nisl = len(isl[0])
+    r = []
+    for i in xrange(nisl):
+        for j in xrange(i,nisl):
+            a = isl[0][i], isl[1][i]
+            b = isl[0][j], isl[1][j]
+            rad = (a[0]-b[0])**2 + (a[1]-b[1])**2
+            r.append(int(rad**0.5))
+    return max(r)
+
+if dilate:
+    print "Dilating mask..."
+    for label in labels:
+        island = numpy.where(islands==label)
+        rx, ry = centre(island)
+        size = int(extent(island) * 1.5)
+        xi, yi = rx - size, ry - size
+        xf, yf = rx + size, ry + size
+    
+        if xi <0: 
+            xi = 0 
+        if yi < 0:
+            yi = 0 
+    
+        if xf > npix:
+            xf = npix
+        if yf > npix:
+            yf = npix
+    
+        imslice = [slice(xi, xf), slice(yi, yf)]
+        imask = mask[imslice]
+        iim = im[imslice]
+    
+        f0 = (iim*imask).sum()
+        make_bigger = f0 > 0.0
+        struct = ndimage.generate_binary_structure(2, 2)
+        counter = 0
+        nmask = morph.binary_dilation(imask, structure=struct, iterations=2).astype(imask.dtype)
+
+        while make_bigger:
+            f1 = (iim*nmask).sum()
+            df = abs(f0-f1)/f0
+            if df<tol or df <=0:
+                make_bigger = False
+            counter += 1
+            if counter>diter:
+                make_bigger = False
+    
+            dilate += 2
+            struct = ndimage.generate_binary_structure(2, 2)
+            if make_bigger:
+                nmask = morph.binary_dilation(nmask, structure=struct, iterations=3).astype(imask.dtype)
+        mask[imslice] = nmask
 
 if mask_value != 0:
     if isinstance(mask_value, (str, unicode)):

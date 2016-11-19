@@ -361,4 +361,12 @@ def substitute_globals(string):
         return string
     else:
         return False
+def get_imslice(ndim):
+    imslice = []
+    for i in xrange(ndim):
+        if i<ndim-2:
+            imslice.append(0)
+        else:
+            imslice.append(slice(None))
 
+    return imslice

@@ -48,25 +48,25 @@ def freqInfo(fits):
 
 
 def spifit(cube, prefix=None, mask=None, thresh=None,
-           sigma=20, spi_image=None, 
+           sigma=20, spi_image=None,
            spi_err_image=None):
-    
 
     if isinstance(cube, (list, tuple)):
         ims = []
         nchan = len(cube)
-        freqs = [] 
+        freqs = []
         prefix = prefix or cube[0][-3:]
 
         for im in cube:
             with pyfits.open(im) as hdu:
                 hdr = hdu[0].header
+                hdu_data = hdu[0].data
                 ndim = hdr["NAXIS"]
-                freq_axis = fitsFreqInd(hdr)
-                freqs.append( hdr["CRVAL%d"%freq_axis])
-                ims.append( im[get_imslice(ndim)]  )
+                ind = fitsFreqInd(hdr)
+                freqs.append( hdr["CRVAL%d"%ind])
+                ims.append( hdu_data[get_imslice(ndim)]  )
 
-        data = numpy.vstack(ims)
+        data = numpy.dstack(ims).T
         ndim = data.ndim
         cnt_freq = freqs[nchan/2]
 
@@ -78,8 +78,8 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
             ndim = data.ndim
 
         freqs, cnt_freq, bw, nchan, ind = freqInfo(cube)
-    
-    freq_ind = ndim - ind 
+
+    freq_ind = ndim - ind
     imslice = get_imslice(ndim)
     imslice[freq_ind] = slice(None)
     data = data[imslice]
@@ -90,7 +90,7 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
     aa = []
     bb = []
     I0 = []
-    
+
     if mask:
         with pyfits.open(mask) as hdu:
             mdata = hdu[0].data
@@ -104,8 +104,11 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
             thresh = sigma*noise
         ind = numpy.where(mfs>thresh)
 
+    if len(ind) < 1:
+        raise RunTimeError("No pixels above set threshold, or outside masked region")
+
     for i,j in zip(ind[0], ind[1]):
-        x = numpy.log(freqs/cnt_freq)
+        x = numpy.log(numpy.array(freqs)/cnt_freq)
         val = data[:,i,j]
         if val.any() <= 0:
             continue
@@ -120,7 +123,6 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
     #    aa.append(intercept)
     #    bb.append(std_err)
     #    I0.append(numpy.log(data[nchan/2,i,j]))
-    
 
     nans = numpy.isnan(alpha)
     alpha[nans] = 0.0

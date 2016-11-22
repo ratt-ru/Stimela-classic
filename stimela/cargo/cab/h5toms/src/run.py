@@ -6,7 +6,8 @@ import utils
 
 
 CONFIG = os.environ["CONFIG"]
-INDIR = os.environ["INPUT"]
+INPUT = os.environ["INPUT"]
+MSDIR = os.environ["MSDIR"]
 OUTDIR = os.environ["OUTPUT"]
 MAC_OS = os.environ["MAC_OS"]
 
@@ -24,6 +25,8 @@ flags = ['--%s' % (f,) for f, v in (
     (f, jdict.pop(f, False)) for f in flags)
     if v is True]
 
+h5s = ["%s/%s" % (INPUT, n) for n in jdict.pop('hdf5files')]
+
 cmd = [ "--%s %s"%(key, "" if isinstance(val, bool) else val) for (key,val) in jdict.iteritems()]
 
-utils.xrun("h5toms.py", cmd+flags )
+utils.xrun("h5toms.py", cmd+flags+h5s )

@@ -1,7 +1,9 @@
 FROM cabb/katdal
 MAINTAINER <sphemakh@gmail.com>
 
+ADD src /code
 RUN mkdir -p /input /output
-WORKDIR /output
 
-ENTRYPOINT ["h5toms.py"]
+WORKDIR /code
+
+ENTRYPOINT ["python", "run.py"]

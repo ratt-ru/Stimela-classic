@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import stimela
 import os
+import sys
+
+import stimela
 
 # Ensure that logging infrastructure exists
 
@@ -25,4 +27,4 @@ if not os.path.exists(stimela.LOG_CABS):
     with open(stimela.LOG_CABS, "w") as std:
         pass
 
-stimela.main()
+stimela.main([a for a in sys.argv])

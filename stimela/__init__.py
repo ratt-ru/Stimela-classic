@@ -190,6 +190,9 @@ def run(argv):
 
                 GLOBALS[key] = eval("{:s}('{:s}')".format(_type, value))
 
+    # Update global dictionary with contents of GLOBALS
+    _globals.update(GLOBALS)
+
     if args.ncores:
         utils.CPUS = args.ncores
 

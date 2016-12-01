@@ -4,5 +4,6 @@
     "dumptime" : 0.0,
     "chanbin"  : 0,
     "flag_av"  : false,
+    "output-ms" : "output.ms",
     "hdf5files" : []
 }

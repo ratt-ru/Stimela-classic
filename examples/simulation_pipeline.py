@@ -82,4 +82,4 @@ for i, robust in enumerate(briggs_robust):
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were addedd
-pipeline.run([1])
+pipeline.run()

@@ -10,12 +10,6 @@ import utils
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
-MAC_OS = os.environ["MAC_OS"]
-
-if MAC_OS.lower() in ["yes", "true", "yebo", "1"]:
-    MAC_OS = True
-else:
-    MAC_OS = False
 
 outfile = "temp.json"
 
@@ -80,7 +74,6 @@ if telescope[:3] in ["vla", "jvl"] and jdict.get("antennas", None) in [None, Fal
 direction = jdict.get("direction", None)
 
 
-jdict["outdir"] = "." if MAC_OS else MSDIR
 msname = jdict["msname"]
 
 if jdict.get("antennas", False):
@@ -135,9 +128,3 @@ with codecs.open(outfile, "w", "utf8") as std:
 
 # Run simms
 utils.xrun("simms", ["-jc", outfile])
-
-# move to
-if MAC_OS:
-    if os.path.exists("{:s}/{:s}".format(MSDIR, msname)):
-        utils.xrun("rm", ["-fr", "{:s}/{:s}".format(MSDIR, msname)])
-    utils.xrun("mv", [msname, MSDIR])

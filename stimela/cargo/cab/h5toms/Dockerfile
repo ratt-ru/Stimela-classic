@@ -1,9 +1,7 @@
-FROM cabb/katdal
+FROM stimela/katdal
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code
 RUN mkdir -p /input /output
 
-WORKDIR /code
-
-ENTRYPOINT ["python", "run.py"]
+CMD python /code/run.py

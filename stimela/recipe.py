@@ -39,7 +39,7 @@ CONFIGS_ = {
 class Recipe(object):
 
     def __init__(self, name, data=None, configs=None,
-                 ms_dir=None, cab_tag=None, mac_os=False,
+                 ms_dir=None, cab_tag=None,
                  container_logfile=None, shared_memory=1024):
 
         # LOG recipe
@@ -66,7 +66,6 @@ class Recipe(object):
 
         self.configs_path_container = "/configs"
         self.stimela_path = os.path.dirname(docker.__file__)
-        self.MAC_OS = platform.system() == "Darwin"
         self.CAB_TAG = cab_tag
 
         self.ms_dir = ms_dir or self.stimela_context.get("STIMELA_MSDIR", None)
@@ -111,8 +110,6 @@ class Recipe(object):
         cont = docker.Container(image, name,
                 label=label, logger=self.log,
                 shared_memory=shared_memory)
-
-        cont.add_environ("MAC_OS", str(self.MAC_OS))
 
         # add standard volumes
         cont.add_volume(self.stimela_path, "/utils", perm="ro")

@@ -5,6 +5,4 @@ ADD src /code
 
 RUN mkdir -p /input /output
 
-WORKDIR /code
-
-CMD sh run.sh
+CMD sh /code/run.sh

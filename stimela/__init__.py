@@ -29,6 +29,8 @@ CAB = os.listdir(cargo.CAB_PATH)
 NOT_PUBLIC = ["ddfacet"]
 
 USER = os.environ["USER"]
+UID = os.getuid()
+GID = os.getgid()
 
 __version__ = "0.2.0"
 
@@ -71,9 +73,12 @@ def build():
                          dockerfile)
         return 0
 
-
-    build_args = ["RUN groupadd -g 1000 %s"%USER,
-                  "RUN useradd -u 1000 -g 1000 %s"%USER]
+    workdir = "/home/%s/output/"%USER
+    build_args = ["RUN groupadd -g %d %s"%(UID, USER),
+                  "RUN useradd -u %d -g %d %s"%(UID, UID, USER),
+                  "WORKDIR %s"%workdir,
+                  "ENV HOME %s"%USER,
+                  "USER %s"%USER]
 
     if args.cab:
         cab_args = args.cab.split(",")

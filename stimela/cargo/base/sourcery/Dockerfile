@@ -6,4 +6,5 @@ RUN apt-get install python-numpy -y
 RUN apt-get install python-scipy -y
 RUN apt-get install python-pyfits -y
 
-RUN pip install astlib sourcery matplotlib
+RUN pip install astlib matplotlib
+RUN pip install git+git://github.com/radio-astro/sourcery

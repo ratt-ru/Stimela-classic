@@ -5,6 +5,4 @@ ADD src /code
 
 RUN mkdir -p /input /output
 
-WORKDIR /code
-
-CMD python run.py
+CMD python /code/run.py

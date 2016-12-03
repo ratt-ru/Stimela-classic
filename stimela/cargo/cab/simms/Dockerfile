@@ -4,6 +4,6 @@ MAINTAINER <sphemakh@gmail.com>
 RUN mkdir -p /output /input
 
 ADD src /code
-WORKDIR /code
+WORKDIR /output
 
-CMD python run.py
+CMD python /code/run.py

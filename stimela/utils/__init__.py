@@ -96,7 +96,6 @@ def pper(iterable, command, cpus=None, stagger=2, logger=None):
     else:
         print message
 
-
     active = manager.Value("d", 0)
     
     def worker(*args):
@@ -144,7 +143,13 @@ def readJson(conf):
             for i,v in enumerate(val):
                 if isinstance(v, unicode):
                     val[i] = str(v)
-       
+
+        if isinstance(val, str):
+            globs = inspect.currentframe().f_back.f_globals
+            tmp = substitute_globals(val,globs=globs)
+            if tmp:
+                val = tmp
+
         ndict[str(key)] = val
    return ndict
 
@@ -352,15 +357,18 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
             os.system('rm -f %s'%fits)
 
 
-def substitute_globals(string):
+def substitute_globals(string, globs=None):
     sub = set(re.findall('\{(.*?)\}', string))
-    globs = inspect.currentframe().f_back.f_globals
+
+    globs = globs or inspect.currentframe().f_back.f_globals
     if sub:
         for item in map(str, sub):
             string = string.replace("${%s}"%item, globs[item])
         return string
     else:
         return False
+
+
 def get_imslice(ndim):
     imslice = []
     for i in xrange(ndim):
@@ -370,3 +378,100 @@ def get_imslice(ndim):
             imslice.append(slice(None))
 
     return imslice
+
+
+def addcol(msname, colname=None, shape=None,
+           data_desc_type='array', valuetype=None, init_with=0, **kw):
+    """ add column to MS 
+        msanme : MS to add colmn to
+        colname : column name
+        shape : shape
+        valuetype : data type 
+        data_desc_type : 'scalar' for scalar elements and array for 'array' elements
+        init_with : value to initialise the column with 
+    """
+    import numpy
+    import pyrap.tables
+    tab = pyrap.tables.table(msname,readonly=False)
+
+    try: 
+        tab.getcol(colname)
+        print('Column already exists')
+
+    except RuntimeError:
+        print('Attempting to add %s column to %s'%(colname,msname))
+
+        from pyrap.tables import maketabdesc
+        valuetype = valuetype or 'complex'
+
+        if shape is None: 
+            dshape = list(tab.getcol('DATA').shape)
+            shape = dshape[1:]
+
+        if data_desc_type=='array':
+            from pyrap.tables import makearrcoldesc
+            coldmi = tab.getdminfo('DATA') # God forbid this (or the TIME) column doesn't exist
+            coldmi['NAME'] = colname.lower()
+            tab.addcols(maketabdesc(makearrcoldesc(colname,init_with,shape=shape,valuetype=valuetype)),coldmi)
+
+        elif data_desc_type=='scalar':
+            from pyrap.tables import makescacoldesc
+            coldmi = tab.getdminfo('TIME')
+            coldmi['NAME'] = colname.lower()
+            tab.addcols(maketabdesc(makescacoldesc(colname,init_with,valuetype=valuetype)),coldmi)
+
+        print('Column added successfuly.')
+
+        if init_with:
+            nrows = dshape[0]
+
+            rowchunk = nrows//10 if nrows > 1000 else nrows
+            for row0 in range(0,nrows,rowchunk):
+                nr = min(rowchunk,nrows-row0)
+                dshape[0] = nr
+                tab.putcol(colname,numpy.ones(dshape,dtype=valuetype)*init_with,row0,nr)
+
+    tab.close()
+
+
+def sumcols(msname, col1=None, col2=None, outcol=None, cols=None, suntract=False):
+    """ add col1 to col2, or sum columns in 'cols' list.
+        If subtract, subtract col2 from col1
+    """
+    from pyrap.tables import table
+
+    tab = table(msname, readonly=False)
+    if cols:
+        data = 0
+        for col in cols:
+            data += tab.getcol(col)
+    else:
+        if subtract:
+            data = tab.getcol(col1) - tab.getcol(col2)
+        else:
+            data = tab.getcol(col1) + tab.getcol(col2)
+
+
+    rowchunk = nrows//10 if nrows > 1000 else nrows
+    for row0 in range(0, nrows, rowchunk):
+        nr = min(rowchunk, nrows-row0)
+        tab.putcol(outcol, data[row0:row0+nr], row0, nr)
+
+    tab.close()
+
+
+def copycol(msname, fromcol, tocol):
+    from pyrap.tables import table
+
+    tab = table(msname, readonly=False)
+    data = tab.getcol(fromcol)
+    if tocol not in tab.colnames():
+        addcol(msname, tocol)
+
+    nrows = tab.nrows()
+    rowchunk = nrows//10 if nrows > 5000 else nrows
+    for row0 in range(0, nrows, rowchunk):
+        nr = min(rowchunk, nrows-row0)
+        tab.putcol(tocol, data[row0:row0+nr], row0, nr)
+
+    tab.close()

@@ -29,7 +29,8 @@ def find_closest(A, target):
 STANDARD_OPTS = {
     "field_id" : "Field",
     "spw_id" : "DDID",
-    "prefix" : "ImageName",
+    "imageprefix" : "ImageName",
+    "prefix"    :   "ImageName",
     "weight" : "Weighting",
     "robust" : "Robust",
     "npix" : "Npix",
@@ -65,27 +66,13 @@ if jdict.pop("predict", False):
         if column == None:
             jdict["column"] = "MODEL_DATA"
 
-
-
+beam_pattern = jdict.pop("beam_files_pattern", None)
 msname = jdict.pop("msname")
 if not isinstance(msname, (tuple, list)):
     msname = [msname]
-    
-prefix = OUTPUT + "/" + jdict.pop("imageprefix", os.path.basename(msname[0])[:-3])
-
-with open("mslist.txt", "w") as std:
-    for ms in msname:
-        std.write("{:s}/{:s}\n".format(MSDIR, ms))
+prefix = jdict.pop("imageprefix", os.path.basename(msname[0])[:-3])
 
 options = {}
-options["MSName"] = "mslist.txt"
-options["ImageName"] = prefix
-options["SaveImages"] = "all"
-if niter:
-    options["MaxMinorIter"] = niter
-
-
-
 for key, value in jdict.iteritems():
     key = STANDARD_OPTS.get(key, key)
 
@@ -94,24 +81,40 @@ for key, value in jdict.iteritems():
     if key in options and options[key] == None:
         del options[key]
 
-column = options.get("ColName", "MODEL_DATA")
 mask = options.get("CleanMaskImage", None)
-if mask:
-    options["CleanMaskImage"] = utils.substitute_globals(mask) or "%s/%s"%(INPUT, mask)
+
+for item in "mask prefix beam_pattern".split():
+    nosub = True
+    for place in [INPUT, OUTPUT]:
+        if item.startswith(place):
+            nosub = False
+    if nosub:
+        globals()[item] = "%s/%s"%(OUTPUT if globals()[item] is prefix else INPUT, globals()[item])
+
+with open("mslist.txt", "w") as std:
+    for ms in msname:
+        std.write("{:s}/{:s}\n".format(MSDIR, ms))
+
+options["MSName"] = "mslist.txt"
+options["ImageName"] = prefix
+options["SaveImages"] = "all"
+if niter:
+    options["MaxMinorIter"] = niter
+
+column = options.get("ColName", "MODEL_DATA")
 
 upfirst = lambda a: a[0].upper() + a[1:]
 options["Weighting"] = upfirst(options["Weighting"])
 
 if options.pop("add_beam", False):
-    pattern = options.pop("beam_files_pattern", None)
-    if pattern:
+    if beam_pattern:
         options["BeamModel"] = "FITS"
         options["FITSLAxis"] = options.pop("beam_l_axis", "L")
         options["FITSMAxis"] = options.pop("beam_m_axis", "M")
-        options["FITSFile"] = "'%s/%s'"%(INPUT, pattern)
+        options["FITSFile"] = "'%s'"%beam_pattern
 
 
-if mode=="Predict":
+if mode.lower()=="predict":
     import pyfits
     
     odds = numpy.array([65,75,77,81,91,99,105,117,125,135,143,147,165,175,189,195,225,231,243,245,273,275,297,315,325,343,351,375,385,405,429,441,455,495,525,539,567,585,625,637,675,693,715,729,735,819,825,875,891,945,975,1001,1029,1053,1125,1155,1215,1225,1287,1323,1365,1375,1485,1575,1617,1625,1701,1715,1755,1875,1911,1925,2025,2079,2145,2187,2205,2275,2401,2457,2475,2625,2673,2695,2835,2925,3003,3087,3125,3159,3185,3375,3465,3575,3645,3675,3773,3861,3969,4095,4125,4375,4455,4459,4725,4851,4875,5005,5103,5145,5265,5625,5733,5775,6075,6125,6237,6435,6561,6615,6825,6875,7007,7203,7371,7425,7875,8019,8085,8125,8505,8575,8775,9009,9261,9375,9477,9555,9625,10125,10395,10725,10935,11025,11319,11375,11583,11907,12005,12285,12375,13125,13365,13377,13475,14175,14553,14625,15015,15309,15435,15625,15795,15925,16807,16875,17199,17325,17875,18225,18375,18711,18865,19305,19683,19845])
@@ -166,7 +169,7 @@ if mode=="Predict":
     options["Cell"] = cell
 
     cmd = [ "--%s=%s"%(key, value) for (key, value) in options.iteritems() ]
-    utils.xrun("DDF.py", parset + cmd)
+    utils.xrun("/ddfvenv/bin/DDF.py", parset + cmd)
 
     with pyfits.open("%s.dirty.fits"%prefix) as hdu:
         hdu[0].data = data
@@ -182,7 +185,7 @@ if mode=="Predict":
     options["PredictModelName"] = "%s.dirty.fits"%prefix
 
     cmd = [ "--%s=%s"%(key, value) for (key, value) in options.iteritems() ]
-    utils.xrun("DDF.py", parset + cmd)
+    utils.xrun("/ddfvenv/bin/DDF.py", parset + cmd)
 
     if column != "MODEL_DATA":
         print("Copying data from MODEL_DATA to %s"%(column))
@@ -208,4 +211,4 @@ if mode=="Predict":
 else:
     options["Mode"] = mode
     cmd = [ "--%s=%s"%(key, value) for (key, value) in options.iteritems() ]
-    utils.xrun("DDF.py", parset + cmd)
+    utils.xrun("/ddfvenv/bin/DDF.py", parset + cmd)

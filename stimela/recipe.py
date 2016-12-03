@@ -14,6 +14,7 @@ import platform
 from stimela.utils import stimela_logger
 
 USER = os.environ["USER"]
+UID = os.getuid()
 
 
 ekhaya = cargo.__path__[0]
@@ -117,8 +118,9 @@ class Recipe(object):
         cont.add_volume(self.data_path, "/data", perm="ro")
 
         if self.ms_dir:
-            cont.add_volume(self.ms_dir, "/msdir")
-            cont.add_environ("MSDIR", "/msdir")
+            md = "/home/%s/msdir"%USER
+            cont.add_volume(self.ms_dir, md)
+            cont.add_environ("MSDIR", md)
 
         if input:
             cont.add_volume( input,"/input")
@@ -128,8 +130,9 @@ class Recipe(object):
             if not os.path.exists(output):
                 os.mkdir(output)
 
-            cont.add_volume(output, "/output")
-            cont.add_environ("OUTPUT", "/output")
+            od = "/home/%s/output"%USER
+            cont.add_volume(output, od)
+            cont.add_environ("OUTPUT", od)
 
 
         # Check if imager image was selected. React accordingly

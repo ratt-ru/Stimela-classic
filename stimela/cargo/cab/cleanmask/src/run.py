@@ -31,8 +31,13 @@ include_negatives = jdict.get("include_negatives", False)
 
 outname = jdict.get("outname", None) or image[:-5]+"-masked.fits" 
 
-outname = utils.substitute_globals(outname) or "%s/%s"%(INPUT, outname)
-image = utils.substitute_globals(image) or "%s/%s"%(INPUT, image)
+for item in ["image", "outname"]:
+    nosub = True
+    for place in [INPUT, OUTPUT]:
+        if globals()[item].startswith(place):
+            nosub = False
+    if nosub:
+        globals()[item] = "%s/%s"%(INPUT, globals()[item])
 
 hdu = fitsio.open(image)
 data = hdu[0].data

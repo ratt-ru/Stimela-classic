@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import pyfits,pywcs
+import pyfits
 import numpy as np
 import Tigger
 import sys,os

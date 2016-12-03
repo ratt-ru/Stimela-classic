@@ -9,6 +9,9 @@ import os
 import json
 
 
+sys.path.append('/utils')
+import utils
+
 mqt.MULTITHREAD = 4
 INDIR = os.environ["INPUT"]
 v.OUTDIR = os.environ["OUTPUT"]
@@ -30,7 +33,6 @@ def readJson(conf):
             jdict[key] = str(val)
 
     return jdict
-
 
 
 def calibrate(jdict, multi=MULTI):
@@ -154,6 +156,14 @@ def calibrate(jdict, multi=MULTI):
     # Include UV model if specified
     if jdict.pop("add_uvmodel", False):
         options.update( {'read_ms_model':1, 'ms_sel.model_column':'MODEL_DATA'} )
+        cc_model = jdict.pop("save_uvmodel", False)
+        if cc_model:
+            utils.copycol(MS, "MODEL_DATA", cc_model)
+
+        uvcols = jdict.pop("uv_model_columns", None)
+        if uvcols:
+            utils.sumcols(MS, cols=uvcols, outcol="MODEL_DATA")
+         
 
     args = map(str, jdict.get("args", [""]))
     reset = kw.pop("reset", True)

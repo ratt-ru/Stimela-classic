@@ -28,13 +28,17 @@ tol = jdict.pop("tol", None)
 
 lsmname = "%s/%s"%(INPUT,lsmname)
 
-substitute = utils.substitute_globals
+for item in "image mask spi_image spi_err lsmname outlsm freq0".split():
+    if not isinstance(globals()[item], str):
+        continue
+    nosub = True
+    for place in [INPUT, OUTPUT]:
+        if globals()[item].startswith(place):
+            nosub = False
+    if nosub:
+        globals()[item] = "%s/%s"%(INPUT, globals()[item])
 
 if spi_image:
-    spi_image = substitute(spi_image) or "%s/%s"%(INPUT, spi_image)
-    if spi_err:
-        spi_err = substitute(spi_err) or "%s/%s"%(INPUT, spi_err)
-
     if make_spi:
         spi_image = spi_image + ".alpha.fits"
         spi_err = spi_image + ".alpha.err.fits"
@@ -43,18 +47,16 @@ made_spi = False
 
 if image and make_spi:
     if isinstance(image, (str, unicode)):
-        cube = substitute(image) or "%s/%s"%(INPUT,image)
+        cube = image
 
     elif isinstance(image, (list, tuple)):
-        for i,im in enumerate(image):
-            image[i] = substitute(im) or "%s/%s"%(INPUT, im)
+        for i, im in enumerate(image):
+            image[i] = im
         cube = image
     else:
         raise TypeError("Image has to be either a string or list of strings")
 
     made_spi = True
-    if mask:
-            mask = substitute(mask) or "%s/%s"%(INPUT, mask)
     import specfit
     specfit.spifit(cube, mask=mask, sigma=sigma,
                   spi_image=spi_image,
@@ -63,13 +65,11 @@ if image and make_spi:
 
 if add_spi and lsmname:
     print "Extracting spi from image"
-#    if not made_spi:
-#        spi_image = substitute(spi_image) or "%s/%s"%(INPUT, spi_image)
 
     if isinstance(freq0, (str, unicode)):
         freq0 = str(freq0)
-        freq0 = substitute(freq0) or "%s/%s"%(INPUT,freq0)
 
+    print "FREQ0", freq0
+    sys.exit(0)
     import addSPI
     addSPI.addSPI(spi_image, spi_err, lsmname, outlsm or lsmname, freq0=freq0, spitol=tol)
-

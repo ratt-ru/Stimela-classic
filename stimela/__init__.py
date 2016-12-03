@@ -32,7 +32,7 @@ USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 GLOBALS = {}
 
@@ -50,11 +50,11 @@ class MultilineFormatter(argparse.HelpFormatter):
 def register_globals():
     frame = inspect.currentframe().f_back
     frame.f_globals.update(GLOBALS)
-    
 
-def build():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
+
+def build(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv = ' ' + arg
 
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
     parser.add_argument("-b", "--base", action="store_true",
@@ -63,7 +63,7 @@ def build():
     parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
             help="executor image name, location of executor image files")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.base:
         for image in BASE:
@@ -97,8 +97,8 @@ def build():
         img = stimela_logger.Image(LOG_CABS)
         img.add(dict(name=cab))
         img.write()
-        return 
-        
+        return
+
 
     # clear old cabs
     img = stimela_logger.Image(LOG_CABS)
@@ -118,23 +118,23 @@ def build():
 
     img.write()
 
-        
-def cabs():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
+
+def cabs(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv = ' ' + arg
 
     parser = ArgumentParser(description='List executor (a.k.a cab) images')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     img = stimela_logger.Image(LOG_CABS)
     img.display()
 
 
-def run():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
+def run(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
 
-    parser = ArgumentParser(description='Dockerized Radio Interferometric Scripting Framework.\n' 
+    parser = ArgumentParser(description='Dockerized Radio Interferometric Scripting Framework.\n'
                                         'Sphesihle Makhathini <sphemakh@gmail.com>')
 
     add = parser.add_argument
@@ -160,12 +160,12 @@ def run():
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
             help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     tag =  None
 
     if args.from_log:
-        
+
         destdir = "."
 
         tmp = args.from_log.split(":")
@@ -185,16 +185,16 @@ def run():
             dirname, dockerfile = utils.change_Dockerfile_base_image(path, base, image_.split("/")[-1], destdir=destdir)
 
             # Build executor image
-            docker.build("cab/{:s}:{:s}".format(image_.split("/")[-1], tag), 
+            docker.build("cab/{:s}:{:s}".format(image_.split("/")[-1], tag),
                        dirname)
 
-    _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output, 
+    _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output,
                     STIMELA_DATA=cargo.DATA_PATH, STIMELA_MSDIR=args.msdir,
                     CAB_TAG=tag)
 
     nargs = len(args.globals)
 
-    global GLOBALS 
+    global GLOBALS
 
     if nargs:
         for arg in args.globals:
@@ -205,7 +205,7 @@ def run():
                     value, _type = value.split(":")
                 except ValueError:
                     _type = "str"
-                
+
                 GLOBALS[key] = eval("{:s}('{:s}')".format(_type, value))
 
     if args.ncores:
@@ -214,10 +214,10 @@ def run():
     execfile(args.script, _globals)
 
 
-def pull():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
-    
+def pull(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
+
     parser = ArgumentParser(description='Pull docker stimela base images')
 
     add = parser.add_argument
@@ -228,7 +228,7 @@ def pull():
     add("-t", "--tag",
             help="Tag")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.image:
         for image in args.image:
@@ -254,10 +254,10 @@ def pull():
                 docker.pull(image)
                 img.add(dict(name=image, tag=args.tag))
 
-def images():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
-    
+def images(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
+
     parser = ArgumentParser(description='List all stimela related images.')
 
     add = parser.add_argument
@@ -265,7 +265,7 @@ def images():
     add("-c", "--clear", action="store_true",
             help="Clear images log file")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     img = stimela_logger.Image(stimela.LOG_IMAGES)
     img.display()
@@ -274,10 +274,10 @@ def images():
         img.clear()
 
 
-def containers():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
-    
+def containers(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
+
     parser = ArgumentParser(description='List all active stimela containers.')
 
     add = parser.add_argument
@@ -285,7 +285,7 @@ def containers():
     add("-c", "--clear", action="store_true",
             help="Clear containers log file")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     conts = stimela_logger.Container(stimela.LOG_CONTAINERS)
     conts.display()
@@ -293,18 +293,18 @@ def containers():
         conts.clear()
 
 
-def ps():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
-    
+def ps(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
+
     parser = ArgumentParser(description='List all running stimela processes')
 
     add = parser.add_argument
-    
+
     add("-c", "--clear", action="store_true",
             help="Clear Log file")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     procs = stimela_logger.Process(stimela.LOG_PROCESS)
     procs.display()
@@ -313,10 +313,10 @@ def ps():
 
 
 
-def kill():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
-    
+def kill(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
+
     parser = ArgumentParser(description='Gracefully kill stimela process(s).')
 
     add = parser.add_argument
@@ -324,14 +324,14 @@ def kill():
     add("pid", nargs="*",
             help="Process ID")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     procs = stimela_logger.Process(LOG_PROCESS)
 
     for pid in map(int, args.pid):
 
         found = procs.find(pid)
-        
+
         if not found:
             print "Could not find process {0}".format(pid)
             continue
@@ -345,7 +345,7 @@ def kill():
         for cont in conts.lines:
             if cont.find(str(pid)) > 0:
                 lines.append(cont)
-        
+
         for line in lines:
             cont, _id, utime, _pid, status = line.split()
             if status.find("removed")<0:
@@ -362,14 +362,14 @@ def kill():
             os.kill(pid, signal.SIGKILL)
         except OSError:
             pass
-                
-
-def main():
-    for i, arg in enumerate(sys.argv):
-        if (arg[0] == '-') and arg[1].isdigit(): sys.argv[i] = ' ' + arg
 
 
-    parser = ArgumentParser(description='Stimela: Dockerized Radio Interferometric Scripting Framework. ' 
+def main(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
+
+
+    parser = ArgumentParser(description='Stimela: Dockerized Radio Interferometric Scripting Framework. '
                                         '|n version {:s} |n Sphesihle Makhathini <sphemakh@gmail.com>'.format(__version__),
                             formatter_class=MultilineFormatter, add_help=False)
 
@@ -385,25 +385,26 @@ def main():
             help="Stimela command to execute. For example, 'stimela help run'")
 
     options = []
-    commands = dict(pull=pull, build=build, run=run, 
+    commands = dict(pull=pull, build=build, run=run,
                     images=images, cabs=cabs, ps=ps,
                     containers=containers, kill=kill)
 
     command = "failed"
 
     for cmd in commands:
-       if cmd in sys.argv:
+       if cmd in argv:
            command = cmd
 
-           index = sys.argv.index(cmd)
-           options = sys.argv[index:]
-           sys.argv = sys.argv[: index + 1]
+           index = argv.index(cmd)
+           options = argv[index:]
+           argv = argv[: index + 1]
 
-    args = parser.parse_args()
 
-    main_help = lambda : args.command and (args.command[0]=="help") and (len(sys.argv)==2)
+    args = parser.parse_args(argv)
 
-    if args.help or len(sys.argv)==1 or main_help():
+    main_help = lambda : args.command and (args.command[0]=="help") and (len(argv)==2)
+
+    if args.help or len(argv)==1 or main_help():
         parser.print_help()
 
         print ("""
@@ -424,12 +425,12 @@ kill    : Gracefully kill runing stimela process
 
     if args.command:
         if args.command[0] == "help":
-            sys.argv = sys.argv[1:] + ["-h"]
+            argv = argv[1:] + ["-h"]
         else:
-            sys.argv = options
+            argv = options
         try:
             _cmd = commands[command]
         except KeyError:
             raise KeyError("Command '{:s}' not recognized\n "
                              "Run : 'stimela help' for help".format(args.command))
-        _cmd()
+        _cmd(argv[1:])

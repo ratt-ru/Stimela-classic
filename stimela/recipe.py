@@ -21,6 +21,7 @@ ekhaya = cargo.__path__[0]
 
 CONFIGS_ = {
     "cab/simms" : "{:s}/configs/simms_params.json".format(ekhaya),
+    "cab/h5toms" : "{:s}/configs/h5toms_params.json".format(ekhaya),
     "cab/simulator" : "{:s}/configs/simulator_params.json".format(ekhaya),
     "cab/lwimager" : "{:s}/configs/imager_params.json".format(ekhaya),
     "cab/wsclean" : "{:s}/configs/imager_params.json".format(ekhaya),
@@ -81,9 +82,9 @@ class Recipe(object):
 
 
     def add(self, image, name, config,
-            input=None, output=None, label="", 
+            input=None, output=None, label="",
             build_first=False, build_dest=None,
-            saveconf=None, add_time_stamp=True, 
+            saveconf=None, add_time_stamp=True,
             shared_memory="1gb", tag=None):
 
 
@@ -156,7 +157,7 @@ class Recipe(object):
             if not saveconf:
                 saveconf = "configs/%s-%s.json"%(self.name.replace(" ", "_").lower(), name)
 
-            confname_container = "%s/%s"%(self.configs_path_container, 
+            confname_container = "%s/%s"%(self.configs_path_container,
                         os.path.basename(saveconf))
 
 
@@ -170,7 +171,7 @@ class Recipe(object):
             cont.add_volume("configs", self.configs_path_container, perm="ro")
         else:
             cont.add_volume(self.configs_path, self.configs_path_container, perm="ro")
-            config = self.configs_path_container+"/"+config 
+            config = self.configs_path_container+"/"+config
 
         cont.image = "{:s}_{:s}".format(USER, image)
         cont.add_environ("CONFIG", config)
@@ -205,12 +206,12 @@ class Recipe(object):
                 containers = [ self.containers[i-1] for i in steps[:len(self.containers)] ]
         else:
             containers = self.containers
-        
+
         for i, container in enumerate(containers):
             self.log.info("Running Container %s"%container.name)
             self.log.info("STEP %d :: %s"%(i, container.label))
             self.active = container
-            
+
             container.create()
             container.start()
             container.stop()
@@ -230,7 +231,7 @@ class Recipe(object):
     def build(self, name, dest, use_cache=True):
         try:
             utils.xrun("docker", ["build", "-t", name,
-                       "--no-cache=%s"%("false" if use_cache else "true"), 
+                       "--no-cache=%s"%("false" if use_cache else "true"),
                        dest] )
         except SystemError:
             raise docker.DockerError("Docker image failed to build")

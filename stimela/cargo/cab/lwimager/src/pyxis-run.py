@@ -9,16 +9,9 @@ import json
 INDIR = os.environ["INPUT"]
 CONFIG = os.environ["CONFIG"]
 MSDIR = os.environ["MSDIR"]
-MAC_OS = os.environ["MAC_OS"]
-
-if MAC_OS.lower() in ["yes", "true", "yebo", "1"]:
-    MAC_OS = True
-else:
-    MAC_OS = False
 
 output = "./temp-output-tmp"
-v.OUTDIR = output if MAC_OS else os.environ["OUTPUT"]
-outdir = os.environ["OUTPUT"]
+v.OUTDIR = os.environ["OUTPUT"]
 
 v.DESTDIR = "."
 
@@ -84,5 +77,3 @@ def azishe():
                   restore_lsm=False, psf=psf,
                   channelize=channelise,
                   **options)
-    if MAC_OS:
-        x.sh("mv $output/* $outdir")

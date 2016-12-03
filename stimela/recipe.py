@@ -14,6 +14,7 @@ import platform
 from stimela.utils import stimela_logger
 
 USER = os.environ["USER"]
+UID = os.getuid()
 
 
 ekhaya = cargo.__path__[0]
@@ -38,7 +39,7 @@ CONFIGS_ = {
 class Recipe(object):
 
     def __init__(self, name, data=None, configs=None,
-                 ms_dir=None, cab_tag=None, mac_os=False,
+                 ms_dir=None, cab_tag=None,
                  container_logfile=None, shared_memory=1024):
 
         # LOG recipe
@@ -65,7 +66,6 @@ class Recipe(object):
 
         self.configs_path_container = "/configs"
         self.stimela_path = os.path.dirname(docker.__file__)
-        self.MAC_OS = platform.system() == "Darwin"
         self.CAB_TAG = cab_tag
 
         self.ms_dir = ms_dir or self.stimela_context.get("STIMELA_MSDIR", None)
@@ -111,15 +111,14 @@ class Recipe(object):
                 label=label, logger=self.log,
                 shared_memory=shared_memory)
 
-        cont.add_environ("MAC_OS", str(self.MAC_OS))
-
         # add standard volumes
         cont.add_volume(self.stimela_path, "/utils", perm="ro")
         cont.add_volume(self.data_path, "/data", perm="ro")
 
         if self.ms_dir:
-            cont.add_volume(self.ms_dir, "/msdir")
-            cont.add_environ("MSDIR", "/msdir")
+            md = "/home/%s/msdir"%USER
+            cont.add_volume(self.ms_dir, md)
+            cont.add_environ("MSDIR", md)
 
         if input:
             cont.add_volume( input,"/input")
@@ -129,8 +128,9 @@ class Recipe(object):
             if not os.path.exists(output):
                 os.mkdir(output)
 
-            cont.add_volume(output, "/output")
-            cont.add_environ("OUTPUT", "/output")
+            od = "/home/%s/output"%USER
+            cont.add_volume(output, od)
+            cont.add_environ("OUTPUT", od)
 
 
         # Check if imager image was selected. React accordingly

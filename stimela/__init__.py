@@ -22,12 +22,15 @@ LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 LOG_CABS = LOG_HOME + "/stimela_cab.log"
 
-BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery tigger".split()
+#BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery tigger moresa".split()
+BASE = os.listdir(cargo.BASE_PATH)
 CAB = os.listdir(cargo.CAB_PATH)
 
 NOT_PUBLIC = ["ddfacet"]
 
 USER = os.environ["USER"]
+UID = os.getuid()
+GID = os.getgid()
 
 __version__ = "0.2.1"
 
@@ -54,13 +57,28 @@ def build(argv):
         if (arg[0] == '-') and arg[1].isdigit(): argv = ' ' + arg
 
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
+    parser.add_argument("-b", "--base", action="store_true",
+            help="Build base images")
+
     parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
             help="executor image name, location of executor image files")
 
     args = parser.parse_args(argv)
 
-    build_args = ["RUN groupadd -g 1000 %s"%USER,
-                  "RUN useradd -u 1000 -g 1000 %s"%USER]
+    if args.base:
+        for image in BASE:
+            dockerfile = "{:s}/{:s}".format(cargo.BASE_PATH, image)
+            image = "stimela/{:s}".format(image)
+            docker.build(image,
+                         dockerfile)
+        return 0
+
+    workdir = "/home/%s/output/"%USER
+    build_args = ["RUN groupadd -g %d %s"%(UID, USER),
+                  "RUN useradd -u %d -g %d %s"%(UID, UID, USER),
+                  "WORKDIR %s"%workdir,
+                  "ENV HOME %s"%USER,
+                  "USER %s"%USER]
 
     if args.cab:
         cab_args = args.cab.split(",")

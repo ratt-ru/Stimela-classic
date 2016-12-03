@@ -8,12 +8,6 @@ import utils
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
 OUTDIR = os.environ["OUTPUT"]
-MAC_OS = os.environ["MAC_OS"]
-
-if MAC_OS.lower() in ["yes", "true", "yebo", "1"]:
-    MAC_OS = True
-else:
-    MAC_OS = False
 
 jdict = utils.readJson(CONFIG)
 

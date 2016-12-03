@@ -1,10 +1,7 @@
-FROM radioastro/meqtrees
+FROM stimela/astropy
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output
-
 ADD src /code
 
-WORKDIR /code
-
-CMD sh run.sh
+CMD python /code/run.py

@@ -1,10 +1,8 @@
-FROM radioastro/casa:4.6.0
+FROM stimela/casa
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code
 
 RUN mkdir -p /input /output
 
-WORKDIR /code
-
-CMD python run.py
+CMD python /code/run.py

@@ -18,13 +18,6 @@ import utils
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
 OUTDIR = os.environ["OUTPUT"]
-MAC_OS = os.environ["MAC_OS"]
-
-if MAC_OS.lower() in ["yes", "true", "yebo", "1"]:
-    MAC_OS = True
-else:
-    MAC_OS = False
-
 
 jdict = utils.readJson(CONFIG)
 template = utils.readJson("sourcery_template.json")
@@ -116,8 +109,7 @@ if dimage:
 # The tagging requires too much fine tunning. Turning it off by default
 template["dd_tagging"]["enable"] = jdict.pop("dd_tagging", False)
 
-output = "./temp-directory"
-template["outdir"] = output if MAC_OS else OUTDIR
+template["outdir"] = OUTDIR
 
 
 for key in jdict:
@@ -134,8 +126,3 @@ utils.xrun("sourcery", ["-jc", config])
 utils.xrun("tigger-convert", ["%s/%s.lsm.html"%(OUTDIR,prefix), "--rename -f"])
 
 utils.xrun("rm", ["-f", config])
-
-if MAC_OS:
-    utils.xrun("mv", [output, OUTDIR])
-
-

@@ -109,7 +109,6 @@ class Container(object):
             environs = environs = " -e "+" -e ".join(self.environs)
         else:
             environs = ""
-
         
         self._print("Instantiating container [%s]. The container ID is printed below."%self.name)
         utils.xrun("docker create", list(args) + [volumes, environs,

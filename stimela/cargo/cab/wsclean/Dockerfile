@@ -1,10 +1,10 @@
-FROM radioastro/wsclean
+FROM stimela/wsclean
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code
 
 RUN mkdir -p /input /output
 
-WORKDIR /code
+WORKDIR /output
 
-CMD python run.py
+CMD python /code/run.py

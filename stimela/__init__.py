@@ -389,22 +389,13 @@ def main(argv):
                     images=images, cabs=cabs, ps=ps,
                     containers=containers, kill=kill)
 
-    command = "failed"
-
-    for cmd in commands:
-       if cmd in argv:
-           command = cmd
-
-           index = argv.index(cmd)
-           options = argv[index:]
-           argv = argv[: index + 1]
-
-
     args = parser.parse_args(argv)
 
-    main_help = lambda : args.command and (args.command[0]=="help") and (len(argv)==2)
+    # No commands supplied, or the first and only command is help
+    main_help = (len(args.command) == 0 or
+        (len(args.command) == 1 and args.command[0] == "help"))
 
-    if args.help or len(argv)==1 or main_help():
+    if args.help or main_help:
         parser.print_help()
 
         print ("""
@@ -423,14 +414,22 @@ kill    : Gracefully kill runing stimela process
 
         sys.exit(0)
 
-    if args.command:
-        if args.command[0] == "help":
-            argv = argv[1:] + ["-h"]
-        else:
-            argv = options
-        try:
-            _cmd = commands[command]
-        except KeyError:
-            raise KeyError("Command '{:s}' not recognized\n "
-                             "Run : 'stimela help' for help".format(args.command))
-        _cmd(argv[1:])
+    # Separate commands into command and arguments
+    cmd, argv = args.command[0], args.command[1:]
+
+    # If we've got past the if statement above, and help
+    # is the command then assume that help on a command
+    # is requested
+    if cmd == "help":
+        # Request help on the sub-command
+        cmd, argv = argv[0], argv[1:] + ["-h"]
+
+    # Get the function to execute for the command
+    try:
+        _cmd = commands[cmd]
+    except KeyError:
+        raise KeyError("Command '{:s}' not recognized "
+                         "Run : 'stimela help' for help".format(cmd))
+
+    # Invoke the command
+    _cmd(argv)

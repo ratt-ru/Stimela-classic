@@ -389,11 +389,20 @@ def main(argv):
                     images=images, cabs=cabs, ps=ps,
                     containers=containers, kill=kill)
 
+    command = "failure"
+
+    for cmd in commands:
+        if cmd in argv:
+            command = cmd
+
+            index = argv.index(cmd)
+            options = argv[index+1:]
+            argv = argv[:index+1]
+
     args = parser.parse_args(argv)
 
-    # No commands supplied, or the first and only command is help
-    main_help = (len(args.command) == 0 or
-        (len(args.command) == 1 and args.command[0] == "help"))
+    # Command is help and no other commands following
+    main_help = (args.command[0] == "help" and len(args.command) == 1)
 
     if args.help or main_help:
         parser.print_help()
@@ -422,7 +431,9 @@ kill    : Gracefully kill runing stimela process
     # is requested
     if cmd == "help":
         # Request help on the sub-command
-        cmd, argv = argv[0], argv[1:] + ["-h"]
+        cmd, argv = argv[0], ["-h"]
+    else:
+        argv = options
 
     # Get the function to execute for the command
     try:

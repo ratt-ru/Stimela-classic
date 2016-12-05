@@ -27,4 +27,4 @@ if not os.path.exists(stimela.LOG_CABS):
     with open(stimela.LOG_CABS, "w") as std:
         pass
 
-stimela.main([a for a in sys.argv])
+stimela.main([a for a in sys.argv[1:]])

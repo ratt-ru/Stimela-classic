@@ -250,7 +250,7 @@ def pull(argv):
         for image in base:
             img = stimela_logger.Image(LOG_IMAGES)
 
-            if not img.find(image) and image!="radioastro/ddfacet":
+            if not img.find(image) and image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
                 docker.pull(image)
                 img.add(dict(name=image, tag=args.tag))
 

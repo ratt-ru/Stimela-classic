@@ -2,14 +2,5 @@
     "skymodel":null,
     "msname": null,
     "field_id": 0,
-    "spw_id": 0,
-    "ejones": false,
-    "gjones": true,
-    "gjones_intervals": [1,1],
-    "gjones_smoothing": null,
-    "gjones_thresh_sigma": 5,
-    "gjones_flag_ampl_low": 0.0,
-    "gjones_flag_ampl_high": 10.0,
-    "ejones_intervals": null,
-    "ejones_smoothing": null
+    "spw_id": 0
 }

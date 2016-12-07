@@ -63,6 +63,9 @@ def build(argv):
     parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
             help="executor image name, location of executor image files")
 
+    parser.add_argument("-i", "--ignore-cabs",
+            help="Comma separated cabs (executor images) to ignore.")
+
     args = parser.parse_args(argv)
 
     if args.base:
@@ -99,13 +102,13 @@ def build(argv):
         img.write()
         return
 
-
     # clear old cabs
     img = stimela_logger.Image(LOG_CABS)
     img.clear()
 
     for image in CAB:
-        if image in NOT_PUBLIC:
+        IGNORE = args.ignore_cabs.split(",")
+        if image in NOT_PUBLIC+IGNORE:
             continue
 
         dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)

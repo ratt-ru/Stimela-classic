@@ -32,7 +32,7 @@ USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 GLOBALS = {}
 

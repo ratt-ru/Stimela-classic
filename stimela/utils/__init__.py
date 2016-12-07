@@ -10,6 +10,7 @@ import tempfile
 import inspect
 import warnings
 import re
+import math
 
 from multiprocessing import Process, Manager, Lock
 manager = Manager()
@@ -475,3 +476,35 @@ def copycol(msname, fromcol, tocol):
         tab.putcol(tocol, data[row0:row0+nr], row0, nr)
 
     tab.close()
+
+
+def cab_dict_update(dictionary, key=None, value=None, options=None):
+    if options is None:
+        options = {key:value}
+    for key, value in options.iteritems():
+        dictionary[key] = dictionary.pop(key, None) or value
+    return dictionary
+
+
+def compute_vis_noise(msname, sefd, spw_id=0):
+    """Computes nominal per-visibility noise"""
+    from pyrap.tables import table
+
+    tab = table(msname)
+    spwtab = table(msname + "/SPECTRAL_WINDOW")
+
+    freq0 = spwtab.getcol("CHAN_FREQ")[spw_id, 0]
+    wavelength = 300e+6/freq0
+    bw = spwtab.getcol("CHAN_WIDTH")[spw_id, 0]
+    dt = tab.getcol("EXPOSURE", 0, 1)[0]
+    dtf = (tab.getcol("TIME", tab.nrows()-1, 1)-tab.getcol("TIME", 0, 1))[0]
+
+    # close tables properly, else the calls below will hang waiting for a lock...
+    tab.close()
+    spwtab.close()
+
+    print(">>> %s freq %.2f MHz (lambda=%.2fm), bandwidth %.2g kHz, %.2fs integrations, %.2fh synthesis"%(msname, freq0*1e-6, wavelength, bw*1e-3, dt, dtf/3600))
+    noise = sefd/math.sqrt(abs(2*bw*dt))
+    print(">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy"%(sefd, noise*1000))
+
+    return noise 

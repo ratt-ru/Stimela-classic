@@ -1,18 +1,4 @@
 {   
     "msname": null, 
-    "direction": "J2000,0deg,-30deg", 
-    "skymodel": null, 
-    "recentre": false, 
-    "addnoise": true, 
-    "sefd": 831, 
-    "column": "DATA",
-    "G_jones": false,
-    "E_jones": false,
-    "beam_file_type": "emss",
-    "beam_files_pattern": null,
-    "emss_labels": "a,b,c,d,e,f",
-    "emss_freqs": "1440,1442,1445,1447",
-    "add_to_column": null,
-    "copy_to_CORRECTED_DATA": false,
-    "custom_data_column": null
+    "skymodel": null
 }

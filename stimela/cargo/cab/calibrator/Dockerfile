@@ -4,4 +4,4 @@ MAINTAINER <sphemakh@gmail.com>
 RUN mkdir -p /input /output
 ADD src /code
 
-CMD sh /code/run.sh
+CMD python /code/run.py

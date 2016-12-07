@@ -63,7 +63,7 @@ def build(argv):
     parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
             help="executor image name, location of executor image files")
 
-    parser.add_argument("-i", "--ignore-cabs",
+    parser.add_argument("-i", "--ignore-cabs", default="",
             help="Comma separated cabs (executor images) to ignore.")
 
     args = parser.parse_args(argv)

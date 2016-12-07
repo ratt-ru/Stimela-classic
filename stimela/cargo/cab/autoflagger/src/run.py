@@ -10,17 +10,15 @@ INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 
 jdict = utils.readJson(CONFIG)
-msname = jdict["msname"]
+msname = jdict.pop("msname")
 
 if isinstance(msname, (str, unicode)):
     msname = [msname]
 
 msname = " ".join( ["%s/%s"%(MSDIR , ms)  for ms in msname] )
 
-strategy = jdict.get("strategy", None)
+strategy = jdict.pop("strategy", None)
 strategy = "-s %s/%s"%(INPUT, strategy) if strategy else ""
 
-
-flag_cmd = jdict.get("command", "")
-
-utils.xrun("aoflagger", [flag_cmd, strategy, msname])
+flag_cmd = ["-%s %s"%(a, "" if isinstance(b, bool) else b) for a,b in jdict.iteritems()] or [""]
+utils.xrun("aoflagger", flag_cmd+[strategy, msname])

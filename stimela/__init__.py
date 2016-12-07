@@ -250,7 +250,7 @@ def pull(argv):
         for image in base:
             img = stimela_logger.Image(LOG_IMAGES)
 
-            if not img.find(image) and image!="radioastro/ddfacet":
+            if not img.find(image) and image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
                 docker.pull(image)
                 img.add(dict(name=image, tag=args.tag))
 
@@ -389,22 +389,22 @@ def main(argv):
                     images=images, cabs=cabs, ps=ps,
                     containers=containers, kill=kill)
 
-    command = "failed"
+    command = "failure"
 
     for cmd in commands:
-       if cmd in argv:
-           command = cmd
+        if cmd in argv:
+            command = cmd
 
-           index = argv.index(cmd)
-           options = argv[index:]
-           argv = argv[: index + 1]
-
+            index = argv.index(cmd)
+            options = argv[index+1:]
+            argv = argv[:index+1]
 
     args = parser.parse_args(argv)
 
-    main_help = lambda : args.command and (args.command[0]=="help") and (len(argv)==2)
+    # Command is help and no other commands following
+    main_help = (args.command[0] == "help" and len(args.command) == 1)
 
-    if args.help or len(argv)==1 or main_help():
+    if args.help or main_help:
         parser.print_help()
 
         print ("""
@@ -423,14 +423,24 @@ kill    : Gracefully kill runing stimela process
 
         sys.exit(0)
 
-    if args.command:
-        if args.command[0] == "help":
-            argv = argv[1:] + ["-h"]
-        else:
-            argv = options
-        try:
-            _cmd = commands[command]
-        except KeyError:
-            raise KeyError("Command '{:s}' not recognized\n "
-                             "Run : 'stimela help' for help".format(args.command))
-        _cmd(argv[1:])
+    # Separate commands into command and arguments
+    cmd, argv = args.command[0], args.command[1:]
+
+    # If we've got past the if statement above, and help
+    # is the command then assume that help on a command
+    # is requested
+    if cmd == "help":
+        # Request help on the sub-command
+        cmd, argv = argv[0], ["-h"]
+    else:
+        argv = options
+
+    # Get the function to execute for the command
+    try:
+        _cmd = commands[cmd]
+    except KeyError:
+        raise KeyError("Command '{:s}' not recognized "
+                         "Run : 'stimela help' for help".format(cmd))
+
+    # Invoke the command
+    _cmd(argv)

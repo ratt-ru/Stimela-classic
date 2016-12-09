@@ -241,7 +241,7 @@ class Recipe(object):
                 container.remove()
             except Exception as e:
                 completed = containers[:i]
-                remaining = containers[i+1:]
+                remaining = containers[i:]
 
                 pe = PipelineException(e, completed, container, remaining)
 

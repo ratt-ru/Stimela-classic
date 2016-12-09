@@ -23,11 +23,21 @@ jdict = utils.readJson(CONFIG)
 template = utils.readJson("sourcery_template.json")
 
 
+name = jdict.pop("imagename")
+dimage = jdict.pop("detection_image", None)
+psf = jdict.pop("psf", None)
+prefix = jdict.pop("prefix", None) or name.split("/")[-1]
+
+for item in "name psf dimage prefix":
+    if isinstance(globals()[item], str):
+        tmp = OUTDIR + "/" + globals()[item]  if item=="prefix" else INDIR + "/" + globals()[item]
+        globals()[item] = utils.substitute_globals(globals()[item]) or tmp
+
+
 def pybdsm(image, prefix, *args, **kw):
     img = bdsm.process_image(image, *args, **kw)
     gaulfile = prefix+".gaul.fits"
     img.write_catalog(catalog_type="gaul", format="fits", outfile=gaulfile, clobber=True)
-
 
     # convert to Gaul file to Tigger LSM
     # First make dummy tigger model
@@ -76,25 +86,14 @@ def pybdsm(image, prefix, *args, **kw):
 
 
 
-name = INDIR+"/"+jdict.pop("imagename")
-dimage = jdict.pop("detection_image", None)
-prefix = jdict.pop("prefix", None) or name.split("/")[-1]
-
-if dimage:
-    dimage = INDIR + "/" + dimage
 
 go = jdict.pop("pybdsm", False)
 
 if go:
-    prefix = OUTDIR + "/" + prefix 
     if dimage:
         jdict["detection_image"] = dimage
     pybdsm(name, prefix, **jdict)
     sys.exit(0)
-
-psf = jdict.pop("psfname", None)
-if psf:
-    psf = INDIR+"/"+psf
 
 template["prefix"] = prefix
 template["imagename"] = name
@@ -109,7 +108,6 @@ if dimage:
 # The tagging requires too much fine tunning. Turning it off by default
 template["dd_tagging"]["enable"] = jdict.pop("dd_tagging", False)
 
-template["outdir"] = OUTDIR
 
 
 for key in jdict:

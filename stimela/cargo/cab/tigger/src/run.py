@@ -1,7 +1,5 @@
 import os
 import sys
-import re
-from pyrap.tables import table
 
 sys.path.append("/utils")
 import utils
@@ -13,19 +11,21 @@ MSDIR = os.environ["MSDIR"]
 
 jdict = utils.readJson(CONFIG)
 
-operation = jdict["operation"]
-cmd_ = jdict["command"]
+command = jdict.get("command")
+inlsm = jdict.pop("inlsm")
+outlsm = jdict.pop("outlsm")
+append = jdict.pop("append", None)
 
-sub = set(re.findall('\{(.*?)\}', cmd_))
+for item in "inlsm outlsm append image".split():
+    if not isinstance(globals()[item], str):
+        continue
+    tmp = OUTPUT +"/"+ image if item=="outlsm" else INPUT +"/"+ image
+    globals()[item] = utils.substitute_globals(globals()[item]) or tmp
+        
+if append:
+    inlsm  = "--append %s"%append
 
-cmd = cmd_
+if image:
+    image = utils.substitute_globals(image) or INPUT +"/"+image
 
-for item in map(str, sub):
-    cmd = cmd.replace("${%s}"%item, globals()[item])
-
-
-forced = False
-if cmd.find("-f")>0:
-   forced = True
-
-utils.xrun(operation, [cmd, "" if forced else "-f"])
+utils.xrun(command, [args, image, inlsm, outlsm])

@@ -84,12 +84,8 @@ for key, value in jdict.iteritems():
 mask = options.get("CleanMaskImage", None)
 
 for item in "mask prefix beam_pattern".split():
-    nosub = True
-    for place in [INPUT, OUTPUT]:
-        if item.startswith(place):
-            nosub = False
-    if nosub:
-        globals()[item] = "%s/%s"%(OUTPUT if globals()[item] is prefix else INPUT, globals()[item])
+    if isinstance(globals()[item], str):
+        globals()[item] = utils.substitute_globals(globals()[item]) or "%s/%s"(OUTPUT if item=="prefix" else INPUT, globals()[item])
 
 with open("mslist.txt", "w") as std:
     for ms in msname:

@@ -18,6 +18,8 @@ if isinstance(msname, (str, unicode)):
 msname = " ".join( ["%s/%s"%(MSDIR , ms)  for ms in msname] )
 
 strategy = jdict.pop("strategy", None)
+if strategy:
+    strategy = utils.substitute_globals(strategy) or INPUT + "/" + strategy
 strategy = "-strategy %s/%s"%(INPUT, strategy) if strategy else ""
 
 flag_cmd = ["-%s %s"%(a, "" if isinstance(b, bool) else b) for a,b in jdict.iteritems()] or [""]

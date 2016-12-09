@@ -70,9 +70,10 @@ if isinstance(msname, (list, tuple)):
 else:
     vis = msname
     mslist = MSDIR + "/" + msname
-prefix = options["name"] = OUTPUT + "/" + options.pop("name", os.path.basename(vis[:-3]))
+
+name = options.pop("name", os.path.basename(vis[:-3]))
+options["name"] = utils.substitute_globals(name) or OUTPUT + "/" + name
 
 args = ["-%s %s"%(a,b) for a,b in options.iteritems()]
-print args
 
 utils.xrun("wsclean", args + [mslist])

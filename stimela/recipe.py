@@ -34,7 +34,32 @@ CONFIGS_ = {
     "cab/subtract" : "{:s}/configs/subtract_params.json".format(ekhaya)
 }
 
+class PipelineException(Exception):
+    """
+    Encapsulates information about state of pipeline when an
+    exception occurs
+    """
+    def __init__(self, exception, completed, failed, remaining):
+        message = ("Exception occurred while running "
+            "pipeline component '%s': %s" % (failed.label, str(exception)))
 
+        super(PipelineException, self).__init__(message)
+
+        self._completed = completed
+        self._failed = failed
+        self._remaining = remaining
+
+    @property
+    def completed(self):
+        return self._completed
+
+    @property
+    def failed(self):
+        return self._failed
+
+    @property
+    def remaining(self):
+        return self._remaining
 
 class Recipe(object):
 
@@ -206,14 +231,25 @@ class Recipe(object):
             containers = self.containers
 
         for i, container in enumerate(containers):
-            self.log.info("Running Container %s"%container.name)
-            self.log.info("STEP %d :: %s"%(i, container.label))
-            self.active = container
+            try:
+                self.log.info("Running Container %s"%container.name)
+                self.log.info("STEP %d :: %s"%(i, container.label))
+                self.active = container
 
-            container.create()
-            container.start()
-            container.stop()
-            container.remove()
+                container.create()
+                container.start()
+                container.stop()
+                container.remove()
+            except Exception as e:
+                completed = containers[:i]
+                remaining = containers[i+1:]
+
+                pe = PipelineException(e, completed, container, remaining)
+
+                raise pe, None, sys.exc_info()[2]
+            finally:
+                container.stop()
+                container.remove()
 
 
         self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))

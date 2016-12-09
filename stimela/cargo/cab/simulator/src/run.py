@@ -10,6 +10,7 @@ CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
+CODE = "/code/"
 
 jdict = utils.readJson(CONFIG)
 cab_dict_update = utils.cab_dict_update
@@ -22,28 +23,17 @@ spw_id = jdict.pop("spw_id", 0)
 jdict = cab_dict_update(jdict, "ms_sel.ddid_index", spw_id)
 jdict = cab_dict_update(jdict, "ms_sel.field_index", field_id)
 
-tdl = jdict.pop("tdlconf", None) or "/code/tdlconf.profiles"
+tdl = jdict.pop("tdlconf", None) or "${CODE}/tdlconf.profiles"
 section = jdict.pop("section", None) or "sim"
 mode = jdict.pop("mode", "simulate")
 threads = jdict.pop("threads", 4)
 skymodel = jdict.pop("skymodel", None)
 beam_files_pattern = jdict.pop("beam_files_pattern", False)
 
-for place in "",INPUT,"/data/skymodels":
-    if os.path.exists("%s/%s"%(place, skymodel)):
-        skymodel = "%s/%s"%(place, skymodel)
-        break
 
 for item in "skymodel tdl beam_files_pattern".split():
-    if not isinstance(globals()[item], (str, unicode)):
-        continue
-    found = False
-    for place in INPUT, OUTPUT, MSDIR, "/code/", "/data/skymodels/":
-        if globals()[item].startswith(place):
-            found = True
-            break
-    if not found:
-        globals()[item] = INPUT +"/"+ globals()[item]
+    if isinstance(globals()[item], str):
+        globals()[item] = utils.substitute_globals(globals()[item]) or INPUT + "/" + globals()[item]
 
 modes = {
     "simulate"  :   '"sim only"',

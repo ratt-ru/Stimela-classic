@@ -20,20 +20,10 @@ else:
     vis = msname
     mslist = MSDIR + "/" + msname
 
-mask = jdict.pop("mask")
-for place in ["/input", "/output", "/msdir"]:
-    if mask.startswith(place):
-        pass
-    else:
-        mask = INPUT + "/" + mask
-        break
+mask = utils.substitute_globals(mask) or INPUT + "/" + mask
 
 args = ["--mask %s"%mask]
-stats = jdict.pop("stats", True)
 
-if stats:
-    args += ["-s"]
-
-args += ["--%s %s"%(a,b) for a,b in jdict.iteritems()]
+args += ["--%s %s"%(a, "" if isinstance(b, bool) else b) for a,b in jdict.iteritems()]
 
 utils.xrun("mask_ms.py", args + [mslist])

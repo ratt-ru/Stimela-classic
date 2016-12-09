@@ -10,6 +10,7 @@ CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
+CODE = "/code"
 
 jdict = utils.readJson(CONFIG)
 cab_dict_update = utils.cab_dict_update
@@ -24,7 +25,7 @@ spw_id = jdict.pop("spw_id", 0)
 jdict = cab_dict_update(jdict, "ms_sel.ddid_index", spw_id)
 jdict = cab_dict_update(jdict, "ms_sel.field_index", field_id)
 
-tdl = jdict.pop("tdlconf", None) or "/code/tdlconf.profiles"
+tdl = jdict.pop("tdlconf", None) or "${CODE}/tdlconf.profiles"
 section = jdict.pop("section", None) or "stefcal"
 threads = jdict.pop("threads", 4)
 skymodel = jdict.pop("skymodel", None)
@@ -32,16 +33,8 @@ beam_files_pattern = jdict.pop("beam_files_pattern", False)
 jones_type = jdict.pop("jones_implementation", "Gain2x2")
 
 for item in "skymodel tdl beam_files_pattern".split():
-    if not isinstance(globals()[item], (str, unicode)):
-        continue
-    found = False
-    for place in INPUT, OUTPUT, MSDIR, "/code/", "/data/skymodels/":
-        if globals()[item].startswith(place):
-            found = True
-            break
-    if not found:
-        globals()[item] = INPUT +"/"+ globals()[item]
-
+    if isinstance(globals()[item], str):
+        globals()[item] = utils.substitute_globals(globals()[item]) or INPUT +"/"+ globals()[item]
 
 column = jdict.pop("column", "DATA")
 outcol = jdict.pop("output", "CORRECTED_DATA")
@@ -51,7 +44,6 @@ jdict = cab_dict_update(jdict, "ms_sel.input_column", column)
 jdict = cab_dict_update(jdict, "ms_sel.output_column", outcol)
 jdict["tiggerlsm.filename"] = skymodel
 label = jdict.pop("label", None)
-
 
 apl = jdict.pop("apply", None)
 if isinstance(apl, str):
@@ -172,8 +164,10 @@ utils.xrun("meqtree-pipeliner.py", prefix + options + suffix)
 if makeplots:
     import Owlcat.Gainplots as plotgains
     feed_tab = table(msname+"/FEED")
+    print("Extracting feed type from MS")
     feed_type = set(feed_tab.getcol("POLARIZATION_TYPE")['array'])
     feed_type = "".join(feed_type)
+    print("Feed type is [%s]"%feed_type)
 
     if feed_type.upper() in ["XY", "YX"]:
         feed_type = "XY"
@@ -181,10 +175,13 @@ if makeplots:
         feed_type = "RL"
 
     if modes["Gjones"] == "solve-save" and gjones:
+        print("Making Gain plots...")
         plotgains.make_gain_plots(gjones_gains, prefix=gjones_plotprefix, feed_type=feed_type)
 
     if modes["DDjones"] == "solve-save" and ddjones:
+        print("Making differential gain plots...")
         plotgains.make_diffgain_plots(ddjones_gains, prefix=ddjones_plotprefix, feed_type=feed_type)
 
     if modes["IFRjones"] == "solve-save" and ifrjones:
+        print("Making IFR gain plots...")
         plotgains.make_ifrgain_plots(ifrjones_gains, prefix=ifrjones_plotprefix, feed_type=feed_type)

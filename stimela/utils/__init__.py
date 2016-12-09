@@ -145,12 +145,6 @@ def readJson(conf):
                 if isinstance(v, unicode):
                     val[i] = str(v)
 
-        if isinstance(val, str):
-            globs = inspect.currentframe().f_back.f_globals
-            tmp = substitute_globals(val,globs=globs)
-            if tmp:
-                val = tmp
-
         ndict[str(key)] = val
    return ndict
 
@@ -224,7 +218,7 @@ def get_base_images(logfile, index=1):
     return images
 
 
-def icasa(taskname, mult=None, loadthese=[],**kw0):
+def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
     """ 
       runs a CASA task given a list of options.
       A given task can be run multiple times with a different options, 
@@ -271,11 +265,12 @@ def icasa(taskname, mult=None, loadthese=[],**kw0):
 %s
 
 os.chdir('%s')
+%s
 taskname = '%s'
 %s
 go()
 
-"""%(_load,cdir, taskname, task_cmds)
+"""%(_load, cdir,"clearstart()" if clearstart else "", taskname, task_cmds)
 
     tf = tempfile.NamedTemporaryFile(suffix='.py')
     tf.write(run_cmd)
@@ -360,7 +355,6 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
 
 def substitute_globals(string, globs=None):
     sub = set(re.findall('\{(.*?)\}', string))
-
     globs = globs or inspect.currentframe().f_back.f_globals
     if sub:
         for item in map(str, sub):

@@ -18,7 +18,9 @@ if isinstance(msname, (str, unicode)):
 msname = " ".join( ["%s/%s"%(MSDIR , ms)  for ms in msname] )
 
 strategy = jdict.pop("strategy", None)
-strategy = "-s %s/%s"%(INPUT, strategy) if strategy else ""
+if strategy:
+    strategy = utils.substitute_globals(strategy) or INPUT + "/" + strategy
+strategy = "-s %s/%s"%strategy if strategy else ""
 
 flag_cmd = ["-%s %s"%(a, "" if isinstance(b, bool) else b) for a,b in jdict.iteritems()] or [""]
 utils.xrun("aoflagger", flag_cmd+[strategy, msname])

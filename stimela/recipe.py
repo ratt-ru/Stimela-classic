@@ -87,6 +87,8 @@ class Recipe(object):
             shared_memory="1gb", tag=None):
 
 
+        if image =="cab/casa":
+            image = "cab/casa_clean"
 
         input = input or self.stimela_context.get("STIMELA_INPUT", None)
         output = output or self.stimela_context.get("STIMELA_OUTPUT", None)
@@ -199,7 +201,6 @@ class Recipe(object):
 
                     containers.append( self.containers[idx] )
             else:
-
                 containers = [ self.containers[i-1] for i in steps[:len(self.containers)] ]
         else:
             containers = self.containers

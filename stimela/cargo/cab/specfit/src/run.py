@@ -26,17 +26,9 @@ freq0 = jdict.pop("freq0", 0)
 tol = jdict.pop("tol", None)
 
 
-lsmname = "%s/%s"%(INPUT,lsmname)
-
-for item in "image mask spi_image spi_err lsmname outlsm freq0".split():
-    if not isinstance(globals()[item], str):
-        continue
-    nosub = True
-    for place in [INPUT, OUTPUT]:
-        if globals()[item].startswith(place):
-            nosub = False
-    if nosub:
-        globals()[item] = "%s/%s"%(INPUT, globals()[item])
+for item in "image mask spi_image spi_err lsmname outlsm freq0 lsmname".split():
+    if isinstance(globals()[item], str):
+    globals()[item] = utils.substitute_globals(globals()[item]) or INPUT + "/" + globals()[item]
 
 if spi_image:
     if make_spi:

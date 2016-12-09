@@ -11,7 +11,7 @@ import inspect
 import stimela
 from stimela import utils, cargo
 from recipe import Recipe as Pipeline
-from recipe import Recipe
+from recipe import Recipe, PipelineException
 from stimela import docker
 
 from stimela.utils import stimela_logger

@@ -238,8 +238,6 @@ class Recipe(object):
 
                 container.create()
                 container.start()
-                container.stop()
-                container.remove()
             except Exception as e:
                 completed = containers[:i]
                 remaining = containers[i+1:]

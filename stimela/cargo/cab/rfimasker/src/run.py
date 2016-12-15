@@ -20,6 +20,7 @@ else:
     vis = msname
     mslist = MSDIR + "/" + msname
 
+mask = jdict.pop("mask")
 mask = utils.substitute_globals(mask) or INPUT + "/" + mask
 
 args = ["--mask %s"%mask]

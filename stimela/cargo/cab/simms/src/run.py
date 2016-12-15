@@ -74,7 +74,7 @@ if telescope[:3] in ["vla", "jvl"] and jdict.get("antennas", None) in [None, Fal
 direction = jdict.get("direction", None)
 
 
-msname = jdict["msname"]
+jdict["msname"] = MSDIR+"/"+jdict["msname"]
 
 if jdict.get("antennas", False):
     jdict["pos"] = INDIR+"/"+jdict.get("antennas", "meetkat")

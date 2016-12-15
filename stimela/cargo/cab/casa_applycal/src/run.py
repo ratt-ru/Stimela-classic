@@ -13,13 +13,10 @@ options = utils.readJson(CONFIG)
 vis = options.pop("msname")
 options["vis"] = MSDIR + "/" + vis
 
-caltable = options.pop("caltable")
 gains = options.pop("gaintable", [])
 
 for i,item in enumerate(gains):
     gains[i] = utils.substitute_globals(item) or INPUT+"/"+item
 
-caltable = utils.substitute_globals(caltable) or OUTPUT+"/"+caltable
-
-
+options["gaintable"] = gains
 utils.icasa("applycal", **options)

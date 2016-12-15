@@ -35,6 +35,11 @@ for item in "skymodel tdl beam_files_pattern".split():
     if isinstance(globals()[item], str):
         globals()[item] = utils.substitute_globals(globals()[item]) or INPUT + "/" + globals()[item]
 
+if not os.path.exists(skymodel):
+    skymodel = "/data/skymodels/%s"%(os.path.basename(skymodel))
+    if not os.path.exists(skymodel):
+        raise RuntimeError("ABORT: Could not find the skymodel")
+
 modes = {
     "simulate"  :   '"sim only"',
     "add"       :   "'add to MS'",

@@ -4,3 +4,5 @@ RUN pip install astropy \
         scipy \
         futures \
         scikit-image
+
+RUN pip install git+https://github.com/SpheMakh/cleanmask

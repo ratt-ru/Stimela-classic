@@ -1,2 +1,2 @@
 FROM stimela/base
-RUN docker-apt-install python-pymoresane
+RUN pip install pymoresane

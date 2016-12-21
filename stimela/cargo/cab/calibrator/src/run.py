@@ -16,10 +16,18 @@ jdict = utils.readJson(CONFIG)
 cab_dict_update = utils.cab_dict_update
 
 
-
 msname = jdict.pop("msname")
-msname = MSDIR + "/" + msname
+if isinstance(msname, (unicode, str)):
+    msname = [msname]
 
+mslist = []
+for item in msname:
+    mslist.append(MSDIR + "/" + item)
+
+msname = mslist[0]
+ncpu = jdict.pop("ncpu", 1)
+
+jdict["ms_sel.msname"] = msname
 field_id = jdict.pop("field_id", 0)
 spw_id = jdict.pop("spw_id", 0)
 jdict = cab_dict_update(jdict, "ms_sel.ddid_index", spw_id)
@@ -39,7 +47,6 @@ for item in "skymodel tdl beam_files_pattern".split():
 column = jdict.pop("column", "DATA")
 outcol = jdict.pop("output", "CORRECTED_DATA")
 
-jdict["ms_sel.msname"] = msname
 jdict = cab_dict_update(jdict, "ms_sel.input_column", column)
 jdict = cab_dict_update(jdict, "ms_sel.output_column", outcol)
 jdict["tiggerlsm.filename"] = skymodel
@@ -92,28 +99,15 @@ if beam and beam_files_pattern:
         "me.e_all_stations" : 1,
         "pybeams_fits.l_axis"   : jdict.pop("beam_l_axis", "L"),
         "pybeams_fits.m_axis"   : jdict.pop("beam_m_axis", "M"),
-        "pybeams_fits.filename_pattern" : beam_files_pattern,
+        "pybeams_fits.filename_pattern" : "'%s'"%beam_files_pattern,
     }
     jdict = cab_dict_update(jdict, options=beam_opts)
 
-    rms_perr = jdict.get("pointing_accuracy", 0)
-    # Include pointing errors if needed
-    if rms_perr:
-        anttab = table(msname + "/" + "ANTENNA")
-        NANT = anttab.nrows()
-        
-        jdict = cab_dict_update(jdict, "me.epe_enable", 1)
-        perr = numpy.random.randn(NANT)*rms_perr, numpy.random.randn(NANT)*rms_perr
-        ll, mm = " ".join( map(str, perr[0]) ), " ".join( map(str, perr[-1]) )
-        jdict = cab_dict_update(jdict, key='oms_pointing_errors.pe_l.values_str',  value="'%s'"%ll)
-        jdict = cab_dict_update(jdict, key='oms_pointing_errors.pe_l.values_str',  value="'%s'"%mm)
 
 ddjones = jdict.pop("DDjones", False)
 if ddjones:
-    options["stefcal_diffgain.flag_ampl"] = 0
-    options["stefcal_diffgain.flag_chisq"] = 0
-    freq_int, freq_smooth = jdict.get("DDjones_intervals", None)
-    time_smooth, freq_smooth = jdict.get("DDjones_smoothing", None)
+    freq_int, freq_smooth = jdict.pop("DDjones_solution_intervals", (0,0))
+    time_smooth, freq_smooth = jdict.pop("DDjones_smoothing_intervals", (0,0))
 
     ddjones_gains = "%s%s.diffgain.cp"%(msname[:-3], "-%s"%label if label else "")
     ddjones_opts = {
@@ -124,7 +118,7 @@ if ddjones:
         "stefcal_diffgain.freqint" : freq_int,
         "stefcal_diffgain.freqsmooth" : freq_smooth,
         "stefcal_diffgain.implementation" : jones_type,
-        "stefcal_diffgain.label" : dd_label,
+        "stefcal_diffgain.label" : jdict.pop("dd_label", "dE"),
         "stefcal_diffgain.max_diverge" : 1,
         "stefcal_diffgain.mode" : modes["DDjones"],
         "stefcal_diffgain.niter" : 50,
@@ -154,34 +148,47 @@ gjones_plotprefix = jdict.pop("Gjones_plotprefix", pp+"-gjones_plots")
 ddjones_plotprefix = jdict.pop("DDjones_plotprefix", pp+"ddjones_plots")
 ifrjones_plotprefix = jdict.pop("IFRjones_plotprefix", pp+"ifrjones_plots")
 
-prefix = ["--mt %d -c %s [%s]"%(threads, tdl, section)]
-suffix = ["%s/Calico/calico-stefcal.py =stefcal"%os.environ["MEQTREES_CATTERY_PATH"]]
-options = ["%s=%s"%(key, val) for key,val in jdict.iteritems()]
+def run_meqtrees(msname):
 
-utils.xrun("meqtree-pipeliner.py", prefix + options + suffix)
+    prefix = ["--mt %d -c %s [%s]"%(threads, tdl, section)]
+    suffix = ["%s/Calico/calico-stefcal.py =stefcal"%os.environ["MEQTREES_CATTERY_PATH"]]
+    options = {}
+    options.update(jdict)
+    if options.pop("add_uvmodel", 0):
+        options["read_ms_model"] = 1
+        options["ms_sel.model_column"] = "MODEL_DATA"
 
-# now plot the gains
-if makeplots:
-    import Owlcat.Gainplots as plotgains
-    feed_tab = table(msname+"/FEED")
-    print("Extracting feed type from MS")
-    feed_type = set(feed_tab.getcol("POLARIZATION_TYPE")['array'])
-    feed_type = "".join(feed_type)
-    print("Feed type is [%s]"%feed_type)
+    options["stefcal_diffgain.table"] = "%s%s.diffgain.cp"%(msname[:-3], "-%s"%label if label else "")
+    options["stefcal_gain.table"] = "%s%s.gain.cp"%(msname[:-3], "-%s"%label if label else "")
+    options["stefcal_ifrgain.table"] = "%s%s.ifrgain.cp"%(msname[:-3], "-%s"%label if label else "")
+    args = ["%s=%s"%(key, val) for key,val in options.iteritems()]
+    
+    utils.xrun("meqtree-pipeliner.py", prefix + args + suffix)
+    
+    # now plot the gains
+    if makeplots:
+        import Owlcat.Gainplots as plotgains
+        feed_tab = table(msname+"/FEED")
+        print("Extracting feed type from MS")
+        feed_type = set(feed_tab.getcol("POLARIZATION_TYPE")['array'])
+        feed_type = "".join(feed_type)
+        print("Feed type is [%s]"%feed_type)
+    
+        if feed_type.upper() in ["XY", "YX"]:
+            feed_type = "XY"
+        else:
+            feed_type = "RL"
+    
+        if modes["Gjones"] == "solve-save" and gjones:
+            print("Making Gain plots...")
+            plotgains.make_gain_plots(gjones_gains, prefix=gjones_plotprefix, feed_type=feed_type)
+    
+        if modes["DDjones"] == "solve-save" and ddjones:
+            print("Making differential gain plots...")
+            plotgains.make_diffgain_plots(ddjones_gains, prefix=ddjones_plotprefix, feed_type=feed_type)
+    
+        if modes["IFRjones"] == "solve-save" and ifrjones:
+            print("Making IFR gain plots...")
+            plotgains.make_ifrgain_plots(ifrjones_gains, prefix=ifrjones_plotprefix, feed_type=feed_type)
 
-    if feed_type.upper() in ["XY", "YX"]:
-        feed_type = "XY"
-    else:
-        feed_type = "RL"
-
-    if modes["Gjones"] == "solve-save" and gjones:
-        print("Making Gain plots...")
-        plotgains.make_gain_plots(gjones_gains, prefix=gjones_plotprefix, feed_type=feed_type)
-
-    if modes["DDjones"] == "solve-save" and ddjones:
-        print("Making differential gain plots...")
-        plotgains.make_diffgain_plots(ddjones_gains, prefix=ddjones_plotprefix, feed_type=feed_type)
-
-    if modes["IFRjones"] == "solve-save" and ifrjones:
-        print("Making IFR gain plots...")
-        plotgains.make_ifrgain_plots(ifrjones_gains, prefix=ifrjones_plotprefix, feed_type=feed_type)
+utils.pper(mslist, run_meqtrees, ncpu)

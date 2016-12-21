@@ -19,4 +19,5 @@ for i,item in enumerate(gains):
     gains[i] = utils.substitute_globals(item) or INPUT+"/"+item
 
 options["gaintable"] = gains
+
 utils.icasa("applycal", **options)

@@ -101,7 +101,6 @@ class Recipe(object):
         home = os.environ["HOME"] + "/.stimela/stimela_containers.log"
         self.CONTAINER_LOGFILE = container_logfile or home
 
-
         self.shared_memory = shared_memory
 
 
@@ -110,7 +109,6 @@ class Recipe(object):
             build_first=False, build_dest=None,
             saveconf=None, add_time_stamp=True,
             shared_memory="1gb", tag=None):
-
 
         if image =="cab/casa":
             image = "cab/casa_clean"

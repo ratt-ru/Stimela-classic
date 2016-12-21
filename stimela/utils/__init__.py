@@ -4,6 +4,7 @@ import os
 import sys
 import logging
 import json
+import yaml
 import codecs
 import time
 import tempfile
@@ -123,30 +124,14 @@ def pper(iterable, command, cpus=None, stagger=2, logger=None):
         proc.start()
         counter += 1
 
-
     for proc in procs:
         proc.join()
 
 
-
 def readJson(conf):
-   import collections
-
-   with open(conf) as _std:
-       jdict = json.load(_std)
-
-   ndict = {}
-   for key,val in jdict.items():
-        if isinstance(val, unicode):
-            val = str(val)
-
-        elif isinstance(val, (list,tuple)):
-            for i,v in enumerate(val):
-                if isinstance(v, unicode):
-                    val[i] = str(v)
-
-        ndict[str(key)] = val
-   return ndict
+    with open(conf) as _std:
+        jdict = yaml.safe_load(_std)
+        return jdict
 
 
 def writeJson(config, dictionary):

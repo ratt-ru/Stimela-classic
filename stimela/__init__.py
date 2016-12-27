@@ -10,6 +10,7 @@ import signal
 import inspect
 import stimela
 from stimela import utils, cargo
+from stimela.cargo import cab
 from recipe import Recipe as Pipeline
 from recipe import Recipe, PipelineException
 from stimela import docker
@@ -32,7 +33,7 @@ USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 GLOBALS = {}
 
@@ -71,7 +72,7 @@ def build(argv):
     if args.base:
         for image in BASE:
             dockerfile = "{:s}/{:s}".format(cargo.BASE_PATH, image)
-            image = "stimela/{:s}".format(image)
+            image = "stimela/{0}:{1}".format(image, __version__)
             docker.build(image,
                          dockerfile)
         return 0
@@ -121,16 +122,33 @@ def build(argv):
 
     img.write()
 
+def info(cabname):
+    """ prints out help information about a cab """
+
+    # First check if cab exists
+    if cabname not in CAB:
+        raise RuntimeError("Cab '{}' could not be found. The available cabs are listed below \n {}".format(cabname, CAB))
+
+    pfile = "{0}/{1}/parameters.json".format(cargo.CAB_PATH, cabname)
+    cab_definition = cab.CabDefinition(parameter_file=pfile)
+    cab_definition.display()
+
 
 def cabs(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit(): argv = ' ' + arg
 
     parser = ArgumentParser(description='List executor (a.k.a cab) images')
+    parser.add_argument("-i", "--cab-doc", 
+        help="Will display document about the specified cab. For example, \
+to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
     args = parser.parse_args(argv)
 
-    img = stimela_logger.Image(LOG_CABS)
-    img.display()
+    if args.cab_doc:
+        info(args.cab_doc)
+    else:
+        img = stimela_logger.Image(LOG_CABS)
+        img.display()
 
 
 def run(argv):
@@ -366,6 +384,7 @@ def kill(argv):
         except OSError:
             pass
 
+    
 
 def main(argv):
     for i, arg in enumerate(argv):

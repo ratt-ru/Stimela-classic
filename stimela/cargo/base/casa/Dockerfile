@@ -1,1 +1,1 @@
-FROM kernsuite/casa
+FROM kernsuite/casa:4.7

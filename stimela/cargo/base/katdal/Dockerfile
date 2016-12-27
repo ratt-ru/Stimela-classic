@@ -1,4 +1,4 @@
-FROM radioastro/base
+FROM radioastro/base:0.2.3
 MAINTAINER <sphemakh@gmail.com>
 
 RUN apt-add-repository -s ppa:radio-astro/main && \

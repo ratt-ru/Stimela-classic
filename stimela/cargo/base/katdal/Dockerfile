@@ -16,7 +16,7 @@ RUN apt-add-repository -s ppa:radio-astro/main && \
 # Force upgrade of pip since pip install --upgrade pip doesn't work
 RUN easy_install -U pip setuptools==30.1.0
 
-RUN pip install -I -U git+git://github.com/ska-sa/katdal.git \
+RUN pip install -I -U git+git://github.com/sjperkins/katdal.git@correct-corrected-data \
     python-casacore
 
 RUN mkdir -p /var/kat/static && wget https://github.com/ska-sa/katdal/raw/master/blank.ms.tgz -O - | tar -C ./var/kat/static -xzvf -

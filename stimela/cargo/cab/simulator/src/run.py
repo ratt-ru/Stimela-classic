@@ -62,7 +62,7 @@ if gjones:
         "oms_gain_models.err-gain.error_model"  :   "SineError",
         "oms_gain_models.err-gain.max_period"   : jdict.pop("gain_max_period", 2),
         "oms_gain_models.err-gain.maxval"   : jdict.pop("gain_max_error", 1.2),
-        "oms_gain_models.err-gain.min_period"   : jdict.pop("gain_min_error", 1),
+        "oms_gain_models.err-gain.min_period"   : jdict.pop("gain_min_period", 1),
         "oms_gain_models.err-gain.minval"   : jdict.pop("gain_min_error", 0.8),
     }
 
@@ -72,7 +72,7 @@ if gjones:
         "oms_gain_models.err-phase.error_model" : "SineError",
         "oms_gain_models.err-phase.max_period"  : jdict.pop("phase_max_period", 2),
         "oms_gain_models.err-phase.maxerr"  : jdict.pop("phase_max_error", 30.0),
-        "oms_gain_models.err-phase.min_period"  : jdict.pop("phase_min_error", 1),
+        "oms_gain_models.err-phase.min_period"  : jdict.pop("phase_min_period", 1),
         "oms_gain_models.err-phase.minval"  : jdict.pop("phase_min_error", 5),
     }
     

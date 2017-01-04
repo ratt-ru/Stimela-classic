@@ -23,7 +23,6 @@ LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 LOG_CABS = LOG_HOME + "/stimela_cab.log"
 
-#BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery tigger moresa".split()
 BASE = os.listdir(cargo.BASE_PATH)
 CAB = os.listdir(cargo.CAB_PATH)
 
@@ -47,11 +46,9 @@ class MultilineFormatter(argparse.HelpFormatter):
             multiline_text = multiline_text + formatted_paragraph
         return multiline_text
 
-
 def register_globals():
     frame = inspect.currentframe().f_back
     frame.f_globals.update(GLOBALS)
-
 
 def build(argv):
     for i, arg in enumerate(argv):
@@ -121,6 +118,7 @@ def build(argv):
         img.add(dict(name=image))
 
     img.write()
+
 
 def info(cabname):
     """ prints out help information about a cab """
@@ -333,7 +331,6 @@ def ps(argv):
         procs.clear()
 
 
-
 def kill(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
@@ -383,8 +380,6 @@ def kill(argv):
             os.kill(pid, signal.SIGKILL)
         except OSError:
             pass
-
-    
 
 def main(argv):
     for i, arg in enumerate(argv):

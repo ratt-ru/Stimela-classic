@@ -1,41 +1,18 @@
-## Dockerized reduction srcipt framework for radio astronomy
-# Sphesihle Makhathini <sphemakh@gmail.com>
-
 import os
 import sys
-import stimela
-from stimela import docker
-import stimela.utils as utils
-import stimela.cargo as cargo
-import tempfile
 import time
+from stimela import docker, utils, cargo
+from stimela.cargo import cab
+import logging
 import inspect
-import platform
-from stimela.utils import stimela_logger
 
 USER = os.environ["USER"]
 UID = os.getuid()
+CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 
-
-ekhaya = cargo.__path__[0]
-
-CONFIGS_ = {
-    "cab/simms" : "{:s}/configs/simms_params.json".format(ekhaya),
-    "cab/h5toms" : "{:s}/configs/h5toms_params.json".format(ekhaya),
-    "cab/simulator" : "{:s}/configs/simulator_params.json".format(ekhaya),
-    "cab/lwimager" : "{:s}/configs/imager_params.json".format(ekhaya),
-    "cab/wsclean" : "{:s}/configs/imager_params.json".format(ekhaya),
-    "cab/casa" : "{:s}/configs/imager_params.json".format(ekhaya),
-    "cab/predict" : "{:s}/configs/simulator_params.json".format(ekhaya),
-    "cab/calibrator" : "{:s}/configs/calibrator_params.json".format(ekhaya),
-    "cab/sourcery" : "{:s}/configs/sourcery_params.json".format(ekhaya),
-    "cab/flagms" : "{:s}/configs/flagms_params.json".format(ekhaya),
-    "cab/autoflagger" : "{:s}/configs/autoflagger_params.json".format(ekhaya),
-    "cab/subtract" : "{:s}/configs/subtract_params.json".format(ekhaya)
-}
 
 class PipelineException(Exception):
-    """
+    """ 
     Encapsulates information about state of pipeline when an
     exception occurs
     """
@@ -61,28 +38,44 @@ class PipelineException(Exception):
     def remaining(self):
         return self._remaining
 
+
 class Recipe(object):
+    def __init__(self, name, data=None,
+                 parameter_file_dir=None, ms_dir=None,
+                 tag=None, loglevel='INFO'):
+        """
+        Deifine and manage a stimela recipe instance.        
 
-    def __init__(self, name, data=None, configs=None,
-                 ms_dir=None, cab_tag=None,
-                 container_logfile=None, shared_memory=1024):
+        name    :   Name of stimela recipe
+        data    :   Path of stimela data. The data is assumed to be at Stimela/stimela/cargo/data
+        msdir   :   Path of MSs to be used during the execution of the recipe
+        tag     :   Use cabs with a specific tag
+        parameter_file_dir :   Will store task specific parameter files here
+        """
 
-        # LOG recipe
-        procs = stimela_logger.Process(stimela.LOG_PROCESS)
+        self.log = logging.getLogger('stimela_logger')
+        self.log.setLevel(getattr(logging, loglevel))
+        # create file handler which logs even debug
+        # messages
+        name_ = name.lower().replace(' ', '_')
+        self.logfile = 'log-{}.txt'.format(name_)
+        self.resume_file = '.last_{}.json'.format(name_)
 
-        date = "{:d}/{:d}/{:d}-{:d}:{:d}:{:d}".format(*time.localtime()[:6])
-        procs.add( dict(name=name.replace(" ", "_"), date=date, pid=os.getpid()) )
-        procs.write()
+        fh = logging.FileHandler(self.logfile)
+        fh.setLevel(logging.DEBUG)
+        # create console handler with a higher log level
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.ERROR)
+        # create formatter and add it to the handlers
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        fh.setFormatter(formatter)
+        # add the handlers to logger
+        self.log.addHandler(ch)
+        self.log.addHandler(fh)
+
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
-
-        self.name = name
-        self.log = utils.logger(0,
-                   logfile="log-%s.txt"%name.replace(" ","_").lower())
-
-        self.containers = []
-        self.active = None
-        self.configs_path = configs
         self.data_path = data or self.stimela_context.get("STIMELA_DATA", None)
         if self.data_path:
             pass
@@ -91,136 +84,182 @@ class Recipe(object):
 
         self.configs_path_container = "/configs"
         self.stimela_path = os.path.dirname(docker.__file__)
-        self.CAB_TAG = cab_tag
 
-        self.ms_dir = ms_dir or self.stimela_context.get("STIMELA_MSDIR", None)
-        if self.ms_dir:
-            if not os.path.exists(self.ms_dir):
-                os.mkdir(self.ms_dir)
+        self.name = name
+        self.ms_dir = ms_dir
+        if not os.path.exists(self.ms_dir):
+            self.log.info('MS directory \'{}\' does not exist. Will create it'.format(self.ms_dir))
+            os.mkdir(self.ms_dir)
+        self.tag = tag
+        # create a folder to store config files
+        # if it doesn't exist. These config
+        # files can be resued to re-run the
+        # task
+        self.parameter_file_dir = parameter_file_dir or "stimela_parameter_files"
+        if not os.path.exists(self.parameter_file_dir):
+            self.log.info('Config directory not be found. Will create ./{}'.format(self.parameter_file_dir))
+            os.mkdir(self.parameter_file_dir)
 
-        home = os.environ["HOME"] + "/.stimela/stimela_containers.log"
-        self.CONTAINER_LOGFILE = container_logfile or home
-
-        self.shared_memory = shared_memory
-
-
-    def add(self, image, name, config,
-            input=None, output=None, label="",
-            build_first=False, build_dest=None,
-            saveconf=None, add_time_stamp=True,
-            shared_memory="1gb", tag=None):
-
-        if image =="cab/casa":
-            image = "cab/casa_clean"
-
-        input = input or self.stimela_context.get("STIMELA_INPUT", None)
-        output = output or self.stimela_context.get("STIMELA_OUTPUT", None)
-
-        cab_tag = self.CAB_TAG or self.stimela_context.get("CAB_TAG", None)
-        cab_tag = tag if tag!=None else cab_tag
+        self.containers = []
+        self.completed = []
+        self.failed = None
+        self.remaining = []
 
 
-        if build_first and build_dest:
-            self.build(image, build_dest)
+    def add(self, image, name=None, config=None,
+            input=None, output=None, msdir=None,
+            label=None, shared_memory='1gb'):
+        """
+        Add a task to a stimela recipe
 
-        if add_time_stamp:
-            name = "%s-%s"%(name, str(time.time()).replace(".", ""))
+        image   :   stimela cab name, e.g. 'cab/simms'
+        name    :   This name will be part of the name of the contaier that will 
+                    execute the task (now optional)
+        config  :   Dictionary of options to parse to the task. This will modify 
+                    the parameters in the default parameter file which 
+                    can be viewd by running 'stimela cabs -i <cab name>', e.g 'stimela cabs -i simms'
+        input   :   input dirctory for cab
+        output  :   output directory for cab
+        msdir   :   MS directory for cab. Only specify if different from recipe ms_dir
+        """
 
-        # Add tag if its specified
-        if cab_tag:
-            image = image.split(":")[0]
-            image = "{:s}:{:s}".format(image, cab_tag)
+        # Get location of template parameters file
+        parameter_file = '{0}/{1}/parameters.json'.format(CAB_PATH, image.split('/')[-1].split(':')[0])
+        msdir = msdir or self.ms_dir
+        
+        if name is None:
+            name = '{0}_{1}-{2}{3}'.format(USER, image, id(image), str(time.time()).replace('.', ''))
+        else:
+            name = '{0}-{1}{2}'.format(name, id(image), str(time.time()).replace('.', ''))
 
+        _cab = cab.CabDefinition(indir=input, outdir=output,
+                    msdir=msdir, parameter_file=parameter_file)
+        
+        parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
+        _cab.update(config, parameter_file_name)
+
+
+        # Volumes to be mounted into the container
+        input = input or self.stimela_context.get('STIMELA_INPUT', None)
+        output = output or self.stimela_context.get('STIMELA_OUTPUT', None)
 
         cont = docker.Container(image, name,
-                label=label, logger=self.log,
-                shared_memory=shared_memory)
+                     label=label, logger=self.log,
+                     shared_memory=shared_memory)
 
-        # add standard volumes
-        cont.add_volume(self.stimela_path, "/utils", perm="ro")
-        cont.add_volume(self.data_path, "/data", perm="ro")
+        # These are standard volumes and
+        # environmental variables. These will be
+        # always exist in a cab container
+        cont.add_volume(self.stimela_path, '/utils', perm='ro')
+        cont.add_volume(self.data_path, '/data', perm='ro')
+        cont.add_volume(self.parameter_file_dir, '/configs', perm='ro')
+        cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 
-        if self.ms_dir:
-            md = "/home/%s/msdir"%USER
-            cont.add_volume(self.ms_dir, md)
-            cont.add_environ("MSDIR", md)
+        if msdir:
+            md = '/home/%s/msdir'%USER
+            cont.add_volume(msdir, md)
+            cont.add_environ('MSDIR', md)
+            # Keep a record of the content of the
+            # volume
+            dirname, dirs, files = [a for a in next(os.walk(msdir))]
+            cont.msdir_content = {
+                "volume"    :   dirname,
+                "dirs"      :   dirs,
+                "files"     :   files,
+            }
+
+            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
 
         if input:
-            cont.add_volume( input,"/input")
-            cont.add_environ("INPUT", "/input")
+            cont.add_volume( input,'/input', perm='ro')
+            cont.add_environ('INPUT', '/input')
+            # Keep a record of the content of the
+            # volume
+            dirname, dirs, files = [a for a in next(os.walk(input))]
+            cont.input_content = {
+                "volume"    :   dirname,
+                "dirs"      :   dirs,
+                "files"     :   files,
+            }
+
+            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, '/input'))
 
         if output:
             if not os.path.exists(output):
                 os.mkdir(output)
-
-            od = "/home/%s/output"%USER
+            od = '/home/%s/output'%USER
             cont.add_volume(output, od)
-            cont.add_environ("OUTPUT", od)
+            cont.add_environ('OUTPUT', od)
+            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
-
-        # Check if imager image was selected. React accordingly
-        if image == "cab/imager":
-            if isinstance(config, dict):
-                imager = config.get("imager", None)
-            else:
-                config_ = self.readJson(config)
-                imager = config_.get("imager", None)
-
-            imager = imager or "lwimager"
-
-            image = "cab/" + imager
-            cont.image = image
-
-
-        if isinstance(config, dict):
-            if not os.path.exists("configs"):
-                os.mkdir("configs")
-
-            if not saveconf:
-                saveconf = "configs/%s-%s.json"%(self.name.replace(" ", "_").lower(), name)
-
-            confname_container = "%s/%s"%(self.configs_path_container,
-                        os.path.basename(saveconf))
-
-
-            if image.split(":")[0] in CONFIGS_:
-                template = utils.readJson(CONFIGS_[image.split(":")[0]])
-                template.update(config)
-                config = template
-            utils.writeJson(saveconf, config)
-
-            config = confname_container
-            cont.add_volume("configs", self.configs_path_container, perm="ro")
-        else:
-            cont.add_volume(self.configs_path, self.configs_path_container, perm="ro")
-            config = self.configs_path_container+"/"+config
-
-        cont.image = "{:s}_{:s}".format(USER, image)
-        cont.add_environ("CONFIG", config)
-
+        cont.image = '{0}_{1}'.format(USER, image)
+        self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(cont.image, name))
         self.containers.append(cont)
 
-        # Record base image info
-        dockerfile = cargo.CAB_PATH +"/"+ image.split("/")[-1]
-        base_image = utils.get_Dockerfile_base_image(dockerfile)
-        self.log.info("<=BASE_IMAGE=> {:s}={:s}".format(image, base_image))
 
-
-    def run(self, steps=None, log=True):
+    def run(self, steps=None, resume=False, redo=None):
         """
-            Run pipeline
+        Run a Stimela recipe. 
+
+        steps   :   recipe steps to run
+        resume  :   resume recipe from last run
+        redo    :   Re-run an old recipe from a .last file
         """
 
-        if isinstance(steps, (list, tuple, set)):
+        if redo:
+            recipe = utils.readJson(redo)
+            self.log.info('Rerunning recipe {0} from {1}'.format(recipe['name'], redo))
+            self.log.info('Recreating recipe instance..')
+            self.containers = []
+            for step in recipe['steps']:
+                
+            #    need to think a bit carefully about I/O flow. 
+            #    Maybe: 
+            #        add I/O folders to the json file
+            #        add a string describing the contents of these folders
+            #        The user has to ensure that these folders exist, and have the required content
+                
+                self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(step['cab'], step['name']))
+                cont = docker.Container(step['cab'], step['name'],
+                                      label=step['label'], logger=self.log,
+                                      shared_memory=step['shared_memory'])
+                self.log.debug('Adding volumes {0} and environmental variables {1}'.format(step['volumes'], step['environs'])
+                cont.volumes = step['volumes']
+                cont.environs = step['environs']
+                cont.shared_memory = step['shared_memory']
+                cont.input_content = step['input_content']
+                cont.msdir_content = step['msdir_content']
+
+                self.containers.append(cont)
+
+        elif resume:
+            self.log.info("Resuming recipe from last run.")
+            recipe = utils.readJson(self.resume_file)
+            _steps = []
+            for step in recipe['steps']:
+                if step['status'] == 'completed':
+                    continue
+
+                _cab = step['cab']
+                number = step['number']
+
+                if _cab == self.containers[number-1].image:
+                    self.log.info('recipe step \'{0}\' is fit for re-execution. CAB = {1}'.format(number, _cab))
+                    _steps.append(number)
+                else:
+                    raise RuntimeError('Recipe flow, or task scheduling has changed, cannot resume recipe')
+
+            steps = _steps
+        if getattr(steps, '__iter__', False):
             if isinstance(steps[0], str):
-                labels = [ cont.label.split("::")[0] for cont in self.containers]
+                labels = [ cont.label.split('::')[0] for cont in self.containers]
                 containers = []
 
                 for step in steps:
                     try:
                         idx = labels.index(step)
                     except ValueError:
-                        raise ValueError("Recipe label ID [{:s}] doesn't exist".format(step))
+                        raise ValueError('Recipe label ID [{0}] doesn\'t exist'.format(step))
 
                     containers.append( self.containers[idx] )
             else:
@@ -230,82 +269,49 @@ class Recipe(object):
 
         for i, container in enumerate(containers):
             try:
-                self.log.info("Running Container %s"%container.name)
-                self.log.info("STEP %d :: %s"%(i, container.label))
+                self.log.info('Running Container {}'.format(container.name))
+                self.log.info('STEP {0} :: {1}'.format(i, container.label))
                 self.active = container
 
                 container.create()
                 container.start()
             except Exception as e:
-                completed = containers[:i]
-                remaining = containers[i+1:]
+                slef.completed = containers[:i]
+                self.remaining = containers[i+1:]
+                self.failed = container
 
-                pe = PipelineException(e, completed, container, remaining)
+                self.log.info('Recipe execution failed while running container {}'.format(container.name))
+                self.log.info('Completed containers : {}'.format([c.name for c in self.completed]))
+                self.log.info('Remaining containers : {}'.format([c.name for c in self.remaining]))
+
+                pe = PipelineException(e, self.completed, container, self.remaining)
 
                 raise pe, None, sys.exc_info()[2]
             finally:
                 container.stop()
                 container.remove()
+                pass
 
+        recipe = {
+            "name"      :   self.name,
+            "steps"     :   []
+        }
 
-        self.log.info("Pipeline [%s] ran successfully. Will now attempt to clean up dead containers "%(self.name))
+        self.log.info('Saving pipeline information in {}'.format(self.resume_file))
+        for i,cont in enumerate(containers):
+            step = {
+                "name"          :   cont.name,
+                "number"        :   i+1,
+                "cab"           :   cont.image,
+                "volumes"       :   cont.volumes,
+                "environs"      :   cont.environs,
+                "shared_memory" :   cont.shared_memory,
+                "input_content" :   cont.input_content,
+                "msdir_content" :   cont.msdir_content,
+                "label"         :   cont.label,
+                "status"        :   'completed',
+            }
+            recipe['steps'].append(step)
+        utils.writeJson(self.resume_file, recipe)
 
-        self.log.info("\n[================================DONE==========================]\n \n")
-
-        # Remove from log
-        procs = stimela_logger.Process(stimela.LOG_PROCESS)
-        procs.rm(os.getpid())
-        procs.write()
-
-
-    def build(self, name, dest, use_cache=True):
-        try:
-            utils.xrun("docker", ["build", "-t", name,
-                       "--no-cache=%s"%("false" if use_cache else "true"),
-                       dest] )
-        except SystemError:
-            raise docker.DockerError("Docker image failed to build")
-
-
-    def stop(self, log=True):
-        """
-            Stop all running containers
-        """
-        for container in self.containers:
-            container.stop(logfile=self.CONTAINER_LOGFILE)
-
-
-    def rm(self, containers=None, log=True):
-        """
-            Remove all stopped containers
-        """
-        for container in containers or self.containers:
-            container.rm(logfile=self.CONTAINER_LOGFILE)
-
-
-    def clear(self):
-        """
-            Clear container list.
-            This does nothing to the container instances themselves
-        """
-        self.containers = []
-
-
-    def pause(self):
-        """
-            Pause current container. This effectively pauses the pipeline
-        """
-        if self.active:
-            self.active.pause()
-
-
-    def resume(self):
-        """
-            Resume puased container. This effectively resumes the pipeline
-        """
-        if self.active:
-            self.active.resume()
-
-
-    def readJson(self, config):
-        return utils.readJson(self.configs_path+"/"+config)
+        self.log.info('Recipe executed successfully')

@@ -1,9 +1,10 @@
 {
     "blank-ms" : "/var/kat/static/blank.ms",
-    "full_pol" : true,
+    "full_pol" : false,
     "dumptime" : 0.0,
     "chanbin"  : 0,
     "flag_av"  : false,
     "output-ms" : "output.ms",
-    "hdf5files" : []
+    "hdf5files" : [],
+    "model-data" : false
 }

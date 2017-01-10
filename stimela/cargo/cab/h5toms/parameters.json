@@ -1,0 +1,139 @@
+{
+    "task"          :   "h5toms",
+    "base"          :   "stimela/katdal",
+    "tag"           :   "0.2.3",
+    "description"   :   "Convert HDF5 file(s) to MeasurementSet",
+    "msdir"         :   "true",
+    "prefix"        :   "--",
+    "binary"        :   "h5toms.py",
+    "parameters"    :   [
+        {
+            "name"      :   "hd5file",
+            "dtype"     :   "list:file",
+            "io"        :   "input",
+            "delimiter" :   " ",
+            "info"      :   "HDF5 file(s)",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "blank-ms",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "check_io"  :   false,
+            "info"      :   "Blank MS used as template",
+            "default"   :   "/var/kat/static/blank.ms"
+        },
+        {
+            "name"      :   "output-ms",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "check_io"  :   false,
+            "info"      :   "Output MS",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "circular",
+            "dtype"     :   "bool",
+            "info"      :   "Produce quad circular polarisation. (RR, RL, LR, LL) *** Currently just relabels the linear pols ****",
+            "default"   :   false
+        },
+        {
+            "name"      :   "ref-ant",
+            "dtype"     :   "str",
+            "info"      :   "Reference antenna (default is first one used by script)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "tar",
+            "dtype"     :   "bool",
+            "info"      :   "Tar-ball the MS",
+            "default"   :   false
+        },
+        {
+            "name"      :   "full-pol",
+            "dtype"     :   "bool",
+            "info"      :   "Produce a full polarisation MS in CASA canonical order (HH, HV, VH, VV). Default is to produce HH,VV only",
+            "default"   :   true
+        },
+        {
+            "name"      :   "verbose",
+            "dtype"     :   "bool",
+            "info"      :   "More verbose progress information",
+            "default"   :   true
+        },
+        {
+            "name"      :   "stop-w",
+            "dtype"     :   "bool",
+            "info"      :   "Use W term to stop fringes for each baseline",
+            "default"   :   false
+        },
+        {
+            "name"      :   "HH",
+            "dtype"     :   "bool",
+            "info"      :   "Produce a Stokes I MeasurementSet using only HH",
+            "default"   :   false
+        },
+        {
+            "name"      :   "VV",
+            "dtype"     :   "bool",
+            "info"      :   "Produce a Stokes I MeasurementSet using only VV",
+            "default"   :   false
+        },
+        {
+            "name"      :   "uvfits",
+            "dtype"     :   "bool",
+            "info"      :   "Print command to convert MS to miriad uvfits in casapy",
+            "default"   :   false
+        },
+        {
+            "name"      :   "no-auto",
+            "dtype"     :   "bool",
+            "info"      :   "MeasurementSet will exclude autocorrelation data",
+            "default"   :   false
+        },
+        {
+            "name"      :   "channel-range",
+            "dtype"     :   "str",
+            "info"      :   "Range of frequency channels to keep (zero-based inclusive 'first_chan,last_chan', default is all channels)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "elevation-range",
+            "dtype"     :   "str",
+            "info"      :   "Flag elevations outside the range 'lowest_elevation,highest_elevation'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "model-data",
+            "dtype"     :   "bool",
+            "info"      :   "Add MODEL_DATA and CORRECTED_DATA columns to the MS. MODEL_DATA initialised to unity amplitude zero phase, CORRECTED_DATA initialised to DATA.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "flags",
+            "dtype"     :   "str",
+            "info"      :   "List of online flags to apply (from 'static,cam,data_lost,ingest_rfi,cal_rfi,predicted_rfi', default is all flags, '' will apply no flags)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "dumptime",
+            "dtype"     :   "float",
+            "info"      :   "Output time averaging interval in seconds, default is no averaging.",
+            "default"   :   0.0
+        },
+        {
+            "name"      :   "chanbin",
+            "dtype"     :   "int",
+            "info"      :   "Bin width for channel averaging in channels, default is no averaging",
+            "default"   :   0,
+        },
+        {
+            "name"      :   "flagav",
+            "dtype"     :   "bool",
+            "info"      :   "If a single element in an averaging bin is flagged, flag the averaged bin.",
+            "default"   :   false
+        }
+    ]
+}

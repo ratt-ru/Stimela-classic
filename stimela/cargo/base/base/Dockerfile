@@ -1,2 +1,2 @@
 FROM kernsuite/base:1
-RUN docker-apt-install git
+RUN docker-apt-install git python-yaml

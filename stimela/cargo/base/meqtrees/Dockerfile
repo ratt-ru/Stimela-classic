@@ -1,4 +1,4 @@
-FROM stimela/base
+FROM stimela/base:0.2.3
 RUN docker-apt-install meqtrees time
 RUN git clone https://github.com/SpheMakh/owlcat
 RUN cd owlcat && pip install . --upgrade

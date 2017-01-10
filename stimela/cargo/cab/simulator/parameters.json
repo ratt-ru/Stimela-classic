@@ -3,7 +3,7 @@
     "base"          :   "stimela/meqtrees",
     "tag"           :   "0.2.3",
     "description"   :   "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)",
-    "binary"        :   "meqtree-pipeliner",
+    "binary"        :   "meqtree-pipeliner.py",
     "msdir"         :   true,
     "prefix"        :   " ",
     "parameters"    :   [
@@ -169,7 +169,7 @@
             "default"   :   null
         },
         {
-            "name"      :   "beam_type",
+            "name"      :   "beam-type",
             "dtype"     :   "str",
             "choices"   :   ["fits", "emsss"],
             "info"      :   "Type of input beam files",

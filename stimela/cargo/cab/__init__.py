@@ -4,19 +4,20 @@ import sys
 import os
 import textwrap
 
-
+USER = os.environ['USER']
 
 TYPES = {
     "str"   :   str,
     "float" :   float,
     "bool"  :   bool,
     "int"   :   int,
+    "list"  :   list,
    }
 
 IODEST = {
     "input"     :   "/input",
-    "output"    :   "$HOME/output",
-    "msfile"    :   "$HOME/output/msdir",
+    "output"    :   "/home/{}/output".format(USER),
+    "msfile"    :   "/home/{}/msdir".format(USER),
 }
 
 class Parameter(object):
@@ -26,14 +27,14 @@ class Parameter(object):
         choices=None, 
         io=None,
         mapping=None,
-        delimeter=None, 
+        delimiter=None, 
         check_io=True):
 
         self.name = name
         self.io = io
-        self.delimeter = delimeter
+        self.delimiter = delimiter
         
-        if not isinstance(dtype, (list, tuple)):
+        if not hasattr(dtype,'__iter__'):
             dtype = [dtype]
         self.dtype = []
         for item in dtype:
@@ -57,6 +58,8 @@ class Parameter(object):
                     return True
                 if isinstance(value, t):
                     return True
+                elif isinstance(value, list) and isinstance(value[0], t):
+                    return True
             elif isinstance(value, tuple(TYPES.values())):
                 return True
         raise TypeError("Expecting any of types {0} for parameter '{1}', but got '{2}'".format( self.dtype, self.name, type(value).__name__))
@@ -74,8 +77,8 @@ class Parameter(object):
 
         if dtype.startswith("list:"):
             val = dtype.split(":")
-            if self.delimeter is None:
-                raise RuntimeError("The parameter {0} is to be supplied as list but no delimter has been provided. Please add a 'delimeter' field to the cab parameter file.".format(self.name))
+            if self.delimiter is None:
+                raise RuntimeError("The parameter {0} is to be supplied as list but no delimter has been provided. Please add a 'delimiter' field to the cab parameter file.".format(self.name))
             if len(val) != 2:
                 raise TypeError("The type of '{0}' could not validate. Specify list types as \"list:dtype\" where dtype is normal type")
             ttype = val[1]
@@ -115,6 +118,7 @@ class CabDefinition(object):
             self.prefix = cab["prefix"]
             parameters0 = cab["parameters"]
             self.parameters = []
+            
 
             for param in parameters0:
                 default = param.get("default", param.get("value", None))
@@ -124,7 +128,7 @@ class CabDefinition(object):
                         info=param.get("info", "No documentation. Bad! Very bad..."),
                         default=default,
                         mapping=param.get("mapping", None),
-                        delimeter=param.get("delimeter", None),
+                        delimiter=param.get("delimiter", None),
                         required=param.get("required", False),
                         choices=param.get("choices", False),
                         check_io=param.get("check_io", True))
@@ -180,10 +184,12 @@ class CabDefinition(object):
         for param in self.parameters:
             _value = param.value or param.default
         
-            if isinstance(param.dtype[0], tuple):
+            if _value is None:
+                value = None
+            elif isinstance(param.dtype[0], tuple):
                 if not isinstance(_value, (list, tuple)):
                     _value = [_value]
-                value = param.delimeter.join(map(str, _value))
+                value = param.delimiter.join(map(str, _value))
             else:
                 value = _value
 
@@ -244,7 +250,7 @@ class CabDefinition(object):
                             else:
                                 if self.outdir is None:
                                     raise IOError("You have specified output files, but have not specified an output folder")
-                                param.value.append("{0}/{1}".format(IODEST[location], value_))
+                                param.value.append("{0}/{1}".format(IODEST[location], _value))
                         if len(param.value)==1:
                             param.value = param.value[0]
                         

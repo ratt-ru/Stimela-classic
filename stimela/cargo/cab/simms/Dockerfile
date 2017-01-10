@@ -1,4 +1,4 @@
-FROM stimela/simms
+FROM stimela/simms:0.2.3
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /output /input

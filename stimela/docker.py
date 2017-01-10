@@ -14,7 +14,7 @@ class DockerError(Exception):
     pass
 
 
-def build(image, build_path, tag=None, build_args=None):
+def build(image, build_path, tag=None, build_args=None, args=[]):
     """ build a docker image"""
 
     if tag:
@@ -22,7 +22,7 @@ def build(image, build_path, tag=None, build_args=None):
 
     if build_args:
         stdw = tempfile.NamedTemporaryFile(dir=build_path)
-        with open("%s/Dockerfile"%build_path) as std:
+        with open("{}/Dockerfile".format(build_path)) as std:
             dfile = std.readlines()
 
         for line in dfile:
@@ -33,13 +33,13 @@ def build(image, build_path, tag=None, build_args=None):
             else:
                 stdw.write(line)
         stdw.flush()
-        utils.xrun("docker build", ["--force-rm","-f", stdw.name, 
+        utils.xrun("docker build", args+["--force-rm","-f", stdw.name, 
                    "-t", image, 
                     build_path])
 
         stdw.close()
     else:
-        utils.xrun("docker build", ["-t", image, 
+        utils.xrun("docker build", args+["--force-rm", "-t", image, 
                     build_path])
 
 def pull(image, tag=None):
@@ -85,17 +85,17 @@ class Container(object):
 
         if os.path.exists(host):
             if self.logger:
-                self.logger.debug("Mounting volume [%s] in container [%s] at [%s]"%(host, self.name, container))
+                self.logger.debug("Mounting volume [{0}] in container [{1}] at [{2}]".format(host, self.name, container))
             host = os.path.abspath(host)
         else:
-            raise IOError("Directory [%s] cannot be mounted on container: File doesn't exist"%host)
+            raise IOError("Directory {0} cannot be mounted on container: File doesn't exist".format(host))
         
         self.volumes.append(":".join([host,container,perm]))
 
 
     def add_environ(self, key, value):
         if self.logger:
-            self.logger.debug("Adding environ varaible [%s=%s] in container [%s]"%(key, value, self.name))
+            self.logger.debug("Adding environ varaible [{0}={1}] in container {2}".format(key, value, self.name))
         self.environs.append("=".join([key, value]))
 
 
@@ -110,7 +110,7 @@ class Container(object):
         else:
             environs = ""
         
-        self._print("Instantiating container [%s]. The container ID is printed below."%self.name)
+        self._print("Instantiating container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("docker create", list(args) + [volumes, environs,
                         "-w %s"%(self.WORKDIR) if self.WORKDIR else "",
                         "--name", self.name, "--shm-size", self.shared_memory,
@@ -123,7 +123,7 @@ class Container(object):
 
     def info(self):
 
-        output = subprocess.check_output("docker inspect %s"%(self.name), shell=True)
+        output = subprocess.check_output("docker inspect {}".format(self.name), shell=True)
         output_file = io(output[3:-3])
         jdict = json.load(output_file)
         output_file.close()
@@ -132,7 +132,12 @@ class Container(object):
     
     
     def get_log(self):
-        output = subprocess.check_output("docker logs %s"%(self.name), shell=True)
+        stdout = open(self.logfile, 'a+')
+        exit_status = subprocess.call("docker logs {0}".format(self.name),
+                            stdout=stdout, stderr=stdout, shell=True)
+
+        output = stdout.read()
+        stdout.close()
         return output
 
         
@@ -141,6 +146,7 @@ class Container(object):
         tstart = time.time()
         self.status = "running"
         self.log_container.update(self.info(), uptime="00:00:00")
+
         try:
             utils.xrun("docker start -a", [self.name])
         except KeyboardInterrupt:
@@ -148,26 +154,20 @@ class Container(object):
            self.remove()
            raise KeyboardInterrupt("Terminating process")
            
-#       while running:
-#           try:
-#               uptime = seconds_hms(time.time() - tstart)
-#               self.log_container.update(self.info(), uptime=uptime)
-#               self.uptime = uptime
-#               self.log_container.write()
-#               status = self.info()["State"]["Status"]
-#               if status != "running":
-#                   running = False
-
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime
-        self._print("Container [%s] has executed successfully. \n Runtime was %s"%(self.name, uptime))
+        self._print("Container [{0}] has executed successfully".format(self.name))
+
+        # Log container stdout
+        self.container_logger = self.get_log()
+        
+        self._print("Runtime was {0}.".format(uptime))
         self.log_container.update(self.info(), uptime=uptime)
         
-        self.container_logger = self.get_log()
         self.status = "exited"
         self.log_container.write()
 
-    
+
     def stop(self):
         dinfo = self.info()
         status = dinfo["State"]["Status"]
@@ -178,7 +178,7 @@ class Container(object):
             except KeyboardInterrupt("Received terminate signal. Will stop and remove container first"):
                 killed = True
 
-        self._print("Container [self.name] has been")
+        self._print("Container {} has been stopped.".format(self.name))
         self.log_container.update(self.info(), self.uptime)
         self.log_container.write()
         if killed:
@@ -199,7 +199,7 @@ class Container(object):
                 raise KeyboardInterrupt
            
         else:
-            raise DockerError("Container [%s] has not been stopped, cannot remove"%(self.name))
+            raise DockerError("Container [{}] has not been stopped, cannot remove".format(self.name))
 
         self.log_container.rm(self.name)
         self.log_container.write()

@@ -1,0 +1,87 @@
+{
+    "task"          :   "autoflagger",
+    "base"          :   "stimela/aoflagger",
+    "tag"           :   "0.2.3",
+    "description"   :   "This program will execute an RFI strategy as can be created with the RFI gui and executes it on one or several observations.",
+    "msdir"         :   true,
+    "binary"        :   "aoflagger",
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "verbose",
+            "mapping"   :   "v",
+            "dtype"     :   "bool",
+            "info"      :   "Produce verbose output",
+            "default"   :   false
+        },
+        {
+            "name"      :   "threads",
+            "mapping"   :   "j",
+            "dtype"     :   "int",
+            "info"      :   "overrides the number of threads specified in the strategy (default: one thread for each CPU core)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "strategy",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "specifies a possible customized strategy",
+            "default"   :   null
+        },
+        {
+            "name"      :   "indirect-read",
+            "dtype"     :   "bool",
+            "info"      :   "will perform the slowest IO but will always work.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "indirect-read",
+            "dtype"     :   "bool",
+            "info"      :   "will reorder the measurement set before starting, which is normally faster but requires free disk space to reorder the data to",
+            "default"   :   true
+        },
+        {
+            "name"      :   "memory-read",
+            "dtype"     :   "bool",
+            "info"      :   "will read the entire measurement set in memory. This is the fastest, but requires much memory.",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "auto-read-mode",
+            "dtype"     :   "bool",
+            "info"      :   "will select either memory or direct mode based on available memory",
+            "default"   :   true
+        },
+        {
+            "name"      :   "uvw",
+            "dtype"     :   "bool",
+            "info"      :   "reads uvw values (some exotic strategies require these)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "column",
+            "dtype"     :   "str",
+            "info"      :   "specify column to flag",
+            "default"   :   "DATA"
+        },
+        {
+            "name"      :   "skip-flagged",
+            "dtype"     :   "bool",
+            "info"      :   "will skip an ms if it has already been processed by AOFlagger according to its HISTORY table.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "bands",
+            "dtype"     :   "list:int",
+            "delimiter" :   ",",
+            "info"      :   "comma separated list of (zero-indexed) band ids to process",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fields",
+            "dtype"     :   "list:int",
+            "delimiter" :   ",",
+            "default"   :   null
+        }
+    ]
+}

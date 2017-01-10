@@ -23,14 +23,25 @@ LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 LOG_CABS = LOG_HOME + "/stimela_cab.log"
 
+
 BASE = os.listdir(cargo.BASE_PATH)
-CAB = os.listdir(cargo.CAB_PATH)
+CAB = []
+for item in os.listdir(cargo.CAB_PATH):
+    try:
+        dockerfile = 'Dockerfile' in os.listdir('{0}/{1}'.format(cargo.CAB_PATH, item))
+    except OSError:
+        continue
+    if dockerfile:
+        CAB.append(item)
+
 
 NOT_PUBLIC = ["ddfacet"]
 
 USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
+
+container_home = '/home/{}'.format(USER)
 
 __version__ = "0.2.3"
 
@@ -64,6 +75,9 @@ def build(argv):
     parser.add_argument("-i", "--ignore-cabs", default="",
             help="Comma separated cabs (executor images) to ignore.")
 
+    parser.add_argument("-nc", "--no-cache", action="store_true",
+            help="Do not use cache when building the image")
+
     args = parser.parse_args(argv)
 
     if args.base:
@@ -74,12 +88,14 @@ def build(argv):
                          dockerfile)
         return 0
 
-    workdir = "/home/%s/output/"%USER
-    build_args = ["RUN groupadd -g %d %s"%(UID, USER),
-                  "RUN useradd -u %d -g %d %s"%(UID, UID, USER),
-                  "WORKDIR %s"%workdir,
-                  "ENV HOME %s"%USER,
-                  "USER %s"%USER]
+    workdir = "/home/{}/output/".format(USER)
+    build_args = ["RUN groupadd -g {:d} {:s}".format(UID, USER),
+                  "RUN useradd -u {:d} -g {:d} {:s}".format(UID, UID, USER),
+                  "WORKDIR {:s}".format(workdir),
+                  "ENV HOME {:s}".format(USER),
+                  "USER {:s}".format(USER)]
+
+    no_cache = ["--no-cache"] if args.no_cache else []
 
     if args.cab:
         cab_args = args.cab.split(",")
@@ -93,7 +109,7 @@ def build(argv):
 
         docker.build(cab,
                      path,
-                     build_args=build_args)
+                     build_args=build_args, args=no_cache)
 
         img = stimela_logger.Image(LOG_CABS)
         img.add(dict(name=cab))
@@ -113,7 +129,7 @@ def build(argv):
         image = "{:s}_cab/{:s}".format(USER, image)
         docker.build(image,
                      dockerfile,
-                     build_args=build_args)
+                     build_args=build_args, args=no_cache)
 
         img.add(dict(name=image))
 

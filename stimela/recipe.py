@@ -53,7 +53,7 @@ class Recipe(object):
         parameter_file_dir :   Will store task specific parameter files here
         """
 
-        self.log = logging.getLogger('stimela_logger')
+        self.log = logging.getLogger('STIMELA')
         self.log.setLevel(getattr(logging, loglevel))
         # create file handler which logs even debug
         # messages
@@ -64,7 +64,7 @@ class Recipe(object):
         fh = logging.FileHandler(self.logfile)
         fh.setLevel(logging.DEBUG)
         # create console handler with a higher log level
-        ch = logging.StreamHandler()
+        ch = logging.StreamHandler(sys.stdout)
         ch.setLevel(logging.ERROR)
         # create formatter and add it to the handlers
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -134,9 +134,7 @@ class Recipe(object):
 
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
-        
-        parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
-        _cab.update(config, parameter_file_name)
+         
 
 
         # Volumes to be mounted into the container
@@ -146,6 +144,15 @@ class Recipe(object):
         cont = docker.Container(image, name,
                      label=label, logger=self.log,
                      shared_memory=shared_memory)
+
+        
+#        parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
+#        _cab.update(config, parameter_file_name)
+        
+        # Container parameter file will be updated and validated before the container is executed
+        cont._cab = _cab
+        cont.parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
+        cont.config = config
 
         # These are standard volumes and
         # environmental variables. These will be
@@ -190,6 +197,7 @@ class Recipe(object):
             od = '/home/%s/output'%USER
             cont.add_volume(output, od)
             cont.add_environ('OUTPUT', od)
+            cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
         cont.image = '{0}_{1}'.format(USER, image)
@@ -213,8 +221,6 @@ class Recipe(object):
             self.containers = []
             for step in recipe['steps']:
                 
-            #    need to think a bit carefully about I/O flow. 
-            #    Maybe: 
             #        add I/O folders to the json file
             #        add a string describing the contents of these folders
             #        The user has to ensure that these folders exist, and have the required content
@@ -223,7 +229,7 @@ class Recipe(object):
                 cont = docker.Container(step['cab'], step['name'],
                                       label=step['label'], logger=self.log,
                                       shared_memory=step['shared_memory'])
-                self.log.debug('Adding volumes {0} and environmental variables {1}'.format(step['volumes'], step['environs'])
+                self.log.debug('Adding volumes {0} and environmental variables {1}'.format(step['volumes'], step['environs']))
                 cont.volumes = step['volumes']
                 cont.environs = step['environs']
                 cont.shared_memory = step['shared_memory']
@@ -268,6 +274,11 @@ class Recipe(object):
             containers = self.containers
 
         for i, container in enumerate(containers):
+
+            # Update container parameter file if need be
+            if hasattr(container, '_cab'):
+                container._cab.update(container.config, container.parameter_file_name)
+
             try:
                 self.log.info('Running Container {}'.format(container.name))
                 self.log.info('STEP {0} :: {1}'.format(i, container.label))
@@ -276,7 +287,7 @@ class Recipe(object):
                 container.create()
                 container.start()
             except Exception as e:
-                slef.completed = containers[:i]
+                self.completed = containers[:i]
                 self.remaining = containers[i+1:]
                 self.failed = container
 

@@ -83,12 +83,6 @@
             "default"   :   null
         },
         {
-            "name"      :   "Gjones",
-            "dtype"     :   "bool",
-            "info"      :   "Enable direction independent corruptions to simulated data",
-            "default"   :   false
-        },
-        {
             "name"      :   "field-id",
             "dtype"     :   "int",
             "info"      :   "Field ID",
@@ -113,7 +107,7 @@
             "default"   :   null
         },
         {
-            "name"      :   "beam_type",
+            "name"      :   "beam-type",
             "dtype"     :   "str",
             "choices"   :   ["fits", "emsss"],
             "info"      :   "Type of input beam files",
@@ -146,17 +140,15 @@
         {
             "name"      :   "Gjones-solution-intervals",
             "dtype"     :   "list:int",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
-            "required"  :   true,
             "default"   :   null
         },
         {
             "name"      :   "Gjones-smooothing-intervals",
             "dtype"     :   "list:int",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
-            "required"  :   true,
             "default"   :   null
         },
         {
@@ -190,9 +182,15 @@
             "default"   :   1.8
         },
         {
-            "name"      :   "DDjones-apply-only",
+            "name"      :   "Gjones-apply-only",
             "dtype"     :   "bool",
             "info"      :   "Apply existing gains",
+            "default"   :   false
+        },
+        {
+            "name"      :  "DDjones",
+            "dtype"     :  "bool",
+            "info"      :  "Enable direction dependent calibration",
             "default"   :   false
         },
         {
@@ -200,12 +198,6 @@
             "dtype"     :   "int",
             "info"      :   "Number of iterations",
             "default"   :   50
-        },
-        {
-            "name"      :  "DDjones",
-            "dtype"     :  "bool",
-            "info"      :  "Enable direction dependent calibration",
-            "default"   :   false
         },
         {
             "name"      :   "DDjones-tag",
@@ -216,17 +208,15 @@
         {
             "name"      :   "DDjones-solution-intervals",
             "dtype"     :   "list:int",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
-            "required"  :   true,
             "default"   :   null
         },
         {
             "name"      :   "DDjones-smoothing-intervals",
             "dtype"     :   "list:int",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Smoothing intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
-            "required"  :   true,
             "default"   :   null
         },
         {
@@ -258,12 +248,6 @@
             "dtype"     :   "float",
             "info"      :   "DDjones flagging amplitude",
             "default"   :   1.8
-        },
-        {
-            "name"      :   "DDjones-niter",
-            "dtype"     :   "int",
-            "info"      :   "Number of iterations",
-            "default"   :   50
         },
         {
             "name"      :   "DDjones-apply-only",

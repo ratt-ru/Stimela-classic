@@ -223,7 +223,7 @@ class Recipe(object):
                 cont = docker.Container(step['cab'], step['name'],
                                       label=step['label'], logger=self.log,
                                       shared_memory=step['shared_memory'])
-                self.log.debug('Adding volumes {0} and environmental variables {1}'.format(step['volumes'], step['environs'])
+                self.log.debug('Adding volumes {0} and environmental variables {1}'.format(step['volumes'], step['environs']))
                 cont.volumes = step['volumes']
                 cont.environs = step['environs']
                 cont.shared_memory = step['shared_memory']

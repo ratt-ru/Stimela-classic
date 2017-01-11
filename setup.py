@@ -26,7 +26,7 @@ setup(name = "stimela",
                                    "cab/*/src/*.json",
                                    "cab/*/parameters.json",
                                    "cab/*/src/tdlconf.profiles"]},
-    requires = ["docker", "python", "python-yaml"],
+    requires = ["docker", "python", "pyyaml"],
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

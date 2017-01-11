@@ -1,7 +1,7 @@
 {
-    "task"          :   "pybdsm",
+    "task"          :   "tigger-convert",
     "description"   :   "Source finding in radio images",
-    "base"          :   "stimela/lofar:0.2.3",
+    "base"          :   "stimela/tigger:0.2.3",
     "tag"           :   "0.2.3",
     "binary"        :   "python",
     "msdir"         :   false,
@@ -183,6 +183,12 @@
             "io"        :   "msfile",
             "info"      :   "Rotate the primary beam pattern through a range of parallactic angles as given by the MS and take the average over time. This is more accurate than --pa-range.",
             "default"   :   default
+        },
+        {
+            "name"      :   "field-id",
+            "dtype"     :   "int",
+            "info"      :   "Field ID for 'pa-from-ms' calculation",
+            "default"   :   0
         },
         {
             "name"      :   "beam-average-jones",

@@ -343,6 +343,79 @@
             "dtype"     :   "list",
             "info"      :   "Do source detection on only a part of the image. Specify as (xmin, xmax, ymin, ymax) in pixels. E.g., trim_box = (120, 840, 15, 895). None => use entire image",
             "default"   :   null
+        },
+        {
+            "name"      :   "prefix",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "required"  :   true,
+            "info"      :   "Output file name. None => file is named automatically; 'SAMP' => send to SAMP hub (e.g., to TOPCAT, ds9, or Aladin)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "bbs_patches",
+            "dtype"     :   "str",
+            "choices"   :   ["single", "gaussian", "source", "mask", null],
+            "info"      :   "BBS format, type of patch to use: None => no patches. 'single' => all Gaussians in one patch. 'gaussian' => each Gaussian gets its own patch. 'source' => all Gaussians belonging to a single source are grouped into one patch. 'mask' => use mask file specified by bbs_patches_mask",
+            "default"   :   null
+        },
+        {
+            "name"      :   "bbs_patches_mask",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Name of the mask file (of same size as input image) that defines the patches if bbs_patches = 'mask'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "catalog_type",
+            "dtype"     :   "str",
+            "choices"   :   ["srl", "gaul", "shap"],
+            "info"      :   "Type of catalog to write:  'gaul' - Gaussian list, 'srl' - source list (formed by grouping Gaussians), 'shap' - shapelet list (FITS format only)",
+            "default"   :   "gaul"
+        },
+        {
+            "name"      :   "clobber",
+            "dtype"     :   "bool",
+            "info"      :   "Overwrite existing file?",
+            "default"   :   true
+        },
+        {
+            "name"      :   "correct_proj",
+            "dtype"     :   "bool",
+            "info"      :   "Correct source parameters for image projection (BBS format only)?",
+            "default"   :   true
+        },
+        {
+            "name"      :   "format",
+            "dtype"     :   "str",
+            "choices"   :   ["bbs", "ds9", "fits", "star", "kvis", "ascii", "csv", "casabox","sagecal"],
+            "info"      :   "Format of output catalog",
+            "default"   :   "fits"
+        },
+        {
+            "name"      :   "incl_chan",
+            "dtype"     :   "bool",
+            "info"      :   "Include flux densities from each channel (if any)?",
+            "default"   :   false
+        },
+        {
+            "name"      :   "incl_empty",
+            "dtype"     :   "bool",
+            "info"      :   "Include islands without any valid Gaussians (source list only)?",
+            "default"   :   false
+        },
+        {
+            "name"      :   "srcroot",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Name for entries in the output catalog (BBS format only). None => use image file name",
+            "default"   :   null
+        },
+        {
+            "name"      :   "port2tigger",
+            "dtype"     :   "bool",
+            "info"      :   "Convert output model to tigger format",
+            "default"   :   true
         }
     ]
 }

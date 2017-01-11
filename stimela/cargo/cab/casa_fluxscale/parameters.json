@@ -21,7 +21,6 @@
             "info"      :   "Name of input calibration table",
             "default"   :   null
         },
-
         {
             "name"      :   "fluxtable",
             "dtype"     :   "file",
@@ -29,23 +28,18 @@
             "info"      :   "Name of output, flux-scaled calibration table",
             "default"   :   null
         },
-
-  
         {
             "name"      :   "reference",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Reference field name(s) (transfer flux scale FROM)",
             "default"   :   null
         },
         {
             "name"      :   "transfer",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Transfer field name(s) (transfer flux scale TO), '' -> all",
             "default"   :   null
         },
-
         {
             "name"      :   "listfile",
             "dtype"     :   "file",
@@ -61,14 +55,10 @@
         },
         {
             "name"      :   "refspwmap",
-            "dtype"     :   "list:int",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Scale across spectral window boundaries.  See help fluxscale",
             "default"   :   null
         },
-
-      
-
         {
             "name"      :   "incremental",
             "dtype"     :   "bool",
@@ -81,8 +71,6 @@
             "info"      :   "order of spectral fitting",
             "default"   :   1
         },
-
-
         {
             "name"      :   "async",
             "dtype"     :   "bool",

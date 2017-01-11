@@ -20,8 +20,6 @@
             "info"      :   "Select field using field id(s) or field name(s)",
             "default"   :   null
         },
-
-  
         {
             "name"      :   "spw",
             "dtype"     :   "str",
@@ -34,7 +32,6 @@
             "info"      :   "Select observing intent",
             "default"   :   null
         },
-
         {
             "name"      :   "selectdata",
             "dtype"     :   "bool",
@@ -53,9 +50,6 @@
             "info"      :   "Select data within uvrange (default units meters)",
             "default"   :   null
         },
-
-      
-
         {
             "name"      :   "antenna",
             "dtype"     :   "str",
@@ -80,7 +74,6 @@
             "info"      :   "Optional complex data selection (ignore for now)",
             "default"   :   true
         },
-
         {
             "name"      :   "docallib",
             "dtype"     :   "bool",
@@ -96,42 +89,35 @@
         },
         {
             "name"      :   "gaintable",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
+            "dtype"     :   "list:file",
+            "delimiter" :   ",",
             "info"      :   "Gain calibration table(s) to apply on the fly",
             "default"   :   null
         },
         {
             "name"      :   "gainfield",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Select a subset of calibrators from gaintable(s)",
             "default"   :   null
         },
         {
             "name"      :   "interp",
-            "dtype"     :   "list:str",
-            "delimeter"  :   ",",
+            "dtype"     :   "list",
             "info"      :   "Temporal interpolation for each gaintable (=linear)",
             "default"   :   null
         },
         {
             "name"      :   "spwmap",
-            "dtype"     :   "list:int",
-            "delimeter"  :   ",",
+            "dtype"     :   "list",
             "info"      :   "Spectral windows combinations to form for gaintables(s)",
             "default"   :   null
         },
-
         {
             "name"      :   "calwt",
-            "dtype"     :   "list:bool",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Calibrate data weights per gaintable.",
             "default"   :   [true]
         },
-
-
         {
             "name"      :   "parang",
             "dtype"     :   "bool",
@@ -151,8 +137,6 @@
             "info"      :   "Automatically back up the state of flags before the run?",
             "default"   :   true
         },
-
-
         {
             "name"      :   "async",
             "dtype"     :   "bool",

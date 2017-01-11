@@ -9,17 +9,15 @@
     "parameters"    :   [
         {
             "name"      :   "vis",
-            "dtype"     :   "list:file",
-            "delimeter" :   ",",
-            "info"      :   "Name of input visibility file",
+            "dtype"     :   "file",
             "io"        :   "msfile",
+            "info"      :   "Name of input visibility file",
             "required"  :   true
         },
-  
         {
             "name"      :   "field",
             "dtype"     :   ["list:str","list:int"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Field Name(s)",
             "default"   :   null
         },
@@ -27,7 +25,7 @@
             "name"      :   "spw",
             "dtype"     :   "str",
             "info"      :   "Spectral window identifier (list)",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "default"   :   null
         },
         {  
@@ -36,18 +34,17 @@
             "info"      :   "Other data selection parameters",
             "default"   :   true
         },
-       
         {    
             "name"      :   "timerange",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   ",",
             "info"      :   "Time range to operate on (for usescratch=T)",
             "default"   :   null
         },
         {
             "name"      :   "scan",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Scan number range (for  usescratch=T)",
             "default"   :   null
         },
@@ -76,7 +73,6 @@
             "info"      :   "Flux density standard",
             "default"   :   "Perley-Butler 2010"
         },
-
         {
             "name"      :   "interpolation",
             "dtype"     :   "str",
@@ -84,7 +80,6 @@
             "info"      :   "method to be used to interpolate in time",
             "default"   :   "linear"
         },
-  
         {
             "name"      :   "useephemdir",
             "dtype"     :   "bool",
@@ -93,15 +88,14 @@
         },
         {
             "name"      :   "fluxdensity",
-            "dtype"     :   "list:int",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Specified flux density [I,Q,U,V]; (-1 will lookup values)",
             "default"   :   [1, 0, 0, 0]
         },
         {
             "name"      :   "spix",
             "dtype"     :   ["float","list:float","int","list:int"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Spectral index of fluxdensity",
             "default"   :   0.0
         },
@@ -117,8 +111,6 @@
             "info"      :   "output dictionary from fluxscale(NB: this is a dictionary)",
             "default"   :   null   
         },
-
-
         {    
             "name"      :   "model",
             "dtype"     :   "file",
@@ -132,14 +124,12 @@
             "info"      :   "List the available modimages for VLA calibrators or Tb models for Solar System objects",
             "default"   :   false
         },
-
         {
             "name"      :   "usescratch",
             "dtype"     :   "bool",
             "info"      :   "Will create if necessary and use the MODEL_DATA",
             "default"   :   false
         },
-
         {
             "name"      :   "asynch",
             "dtype"     :   "bool",

@@ -345,7 +345,7 @@
             "default"   :   null
         },
         {
-            "name"      :   "prefix",
+            "name"      :   "outfile",
             "dtype"     :   "file",
             "io"        :   "output",
             "required"  :   true,

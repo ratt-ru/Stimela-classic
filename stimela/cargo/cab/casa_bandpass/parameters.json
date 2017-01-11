@@ -10,7 +10,7 @@
         {
             "name"      :   "vis",
             "dtype"     :   "list:file",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Name of input visibility file",
             "io"        :   "msfile",
             "required"  :   true
@@ -26,7 +26,7 @@
         {
             "name"      :   "field",
             "dtype"     :   ["list:str","list:int"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Field Name or id",
             "default"   :   null
         },
@@ -34,7 +34,7 @@
             "name"      :   "spw",
             "dtype"     :   "str",
             "info"      :   "Spectral windows e.g. '0~3', '' is all",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "default"   :   null
         },
         {  
@@ -47,35 +47,35 @@
         {    
             "name"      :   "timerange",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "Range of time to select from data, e.g. timerange = 'YYYY/MM/DD/hh:mm:ss~YYYY/MM/DD/hh:mm:ss'",
             "default"   :   null
         },
         {
             "name"      :   "uvrange",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Select data within uvrange",
             "default"   :   null
         },
         {
             "name"      :   "antenna",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Select data based on antenna/baseline",
             "default"   :   null
         },
         {
             "name"      :   "scan",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Scan number range",
             "default"   :   null
         },
         {
             "name"      :   "observation",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Observation ID range",
             "default"   :   null
         },
@@ -171,7 +171,7 @@
         {
             "name"      :   "smodel",
             "dtype"     :   "list:float",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Point source Stokes parameters for source model.",
             "default"   :   null
         },
@@ -189,32 +189,27 @@
         },
         {
             "name"      :   "gaintable",
-            "dtype"     :   "file",
+            "dtype"     :   "list:file",
             "io"        :   "input",
             "info"      :   "Gain calibration table(s) to apply on the fly",
             "default"   :   null
         },
-
-      
         {
             "name"      :   "gainfield",
-            "dtype"     :   ["list:int","int"],
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Select a subset of calibrators from gaintable(s)",
             "default"   :   null
         },
         {   
             "name"      :   "interp",
-            "dtype"     :   ["list:str","str"],
-            "delimeter" :   ",",
+            "dtype"     :   "list"
             "choices"   :   ["nearest","linear","spline","cubic"],
             "info"      :   "Interpolation mode (in time) to use for each gaintable",
             "default"   :   null
         },
         {
             "name"      :   "spwmap",
-            "dtype"     :   "list:int",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Spectral windows combinations to form for gaintables(s)",
             "default"   :   null
         },

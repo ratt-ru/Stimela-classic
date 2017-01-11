@@ -18,6 +18,7 @@
             "name"      :   "caltable",
             "dtype"     :   "file",
             "io"        :   "output",
+            "required"  :   true,
             "info"      :   "Name of output gain calibration table",
             "default"   :   null
         },
@@ -27,8 +28,6 @@
             "info"      :   "Select field using field id(s) or field name(s)",
             "default"   :   null
         },
-
-  
         {
             "name"      :   "spw",
             "dtype"     :   "str",
@@ -53,9 +52,6 @@
             "info"      :   "Select data within uvrange (default units meters)",
             "default"   :   null
         },
-
-      
-
         {
             "name"      :   "antenna",
             "dtype"     :   "str",
@@ -90,7 +86,7 @@
         {
             "name"      :   "combine",
             "dtype"     :   "list:str",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "The calibration values",
             "default"   :   null
         },
@@ -151,8 +147,7 @@
         },
         {
             "name"      :   "smodel",
-            "dtype"     :   "list:float",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Point source Stokes parameters for source model.",
             "default"   :   null
         },
@@ -184,29 +179,25 @@
         },
         {
             "name"      :   "gaintable",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Gain calibration table(s) to apply on the fly",
             "default"   :   null
         },
         {
             "name"      :   "gainfield",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "Select a subset of calibrators from gaintable(s)",
             "default"   :   null
         },
         {
             "name"      :   "interp",
-            "dtype"     :   "list:str",
-            "delimeter"  :   ",",
+            "dtype"     :   "list,
             "info"      :   "Temporal interpolation for each gaintable (=linear)",
             "default"   :   null
         },
         {
             "name"      :   "spwmap",
-            "dtype"     :   "list:int",
-            "delimeter"  :   ",",
+            "dtype"     :   "list",
             "info"      :   "Spectral windows combinations to form for gaintables(s)",
             "default"   :   null
         },

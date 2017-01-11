@@ -91,7 +91,7 @@
         {
             "name"      :   "plotrange",
             "dtype"     :   "list:float",
-            "delimeter"  :   ",",
+            "delimiter"  :   ",",
             "info"      :   "plot axes ranges: [xmin,xmax,ymin,ymax]",
             "default"   :   null
         },

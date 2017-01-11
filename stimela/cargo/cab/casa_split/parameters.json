@@ -32,7 +32,7 @@
         {
             "name"      :   "field",
             "dtype"     :   ["list:str","list:int"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Select field using ID(s) or name(s)",
             "default"   :   null
         },
@@ -59,7 +59,7 @@
             "dtype"     :   ["str","list:str"],
             "choices"   :   ["scan", "state"],
             "info"      :   "Let time bins span changes in scan and/or state",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "default"   :   "scan"
         },
 

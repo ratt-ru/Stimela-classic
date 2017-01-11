@@ -97,21 +97,21 @@
             "name"      :   "inpfile",
             "dtype"     :   ["file","list:str"],
             "io"        :   "input",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Input ASCII file, list of files or Python list of strings with flag commands",
             "default"   :   null
         },
         {
             "name"      :   "reason",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Select by REASON types",
             "default"   :   "any"
         },
         {
             "name"      :   "tbuff",
             "dtype"     :   ["list:float","float"],
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "List of time buffers (sec) to pad timerange in flag commands",
             "default"   :   null
         },
@@ -124,7 +124,7 @@
         {
             "name"      :   "clipminmax",
             "dtype"     :   "list:float",
-            "delimeter" :   ",",
+            "delimiter" :   ",",
             "info"      :   "Range to use for clipping",
             "default"   :   null
         },
@@ -344,7 +344,6 @@
             "info"      :   "Name of this summary report (key in summary dictionary)",
             "default"   :   "Summary"
         },
-
         {
             "name"      :   "action",
             "dtype"     :   "str",
@@ -384,7 +383,6 @@
             "info"      :   "Name of output file to save current parameters. If empty, save to FLAG_CMD",
             "default"   :   null
         },
-
         {
             "name"      :   "async",
             "dtype"     :   "bool",

@@ -49,8 +49,7 @@
         },
         {
             "name"      :   "parameter",
-            "dtype"     :   "list:float",
-            "delimeter" :   ",",
+            "dtype"     :   "list",
             "info"      :   "The calibration values",
             "default"   :   null
         },

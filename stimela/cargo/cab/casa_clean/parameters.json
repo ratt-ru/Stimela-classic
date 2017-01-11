@@ -10,7 +10,7 @@
         {
             "name"      :   "vis",
             "dtype"     :   "list:file",
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "Name of input visibility file",
             "io"        :   "msfile",
             "required"  :   true
@@ -33,7 +33,7 @@
         {
             "name"      :   "field",
             "dtype"     :   ["list:str","list:int"],
-            "delimeter" :   " ",
+            "delimiter" :   ",",
             "info"      :   "Field Name or id",
             "default"   :   null
         },
@@ -41,7 +41,7 @@
             "name"      :   "spw",
             "dtype"     :   "str",
             "info"      :   "Spectral windows e.g. '0~3', '' is all",
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "default"   :   null
         },
         {  
@@ -50,46 +50,45 @@
             "info"      :   "Other data selection parameters",
             "default"   :   true
         },
-       
         {    
             "name"      :   "timerange",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   ",",
             "info"      :   "Range of time to select from data, e.g. timerange = 'YYYY/MM/DD/hh:mm:ss~YYYY/MM/DD/hh:mm:ss'",
             "default"   :   null
         },
         {
             "name"      :   "uvrange",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   ",",
             "info"      :   "Select data within uvrange",
             "default"   :   null
         },
         {
             "name"      :   "antenna",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "Select data based on antenna/baseline",
             "default"   :   null
         },
         {
             "name"      :   "scan",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "Scan number range",
             "default"   :   null
         },
         {
             "name"      :   "observation",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "Observation ID range",
             "default"   :   null
         },
         {
             "name"      :   "intent",
             "dtype"     :   ["str","list:str"],
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "Scan Intent(s)",
             "default"   :   null
         },
@@ -106,7 +105,6 @@
             "info"      :   "Number of channels (planes) in output image; -1 = all",
             "default"   :   -1
         },
-
         {    
             "name"      :   "start",
             "dtype"     :   ["str","int","float"],
@@ -127,7 +125,6 @@
             "info"      :   "Spectral interpolation (nearest, linear, cubic).",
             "default"   :   "linear"
         },
-
         {
             "name"      :   "resmooth",
             "dtype"     :   "bool",
@@ -155,7 +152,6 @@
             "info"      :   "Velocity definition of output image",
             "default"   :   "radio"
         },
-
         {
             "name"      :   "nterms",
             "dtype"     :   "int",
@@ -206,8 +202,6 @@
             "info"      :   "Parallactic angle increment (degrees) for computing A-term",
             "default"   :   360.0
         },
-
-      
         {
             "name"      :   "niter",
             "dtype"     :   "int",
@@ -266,8 +260,6 @@
             "info"      :   "Controls whether searching for clean components is done in a constant noise residual image (True) or in an optimal signal-to-noise residual image (False)",
             "default"   :   true
         },
-
-
         {
             "name"      :   "cyclefactor",
             "dtype"     :   "float",
@@ -282,12 +274,10 @@
         },
         {
             "name"      :   "multiscale",
-            "dtype"     :   "list:int",
-            "delimeter" :   " ",
+            "dtype"     :   "list",
             "info"      :   "Deconvolution scales (pixels); [] = standard clean",
             "default"   :   null
         },
- 
         {
             "name"      :   "negcomponent",
             "dtype"     :   "int",
@@ -312,7 +302,6 @@
             "info"      :   "Clean iterations before interactive prompt (can be changed)",
             "default"   :   100
         },
-
         {
             "name"      :   "mask",
             "dtype"     :   "file",
@@ -322,17 +311,15 @@
         },
         {
             "name"      :   "imsize",
-            "dtype"     :   "list:int",
-            "delimeter" :   " ",
+            "dtype"     :   "list",
             "info"      :   " x and y image size in pixels.  Single value: same for both",
             "default"   :   [256, 256]
         },
         {
             "name"      :   "cell",
-            "dtype"     :   "list:str",
-            "delimeter" :   " ",
+            "dtype"     :   "list",
             "info"      :   "x and y cell size(s). Default unit arcsec.",
-            "default"   :   '1.0arcsec'
+            "default"   :   ['1.0arcsec']
         },
         {
             "name"      :   "phasecenter",
@@ -381,19 +368,17 @@
         {
             "name"      :   "outertaper",
             "dtype"     :   "list:str",
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "uv-taper on outer baselines in uv-plane",
             "default"   :   null
         },
         {
             "name"      :   "innertaper",
             "dtype"     :   "list:str",
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "uv-taper in center of uv-plane (not implemented)",
             "default"   :   null
         },
-
-
         {   "name"      :   "modelimage",
             "dtype"     :   "file",
             "io"        :   "input",
@@ -403,7 +388,7 @@
         {
             "name"      :   "restoringbeam",
             "dtype"     :   "list:str",
-            "delimeter" :   " ",
+            "delimiter" :   " ",
             "info"      :   "Output Gaussian restoring beam for CLEAN image",
             "default"   :   null
         },

@@ -31,7 +31,7 @@ for param in cab['parameters']:
     name = param['name']
     value = param['value']
 
-    if is None:
+    if value is None:
         continue
 
     if name in write_catalog:
@@ -43,7 +43,7 @@ img = bdsm.process_image(**img_opts)
 
 port2tigger = write_opts.pop('port2tigger', False)
 
-if write_opts['format'] !='fits',
+if write_opts['format'] !='fits':
     write_opts['format'] = 'fits'
 
 img.write_catalog(**write_opts)
@@ -56,7 +56,7 @@ if not port2tigger:
 tfile = tempfile.NamedTemporaryFile(suffix='.txt')
 tfile.flush()
 
-prefix = img_opts['filename'][:-5]
+prefix = img_opts['outfile'][:-5]
 tname_lsm = prefix + ".lsm.html"
 with open(tfile.name, "w") as stdw:
     stdw.write("#format:name ra_d dec_d i emaj_s emin_s pa_d\n")

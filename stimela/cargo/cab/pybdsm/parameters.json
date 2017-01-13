@@ -67,7 +67,7 @@
         },
         {
             "name"      :   "beam",
-            "dtype"     :   "list",
+            "dtype"     :   "list:float",
             "info"      :   "FWHM of restoring beam. Specify as (maj, min, pos ang E of N) in degrees. E.g., beam = (0.06, 0.02, 13.3). None => get from header",
             "default"   :   null
         },
@@ -98,13 +98,13 @@
         },
         {
             "name"      :   "beam_spectrum",
-            "dtype"     :   "list",
+            "dtype"     :   "list:list",
             "info"      :   "FWHM of synthesized beam per channel. Specify as [(bmaj_ch1, bmin_ch1, bpa_ch1), (bmaj_ch2, bmin_ch2, bpa_ch2), etc.] in degrees. E.g., beam_spectrum = [(0.01, 0.01, 45.0), (0.02,0.01, 34.0)] for two channels. None => all equal to beam",
             "default"   :   null
         },
         {
             "name"      :   "collapse_av",
-            "dtype"     :   "list",
+            "dtype"     :   "list:int",
             "info"      :   "List of channels to average if collapse_mode = 'average', starting from 0. E.g., collapse_av = [0, 1, 5]. [] => all",
             "default"   :   null
         },
@@ -123,13 +123,13 @@
         },
         {
             "name"      :   "frequency_sp",
-            "dtype"     :   "float",
+            "dtype"     :   "list:float",
             "info"      :   "Frequency in Hz of channels in input image when more than one channel is present. E.g., frequency_sp = [74e6, 153e6]. None => get from header",
             "default"   :   null
         },
         {
             "name"      :   "rms_box",
-            "dtype"     :   "list",
+            "dtype"     :   "list:int",
             "info"      :   "Box size, step size for rms/mean map calculation. Specify as (box, step) in pixels. E.g., rms_box = (40, 10) => box of 40x40 pixels, step of 10 pixels. None => calculate inside program",
             "default"   :   null
         },
@@ -141,7 +141,7 @@
         },
         {
             "name"      :   "thresh",
-            "dtype"     :   "float",
+            "dtype"     :   "str",
             "choices"   :   ["fdr", "hard", null],
             "info"      :   "Type of thresholding: None => calculate inside program, 'fdr' => use false detection rate algorithm, 'hard' => use sigma clipping",
             "default"   :   null
@@ -305,7 +305,7 @@
             "name"      :   "spline_rank",
             "dtype"     :   "int",
             "info"      :   "Rank of the interpolating function for rms/mean map",
-            "default"   :   3.0
+            "default"   :   3
         },
         {
             "name"      :   "split_isl",
@@ -321,7 +321,7 @@
         },
         {
             "name"      :   "src_ra_dec",
-            "dtype"     :   "list",
+            "dtype"     :   "list:list",
             "info"      :   "List of source positions at which fitting is done.  E.g., src_ra_dec = [(197.1932, 47.9188), (196.5573, 42.4852)]",
             "default"   :   null
         },
@@ -340,7 +340,7 @@
         },
         {
             "name"      :   "trim_box",
-            "dtype"     :   "list",
+            "dtype"     :   "list:int",
             "info"      :   "Do source detection on only a part of the image. Specify as (xmin, xmax, ymin, ymax) in pixels. E.g., trim_box = (120, 840, 15, 895). None => use entire image",
             "default"   :   null
         },

@@ -148,7 +148,7 @@ class Container(object):
         self.log_container.update(self.info(), uptime="00:00:00")
 
         try:
-            utils.xrun("docker start -a", [self.name])
+            utils.xrun("docker",["start", "-a", self.name])
         except KeyboardInterrupt:
            self.stop()
            self.remove()

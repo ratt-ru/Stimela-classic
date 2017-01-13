@@ -27,12 +27,12 @@ class Parameter(object):
         choices=None, 
         io=None,
         mapping=None,
-        delimiter=None, 
+        #delimiter=None, 
         check_io=True):
 
         self.name = name
         self.io = io
-        self.delimiter = delimiter
+        #self.delimiter = delimiter
         
         if not hasattr(dtype,'__iter__'):
             dtype = [dtype]
@@ -77,8 +77,8 @@ class Parameter(object):
 
         if dtype.startswith("list:"):
             val = dtype.split(":")
-            if self.delimiter is None:
-                raise RuntimeError("The parameter {0} is to be supplied as list but no delimter has been provided. Please add a 'delimiter' field to the cab parameter file.".format(self.name))
+#            if self.delimiter is None:
+#                raise RuntimeError("The parameter {0} is to be supplied as list but no delimter has been provided. Please add a 'delimiter' field to the cab parameter file.".format(self.name))
             if len(val) != 2:
                 raise TypeError("The type of '{0}' could not validate. Specify list types as \"list:dtype\" where dtype is normal type")
             ttype = val[1]
@@ -128,7 +128,7 @@ class CabDefinition(object):
                         info=param.get("info", "No documentation. Bad! Very bad..."),
                         default=default,
                         mapping=param.get("mapping", None),
-                        delimiter=param.get("delimiter", None),
+                        #delimiter=param.get("delimiter", None),
                         required=param.get("required", False),
                         choices=param.get("choices", False),
                         check_io=param.get("check_io", True))
@@ -162,7 +162,7 @@ class CabDefinition(object):
                     _name = "file" if _type=="file" else _type.__name__
                 _types += "{}".format(_name) if i==0 else "/{}".format(_name)
 
-            lines = textwrap.wrap(param.info, int(cols)/2)
+            lines = textwrap.wrap(param.info, int(cols)*3/4)
 
             print("  Name         {}{}".format(param.name, "/{}".format(param.mapping) if param.mapping else ""))
             print("  Description  {}".format(lines[0]))
@@ -178,7 +178,10 @@ class CabDefinition(object):
     def toDict(self):
         conf = {}
         for item in "task base binary msdir description prefix".split():
-            conf[item] = getattr(self, item)
+            if item == 'msdir':
+                conf[item] = getattr(self, item, False)
+            else:
+                conf[item] = getattr(self, item)
         
         conf["parameters"] = []
         for param in self.parameters:
@@ -188,8 +191,8 @@ class CabDefinition(object):
                 value = None
             elif isinstance(param.dtype[0], tuple):
                 if not isinstance(_value, (list, tuple)):
-                    _value = [_value]
-                value = param.delimiter.join(map(str, _value))
+                    value = [_value]
+#                value = param.delimiter.join(map(str, _value))
             else:
                 value = _value
 
@@ -232,7 +235,7 @@ class CabDefinition(object):
                             val = _value.split(":")
                             if len(val)==2:
                                 self.log.info("Location of '{0}' was specified as '{1}'. Will overide default.".format(param.name, val[1]))
-                                value = val[0]
+                                _value = val[0]
                                 location = val[1]
                             else:
                                 location = param.io

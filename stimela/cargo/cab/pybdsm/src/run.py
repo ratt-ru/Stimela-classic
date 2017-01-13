@@ -5,6 +5,7 @@ from lofar import bdsm
 import numpy
 import Tigger
 import tempfile
+import pyfits
 
 from astLib.astWCS import WCS
 from Tigger.Models import SkyModel, ModelClasses
@@ -20,9 +21,9 @@ MSDIR = os.environ['MSDIR']
 
 cab = utils.readJson(CONFIG)
 
-write_catalog = ['prefix',  'bbs_patches', 'bbs_patches_mask',
+write_catalog = ['bbs_patches', 'bbs_patches_mask',
             'catalog_type', 'clobber', 'correct_proj', 'format', 
-            'incl_chan', 'incl_empty', 'srcroot', 'port2tigger']
+            'incl_chan', 'incl_empty', 'srcroot', 'port2tigger', 'outfile']
 
 img_opts = {}
 write_opts = {}
@@ -39,14 +40,17 @@ for param in cab['parameters']:
     else:
         img_opts[name] = value
 
-img = bdsm.process_image(**img_opts)
+image = img_opts.pop('filename')
+outfile = write_opts.pop('outfile')
+
+img = bdsm.process_image(image, **img_opts)
 
 port2tigger = write_opts.pop('port2tigger', False)
 
 if write_opts['format'] !='fits':
     write_opts['format'] = 'fits'
 
-img.write_catalog(**write_opts)
+img.write_catalog(outfile=outfile, **write_opts)
 
 if not port2tigger:
     sys.exit(0)
@@ -56,7 +60,7 @@ if not port2tigger:
 tfile = tempfile.NamedTemporaryFile(suffix='.txt')
 tfile.flush()
 
-prefix = img_opts['outfile'][:-5]
+prefix = outfile[:-5]
 tname_lsm = prefix + ".lsm.html"
 with open(tfile.name, "w") as stdw:
     stdw.write("#format:name ra_d dec_d i emaj_s emin_s pa_d\n")
@@ -86,7 +90,7 @@ def tigger_src(src, idx):
     return SkyModel.Source(name, pos, flux, shape=shape)
 
 
-with pyfits.open(srcfile) as hdu:
+with pyfits.open(outfile) as hdu:
     data = hdu[1].data
 
     for i, src in enumerate(data):

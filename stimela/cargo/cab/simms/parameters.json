@@ -49,7 +49,6 @@
         {
             "name"      :   "lon-lat-elv",
             "dtype"     :   "list:float",
-            "delimiter" :   ",",
             "info"      :   "Reference position of telescope. Comma seperated longitude,lattitude and elevation 'deg,deg,m'. Elevation is not crucial, lon,lat should be enough. If not specified, we'll try to get this info from the CASA database (assuming that your telescope is known to CASA)",
             "default"   :   null
         },
@@ -61,9 +60,8 @@
         },
         {
             "name"      :   "direction",
-            "dtype"     :   "list:str",
+            "dtype"     :   ["list:str","str"],
             "info"      :   "Pointing direction. Example J2000,0h0m0s,-30d0m0d. Option --direction may be specified multiple times for multiple pointings. Provide a list of directions for multiple pointings; each pointing will have a unique field ID",
-            "delimiter" :   " --direction ",
             "default"   :   "J2000,0deg,-30deg"
         },
         {
@@ -87,14 +85,12 @@
         {
             "name"      :   "freq0",
             "dtype"     :   ["list:str","list:float"],
-            "delimiter" :   " --freq0 ",
             "info"      :   "Start frequency. This is the middle of the first channel. Specify as val[unit]. E.g 700MHz, no unit => Hz . Use a comma seperated list for multiple start frequencies (for multiple subbands)",
             "default"   :   "1.4GHz"
         },
         {
             "name"      :   "dfreq",
             "dtype"     :   ["list:str","list:float"],
-            "delimiter" :   " --dfreq ",
             "info"      :   "Channel width. Specify as val[unit]. E.g 700MHz, no unit => Hz Use a comma separated list of channel widths (for multiple subbands)",
             "default"   :   "2MHz"
         },
@@ -107,7 +103,6 @@
         {
             "name"      :   "nchan",
             "dtype"     :   "list:int",
-            "delimiter" :   " --nchan ",
             "info"      :   "Number of channels. Can be used in tandemn with 'freq0, dfreq, nband' to customise the partitioning of the subands",
             "default"   :   1
         },

@@ -18,7 +18,12 @@ params = cab['parameters']
 def rm_fr(item):
     os.system('rm -fr {}'.format(item))
 
-def _run (prefix=None, **kw):
+def _run (prefix=None, predict=False, **kw):
+
+    if predict:
+        args = [ '{0}={1}'.format(a, b) for a,b in kw.iteritems() ]
+        utils.xrun(cab['binary'], args)
+        return
 
     if kw['niter']>0:
         if kw['operation'] == 'image':
@@ -58,12 +63,12 @@ def predict_vis (msname, image, column="MODEL_DATA",
   casaimage = '{}.img'.format(image)
   
   # convert to CASA image
-  img = pyrap.images.image(casaimage)
+  img = pyrap.images.image(image)
   img.saveas(casaimage)
-  
+
   imgshp = img.shape()
   ftab = table(msname+'/SPECTRAL_WINDOW')
-  numchans = ftab.getcol('NUM_FREQ')[0]
+  numchans = ftab.getcol('NUM_CHAN')[0]
   # default chunk list is entire chanel range. Update this if needed
   chunklist = [ (0, numchans, None, None) ]
   if len(imgshp) == 4 and imgshp[0] > 1:
@@ -96,6 +101,7 @@ def predict_vis (msname, image, column="MODEL_DATA",
               
   # even in fill-model mode where it claims to ignore image parameters, the image channelization
   # arguments need to be "just so" as per below, otherwise it gives a GridFT: weights all zero message
+  kw0 = {}
   kw0.update(ms=msname, model=casaimage, 
       niter=0, fixed=1, mode="channel", operation="csclean",
       img_nchan=1, img_chanstart=chanstart, img_chanstep=numchans*chanstep)
@@ -120,7 +126,7 @@ def predict_vis (msname, image, column="MODEL_DATA",
       kw0.update(chanstart=mschanstart, chanstep=chanstep, nchan=msnumchans)
       print("predicting visibilities into MODEL_DATA")
 
-      _run(**kw0)
+      _run(predict=True, **kw0)
       if len(chunklist) > 1:
         rm_fr(casaimage1)   
   rm_fr(casaimage)
@@ -158,7 +164,7 @@ for param in params:
 predict = options.pop('simulate_fits', False)
 if predict:
     predict_vis(msname=options['ms'], image=predict, column=options['data'], 
-        chanchunk=options['chanchunk'], chanstart=['img_chanstart'], 
+        chanchunk=options.get('chanchunk', None), chanstart=['img_chanstart'], 
         chanstep=options['img_chanstep'])
 else:
     _run(prefix, **options)

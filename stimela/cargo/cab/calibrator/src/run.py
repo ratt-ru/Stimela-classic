@@ -1,6 +1,7 @@
 import os
 import sys
 from pyrap.tables import table
+import subprocess
 
 sys.path.append("/utils")
 import utils
@@ -54,6 +55,7 @@ outcol = jdict.pop("output", "CORRECTED_DATA")
 params["ms_sel.input_column"] = column
 params["ms_sel.output_column"] = outcol
 params["tiggerlsm.filename"] = skymodel
+params["do_output"] = jdict.pop("output-data", "CORR_RES")
 
 label = jdict.pop("label", None)
 
@@ -149,12 +151,14 @@ def run_meqtrees(msname):
         options["read_ms_model"] = 1
         options["ms_sel.model_column"] = "MODEL_DATA"
 
-    args = ["%s=%s"%(key, val) for key,val in options.iteritems()]
+    args = prefix + ["%s=%s"%(key, val) for key,val in options.iteritems()] + suffix
+
+    utils.xrun(cab['binary'], args)
     
-    utils.xrun("meqtree-pipeliner.py", prefix + args + suffix)
-    
+    print("MeqTrees Done!")
     # now plot the gains
     if makeplots:
+        print("Preparing to make gain plots")
         import Owlcat.Gainplots as plotgains
         feed_tab = table(msname+"/FEED")
         print("Extracting feed type from MS")
@@ -178,5 +182,7 @@ def run_meqtrees(msname):
         if ifrjones:
             print("Making IFR gain plots...")
             plotgains.make_ifrgain_plots(ifrjones_gains, prefix=ifrjones_plotprefix, feed_type=feed_type)
+
+    sys.exit(0)
 
 run_meqtrees(msname)

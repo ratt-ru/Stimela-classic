@@ -1,84 +1,66 @@
+from __future__ import print_function
 import os
 import sys
-import re
-import glob
 
-sys.path.append("/utils")
+import drivecasa
+casa = drivecasa.Casapy()
+
+sys.path.append('/utils')
 import utils
 
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
+CONFIG = os.environ['CONFIG']
+cab = utils.readJson(CONFIG)
 
+params = {}
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-jdict = dict(npix=2048, wprojplanes=128, clean_iterations=1000, cellsize=2, 
-             weight="briggs", robust=0, gridmode="widefield", spw=0, 
-             field=0, stokes="I", aterm=False, psfmode="clark", 
-             imagermode="csclean", keep_casa_images=False)
+    if value is None:
+        continue
 
-jdict.update( utils.readJson(CONFIG) )
+    params[name] = value
 
-jdict["cellsize"] = "%.4earcsec"%jdict["cellsize"]
+port2fits = params.pop('port2fits', True)
+keep_casa_images = params.pop("keep_casa_images", False)
+script = ['clean(**{})'.format(params)]
 
-STANDARD_OPTS = { 
-    "field_id" : "field",
-    "spw_id" : "spw",
-    "imageprefix" : "imagename",
-    "weight" : "weighting",
-    "npix" : "imsize",
-    "cellsize": "cell",
-    "clean_iterations" : "niter",
-}
-
-options = {}
-
-for key, value in jdict.items():
-    key = STANDARD_OPTS.get(key, key)
-
-    if value not in [None, []]:
-        options[key] = value
-    if key in options and options[key] == None:
-        del options[key]
-
-    if key in ["field", "spw"]:
-        options[key] = str(options[key])
-    if key in ["psf", "dirty"]:
-        options.pop(key, None)
-
-
-vis = options.pop("msname")
-prefix = options["imagename"] = OUTPUT + "/" + options.pop("imagename", os.path.basename(vis[:-3]))
-options["vis"] = MSDIR + "/" + vis
-
-nterms = jdict.get("nterms", 0)
+nterms = params.get("nterms", 1)
 images = ["flux", "model", "residual", "psf", "image"]
 STD_IMAGES = images[:4]
 
-keep_casa_images = options["keep_casa_images"]
-utils.icasa("clean", **options)
+prefix = params['imagename']
+convert = []
+if port2fits:
+    for image in images:
+        img ="{:s}.{:s}".format(prefix, image)
+        if image == 'flux':
+            _images = [img]
+        elif nterms>1:
+            _images = ["%s.tt%d"%(img,d) for d in range(nterms)]
+            if image=="image":
+                if  nterms==2:
+                    alpha = img+".alpha"
+                    alpha_err = img+".alpha.error"
+                    _images += [alpha,alpha_err]
+                if  nterms==3:
+                    beta = img+".beta"
+                    beta_err = img+".beta.error"
+                    _images += [beta,beta_err]
+        else:
+            _images = [img]
+        convert += _images
 
-for image in images:
-    img ="{:s}.{:s}".format(prefix, image)
-    if nterms:
-        _images = ["%s.tt%d"%(img,d) for d in range(nterms)]
-        if image=="image":
-            if  nterms==2:
-                alpha = img+".alpha"
-                alpha_err = img+".alpha.error"
-                _images += [alpha,alpha_err]
-            if  nterms==3:
-                beta = img+".beta"
-                beta_err = img+".beta.error"
-                _images += [beta,beta_err]
-    else:
-        _images = [img]
+for _image in  convert:
+    sys.stdout.write(_image)
+    if _image in STD_IMAGES and (not os.path.exists(_image)):
+        raise RuntimeError("Standard output from CASA clean task not found. Something went wrong durring cleaning, take a look at the logs and such")
 
-    for _image in  _images:
-        if _image is STD_IMAGES and (not os.path.exists(_image)):
-            raise RuntimeError("Standard output from CASA clean task not found. Something went wrong durring cleaning, take a look at the logs and such")
-        elif os.path.exists(_image):
-            utils.icasa("exportfits", imagename=_image, fitsimage=_image+".fits")
+    elif os.path.exists(_image):
+        script += ['exportfits(**{})'.format( dict(imagename=_image, fitsimage=_image+".fits"))]
 
-        if not keep_casa_images:
-            utils.xrun("rm", ["-rf", img])
+out = casa.run_script(script, raise_on_severe=False)
+
+if not keep_casa_images:
+    for _image in convert:
+        utils.xrun("rm", ["-rf", _image])

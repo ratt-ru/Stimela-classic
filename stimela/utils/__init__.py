@@ -59,17 +59,18 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                   stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
                   shell=True)
-
+    out, err = None, None
     if process.stdout or process.stderr:
 
         out, err = process.comunicate()
         sys.stdout.write(out)
         sys.stderr.write(err)
-        return out
+        return out, err
     else:
         process.wait()
     if process.returncode:
          raise SystemError('%s: returns errr code %d'%(command, process.returncode))
+    return out, err
 
 
 def pper(iterable, command, cpus=None, stagger=2, logger=None):
@@ -241,20 +242,18 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
 
     run_cmd = """ """
     for kw in mult:
-        task_cmds = ''
+        task_cmds = []
         for key,val in kw.iteritems():
             if isinstance(val,(str, unicode)):
                  val = '"%s"'%val
-            task_cmds += '\n%s=%s'%(key,val)
+            task_cmds .append('%s=%s'%(key,val))
+
+        task_cmds = ", ".join(task_cmds)
         run_cmd += """ 
 %s
-
 os.chdir('%s')
 %s
-taskname = '%s'
-%s
-go()
-
+%s(%s)
 """%(_load, cdir,"clearstart()" if clearstart else "", taskname, task_cmds)
 
     tf = tempfile.NamedTemporaryFile(suffix='.py')
@@ -262,6 +261,7 @@ go()
     tf.flush()
     t0 = time.time()
     # all logging information will be in the pyxis log files 
+    print("Running {}".format(run_cmd))
     xrun("cd", [td, "&& casa --nologger --log2term --nologfile -c", tf.name])
 
     # log taskname.last 

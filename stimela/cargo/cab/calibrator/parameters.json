@@ -2,7 +2,7 @@
     "task"          :   "calibrator",
     "base"          :   "stimela/meqtrees",
     "description"   :   "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)",
-    "binary"        :   "meqtree-pipliner",
+    "binary"        :   "/usr/bin/meqtree-pipeliner.py",
     "prefix"        :   " ",
     "msdir"         :   true,
     "parameters"    :   [
@@ -140,14 +140,12 @@
         {
             "name"      :   "Gjones-solution-intervals",
             "dtype"     :   "list:int",
-            "delimiter" :   ",",
             "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
             "default"   :   null
         },
         {
             "name"      :   "Gjones-smooothing-intervals",
             "dtype"     :   "list:int",
-            "delimiter" :   ",",
             "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
             "default"   :   null
         },
@@ -208,14 +206,12 @@
         {
             "name"      :   "DDjones-solution-intervals",
             "dtype"     :   "list:int",
-            "delimiter" :   ",",
             "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
             "default"   :   null
         },
         {
             "name"      :   "DDjones-smoothing-intervals",
             "dtype"     :   "list:int",
-            "delimiter" :   ",",
             "info"      :   "Smoothing intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
             "default"   :   null
         },

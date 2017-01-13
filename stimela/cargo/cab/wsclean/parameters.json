@@ -3,7 +3,7 @@
     "description"   :   "WSClean imaging software",
     "base"          :   "stimela/wsclean:0.2.3",
     "tag"           :   "0.2.3",
-    "binary"        :   "wsclean",
+    "binary"        :   "/usr/bin/wsclean",
     "msdir"         :   true,
     "prefix"        :   "-",
     "parameters"    :   [
@@ -12,10 +12,11 @@
             "dtype"     :   "list:file",
             "info"      :   "MS(s) to be imaged. If multiple mses are specified, they need to be phase-rotated to the same point on the sky",
             "io"        :   "msfile",
-            "delimiter" :   " ",
-            "required"  :   true
+            "required"  :   true,
+            "default"    :   null
         },
-        {   "name"      :   "name",
+        {   "name"      :   "prefix",
+            "mapping"   :   "name",
             "dtype"     :   "file",
             "io"        :   "output",
             "info"      :   "Prefix for output products. Default is prefix of MS",
@@ -170,21 +171,19 @@
             "dtype"     :   "list:int",
             "info"      :   "Image size in pixels. List of integers (width and height) or a single integer for a square image",
             "mapping"   :   "size",
-            "delimiter" :   " ",
             "default"   :   [2048,2048]
         },
         {
             "name"      :   "trim",
             "dtype"     :   "list:int",
             "info"      :   "After inversion, trim the image to the given size.",
-            "delimiter" :   " ",
             "default"   :   null
         },
         {
             "name"      :   "cellsize",
-            "dtype"     :   "float",
-            "info"      :   "Scale of a pixel. Default unit is arcsec, but can be specificied, e.g. 'scale 20asec'",
             "mapping"   :   "scale",
+            "dtype"     :   ["float","str"],
+            "info"      :   "Scale of a pixel. Default unit is arcsec, but can be specificied, e.g. 'scale 20asec'",
             "default"   :   2
         },
         {
@@ -215,7 +214,6 @@
             "name"      :   "nwlayers-for-size",
             "dtype"     :   "list:int",
             "info"      :   "Use the minimum suggested w-layers for an image of the given size. Can e.g. be used to increase accuracy when predicting small part of full image.",
-            "delimiter" :   " ",
             "default"   :   null
         },
         {
@@ -301,17 +299,15 @@
         },
         {
             "name"      :   "stokes",
-            "dtype"     :   "list:str",
+            "dtype"     :   ["list:str", "str"],
             "info"      :   "Default: 'I'. Possible values: XX, XY, YX, YY, I, Q, U, V, RR, RL, LR or LL (case insensitive). Multiple values can be separated with commas, e.g.: 'xx,xy,yx,yy'. Two or four polarizations can be joinedly cleaned (see '-joinpolarizations'), but this is not the default. I, Q, U and V polarizations will be directly calculated from the visibilities, which is not appropriate for telescopes with non-orthogonal feeds, such as MWA and LOFAR. The 'xy' polarization will output both a real and an imaginary image, which allows calculating true Stokes polarizations for those telescopes.",
            "mapping"    :   "pol",
-            "delimiter" :   ",",
            "default"    :   "I"
         },
         {
             "name"      :   "interval",
             "dtype"     :   "list:int",
             "info"      :   "Only image the given time interval. Indices specify the timesteps, end index is exclusive.",
-            "delimiter" :   " ",
             "default"   :   null
         },
         {
@@ -324,7 +320,6 @@
             "name"      :   "channelrange",
             "dtype"     :   "list:int",
             "info"      :   "Only image the given channel range. Indices specify channel indices, end index is exclusive",
-            "delimiter" :   " ",
             "default"   :   null
         },
         {
@@ -337,7 +332,6 @@
             "name"      :   "spws",
             "dtype"     :   "list:int",
             "info"      :   "Selects only the spws given in the list. list should be a comma-separated list of integers",
-            "delimiter" :   " ",
             "default"   :   0
         },
         {
@@ -441,8 +435,7 @@
             "name"      :   "multiscale-scales",
             "dtype"     :   "list:int",
             "info"      :   "Sets a list of scales to use in multi-scale cleaning. If unset, WSClean will select the delta (zero) scale, scales starting at four times the synthesized PSF, and increase by a factor of two until the maximum scale is reached. Example: -multiscale-scales 0,5,12.5",
-            "delimiter" :   " ",
-           "default"    :   null
+            "default"    :   null
         },
         {
             "name"      :   "iuwt",
@@ -528,7 +521,6 @@
             "name"      :   "beamshape",
             "dtype"     :   "list:int",
             "info"      :   "Set the FWHM beam shape for restoring the clean components. Defaults units for maj and min are arcsec, and degrees for PA. Can be overriden, e.g. 'beamshape 1amin 1amin 3deg'. Default is use PSF FWHM sizes",
-            "delimiter" :   " ",
             "default"   :   null
         },
         {

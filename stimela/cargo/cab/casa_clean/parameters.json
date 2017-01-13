@@ -1,22 +1,24 @@
 {
     "task"          :   "casa_clean",
-    "description"   :   "WSClean imaging software",
+    "description"   :   "CASA Clean task. For imaging and deconvolution",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_clean",
+    "binary"        :   "casa",
     "msdir"         :   true,
-    "prefix"        :   "-",
+    "prefix"        :   "",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "list:file",
-            "delimiter" :   " ",
+            "delimiter" :   ",",
             "info"      :   "Name of input visibility file",
             "io"        :   "msfile",
             "required"  :   true
         },
         {   
-            "name"      :   "imagename",
+            "name"      :   "prefix",
+            "mapping"   :   "imagename",
             "dtype"     :   "file",
             "io"        :   "output",
             "info"      :   "Pre-name of output images",
@@ -172,7 +174,7 @@
             "default"   :   null
         },
         {
-            "name"      :   "wprojplane",
+            "name"      :   "wprojplanes",
             "dtype"     :   "int",
             "info"      :   "Number of w-projection planes for convolution",
             "default"   :   1
@@ -310,16 +312,18 @@
             "default"   :   null
         },
         {
-            "name"      :   "imsize",
-            "dtype"     :   "list",
-            "info"      :   " x and y image size in pixels.  Single value: same for both",
-            "default"   :   [256, 256]
+            "name"      :   "npix",
+            "mapping"   :   "imsize",
+            "dtype"     :   ["list", "int"],
+            "info"      :   "x and y image size in pixels.  Single value: same for both",
+            "default"   :   [1024, 1024]
         },
         {
-            "name"      :   "cell",
-            "dtype"     :   "list",
+            "name"      :   "cellsize",
+            "mapping"   :   "cell",
+            "dtype"     :   ["list", "str", "float"],
             "info"      :   "x and y cell size(s). Default unit arcsec.",
-            "default"   :   ['1.0arcsec']
+            "default"   :   ["1.0arcsec"]
         },
         {
             "name"      :   "phasecenter",
@@ -337,14 +341,15 @@
             "name"      :   "stokes",
             "dtype"     :   "str",
             "info"      :   "Stokes params to image (eg I,IV,IQ,IQUV)",
-            "default"   :   'I'
+            "default"   :   "I"
         },
         {
-            "name"      :   "weighting",
+            "name"      :   "weight",
+            "mapping"   :   "weighting",
             "dtype"     :   "str",
             "choices"   :   ["natural","uniform","briggs"],
             "info"      :   "Weighting of uv (natural, uniform,briggs, ...)",
-            "default"   :   'natural'
+            "default"   :   "uniform"
         },
         {
             "name"      :   "robust",
@@ -417,10 +422,16 @@
             "default"   :   false
         },
         {
-            "name"      :   "async",
+            "name"      :   "port2fits",
             "dtype"     :   "bool",
-            "info"      :   "If true the taskname must be started using clean(...)",
+            "info"      :   "Convert output images to FITS files",
+            "default"   :   true
+        },
+        {
+            "name"      :   "keep_casa_images",
+            "dtype"     :   "bool",
+            "info"      :   "Keep casa images when 'port2fits' is enabled",
             "default"   :   false
-        } 
+        }
     ]
 }

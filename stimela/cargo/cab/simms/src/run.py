@@ -51,6 +51,8 @@ for param in params:
         continue
     if value is True:
         arg = '{0}{1}'.format(cab['prefix'], key)
+    elif hasattr(value, '__iter__'):
+        arg = ' '.join(['{0}{1} {2}'.format(cab['prefix'], key, val) for val in value])
     else:
         if isinstance(value, str):
             value = '"{}"'.format(value)

@@ -14,4 +14,4 @@ vis = options.pop("vis")
 visout = options.pop("outputvis")
 options["vis"] = MSDIR + "/" + vis
 options["outputvis"] = MSDIR + "/" + visout
-utils.icasa("flagdata", **options)
+utils.icasa("fixvis", **options)

@@ -27,5 +27,5 @@ except:
 
 OPT_ARGS = ["--%s %s" % (k, v) for k, v in jdict.iteritems()]
 ARGS = [" ".join(imagenames)]
-utils.xrun("fitstool.py", OPT_ARGS, ARGS)
+utils.xrun("fitstool.py", OPT_ARGS + ARGS)
 

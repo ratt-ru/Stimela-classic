@@ -20,7 +20,7 @@ INDIR = os.environ["INPUT"]
 OUTDIR = os.environ["OUTPUT"]
 
 jdict = utils.readJson(CONFIG)
-template = utils.readJson("sourcery_template.json")
+template = utils.readJson("/code/sourcery_template.json")
 
 
 name = jdict.pop("imagename")
@@ -28,7 +28,7 @@ dimage = jdict.pop("detection_image", None)
 psf = jdict.pop("psf", None)
 prefix = jdict.pop("prefix", None) or name.split("/")[-1]
 
-for item in "name psf dimage prefix":
+for item in "name psf dimage prefix".split():
     if isinstance(globals()[item], str):
         tmp = OUTDIR + "/" + globals()[item]  if item=="prefix" else INDIR + "/" + globals()[item]
         globals()[item] = utils.substitute_globals(globals()[item]) or tmp

@@ -3,12 +3,13 @@
     "description"   :   "Specify Calibration Values of Various Types",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_gencal",
+    "binary"        :   "gencal",
     "msdir"         :   true,
-    "prefix"        :   "-",
+    "prefix"        :   " ",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "file",
             "info"      :   "Name of input visibility file",
             "io"        :   "msfile",
@@ -28,7 +29,6 @@
             "info"      :   "The calibration type: 'amp','ph', 'sbd','mbd','antpos','antposvla','tsys''evlagain','opac','gc','gceff','eff'",
             "default"   :   null
         },
-  
         {
             "name"      :   "spw",
             "dtype"     :   "str",
@@ -49,7 +49,7 @@
         },
         {
             "name"      :   "parameter",
-            "dtype"     :   "list",
+            "dtype"     :   "list:float",
             "info"      :   "The calibration values",
             "default"   :   null
         },

@@ -3,12 +3,13 @@
     "description"   :   "Fills the model column with the visibilities of a calibrator",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_setjy",
+    "binary"        :   "setjy",
     "msdir"         :   true,
     "prefix"        :   "-",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "file",
             "io"        :   "msfile",
             "info"      :   "Name of input visibility file",
@@ -16,16 +17,14 @@
         },
         {
             "name"      :   "field",
-            "dtype"     :   ["list:str","list:int"],
-            "delimiter" :   ",",
-            "info"      :   "Field Name(s)",
+            "dtype"     :   "str",
+            "info"      :   "Field Name(s). Comma separated string of field IDs/names",
             "default"   :   null
         },
         {
             "name"      :   "spw",
             "dtype"     :   "str",
             "info"      :   "Spectral window identifier (list)",
-            "delimiter" :   ",",
             "default"   :   null
         },
         {  
@@ -37,20 +36,18 @@
         {    
             "name"      :   "timerange",
             "dtype"     :   ["str","list:str"],
-            "delimiter" :   ",",
             "info"      :   "Time range to operate on (for usescratch=T)",
             "default"   :   null
         },
         {
             "name"      :   "scan",
-            "dtype"     :   ["str","list:str"],
-            "delimiter" :   ",",
+            "dtype"     :   "list:str",
             "info"      :   "Scan number range (for  usescratch=T)",
             "default"   :   null
         },
         {
             "name"      :   "observation",
-            "dtype"     :   ["str"],
+            "dtype"     :   "str",
             "info"      :   "Observation ID range (for  usescratch=T)",
             "default"   :   null
         },
@@ -88,14 +85,13 @@
         },
         {
             "name"      :   "fluxdensity",
-            "dtype"     :   "list",
+            "dtype"     :   "list:float",
             "info"      :   "Specified flux density [I,Q,U,V]; (-1 will lookup values)",
-            "default"   :   [1, 0, 0, 0]
+            "default"   :   [1.0, 0.0, 0.0, 0.0]
         },
         {
             "name"      :   "spix",
             "dtype"     :   ["float","list:float","int","list:int"],
-            "delimiter" :   ",",
             "info"      :   "Spectral index of fluxdensity",
             "default"   :   0.0
         },
@@ -115,8 +111,16 @@
             "name"      :   "model",
             "dtype"     :   "file",
             "io"        :   "input",
-            "info"      :   "File location for field model",
+            "check_io"  :   false,
+            "required"  :   "true",
+            "info"      :   "Field model. If using own model, set 'custom_model' to True",
             "default"   :   null 
+        },
+        {    
+            "name"      :   "custom_model",
+            "dtype"     :   "bool",
+            "info"      :   "Set to 'True' if using custom model",
+            "default"   :   false
         },
         {
             "name"      :   "listmodels",

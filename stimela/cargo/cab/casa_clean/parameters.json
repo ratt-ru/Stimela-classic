@@ -3,7 +3,7 @@
     "description"   :   "CASA Clean task. For imaging and deconvolution",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa",
+    "binary"        :   "clean",
     "msdir"         :   true,
     "prefix"        :   "",
     "parameters"    :   [

@@ -3,16 +3,18 @@
     "description"   :   "Specify Calibration Values of Various Types",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_gaincal",
+    "binary"        :   "gaincal",
     "msdir"         :   true,
     "prefix"        :   "-",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "file",
-            "info"      :   "Name of input visibility file",
             "io"        :   "msfile",
-            "required"  :   true
+            "info"      :   "Name of input visibility file",
+            "required"  :   true,
+            "default"   :   null
         },
         {   
             "name"      :   "caltable",
@@ -85,9 +87,8 @@
         },
         {
             "name"      :   "combine",
-            "dtype"     :   "list:str",
-            "delimiter" :   ",",
-            "info"      :   "The calibration values",
+            "dtype"     :   "str",
+            "info"      :   "Data axes which to combine for solve (obs, scan, spw, and/or, field)",
             "default"   :   null
         },
         {
@@ -147,7 +148,7 @@
         },
         {
             "name"      :   "smodel",
-            "dtype"     :   "list",
+            "dtype"     :   "list:str",
             "info"      :   "Point source Stokes parameters for source model.",
             "default"   :   null
         },
@@ -179,25 +180,26 @@
         },
         {
             "name"      :   "gaintable",
-            "dtype"     :   "list",
+            "dtype"     :   "list:file",
+            "io"        :   "input",
             "info"      :   "Gain calibration table(s) to apply on the fly",
             "default"   :   null
         },
         {
             "name"      :   "gainfield",
-            "dtype"     :   "list",
+            "dtype"     :   ["list:str", "list:int"],
             "info"      :   "Select a subset of calibrators from gaintable(s)",
             "default"   :   null
         },
         {
             "name"      :   "interp",
-            "dtype"     :   "list,
+            "dtype"     :   "list",
             "info"      :   "Temporal interpolation for each gaintable (=linear)",
             "default"   :   null
         },
         {
             "name"      :   "spwmap",
-            "dtype"     :   "list",
+            "dtype"     :   "list:list",
             "info"      :   "Spectral windows combinations to form for gaintables(s)",
             "default"   :   null
         },

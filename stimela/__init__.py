@@ -70,7 +70,10 @@ def build(argv):
             help="Build base images")
 
     parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
-            help="executor image name, location of executor image files")
+            help="Executor image (name) name, location of executor image files")
+
+    parser.add_argument("-uo", "--us-only",
+            help="Only build these cabs. Comma separated cab names")
 
     parser.add_argument("-i", "--ignore-cabs", default="",
             help="Comma separated cabs (executor images) to ignore.")
@@ -136,7 +139,7 @@ def build(argv):
     img.write()
 
 
-def info(cabname):
+def info(cabname, header=False):
     """ prints out help information about a cab """
 
     # First check if cab exists
@@ -145,7 +148,7 @@ def info(cabname):
 
     pfile = "{0}/{1}/parameters.json".format(cargo.CAB_PATH, cabname)
     cab_definition = cab.CabDefinition(parameter_file=pfile)
-    cab_definition.display()
+    cab_definition.display(header)
 
 
 def cabs(argv):
@@ -156,13 +159,20 @@ def cabs(argv):
     parser.add_argument("-i", "--cab-doc", 
         help="Will display document about the specified cab. For example, \
 to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
+
+    parser.add_argument("-ls", "--list", action="store_true",
+            help="List cabs")
+
     args = parser.parse_args(argv)
 
     if args.cab_doc:
         info(args.cab_doc)
     else:
-        img = stimela_logger.Image(LOG_CABS)
-        img.display()
+        for cab in CAB:
+            try:
+                info(cab, header=True)
+            except IOError:
+                pass
 
 
 def run(argv):

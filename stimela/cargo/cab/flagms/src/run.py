@@ -10,27 +10,28 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
+cab = utils.readJson(CONFIG)
 
-msnames = jdict.pop("msname")
+args = []
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-if isinstance(msnames, (str, unicode)):
-    msnames = [msnames]
+    if value in [False, None]:
+        continue
 
-msname = [ "%s/%s"%(MSDIR, ms) for ms in msnames ]
-ncpu = jdict.pop("ncpu", 1)
+    if name in 'channels timeslots corrs stations ddid field str'.split():
+        if name in 'channels timeslots'.split():
+            value = ':'.join(value)
+        else:
+            value = ','.join(value)
+    if value is True:
+        value = ""
+    
+    if name == 'msname':
+        msname = value
+        continue
 
-export = jdict.pop("export", None)
-if export:
-    export = utils.substitute_globals(export) or INPUT + "/" + export
-    export = "--export %s"%export
-else:
-    export = ""
- 
-flag_cmd = ["--%s %s"%(a, "" if isinstance(b, bool) else b) for a,b in jdict.iteritems()] or [""]
+    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
 
-def flagms(ms):
-    utils.xrun("flag-ms.py", flag_cmd+[export, ms])
-
-
-utils.pper(msname, flagms, ncpu)
+utils.xrun(cab['binary'], args+[msname])

@@ -1,5 +1,7 @@
 import os
 import sys
+import drivecasa
+casa = drivecasa.Casapy()
 
 sys.path.append("/utils")
 import utils
@@ -9,16 +11,23 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-options = utils.readJson(CONFIG)
-vis = options.pop("msname")
-options["vis"] = MSDIR + "/" + vis
+cab = utils.readJson(CONFIG)
 
-caltable = options.pop("caltable")
-gains = options.pop("gaintable", [])
+args = {}
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-caltable = utils.substitute_globals(caltable) or OUTPUT+"/"+caltable
-for i,gain in enumerate(gains):
-    gains[i] = utils.substitute_globals(gain) or INPUT+"/"+gain
+    if value is None:
+        continue
 
-options["caltable"] = caltable
-utils.icasa("gencal", **options)
+    args[name] = value
+
+script = ['{0}(**{1})'.format(cab['binary'], args)]
+
+out, err = casa.run_script(script, raise_on_severe=False)
+sys.stdout.write('\n'.join(out))
+
+if len(err)>0:
+        raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is bellow {1}".format(cab['binary'], '\n'.join(err)))
+

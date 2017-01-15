@@ -18,7 +18,7 @@
         {
             "name"      :   "msname",
             "dtype"     :   "file",
-            "io"        :   "input",
+            "io"        :   "msfile",
             "required"  :   true,
             "info"      :   "MS name"
         },

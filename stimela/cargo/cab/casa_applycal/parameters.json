@@ -3,12 +3,13 @@
     "description"   :   "Apply calibrations solutions(s) to data",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_applycal",
+    "binary"        :   "applycal",
     "msdir"         :   true,
     "prefix"        :   "-",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "file",
             "info"      :   "Name of input visibility file",
             "io"        :   "msfile",
@@ -90,31 +91,31 @@
         {
             "name"      :   "gaintable",
             "dtype"     :   "list:file",
-            "delimiter" :   ",",
+            "io" :   "input",
             "info"      :   "Gain calibration table(s) to apply on the fly",
             "default"   :   null
         },
         {
             "name"      :   "gainfield",
-            "dtype"     :   "list",
+            "dtype"     :   ["list:int","list:str"],
             "info"      :   "Select a subset of calibrators from gaintable(s)",
             "default"   :   null
         },
         {
             "name"      :   "interp",
-            "dtype"     :   "list",
+            "dtype"     :   "list:str",
             "info"      :   "Temporal interpolation for each gaintable (=linear)",
             "default"   :   null
         },
         {
             "name"      :   "spwmap",
-            "dtype"     :   "list",
+            "dtype"     :   "list:list",
             "info"      :   "Spectral windows combinations to form for gaintables(s)",
             "default"   :   null
         },
         {
             "name"      :   "calwt",
-            "dtype"     :   "list",
+            "dtype"     :   "list:bool",
             "info"      :   "Calibrate data weights per gaintable.",
             "default"   :   [true]
         },

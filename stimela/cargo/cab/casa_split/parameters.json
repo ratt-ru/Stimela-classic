@@ -3,21 +3,23 @@
     "description"   :   "Create a visibility subset from an existing visibility set",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_split",
+    "binary"        :   "split",
     "msdir"         :   true,
     "prefix"        :   "-",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "file",
             "info"      :   "Name of input visibility file",
             "io"        :   "msfile",
             "required"  :   true
         },
         {
-            "name"      :   "outputvis",
+            "name"      :   "output-msname",
+            "mapping"   :   "outputvis",
             "dtype"     :   "file",
-            "io"        :   "output",
+            "io"        :   "msfile",
             "info"      :   "Name of output measurement set",
             "default"   :   null
         },
@@ -27,12 +29,9 @@
             "info"      :   "Which data column(s) to split out",
             "default"   :   "corrected"
         },
-
-   
         {
             "name"      :   "field",
             "dtype"     :   ["list:str","list:int"],
-            "delimiter" :   ",",
             "info"      :   "Select field using ID(s) or name(s)",
             "default"   :   null
         },
@@ -59,11 +58,8 @@
             "dtype"     :   ["str","list:str"],
             "choices"   :   ["scan", "state"],
             "info"      :   "Let time bins span changes in scan and/or state",
-            "delimiter" :   ",",
             "default"   :   "scan"
         },
-
-
         {    
             "name"      :   "timerange",
             "dtype"     :   "str",
@@ -94,14 +90,12 @@
             "info"      :   "Select (sub)array(s) by array ID number",
             "default"   :   null,
         },
-
         {
             "name"      :   "uvrange",
             "dtype"     :   "str",
             "info"      :   "Select data by baseline length",
             "default"   :   null
         },
-  
         {
             "name"      :   "correlation",
             "dtype"     :   "str",

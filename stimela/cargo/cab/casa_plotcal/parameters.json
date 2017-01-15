@@ -3,7 +3,7 @@
     "description"   :   "An all-purpose plotter for calibration results",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_plotcal",
+    "binary"        :   "plotcal",
     "prefix"        :   "-",
     "msdir"         :   false,
     "parameters"    :   [
@@ -14,7 +14,6 @@
             "required"  :   true,
             "info"      :   "Name of input calibration table",
         },
-  
         {
             "name"      :   "xaxis",
             "dtype"     :   "str",
@@ -48,27 +47,23 @@
             "info"      :   "antenna/baselines: ''==>all, antenna = '3,VA04'",
             "default"   :   null
         },
-        
-
         {
             "name"      :   "spw",
             "dtype"     :   "str",
             "info"      :   "spectral window:channels: ''==>all, spw='1:5~57'",
             "default"   :   null
         },
-      
         {    
             "name"      :   "timerange",
             "dtype"     :   "str",
             "info"      :   "time range: ''==>all",
             "default"   :   null
         },
-  
         {
             "name"      :   "subplot",
             "dtype"     :   "int",
             "info"      :   "Panel number on display screen (yxn)",
-            "default"   :   111
+            "default"   :   null,
         },
         {
             "name"      :   "overplot",
@@ -91,11 +86,9 @@
         {
             "name"      :   "plotrange",
             "dtype"     :   "list:float",
-            "delimiter"  :   ",",
             "info"      :   "plot axes ranges: [xmin,xmax,ymin,ymax]",
             "default"   :   null
         },
-
         {    
             "name"      :   "showflags",
             "dtype"     :   "bool",
@@ -108,14 +101,12 @@
             "info"      :   "pylab plot symbol",
             "default"   :   "o"
         },
-
         {
             "name"      :   "plotcolor",
             "dtype"     :   "str",
             "info"      :   "initial plotting color",
             "default"   :   "blue"
         },
-
         {
             "name"      :   "markersize",
             "dtype"     :   "float",
@@ -140,7 +131,6 @@
             "info"      :   "''= no plot hardcopy, otherwise supply name",
             "default"   :   null
         },
-
         {
             "name"      :   "asynch",
             "dtype"     :   "bool",

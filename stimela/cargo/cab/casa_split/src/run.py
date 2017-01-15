@@ -1,5 +1,7 @@
 import os
 import sys
+import drivecasa
+casa = drivecasa.Casapy()
 
 sys.path.append("/utils")
 import utils
@@ -9,10 +11,23 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-options = utils.readJson(CONFIG)
-vis = options.pop("msname")
-outvis = options.pop("output_msname")
-options["vis"] = MSDIR + "/" + vis
-options["outputvis"] = MSDIR + "/" + outvis
+cab = utils.readJson(CONFIG)
 
-utils.icasa("split", **options)
+args = {}
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
+
+    if value is None:
+        continue
+
+    args[name] = value
+
+script = ['{0}(**{1})'.format(cab['binary'], args)]
+
+out, err = casa.run_script(script, raise_on_severe=False)
+sys.stdout.write('\n'.join(out))
+
+if len(err)>0:
+        raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is bellow {1}".format(cab['binary'], '\n'.join(err)))
+

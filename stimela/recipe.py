@@ -204,6 +204,22 @@ class Recipe(object):
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(cont.image, name))
         self.containers.append(cont)
 
+    def log2recipe(self, cont, recipe, num, status):
+
+        step = {
+                "name"          :   cont.name,
+                "number"        :   num,
+                "cab"           :   cont.image,
+                "volumes"       :   cont.volumes,
+                "environs"      :   cont.environs,
+                "shared_memory" :   cont.shared_memory,
+                "input_content" :   cont.input_content,
+                "msdir_content" :   cont.msdir_content,
+                "label"         :   cont.label,
+                "status"        :   status,
+        }
+        recipe['steps'].append(step)
+
 
     def run(self, steps=None, resume=False, redo=None):
         """
@@ -213,6 +229,12 @@ class Recipe(object):
         resume  :   resume recipe from last run
         redo    :   Re-run an old recipe from a .last file
         """
+
+        recipe = {
+            "name"      :   self.name,
+            "steps"     :   []
+        }
+        start_at = 0
 
         if redo:
             recipe = utils.readJson(redo)
@@ -241,9 +263,12 @@ class Recipe(object):
         elif resume:
             self.log.info("Resuming recipe from last run.")
             recipe = utils.readJson(self.resume_file)
+            steps_ = recipe.pop('steps')
+            recipe['steps'] = []
             _steps = []
-            for step in recipe['steps']:
+            for step in steps_:
                 if step['status'] == 'completed':
+                    recipe['steps'].append(step)
                     continue
 
                 _cab = step['cab']
@@ -253,47 +278,57 @@ class Recipe(object):
                     self.log.info('recipe step \'{0}\' is fit for re-execution. CAB = {1}'.format(number, _cab))
                     _steps.append(number)
                 else:
-                    raise RuntimeError('Recipe flow, or task scheduling has changed, cannot resume recipe')
+                    raise RuntimeError('Recipe flow, or task scheduling has changed. Cannot resume recipe. CAB= {0}'.format(_cab))
 
             steps = _steps
+
         if getattr(steps, '__iter__', False):
+            _steps = []
             if isinstance(steps[0], str):
                 labels = [ cont.label.split('::')[0] for cont in self.containers]
-                containers = []
 
                 for step in steps:
                     try:
-                        idx = labels.index(step)
+                        _steps.append(labels.index(step)+1)
                     except ValueError:
                         raise ValueError('Recipe label ID [{0}] doesn\'t exist'.format(step))
-
-                    containers.append( self.containers[idx] )
-            else:
-                containers = [ self.containers[i-1] for i in steps[:len(self.containers)] ]
+                steps = _steps
         else:
-            containers = self.containers
+            steps = range(1, len(self.containers)+1)
 
-        for i, container in enumerate(containers):
 
-            # Update container parameter file if need be
-            if hasattr(container, '_cab'):
-                container._cab.update(container.config, container.parameter_file_name)
+        containers = [(step, self.containers[step-1]) for step in steps]        
+
+        for i, (step, container) in enumerate(containers):
 
             try:
+                # Update container parameter file if need be
+                if hasattr(container, '_cab'):
+                    container._cab.update(container.config, container.parameter_file_name)
+
                 self.log.info('Running Container {}'.format(container.name))
                 self.log.info('STEP {0} :: {1}'.format(i, container.label))
                 self.active = container
 
                 container.create()
                 container.start()
+                self.log2recipe(container, recipe, step, 'completed')
             except Exception as e:
-                self.completed = containers[:i]
-                self.remaining = containers[i+1:]
+                self.completed = [cont[1] for cont in containers[:i]]
+                self.remaining = [cont[1] for cont in containers[i+1:]]
                 self.failed = container
 
                 self.log.info('Recipe execution failed while running container {}'.format(container.name))
                 self.log.info('Completed containers : {}'.format([c.name for c in self.completed]))
                 self.log.info('Remaining containers : {}'.format([c.name for c in self.remaining]))
+
+                self.log2recipe(container, recipe, step, 'failed')
+                for step, cont in containers[i+1:]:
+                    self.log.info('Logging remaining task: {}'.format(cont.label))
+                    self.log2recipe(cont, recipe, step, 'remaining')
+
+                self.log.info('Saving pipeline information in {}'.format(self.resume_file))
+                utils.writeJson(self.resume_file, recipe)
 
                 pe = PipelineException(e, self.completed, container, self.remaining)
 
@@ -303,26 +338,7 @@ class Recipe(object):
                 container.remove()
                 pass
 
-        recipe = {
-            "name"      :   self.name,
-            "steps"     :   []
-        }
-
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
-        for i,cont in enumerate(containers):
-            step = {
-                "name"          :   cont.name,
-                "number"        :   i+1,
-                "cab"           :   cont.image,
-                "volumes"       :   cont.volumes,
-                "environs"      :   cont.environs,
-                "shared_memory" :   cont.shared_memory,
-                "input_content" :   cont.input_content,
-                "msdir_content" :   cont.msdir_content,
-                "label"         :   cont.label,
-                "status"        :   'completed',
-            }
-            recipe['steps'].append(step)
         utils.writeJson(self.resume_file, recipe)
 
         self.log.info('Recipe executed successfully')

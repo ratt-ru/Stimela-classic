@@ -3,12 +3,13 @@
     "description"   :   "Bootstrap the flux density scale from standard calibrators",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_fluxscale",
+    "binary"        :   "fluxscale",
     "msdir"         :   true,
     "prefix"        :   "-",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "file",
             "info"      :   "Name of input visibility file (MS)",
             "io"        :   "msfile",
@@ -30,13 +31,13 @@
         },
         {
             "name"      :   "reference",
-            "dtype"     :   "list",
+            "dtype"     :   "list:str",
             "info"      :   "Reference field name(s) (transfer flux scale FROM)",
             "default"   :   null
         },
         {
             "name"      :   "transfer",
-            "dtype"     :   "list",
+            "dtype"     :   "list:str",
             "info"      :   "Transfer field name(s) (transfer flux scale TO), '' -> all",
             "default"   :   null
         },
@@ -55,7 +56,7 @@
         },
         {
             "name"      :   "refspwmap",
-            "dtype"     :   "list",
+            "dtype"     :   "list:str",
             "info"      :   "Scale across spectral window boundaries.  See help fluxscale",
             "default"   :   null
         },

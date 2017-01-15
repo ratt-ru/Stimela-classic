@@ -1,17 +1,39 @@
 {
-    "task"          :   "pybdsm",
-    "description"   :   "Source finding in radio images",
-    "base"          :   "stimela/lofar:0.2.3",
+    "task"          :   "tigger_restore",
+    "description"   :   "Restores sources from sky model into an input image, writes result to output image. If an output image is not specified, makes a name for it automatically",
+    "base"          :   "stimela/tigger",
     "tag"           :   "0.2.3",
-    "binary"        :   "python",
+    "binary"        :   "tigger-restore",
     "msdir"         :   false,
-    "prefix"        :   " ",
+    "prefix"        :   "--",
     "parameters"    :   [   
         {
+            "name"      :   "input-image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "input-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Sky model to restore to 'input-image'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-image",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Input image",
+            "default"   :   null
+        },
+        {
             "name"      :   "force",
+            "mapping"   :   "f",
             "dtype"     :   "bool",
             "info"      :   "Forces overwrite of output model.",
-            "default"   :   true
+            "default"   :   false,
         },
         {
             "name"      :   "type",
@@ -41,14 +63,12 @@
         {
             "name"      :   "scale",
             "dtype"     :   "list:float",
-            "delimiter" :   ",",
             "info"      :   "Rescale model fluxes by given factor. If N is given, rescale N brightest only.",
             "default"   :   null
         },
         {
             "name"      :   "restoring-beam",
             "dtype"     :   "list:float",
-            "delimiter" :   ",",
             "info"      :   "Specify restoring beam size, overriding BMAJ/BMIN/BPA keywords in input image. Use a single value (arcsec) for circular beam, or else supply major/minor size and position angle (deg).",
             "default"   :   null
         },

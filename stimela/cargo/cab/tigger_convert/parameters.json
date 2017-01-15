@@ -3,15 +3,31 @@
     "description"   :   "Source finding in radio images",
     "base"          :   "stimela/tigger:0.2.3",
     "tag"           :   "0.2.3",
-    "binary"        :   "python",
+    "binary"        :   "tigger-convert",
     "msdir"         :   false,
-    "prefix"        :   " ",
+    "prefix"        :   "--",
     "parameters"    :   [   
+        {
+            "name"      :   "input-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input skymodel",
+            "required"  :   true,
+            "default"   :   true
+        },
+        {
+            "name"      :   "output-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Output skymodel",
+            "required"  :   true,
+            "default"   :   true
+        },
         {
             "name"      :   "force",
             "dtype"     :   "bool",
             "info"      :   "Forces overwrite of output model.",
-            "default"   :   true
+            "default"   :   false
         },
         {
             "name"      :   "type",
@@ -173,7 +189,6 @@
         {
             "name"      :   "pa-range",
             "dtype"     :   "list:float",
-            "delimiter" :   ",",
             "info"      :   "Rotate the primary beam pattern through a range of parallactic angles (in degrees) and use the average value over PA.",
             "default"   :   null
         },
@@ -182,7 +197,7 @@
             "dtype"     :   "file",
             "io"        :   "msfile",
             "info"      :   "Rotate the primary beam pattern through a range of parallactic angles as given by the MS and take the average over time. This is more accurate than --pa-range.",
-            "default"   :   default
+            "default"   :   null
         },
         {
             "name"      :   "field-id",
@@ -230,12 +245,6 @@
             "name"      :   "remove-source",
             "dtype"     :   "str",
             "info"      :   " Removes the named source(s) from the model. NAME may contain * and ? wildcards.",
-            "default"   :   null
-        },
-        {
-            "name"      :   "add-brick",
-            "dtype"     :   "str",
-            "info"      :   "Adds a uv-brick to the model. NAME is a source name, FILE is a FITS file, PAD_FACTOR is set to 1 if not specified. TAGS is a list of boolean flags.",
             "default"   :   null
         },
         {

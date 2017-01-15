@@ -144,9 +144,17 @@ class CabDefinition(object):
             self.msdir = msdir
 
         
-    def display(self):
-        print("{}\n \n".format(self.description))
-        print("Stimela Cab      {0}".format(self.task))
+    def display(self, header=False):
+        rows, cols = os.popen('stty size', 'r').read().split()
+        lines = textwrap.wrap(self.description, int(cols)*3/4)
+        print("Cab      {0}".format(self.task))
+        print("Info     {}".format(lines[0]))
+        for line in lines[1:]:
+            print("         {}".format(line))
+        if header:
+            print(" ")
+            return
+
         print("Base Image       {0}".format(self.base))
         print("\n")
 
@@ -185,7 +193,7 @@ class CabDefinition(object):
         
         conf["parameters"] = []
         for param in self.parameters:
-            _value = param.value or param.default
+            _value = None if param.value is None else param.value
         
             if _value is None:
                 value = None
@@ -222,7 +230,7 @@ class CabDefinition(object):
             if param0.name not in options.keys():
                 raise RuntimeError("Parameter {} is required but has not been specified".format(param0.name))
 
-        self.log.info("Validating parameters...")
+        self.log.info("Validating parameters...       CAB = {0}".format(self.task))
         for name,value in options.iteritems():
             for param in self.parameters:
                 if param.name == name:

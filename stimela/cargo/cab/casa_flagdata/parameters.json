@@ -3,15 +3,16 @@
     "description"   :   "All-purpose flagging task based on data-selections and flagging modes/algorithms.",
     "base"          :   "stimela/casa",
     "tag"           :   "0.2.3",
-    "binary"        :   "casa_flagdata",
+    "binary"        :   "flagdata",
     "msdir"         :   true,
-    "prefix"        :   "-",
+    "prefix"        :   " ",
     "parameters"    :   [
         {
-            "name"      :   "vis",
+            "name"      :   "msname",
+            "mapping"   :   "vis",
             "dtype"     :   "file",
+            "io"        :   "msfile",
             "info"      :   "Name of MS file or calibration table",
-            "io"        :   "input",
             "required"  :   true
         },
         {
@@ -97,21 +98,18 @@
             "name"      :   "inpfile",
             "dtype"     :   ["file","list:str"],
             "io"        :   "input",
-            "delimiter" :   ",",
             "info"      :   "Input ASCII file, list of files or Python list of strings with flag commands",
             "default"   :   null
         },
         {
             "name"      :   "reason",
-            "dtype"     :   ["str","list:str"],
-            "delimiter" :   ",",
+            "dtype"     :   "list:str",
             "info"      :   "Select by REASON types",
             "default"   :   "any"
         },
         {
             "name"      :   "tbuff",
-            "dtype"     :   ["list:float","float"],
-            "delimiter" :   ",",
+            "dtype"     :   "list:float",
             "info"      :   "List of time buffers (sec) to pad timerange in flag commands",
             "default"   :   null
         },
@@ -124,7 +122,6 @@
         {
             "name"      :   "clipminmax",
             "dtype"     :   "list:float",
-            "delimiter" :   ",",
             "info"      :   "Range to use for clipping",
             "default"   :   null
         },

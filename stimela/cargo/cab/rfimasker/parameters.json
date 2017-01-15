@@ -1,0 +1,47 @@
+{
+    "task"          :   "rfimasker",
+    "base"          :   "stimela/msutils",
+    "tag"           :   "0.2.3",
+    "description"   :   "Tiny tool to apply a numpy boolean array to the spectral flags column of a measurement set to mask out known RFI sources like GSM and satelite in L-band. Typically flagging known RFI sources produces much better backgrounds and tools like the mighty AOFlagger RFI hammer needs fewer iterations to converge to good solutions.",
+    "binary"        :   "rfimasker",
+    "prefix"        :   "--",
+    "msdir"         :   true,
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "ms",
+            "dtype"     :   "list:file",
+            "io"        :   "msfile",
+            "info"      :   "MS(s) to flagged",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mask",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "A numpy array of shape [channels] containing a boolean",
+            "default"   :   null
+        },
+        {
+            "name"      :   "accumulation_mode",
+            "dtype"     :   "str",
+            "choices"   :   ["or", "overide"],
+            "info"      :   "Specifies whether mask should override current flags or be added (or) to the current",
+            "default"   :   "or"
+        },
+        {
+            "name"      :   "statistics",
+            "dtype"     :   "bool",
+            "info"      :   "Computes and reports some statistics about the flagged RFI in the MS",
+            "default"   :   false
+        },
+        {
+            "name"      :   "memory",
+            "dtype"     :   "int",
+            "info"      :   "Maximum memory to consume in MB for the flag buffer",
+            "default"   :   5
+        }
+    ]
+}
+
+

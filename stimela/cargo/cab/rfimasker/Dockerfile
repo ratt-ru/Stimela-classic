@@ -1,4 +1,4 @@
-FROM stimela/rfimasker
+FROM stimela/rfimasker:0.2.3
 
 RUN mkdir /input /output
 

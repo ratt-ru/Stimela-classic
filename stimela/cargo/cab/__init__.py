@@ -198,9 +198,10 @@ class CabDefinition(object):
             if _value is None:
                 value = None
             elif isinstance(param.dtype[0], tuple):
-                if not isinstance(_value, (list, tuple)):
+                if not hasattr(_value, '__iter__'):
                     value = [_value]
-#                value = param.delimiter.join(map(str, _value))
+                else:
+                    value = _value
             else:
                 value = _value
 
@@ -268,7 +269,6 @@ class CabDefinition(object):
                     elif param.validate(value):
                         self.log.debug("Validating paramter {}".format(param.name))
                         param.value = value
-
         conf = {}
         conf.update(self.toDict())
         utils.writeJson(saveconf, conf)

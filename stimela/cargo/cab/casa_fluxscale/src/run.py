@@ -29,5 +29,5 @@ out, err = casa.run_script(script, raise_on_severe=False)
 sys.stdout.write('\n'.join(out))
 
 if len(err)>0:
-        raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is bellow {1}".format(cab['binary'], '\n'.join(err)))
+        raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is bellow \n {1}".format(cab['binary'], '\n'.join(err)))
 

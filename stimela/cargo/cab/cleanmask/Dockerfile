@@ -1,4 +1,4 @@
-FROM stimela/astropy
+FROM stimela/astropy:0.2.3
 MAINTAINER <sphemakh@gmail.com>
 
 RUN mkdir -p /input /output

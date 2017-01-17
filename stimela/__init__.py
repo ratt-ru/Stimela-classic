@@ -205,29 +205,6 @@ def run(argv):
     args = parser.parse_args(argv)
     tag =  None
 
-    if args.from_log:
-
-        destdir = "."
-
-        tmp = args.from_log.split(":")
-        if len(tmp) == 2:
-            log, tag = tmp
-        elif len(tmp) == 3:
-            log, tag, destdir = tmp
-            if not os.path.exists(destdir):
-                os.mkdir(destdir)
-
-        images = set(utils.get_base_images(log))
-
-        for image in images:
-
-            image_, base = image
-            path = "{:s}/{:s}".format(STIMELA_CAB_PATH, image_.split("/")[-1])
-            dirname, dockerfile = utils.change_Dockerfile_base_image(path, base, image_.split("/")[-1], destdir=destdir)
-
-            # Build executor image
-            docker.build("cab/{:s}:{:s}".format(image_.split("/")[-1], tag),
-                       dirname)
 
     _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output,
                     STIMELA_DATA=cargo.DATA_PATH, STIMELA_MSDIR=args.msdir,

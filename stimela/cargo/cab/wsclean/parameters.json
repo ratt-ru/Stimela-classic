@@ -336,6 +336,7 @@
         },
         {
             "name"      :   "column",
+            "mapping"   :   "datacolumn",
             "dtype"     :   "str",
             "info"      :   "CORRECTED_DATA if it exists, otherwise DATA will be used.",
             "default"   :   null

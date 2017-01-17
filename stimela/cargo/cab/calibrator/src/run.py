@@ -64,7 +64,7 @@ if gjones:
 
     time_smooth, freq_smooth = params.get("Gjones-smoothing", (1,1))
     time_int, freq_int = jdict.get("Gjones-intervals", (1,1))
-    mode = 'apply' if jdict['Gjones-apply-only'] else 'solve-save'
+    mode = 'apply' if jdict.get('Gjones-apply-only', False) else 'solve-save'
 
     gjones_gains = "{0}/{1}{2}.gain.cp".format(msname, msbase, "-%s"%label if label else "")
     params.update( {
@@ -101,7 +101,7 @@ if ddjones:
     freq_int, freq_smooth = jdict.pop("DDjones-solution-intervals", (0,0))
     time_smooth, freq_smooth = jdict.pop("DDjones-smoothing-intervals", (0,0))
 
-    mode = 'apply' if jdict['DDjones-apply-only'] else 'solve-save'
+    mode = 'apply' if jdict.get('DDjones-apply-only', False) else 'solve-save'
 
     ddjones_gains = "{0}/{1}{2}.diffgain.cp".format(msname, msbase, "-%s"%label if label else "")
     params.update({
@@ -126,7 +126,7 @@ if ddjones:
 ifrjones = jdict.pop("DDjones", False)
 if ifrjones:
     ifrjones_gains = "{0}/{1}{2}.ifrgain.cp".format(msname, msbase, "-%s"%label if label else "")
-    mode = 'apply' if jdict['IFRjones-apply-only'] else 'solve-save'
+    mode = 'apply' if jdict.get('IFRjones-apply-only', False) else 'solve-save'
 
     params.update({
         "stefcal_ifr_gain_mode" : mode,

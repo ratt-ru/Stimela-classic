@@ -1,0 +1,40 @@
+{
+    "task"          :   "politsiyakat",
+    "base"          :   "stimela/base",
+    "tag"           :   "0.2.3",
+    "description"   :   "Routines for automated post-1GC error detection and mitigation",
+    "binary"        :   "python -m politsiyakat",
+    "prefix"        :   "--",
+    "msdir"         :   "true",
+    "parameters"    :   [
+        {
+            "name"      :   "tasksuite",
+            "dtype"     :   "str",
+            "info"      :   "Specify which suite to search for the required task",
+            "choices"   :   ["antenna_mod"],
+            "default"   :   "antenna_mod"
+        },
+        {
+            "name"      :   "command",
+            "mapping"   :   "task",
+            "dtype"     :   "str",
+            "required"  :   "true",
+            "info"      :   "name of task to execute",
+            "default"   :   null
+        },
+        {
+            "name"      :   "kwargs",
+            "dtype"     :   "str",
+            "required"  :   true,
+            "info"      :   "Python dictionary string containing keyword arguments to the task, for example '{\"msname\":\"helloworld.ms\"}'",
+            "default"   :   null
+        }
+    ]
+}
+
+
+
+
+
+
+

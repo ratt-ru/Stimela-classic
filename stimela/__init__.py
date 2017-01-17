@@ -196,17 +196,13 @@ def run(argv):
     add("-j", "--ncores", type=int,
             help="Number of cores to when stimela parallesization (stimea.utils.pper function) ")
 
-    add("-L", "--load-from-log", dest="from_log",  metavar="LOG:TAG[:DIR]",
-            help="Load base images from stimela log file. The resulting executor images will be tagged 'TAG', and the build contexts will be stored at 'DIR'")
-
     add("script",
-            help="Penthesilea script")
+            help="Run script")
 
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
             help="Global variables to pass to script. The type is assumed to string unless specified")
 
     args = parser.parse_args(argv)
-
     tag =  None
 
     if args.from_log:
@@ -282,7 +278,6 @@ def pull(argv):
             if not img.find(image):
                 docker.pull(image)
                 img.add(dict(name=image, tag=tagargs.tag))
-
     else:
 
         base = []
@@ -298,6 +293,7 @@ def pull(argv):
             if not img.find(image) and image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
                 docker.pull(image)
                 img.add(dict(name=image, tag=args.tag))
+
 
 def images(argv):
     for i, arg in enumerate(argv):

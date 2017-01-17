@@ -1,6 +1,7 @@
 {
     "task"          :   "cleanmask",
     "base"          :   "stimela/astropy",
+    "tag"           :   "0.2.3",
     "binary"        :   "cleanmask",  
     "description"   :   "Creates a binary mask from a FITS image",
     "msdir"         :   false,

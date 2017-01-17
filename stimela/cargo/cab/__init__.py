@@ -99,6 +99,7 @@ class CabDefinition(object):
         base=None,
         binary=None,
         description=None,
+        tag=None,
         prefix=None, loglevel='INFO',
         parameters=[]):
 
@@ -112,6 +113,7 @@ class CabDefinition(object):
             self.task = cab["task"]
             self.base = cab["base"]
             self.binary = cab["binary"]
+            self.tag = cab["tag"]
             if cab["msdir"]:
                 self.msdir = msdir
             self.description = cab["description"]
@@ -142,6 +144,7 @@ class CabDefinition(object):
             self.parameters = parameters
             self.description = description
             self.msdir = msdir
+            self.tag = tag
 
         
     def display(self, header=False):
@@ -155,7 +158,7 @@ class CabDefinition(object):
             print(" ")
             return
 
-        print("Base Image       {0}".format(self.base))
+        print("Base Image       {0}:{1}".format(self.base, self.tag))
         print("\n")
 
         print("Parameters:")
@@ -185,7 +188,7 @@ class CabDefinition(object):
 
     def toDict(self):
         conf = {}
-        for item in "task base binary msdir description prefix".split():
+        for item in "task base binary msdir description prefix tag".split():
             if item == 'msdir':
                 conf[item] = getattr(self, item, False)
             else:

@@ -1,6 +1,7 @@
 {
     "task"          :   "calibrator",
     "base"          :   "stimela/meqtrees",
+    "tag"           :   "0.2.3",
     "description"   :   "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)",
     "binary"        :   "/usr/bin/meqtree-pipeliner.py",
     "prefix"        :   " ",

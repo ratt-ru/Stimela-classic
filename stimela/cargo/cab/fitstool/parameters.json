@@ -84,6 +84,25 @@
             "default"   :   null
         },
         {
+            "name"      :   "unstack",
+            "dtype"     :   "bool",
+            "info"      :   "Unstack a FITS image into smaller chunks each having [each_chunk] planes along a given axis. This axis may given as an integer (as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "unstack-chunk",
+            "dtype"     :   "int",
+            "info"      :   "Unstack FITS image into images of this width (along the given axis)",
+            "default"   :   1
+        },
+        {
+            "name"      :   "fits-axis",
+            "dtype"     :   ["str","int"],
+            "info"      :   "Stack/Unstack along this axis",
+            "default"   :   null
+
+        },
+        {
             "name"      :   "reorder",
             "dtype"     :   "str",
             "info"      :   "Required order. List of comma seperated indeces",
@@ -94,12 +113,6 @@
             "dtype"     :   "str",
             "info"      :   "Add axis to a FITS image. The AXIS will be described by CTYPE:CRVAL:CRPIX:CDELT[:CUNIT:CROTA]. The keywords in brackets are optinal, while those not in brackets are mendatory. This axis will be the last dimension.",
             "default"   :   null
-        },
-        {
-            "name"      :   "unstack",
-            "dtype"     :   "bool",
-            "info"      :   "Unstack a FITS image into smaller chunks each having [each_chunk] planes along a given axis. This axis may given as an integer (as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)",
-            "default"   :   false
         },
         {
             "name"      :   "header",

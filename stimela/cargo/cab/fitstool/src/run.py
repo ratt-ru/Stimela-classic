@@ -9,16 +9,51 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
+cab = utils.readJson(CONFIG)
 
-command = jdict.get("command")
-inimage = jdict.pop("image", None)
-outimage = jdict.pop("output_image", None)
+args = []
+inimage = None
+outimage = None
+stack = False
+unstack = False
+axis = None
+chunk = 1
 
-for item in "inlsm outlsm append image".split():
-    if not isinstance(globals()[item], str):
+for param in cab['parameters']:
+    value = param['value']
+    name = param['name']
+
+    if value in [None, False]:
         continue
-    tmp = OUTPUT +"/"+ image if item=="outlsm" else INPUT +"/"+ image
-    globals()[item] = utils.substitute_globals(globals()[item]) or tmp
-        
-utils.xrun("fitstool.py", [args, image, inlsm, outlsm])
+    
+    if name == 'image':
+        inimage = ' '.join(value)
+        continue
+    elif name == 'output':
+        outimage = value
+        continue
+    elif name == 'stack':
+        stack = True
+        continue
+    elif name == 'unstack':
+        stack = True
+        continue
+    elif name == 'unstack-chunk':
+        chunk = value
+        continue
+    elif name == 'fits-axis':
+        axis = value
+        continue
+
+    elif value is True:
+        value = ""
+
+    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
+
+if stack and axis:
+    args.append( '{0}stack {1}:{2}'.format(cab['prefix'], outimage, axis))
+    outimage = None
+elif unstack and axis:
+    args.append( '{0}stack {1}:{2}:{3}'.format(cab['prefix'], outimage, axis, chunk))
+    
+utils.xrun("fitstool.py", [args, inimage, outimage or ""])

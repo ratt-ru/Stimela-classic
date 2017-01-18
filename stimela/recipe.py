@@ -76,13 +76,7 @@ class Recipe(object):
 
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
-        self.data_path = data or self.stimela_context.get("STIMELA_DATA", None)
-        if self.data_path:
-            pass
-        else:
-            raise TypeError("'data' option has to be specified")
 
-        self.configs_path_container = "/configs"
         self.stimela_path = os.path.dirname(docker.__file__)
 
         self.name = name
@@ -158,7 +152,6 @@ class Recipe(object):
         # environmental variables. These will be
         # always exist in a cab container
         cont.add_volume(self.stimela_path, '/utils', perm='ro')
-        cont.add_volume(self.data_path, '/data', perm='ro')
         cont.add_volume(self.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 

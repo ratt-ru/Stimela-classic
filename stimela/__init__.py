@@ -208,7 +208,7 @@ def run(argv):
 
 
     _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output,
-                    STIMELA_DATA=cargo.DATA_PATH, STIMELA_MSDIR=args.msdir,
+                    STIMELA_MSDIR=args.msdir,
                     CAB_TAG=tag)
 
     nargs = len(args.globals)

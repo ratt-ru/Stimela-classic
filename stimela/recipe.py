@@ -204,6 +204,7 @@ class Recipe(object):
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(cont.image, name))
         self.containers.append(cont)
 
+
     def log2recipe(self, cont, recipe, num, status):
 
         step = {
@@ -262,7 +263,11 @@ class Recipe(object):
 
         elif resume:
             self.log.info("Resuming recipe from last run.")
-            recipe = utils.readJson(self.resume_file)
+            try:
+                recipe = utils.readJson(self.resume_file)
+            except IOError:
+                raise IOError("Cannot resume pipeline, resume file '{}' not found".format(self.resume_file))
+
             steps_ = recipe.pop('steps')
             recipe['steps'] = []
             _steps = []

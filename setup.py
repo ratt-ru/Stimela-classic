@@ -26,7 +26,7 @@ setup(name = "stimela",
                                    "cab/*/xvfb.init.d",
                                    "cab/*/parameters.json",
                                    "cab/*/src/tdlconf.profiles"]},
-    requires = ["docker", "python", "pyyaml"],
+    install_requires = ["pyyaml"],
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

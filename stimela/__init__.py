@@ -418,7 +418,10 @@ def main(argv):
     args = parser.parse_args(argv)
 
     # Command is help and no other commands following
-    main_help = (args.command[0] == "help" and len(args.command) == 1)
+    try:
+        main_help = (args.command[0] == "help" and len(args.command) == 1)
+    except IndexError:
+        main_help = True
 
     if args.help or main_help:
         parser.print_help()

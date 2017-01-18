@@ -135,8 +135,13 @@ class Container(object):
         stdout = open(self.logfile, 'a+')
         exit_status = subprocess.call("docker logs {0}".format(self.name),
                             stdout=stdout, stderr=stdout, shell=True)
+        if exit_status !=0:
+            self.logger.warn('Could not log container: {}. Something went wrong durring execution'.format(self.name))
+            output = 'Task was not started.'
+            stdout.write(output)
+        else:
+            output = stdout.read()
 
-        output = stdout.read()
         stdout.close()
         return output
 

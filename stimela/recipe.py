@@ -302,7 +302,7 @@ class Recipe(object):
         containers = [(step, self.containers[step-1]) for step in steps]        
 
         for i, (step, container) in enumerate(containers):
-
+            created = False
             try:
                 # Update container parameter file if need be
                 if hasattr(container, '_cab'):
@@ -313,6 +313,7 @@ class Recipe(object):
                 self.active = container
 
                 container.create()
+                created = True
                 container.start()
                 self.log2recipe(container, recipe, step, 'completed')
             except Exception as e:
@@ -337,9 +338,9 @@ class Recipe(object):
                 raise pe, None, sys.exc_info()[2]
             finally:
                 container.get_log()
-                container.stop()
-                container.remove()
-                pass
+                if created:
+                    container.stop()
+                    container.remove()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)

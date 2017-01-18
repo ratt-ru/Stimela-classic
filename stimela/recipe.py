@@ -279,7 +279,9 @@ class Recipe(object):
                     _steps.append(number)
                 else:
                     raise RuntimeError('Recipe flow, or task scheduling has changed. Cannot resume recipe. CAB= {0}'.format(_cab))
-
+            if len(_steps)==0:
+                self.log.info('All the steps were completed. No steps to resume')
+                sys.exit(0)
             steps = _steps
 
         if getattr(steps, '__iter__', False):
@@ -334,6 +336,7 @@ class Recipe(object):
 
                 raise pe, None, sys.exc_info()[2]
             finally:
+                container.get_log()
                 container.stop()
                 container.remove()
                 pass

@@ -24,7 +24,7 @@ for param in cab['parameters']:
         value = ','.join(value)
     if value is True:
         value = ""
-    if name == 'force':
+    if name == 'f':
         force = value
         continue
     # Positional arguments

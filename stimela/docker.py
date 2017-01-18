@@ -158,9 +158,6 @@ class Container(object):
         self.uptime = uptime
         self._print("Container [{0}] has executed successfully".format(self.name))
 
-        # Log container stdout
-        self.container_logger = self.get_log()
-        
         self._print("Runtime was {0}.".format(uptime))
         self.log_container.update(self.info(), uptime=uptime)
         

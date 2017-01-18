@@ -26,7 +26,7 @@ def _run (prefix=None, predict=False, **kw):
         return
 
     if kw['niter']>0:
-        if kw['operation'] == 'image':
+        if kw.get('operation', None) not in ['clark', 'hogbom', 'csclean', 'multiscale', 'entropy']:
             kw['operation'] = 'csclean'
         images = {
             "restored"  :   [ '{0}.restored.{1}'.format(prefix, a) for a in ['fits', 'img']],
@@ -163,8 +163,8 @@ for param in params:
 
 predict = options.pop('simulate_fits', False)
 if predict:
-    predict_vis(msname=options['ms'], image=predict, column=options['data'], 
-        chanchunk=options.get('chanchunk', None), chanstart=['img_chanstart'], 
-        chanstep=options['img_chanstep'])
+    predict_vis(msname=options['ms'], image=predict, column='MODEL_DATA', 
+        chanchunk=options.get('chanchunk', None), chanstart=options.get('img_chanstart', 0), 
+        chanstep=options.get('img_chanstep', 1))
 else:
     _run(prefix, **options)

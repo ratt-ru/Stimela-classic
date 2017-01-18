@@ -56,4 +56,4 @@ if stack and axis:
 elif unstack and axis:
     args.append( '{0}stack {1}:{2}:{3}'.format(cab['prefix'], outimage, axis, chunk))
     
-utils.xrun("fitstool.py", [args, inimage, outimage or ""])
+utils.xrun("fitstool.py", args+[inimage, outimage or ""])

@@ -7,10 +7,10 @@ try:
 except ImportError as e:
   from distutils.core import setup
 
-import stimela
+import stimela_version
 
 setup(name = "stimela",
-    version = stimela.__version__,
+    version = stimela_version.version,
     description = "Dockerized radio interferometry scripting framework",
     author = "Sphesihle Makhathini",
     author_email = "Sphesihle Makhathini <sphemakh@gmail.com>",

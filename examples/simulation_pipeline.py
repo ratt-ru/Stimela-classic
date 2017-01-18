@@ -18,69 +18,67 @@ LSM = "nvss1deg.lsm.html"
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                   ms_dir=MSDIR)             # Folder in which to find MSs
 
-## 1: Make empty MS 
-#imms_dict = {
-#   "msname"   :   MS,                     
-#   "telescope" :   "meerkat",              # Telescope name
-#   "direction" :   "J2000,0deg,-30deg",   # Phase tracking centre of observation
-#   "synthesis" :   0.125,                      # Synthesis time of observation
-#   "dtime"     :   30,                      # Exposure time
-#   "freq0"     :   "750MHz",               # Start frequency of observation
-#   "dfreq"     :   "1MHz",                 # Channel width
-#   "nchan"     :   1                      # Number of channels
-#   }
+ # 1: Make empty MS 
+simms_dict = {
+    "msname"   :   MS,                     
+    "telescope" :   "meerkat",              # Telescope name
+    "direction" :   "J2000,0deg,-30deg",   # Phase tracking centre of observation
+    "synthesis" :   0.125,                      # Synthesis time of observation
+    "dtime"     :   30,                      # Exposure time
+    "freq0"     :   "750MHz",               # Start frequency of observation
+    "dfreq"     :   "1MHz",                 # Channel width
+    "nchan"     :   1                      # Number of channels
+    }
 
-#ipeline.add("cab/simms",                   # Executor image to start container from 
-#            "simms_example",               # Container name
-#            simms_dict,                    # Parameters to parse to executor container
-#            input=INPUT,                   # Input folder
-#            output=OUTPUT,                 # Output folder
-#            label="Creating MS")           # Process label
+pipeline.add("cab/simms",                   # Executor image to start container from 
+             "simms_example",               # Container name
+             simms_dict,                    # Parameters to parse to executor container
+             input=INPUT,                   # Input folder
+             output=OUTPUT,                 # Output folder
+             label="Creating MS")           # Process label
 
 
-## 2: Simulate visibilities into it
-#imulator_dict = {
-#   "msname"    :   MS,
-#   "skymodel"  :   LSM,                    # Sky model to simulate into MS
-#   "addnoise"  :   True,                   # Add thermal noise to visibilities
-#   "column"    :   "CORRECTED_DATA",
-#   "sefd"      :   831,                    # Compute noise from this SEFD
-#   "recenter"  :   True                    # Recentre sky model to phase tracking centre of MS
-#   }
+ # 2: Simulate visibilities into it
+simulator_dict = {
+    "msname"    :   MS,
+    "skymodel"  :   LSM,                    # Sky model to simulate into MS
+    "addnoise"  :   True,                   # Add thermal noise to visibilities
+    "column"    :   "CORRECTED_DATA",
+    "sefd"      :   831,                    # Compute noise from this SEFD
+    "recenter"  :   True                    # Recentre sky model to phase tracking centre of MS
+    }
 
-#ipeline.add("cab/simulator", 
-#            "simulator_example",
-#             simulator_dict, 
-#             input=INPUT, output=OUTPUT,
-#             label="Simulating visibilities")
+pipeline.add("cab/simulator", 
+             "simulator_example",
+              simulator_dict, 
+              input=INPUT, output=OUTPUT,
+              label="Simulating visibilities")
 
 
 ## 3: Image
 # Make things a bit interesting by imaging with different weights 
-#mager_dict = {
-#   "msname"    :   MS,
-#   "weight"    :   "briggs",               # Use Briggs weighting to weigh visibilities for imaging
-#   "npix"      :   2048,                   # Image size in pixels
-#   "cellsize"  :   2,                      # Size of each square pixel
-#   "clean_iterations"  :   1000            # Perform 1000 iterarions of clean (Deconvolution)
-#   }
+imager_dict = {
+    "msname"    :   MS,
+    "npix"      :   2048,                   # Image size in pixels
+    "cellsize"  :   2,                      # Size of each square pixel
+    "clean_iterations"  :   1000            # Perform 1000 iterarions of clean (Deconvolution)
+    }
 
 # Briggs robust values to use for each image
-#riggs_robust = 2, 0, -2
+briggs_robust = 2, 0, -2
 
-#or i, robust in enumerate(briggs_robust):
+for i, robust in enumerate(briggs_robust):
 
-#   imager_dict["robust"] = robust # update Briggs robust parameter
-#   imager_dict["imageprefix"] = "%s_robust-%d"%(PREFIX, i) # Prefix for output images
+    imager_dict["weight"] = "briggs {:f}".format(robust) # update Briggs robust parameter
+    imager_dict["prefix"] = "{:s}_robust-{:f}".format(PREFIX, robust) # Prefix for output images
 
-#   pipeline.add("cab/wsclean",
-#                "imager_example_%d"%i, 
-#                imager_dict, 
-#                input=INPUT, 
-#                output=OUTPUT, 
-#                label="Imaging MS, robust=%f"%robust)
+    pipeline.add("cab/wsclean",
+                 "imager_example_robust_{:f}".format(robust), 
+                 imager_dict, 
+                 input=INPUT, 
+                 output=OUTPUT, 
+                 label="Imaging MS, robust={:f}".format(robust))
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
-# executed in the sequence that they were addedd
-#pipeline.run()
-pipeline.run(redo='.last_simulation_example.json')
+# executed in the sequence that they were added
+pipeline.run(resume=True)

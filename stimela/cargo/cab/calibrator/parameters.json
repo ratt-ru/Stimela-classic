@@ -50,7 +50,7 @@
             "name"      :   "make-plots",
             "dtype"     :   "bool",
             "info"      :   "Make gain plots",
-            "default"   :   true
+            "default"   :   false
         },
         {
             "name"      :   "column",

@@ -1,4 +1,5 @@
 FROM stimela/base:0.2.3
 RUN docker-apt-install lofar python-tigger
 RUN pip install --upgrade git+https://github.com/ska-sa/tigger
-RUN pip install --upgrade pyfits
+RUN pip uninstall -y numpy
+RUN pip install --upgrade pyfits numpy==1.11.3

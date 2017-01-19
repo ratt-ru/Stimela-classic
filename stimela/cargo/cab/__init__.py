@@ -51,6 +51,9 @@ class Parameter(object):
         self.value = None
 
     def validate(self, value):
+        if self.choices and value not in self.choices:
+            raise ValueError("Parameter '{0}', can only be either of {1}".format(self.name, self.choices))
+
         for item in self.dtype:
             if isinstance(item, tuple):
                 l,t = item
@@ -236,8 +239,10 @@ class CabDefinition(object):
 
         self.log.info("Validating parameters...       CAB = {0}".format(self.task))
         for name,value in options.iteritems():
+            found = False
             for param in self.parameters:
                 if param.name == name:
+                    found = True
                     if param.io:
                         param.validate(value)
                         param.value = []
@@ -269,9 +274,12 @@ class CabDefinition(object):
                         if len(param.value)==1:
                             param.value = param.value[0]
                         
-                    elif param.validate(value):
+                    else:
                         self.log.debug("Validating paramter {}".format(param.name))
+                        param.validate(value)
                         param.value = value
+            if not found:
+                raise RuntimeError("Parameter {0} is unknown. Run 'stimela cabs -i {1}' to get help on this cab".format(name, self.task))
         conf = {}
         conf.update(self.toDict())
         utils.writeJson(saveconf, conf)

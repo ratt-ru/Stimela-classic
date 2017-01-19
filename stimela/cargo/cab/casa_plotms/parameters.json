@@ -59,6 +59,19 @@
             "default"   :   null
         },
         {
+            "name"      :   "xdatacolumn",
+            "dtype"     :   "str",
+            "info"      :   "which data column to use for Visibility values",
+            "default"   :   null
+        },
+        {
+            "name"      :   "ydatacolumn",
+            "dtype"     :   "str",
+            "info"      :   "which data column to use for Visibility values",
+            "default"   :   null
+        },
+
+        {
             "name"      :   "field",
             "dtype"     :   "str",
             "info"      :   "Field names or field index numbers",

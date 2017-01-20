@@ -108,7 +108,7 @@ if field_center:
         ftab = table(msname+"/FIELD")
         ra,dec = ftab.getcol("PHASE_DIR")[field_id][0]
         field_center = "J2000,%frad,%frad"%(ra, dec)
-    tmp = INPUT +"/"+ os.path.basename(skymodel)
+    tmp = "recentered_"+os.path.basename(skymodel)
 
     utils.xrun("tigger-convert", ["--recenter", field_center, skymodel, tmp, "-f"])
     options["tiggerlsm.filename"] = tmp

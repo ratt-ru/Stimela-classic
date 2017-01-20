@@ -92,7 +92,7 @@ if beam and beam_files_pattern:
         "me.e_all_stations" : 1,
         "pybeams_fits.l_axis"   : jdict.pop("beam-l-axis", "L"),
         "pybeams_fits.m_axis"   : jdict.pop("beam-m-axis", "M"),
-        "pybeams_fits.filename_pattern" : "'%s'"%beam_files_pattern,
+        "pybeams_fits.filename_pattern" : "'{}'".format(beam_files_pattern),
     })
 
 

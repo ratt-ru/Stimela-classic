@@ -103,7 +103,9 @@
         },
         {
             "name"      :   "beam-files-pattern",
-            "dtype"     :   "str",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "check_io"  :   false,
             "info"      :   "Beam files pattern",
             "default"   :   null
         },

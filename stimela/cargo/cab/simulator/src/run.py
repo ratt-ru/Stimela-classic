@@ -86,7 +86,7 @@ if beam and beam_files_pattern:
         "me.e_all_stations" : 1,
         "pybeams_fits.l_axis"   : params.pop("beam-l-axis", "L"),
         "pybeams_fits.m_axis"   : params.pop("beam-m-axis", "M"),
-        "pybeams_fits.filename_pattern" : beam_files_pattern,
+        "pybeams_fits.filename_pattern" : "'{}'".format(beam_files_pattern),
     }
     options.update(beam_opts)
 

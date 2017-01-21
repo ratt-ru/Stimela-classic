@@ -70,7 +70,6 @@
             "info"      :   "which data column to use for Visibility values",
             "default"   :   null
         },
-
         {
             "name"      :   "field",
             "dtype"     :   "str",
@@ -120,6 +119,12 @@
             "default"   :   null
         },
         {
+            "name"      :   "selectdata",
+            "dtype"     :   "bool",
+            "info"      :   "Select data",
+            "default"   :   null
+        },
+        {
             "name"      :   "observation",
             "dtype"     :   "str",
             "info"      :   "Select by observation ID(s)",
@@ -130,6 +135,12 @@
             "dtype"     :   "str",
             "info"      :   "MS selection (blank for all)",
             "default"   :   null
+        },
+        {
+            "name"      :   "averagedata",
+            "dtype"     :   "bool",
+            "info"      :   "Average data",
+            "default"   :   null,
         },
         {
             "name"      :   "avgchannel",
@@ -415,6 +426,18 @@
             "io"        :   "output",
             "info"      :   "Name of plot file to save automatically.",
             "default"   :   null
+        },
+        {
+            "name"      :   "clearplots",
+            "dtype"     :   "bool",
+            "info"      :   "Remove any existing plots so new ones can replace them.",
+            "default"   :   true
+        },
+        {
+            "name"      :   "overwrite",
+            "dtype"     :   "bool",
+            "info"      :   "Overwrite exsting file",
+            "default"   :   false
         },
         {
             "name"      :   "asynch",

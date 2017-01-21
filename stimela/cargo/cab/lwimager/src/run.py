@@ -9,10 +9,8 @@ import utils
 
 CONFIG = os.environ['CONFIG']
 
-
 cab = utils.readJson(CONFIG)
 params = cab['parameters']
-
 
 
 def rm_fr(item):
@@ -50,7 +48,7 @@ def _run (prefix=None, predict=False, **kw):
     print('Converting CASA iamges to FITS images')
     for fits,img in images.itervalues():
         im = pyrap.images.image(img)
-        im.tofits(fits, overwrite=True)
+        im.tofits(fits, overwrite=True, velocity=kw.get('prefervelocity', False))
         rm_fr(img)
 
 
@@ -146,11 +144,11 @@ for param in params:
 
     if value is None:
         continue
-    if param['dtype']=='bool':
-        if value is True:
-            value = 1
-        else:
-            value = 0
+#    if param['dtype']=='bool':
+#        if value is True:
+#            value = 1
+#        else:
+#            value = 0
     if name == 'cellsize':
         if isinstance(value, (float, int)):
             value = '{}arcsec'.format(value)

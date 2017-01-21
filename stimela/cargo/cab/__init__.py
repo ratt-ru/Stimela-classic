@@ -61,9 +61,11 @@ class Parameter(object):
                     return True
                 if isinstance(value, t):
                     return True
-                elif isinstance(value, list) and isinstance(value[0], t):
+                elif isinstance(value, list) and isinstance(value[0], tuple([t]+[int] if t is float else [t])):
                     return True
-            elif isinstance(value, tuple(TYPES.values())):
+            elif item is "file":
+                return True
+            elif isinstance(value, tuple([item]+[int] if item is float else [item])):
                 return True
         raise TypeError("Expecting any of types {0} for parameter '{1}', but got '{2}'".format( self.dtype, self.name, type(value).__name__))
 
@@ -234,14 +236,14 @@ class CabDefinition(object):
     def update(self, options, saveconf):
         required = filter(lambda a: a.required, self.parameters)
         for param0 in required:
-            if param0.name not in options.keys():
+            if not options.has_key(param0.name) and not options.has_key(param0.mapping):
                 raise RuntimeError("Parameter {} is required but has not been specified".format(param0.name))
 
         self.log.info("Validating parameters...       CAB = {0}".format(self.task))
         for name,value in options.iteritems():
             found = False
             for param in self.parameters:
-                if param.name == name:
+                if name in [param.name, param.mapping]:
                     found = True
                     if param.io:
                         param.validate(value)

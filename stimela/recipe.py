@@ -5,6 +5,7 @@ from stimela import docker, utils, cargo
 from stimela.cargo import cab
 import logging
 import inspect
+import re
 
 USER = os.environ["USER"]
 UID = os.getuid()
@@ -117,6 +118,11 @@ class Recipe(object):
         msdir   :   MS directory for cab. Only specify if different from recipe ms_dir
         """
 
+        # check if name has any offending charecters
+        offenders = re.findall('\W', name)
+        if offenders:
+            raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
+                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(name))
         # Get location of template parameters file
         parameter_file = '{0}/{1}/parameters.json'.format(CAB_PATH, image.split('/')[-1].split(':')[0])
         msdir = msdir or self.ms_dir

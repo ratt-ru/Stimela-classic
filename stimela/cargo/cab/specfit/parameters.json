@@ -1,0 +1,87 @@
+{
+    "task"          :   "specfit",
+    "base"          :   "stimela/tigger",
+    "tag"           :   "0.2.3",
+    "description"   :   "Tools for continuum spectral fitting. Only fits spectral indices",
+    "binary"        :   "python",
+    "prefix"        :   "",
+    "msdir"         :   false,
+    "parameters"    :   [
+        {
+            "name"      :   "image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Image to exctract SPIs from. Must have a frequency axis with more than one plane.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-spi-image",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Output SPI image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-spi-error-image",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Output SPI image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "input-spi-image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input SPI image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "input-spi-error-image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input SPI image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mask-image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Mask image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "input-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input sky model",
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Output sky model",
+            "default"   :   null
+        },
+        {
+            "name"      :   "sigma-level",
+            "dtype"     :   "float",
+            "info"      :   "Sigma level",
+            "default"   :   20
+        },
+        {
+            "name"      :   "freq0",
+            "dtype"     :   "float",
+            "info"      :   "SPI reference frequency in Hz",
+            "default"   :   null
+        },
+        {
+            "name"      :   "tolerance-range",
+            "dtype"     :   "list:float",
+            "info"      :   "SPI values outside this range will be set to zero",
+            "default"   :   [-10,10]
+        }
+    ]
+}
+
+

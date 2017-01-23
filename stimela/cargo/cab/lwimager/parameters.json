@@ -157,23 +157,20 @@
         },
         {
             "name"      :   "nchan",
-            "dtype"     :   "list:int",
-            "delimiter" :   ",",
-            "info"      :   "number of frequency channels to select from each spectral window (one number per spw)",
+            "dtype"     :   ["str","int"],
+            "info"      :   "number of frequency channels to select from each spectral window (one number per spw). Comma separated string",
             "default"   :   1
         },
         {
             "name"      :   "chanstart",
-            "dtype"     :   "list:int",
-            "delimiter" :   ",",
-            "info"      :   "first frequency channel per each spw (0-relative)",
+            "dtype"     :   ["str","int"],
+            "info"      :   "First frequency channel per each spw (0-relative). Comma separated string",
             "default"   :   0
         },
         {
             "name"      :   "chanstep",
-            "dtype"     :   "list:int",
-            "delimiter" :   ",",
-            "info"      :   "frequency channel step per each spw",
+            "dtype"     :   ["str","int"],
+            "info"      :   "fre`iquency channel step per each spw. Comma separated string",
             "default"   :   1
         },
         {
@@ -277,15 +274,13 @@
         },
         {
             "name"      :   "maskblc",
-            "dtype"       :   "list:int",
-            "delimiter" :   ",",
+            "dtype"       :   "str",
             "info"      :   "Bottom left corner of mask region",
             "default"   :   null
         },
         {
             "name"      :   "masktrc",
-            "dtype"     :   "list:int",
-            "delimiter" :   ",",
+            "dtype"     :   "str",
             "info"      :   "Top right corner of mask region",
             "default"   :   null
         },
@@ -297,9 +292,8 @@
         },
         {
             "name"      :   "uservector",
-            "dtype"     :   "list:int",
-            "delimiter" :   ",",
-            "info"      :   "User-defined scales for multiscale clean",
+            "dtype"     :   "str",
+            "info"      :   "User-defined scales for multiscale clean. Comma separated string",
             "default"   :   null
         },
         {

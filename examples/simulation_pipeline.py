@@ -73,7 +73,7 @@ for i, robust in enumerate(briggs_robust):
     imager_dict["prefix"] = "{:s}_robust-{:f}".format(PREFIX, robust) # Prefix for output images
 
     pipeline.add("cab/wsclean",
-                 "imager_example_robust_{:f}".format(robust), 
+                 "imager_example_robust_{:d}".format(i), 
                  imager_dict, 
                  input=INPUT, 
                  output=OUTPUT, 

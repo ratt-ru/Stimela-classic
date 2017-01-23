@@ -1,0 +1,158 @@
+{
+    "task"          :   "simms",
+    "description"   :   "Uses the CASA simulator tool to create a simulated measurement set (MS)",
+    "base"          :   "stimela/simms",
+    "tag"           :   "0.2.3",
+    "msdir"         :   true,
+    "binary"        :   "simms",
+    "prefix"        :   "--",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "name",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "check_io"  :   false,
+            "info"      :   "Name of MS file to be created",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "telescope",
+            "mapping"   :   "tel",
+            "dtype"     :   "str",
+            "info"      :   "Name of telescope that being simulated",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "antenna-file",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "File that contains antenna coordinates",
+            "default"   :   null
+        },
+        {
+            "name"      :   "type",
+            "dtype"     :   "str",
+            "choices"   :   ["casa","ascii"],
+            "info"      :   "Type of antenna file",
+            "default"   :   "casa"
+        },
+        {
+            "name"      :   "coord-sys",
+            "dtype"     :   "str",
+            "choices"   :   ["itrf", "enu", "wgs84"],
+            "info"      :   "Coordinate system of antenna coordinates in 'antenna-file'. Only needed if 'type' is 'ascii'; CASA tables are assumed to be in ITRF coords",
+            "default"   :   "itrf"
+        },
+        {
+            "name"      :   "lon-lat-elv",
+            "dtype"     :   "list:float",
+            "info"      :   "Reference position of telescope. Comma seperated longitude,lattitude and elevation 'deg,deg,m'. Elevation is not crucial, lon,lat should be enough. If not specified, we'll try to get this info from the CASA database (assuming that your telescope is known to CASA)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "noup",
+            "dtype"     :   "bool",
+            "info"      :   "Enable this to indicate that your ENU file does not have an 'up' dimension",
+            "default"   :   false
+        },
+        {
+            "name"      :   "direction",
+            "dtype"     :   ["list:str","str"],
+            "info"      :   "Pointing direction. Example J2000,0h0m0s,-30d0m0d. Option --direction may be specified multiple times for multiple pointings. Provide a list of directions for multiple pointings; each pointing will have a unique field ID",
+            "default"   :   "J2000,0deg,-30deg"
+        },
+        {
+            "name"      :   "synthesis",
+            "dtype"     :   "float",
+            "info"      :   "Synthesis time in hours",
+            "default"   :   4
+        },
+        {
+            "name"      :   "scan-length",
+            "dtype"     :   "float",
+            "info"      :   "Durration of a single scan. Default is the entire observation (synthesis)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "dtime",
+            "dtype"     :   "int",
+            "info"      :   "Integration time in seconds",
+            "default"   :   2
+        },
+        {
+            "name"      :   "freq0",
+            "dtype"     :   ["list:str","list:float"],
+            "info"      :   "Start frequency. This is the middle of the first channel. Specify as val[unit]. E.g 700MHz, no unit => Hz . Use a comma seperated list for multiple start frequencies (for multiple subbands)",
+            "default"   :   "1.4GHz"
+        },
+        {
+            "name"      :   "dfreq",
+            "dtype"     :   ["list:str","list:float"],
+            "info"      :   "Channel width. Specify as val[unit]. E.g 700MHz, no unit => Hz Use a comma separated list of channel widths (for multiple subbands)",
+            "default"   :   "2MHz"
+        },
+        {
+            "name"      :   "nband",
+            "dtype"     :   "int",
+            "info"      :   "Number of subands",
+            "default"   :   1,
+        },
+        {
+            "name"      :   "nchan",
+            "dtype"     :   "list:int",
+            "info"      :   "Number of channels. Can be used in tandemn with 'freq0, dfreq, nband' to customise the partitioning of the subands",
+            "default"   :   1
+        },
+        {
+            "name"      :   "init-ha",
+            "dtype"     :   "float",
+            "info"      :   "Initial hour angle. 'scan-length/2' is the default",
+            "default"   :   null
+        },
+        {
+            "name"      :   "pol",
+            "dtype"     :   "str",
+            "info"      :   "polarization",
+            "default"   :   "XX XY YX YY"
+        },
+        {
+            "name"      :   "feed",
+            "dtype"     :   "str",
+            "info"      :   "Feed type",
+            "default"   :   "perfect X Y"
+        },
+        {
+            "name"      :   "scan-lag",
+            "dtype"     :   "float",
+            "info"      :   "Lag time between scans",
+            "default"   :   0
+        },
+        {
+            "name"      :   "set-limits",
+            "dtype"     :   "bool",
+            "info"      :   "Set telescope limits. Elevation and shadow limts. Works in tandem with 'shadow-limit, elevation-limit'",
+            "default"   :   false
+        },
+        {
+            "name"      :   "elevation-limit",
+            "dtype"     :   "float",
+            "info"      :   "Dish elevation limit. Will only be taken into account if 'set-limits' is enabled.",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "shadow-limit",
+            "dtype"     :   "float",
+            "info"      :   "Shadow limit. Will only be taken into account if 'set-limits' is enabled.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "auto-correlations",
+            "dtype"     :   "bool",
+            "info"      :   "Don't flag autocorrelations",
+            "default"   :   false
+        }
+    ]
+}

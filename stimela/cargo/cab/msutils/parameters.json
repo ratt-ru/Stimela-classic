@@ -1,0 +1,133 @@
+{
+    "task"          :   "msutils",
+    "base"          :   "stimela/msutils",
+    "tag"           :   "0.2.3",
+    "description"   :   "Tools for manipulating measurement sets (MSs)",
+    "msdir"         :   true,
+    "binary"        :   "msutils",
+    "prefix"        :   " ",
+    "parameters"    :   [
+        {
+            "name"      :   "command",
+            "dtype"     :   "str",
+            "info"      :   "MSUtils command to execute",
+            "choices"   :   ["addcol", "sumcols", "copycol", "compute_vis_noise", "verify_antpos", "prep", "addnoise"],
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "msname",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "required"  :   true,
+            "info"      :   "MS name"
+        },
+        {
+            "name"      :   "column",
+            "mapping"   :   "colname",
+            "dtype"     :   "str",
+            "info"      :   "Column name",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "shape",
+            "dtype"     :   "str",
+            "info"      :   "Shape of column to add to MS",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "valuetype",
+            "dtype"     :   "str",
+            "info"      :   "Column data type",
+            "default"   :   null
+        },
+        {
+            "name"      :   "data_desc_type",
+            "dtype"     :   "str",
+            "choices"   :   ["array", "scalar"],
+            "info"      :   "Data description type for data in column to be added",
+            "default"   :   "array"
+        },
+        {
+            "name"      :   "init_with",
+            "dtype"     :   "float",
+            "info"      :   "Value to initialize new data column with",
+            "default"   :   true
+        },
+        {
+            "name"      :   "col1",
+            "dtype"     :   "str",
+            "info"      :   "First column to add/subtract",
+            "default"   :   null
+        },
+        {
+            "name"      :   "col2",
+            "dtype"     :   "str",
+            "info"      :   "Second column to add/subtract",
+            "default"   :   null
+        },
+        {
+            "name"      :   "cols",
+            "dtype"     :   "list:str",
+            "delimiter" :   ",",
+            "info"      :   "Columns to sum",
+            "default"   :   null
+        },
+        {
+            "name"      :   "subtract",
+            "dtype"     :   "bool",
+            "info"      :   "Subtract 'col2' from 'col1' ",
+            "default"   :   false
+        },
+        {
+            "name"      :   "fromcol",
+            "dtype"     :   "str",
+            "info"      :   "Column to copy data from",
+            "default"   :   null
+        },
+        {
+            "name"      :   "tocol",
+            "dtype"     :   "str",
+            "info"      :   "Column to copy data to",
+            "default"   :   null
+        },
+        {
+            "name"      :   "addnoise",
+            "dtype"     :   "bool",
+            "info"      :   "Add noise to MS. Will add to 'column/colname'",
+            "default"   :   false
+        },
+        {
+            "name"      :   "sefd",
+            "dtype"     :   "float",
+            "info"      :   "System Equivalent Flux Density, in Jy. The noise will be calculated using this value",
+            "default"   :   0
+        },
+        {
+            "name"      :   "addToCol",
+            "dtype"     :   "str",
+            "info"      :   "Add noise to data in this column",
+            "default"   :   null
+        },
+        {
+            "name"      :   "noise",
+            "dtype"     :   "float",
+            "info"      :   "Noise in Jy to 'column/colname' data in Jy",
+            "default"   :   0
+        },
+        {
+            "name"      :   "spw-id",
+            "mapping"   :   "spw_id",
+            "dtype"     :   "int",
+            "info"      :   "SPW ID",
+            "default"   : 0
+        },
+        {
+            "name"      :   "verify-antpos",
+            "mapping"   :   "verify",
+            "dtype"     :   "bool",
+            "info"      :   "Verifies antenna Y positions in MS. If Y coordinate convention is wrong, either fixes the positions (fix=True) or raises an error. hemisphere=-1 makes it assume that the observatory is in the Western hemisphere, hemisphere=1 in the Eastern, or else tries to find observatory name using MS and pyrap.measure",
+            "default"   :   true
+        }
+    ]
+}

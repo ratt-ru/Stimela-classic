@@ -1,0 +1,421 @@
+{
+    "task"          :   "pybdsm",
+    "description"   :   "Source finding in radio images",
+    "base"          :   "stimela/lofar",
+    "tag"           :   "0.2.3",
+    "binary"        :   "python",
+    "msdir"         :   false,
+    "prefix"        :   " ",
+    "parameters"    :   [   
+        {
+            "name"      :   "image",
+            "mapping"   :   "filename",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input image file name",
+            "default"   :   null
+        },
+        {
+            "name"      :   "adaptive_rms_box",
+            "dtype"     :   "bool",
+            "info"      :   "Use adaptive rms_box when determining rms and mean maps",
+            "default"   :   false
+        },
+        {
+            "name"      :   "atrous_do",
+            "dtype"     :   "bool",
+            "info"      :   "Decompose Gaussian residual image into multiple scales",
+            "default"   :   false
+        },
+
+        {
+            "name"      :   "atrous_bdsm_do",
+            "dtype"     :   "bool",
+            "info"      :   "Perform source extraction on each wavelet scale",
+            "default"   :   false
+        },
+        {
+            "name"      :   "atrous_jmax",
+            "dtype"     :   "int",
+            "info"      :   "Max allowed wavelength order, 0 => calculate inside program",
+            "default"   :   0
+        },
+        {
+            "name"      :   "atrous_lpf",
+            "dtype"     :   "str",
+            "choices"   :   ["b3", "tr"],
+            "info"      :   "Low pass filter, either 'b3' or 'tr', for B3 spline or Triangle",
+            "default"   :   "b3",
+        },
+        {
+            "name"      :   "atrous_orig_isl",
+            "dtype"     :   "bool",
+            "info"      :   "Restrict wavelet Gaussians to islands found in original image",
+            "default"   :   false
+        },
+        {
+            "name"      :   "atrous_sum",
+            "dtype"     :   "bool",
+            "info"      :   "Fit to the sum of remaining wavelet scales",
+            "default"   :   true
+        },
+        {
+            "name"      :   "use_scipy_fft",
+            "dtype"     :   "bool",
+            "info"      :   "Use fast SciPy FFT for convolution",
+            "default"   :   true
+        },
+        {
+            "name"      :   "beam",
+            "dtype"     :   "list:float",
+            "info"      :   "FWHM of restoring beam. Specify as (maj, min, pos ang E of N) in degrees. E.g., beam = (0.06, 0.02, 13.3). None => get from header",
+            "default"   :   null
+        },
+        {
+            "name"      :   "flagging_opts",
+            "dtype"     :   "bool",
+            "info"      :   "Show options for Gaussian flagging",
+            "default"   :   false
+        },
+        {
+            "name"      :   "frequency",
+            "dtype"     :   "float",
+            "info"      :   "Frequency in Hz of input image. E.g., frequency = 74e6. None => get from header.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mean_map",
+            "dtype"     :   "str",
+            "choices"   :   ["default", "zero", "const", "map"],
+            "info"      :   "Background mean map: 'default' => calc whether to use or not, 'zero' => 0, 'const' => clipped mean, 'map' => use 2-D map",
+            "default"   :   "default"
+        },
+        {
+            "name"      :   "beam_sp_derive",
+            "dtype"     :   "bool",
+            "info"      :   "If True and beam_spectrum is None, then assume header beam is for median frequency and scales with frequency for channels",
+            "default"   :   false
+        },
+        {
+            "name"      :   "beam_spectrum",
+            "dtype"     :   "list:list",
+            "info"      :   "FWHM of synthesized beam per channel. Specify as [(bmaj_ch1, bmin_ch1, bpa_ch1), (bmaj_ch2, bmin_ch2, bpa_ch2), etc.] in degrees. E.g., beam_spectrum = [(0.01, 0.01, 45.0), (0.02,0.01, 34.0)] for two channels. None => all equal to beam",
+            "default"   :   null
+        },
+        {
+            "name"      :   "collapse_av",
+            "dtype"     :   "list:int",
+            "info"      :   "List of channels to average if collapse_mode = 'average', starting from 0. E.g., collapse_av = [0, 1, 5]. [] => all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "collapse_ch0",
+            "dtype"     :   "int",
+            "info"      :   "Number of the channel for source extraction, if collapse_mode = 'single', starting from 0",
+            "default"   :   0
+        },
+        {
+            "name"      :   "collapse_mode",
+            "dtype"     :   "str",
+            "choices"   :   ["average", "single"],
+            "info"      :   "Collapse method: 'average' or 'single'. Average channels or take single channel to perform source detection on",
+            "default"   :   "average"
+        },
+        {
+            "name"      :   "frequency_sp",
+            "dtype"     :   "list:float",
+            "info"      :   "Frequency in Hz of channels in input image when more than one channel is present. E.g., frequency_sp = [74e6, 153e6]. None => get from header",
+            "default"   :   null
+        },
+        {
+            "name"      :   "rms_box",
+            "dtype"     :   "list:int",
+            "info"      :   "Box size, step size for rms/mean map calculation. Specify as (box, step) in pixels. E.g., rms_box = (40, 10) => box of 40x40 pixels, step of 10 pixels. None => calculate inside program",
+            "default"   :   null
+        },
+        {
+            "name"      :   "rms_map",
+            "dtype"     :   "bool",
+            "info"      :   "Background rms map: True => use 2-D rms map; False => use constant rms; None => calculate inside program",
+            "default"   :   null
+        },
+        {
+            "name"      :   "thresh",
+            "dtype"     :   "str",
+            "choices"   :   ["fdr", "hard", null],
+            "info"      :   "Type of thresholding: None => calculate inside program, 'fdr' => use false detection rate algorithm, 'hard' => use sigma clipping",
+            "default"   :   null
+        },
+        {
+            "name"      :   "thresh_isl",
+            "dtype"     :   "float",
+            "info"      :   "Threshold for the island boundary in number of sigma above the mean. Determines extent of island used for fitting",
+            "default"   :   3.0
+        },
+        {
+            "name"      :   "thresh_pix",
+            "dtype"     :   "float",
+            "info"      :   "Source detection threshold: threshold for the island peak in number of sigma above the mean. If false detection rate thresholding is used, this value is ignored and thresh_pix is calculated inside the program",
+            "default"   :   5.0
+        },
+        {
+            "name"      :   "aperture",
+            "dtype"     :   "bool",
+            "info"      :   "Radius of aperture in pixels inside which aperture fluxes are measured for each source. None => no aperture fluxes measured",
+            "default"   :   null
+        },
+        {
+            "name"      :   "aperture_posn",
+            "dtype"     :   "str",
+            "choices"   :   ["centroid", "peak"],
+            "info"      :   "Position the aperture (if aperture is not None) on: 'centroid' or 'peak' of the source.",
+            "default"   :   "centroid",
+        },
+        {
+            "name"      :   "blank_limit",
+            "dtype"     :   "float",
+            "info"      :   "Limit in Jy/beam below which pixels are blanked. None => no such blanking is done",
+            "default"   :   null
+        },
+        {
+            "name"      :   "bmpersrc_th",
+            "dtype"     :   "float",
+            "info"      :   "Theoretical estimate of number of beams per source. None => calculate inside program",
+            "default"   :   null
+        },
+        {
+            "name"      :   "check_outsideuniv",
+            "dtype"     :   "bool",
+            "info"      :   "Check for pixels outside the universe",
+            "default"   :   false
+        },
+        {
+            "name"      :   "detection_image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Detection image file name used only for detecting islands of emission. Source measurement is still done on the main image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "do_cache",
+            "dtype"     :   "bool",
+            "info"      :   "Cache internally derived images to disk",
+            "default"   :   false
+        },
+        {
+            "name"      :   "do_mc_errors",
+            "dtype"     :   "bool",
+            "info"      :   "stimate uncertainties for 'M'-type sources using Monte Carlo method",
+            "default"   :   false
+        },
+        {
+            "name"      :   "fdr_alpha",
+            "dtype"     :   "float",
+            "info"      :   "Alpha for FDR algorithm for thresholds",
+            "default"   :   0.05
+        },
+        {
+            "name"      :   "fdr_ratio",
+            "dtype"     :   "float",
+            "info"      :   "For thresh = None; if #false_pix / #source_pix < fdr_ratio, thresh = 'hard' else thresh = 'fdr'",
+            "default"   :   0.1
+        },
+        {
+            "name"      :   "fittedimage_clip",
+            "dtype"     :   "float",
+            "info"      :   "Sigma for clipping Gaussians while creating fitted image",
+            "default"   :   0.1
+        },
+        {
+            "name"      :   "fix_to_beam",
+            "dtype"     :   "bool",
+            "info"      :   "Fix major and minor axes and PA of Gaussians to beam?",
+            "default"   :   true
+        },
+        {
+            "name"      :   "group_by_isl",
+            "dtype"     :   "bool",
+            "info"      :   "Group all Gaussians in each island into a single source",
+            "default"   :   false
+        },
+        {
+            "name"      :   "group_method",
+            "dtype"     :   "str",
+            "choices"   :   ["intensity", "curvature"],
+            "info"      :   "Group Gaussians into sources using 'intensity' map or 'curvature' map",
+            "default"   :   "intensity",
+        },
+        {
+            "name"      :   "group_tol",
+            "dtype"     :   "float",
+            "info"      :   "Tolerance for grouping of Gaussians into sources: larger values will result in larger sources",
+            "default"   :   1.0
+        },
+        {
+            "name"      :   "ini_gausfit",
+            "dtype"     :   "str",
+            "choices"   :   ["default", "simple", "nobeam"],
+            "info"      :   "Initial guess for Gaussian parameters: 'default', 'simple', or 'nobeam'",
+            "default"   :   "default"
+        },
+        {
+            "name"      :   "ini_method",
+            "dtype"     :   "str",
+            "choices"   :   ["intensity", "curvature"],
+            "info"      :   "Method by which inital guess for fitting of Gaussians is chosen: 'intensity' or 'curvature'",
+            "default"   :   "intensity"
+        },
+        {
+            "name"      :   "kappa_clip",
+            "dtype"     :   "float",
+            "info"      :   "Kappa for clipped mean and rms. None => calculate inside program",
+            "default"   :   null
+        },
+        {
+            "name"      :   "minpix_isl",
+            "dtype"     :   "int",
+            "info"      :   "Minimum number of pixels with emission per island (minimum is 6 pixels). None -> calculate inside program",
+            "default"   :   null
+        },
+        {
+            "name"      :   "ncores",
+            "dtype"     :   "int",
+            "info"      :   "Number of cores to use during fitting, None => use all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "peak_fit",
+            "dtype"     :   "bool",
+            "info"      :   "Find and fit peaks of large islands iteratively",
+            "default"   :   true
+        },
+        {
+            "name"      :   "peak_maxsize",
+            "dtype"     :   "float",
+            "info"      :   "If island size in beam area is more than this, attempt to fit peaks iteratively (if peak_fit = True). Min value is 30",
+            "default"   :   30.0
+        },
+        {
+            "name"      :   "rms_value",
+            "dtype"     :   "float",
+            "info"      :   "Value of constant rms in Jy/beam to use if rms_map = False. None => calculate inside program",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spline_rank",
+            "dtype"     :   "int",
+            "info"      :   "Rank of the interpolating function for rms/mean map",
+            "default"   :   3
+        },
+        {
+            "name"      :   "split_isl",
+            "dtype"     :   "bool",
+            "info"      :   "Split island if it is too large, has a large convex deficiency and it opens well.",
+            "default"   :   true
+        },
+        {
+            "name"      :   "splitisl_maxsize",
+            "dtype"     :   "float",
+            "info"      :   "If island size in beam area is more than this, consider splitting island. Min value is 50",
+            "default"   :   50.0
+        },
+        {
+            "name"      :   "src_ra_dec",
+            "dtype"     :   "list:list",
+            "info"      :   "List of source positions at which fitting is done.  E.g., src_ra_dec = [(197.1932, 47.9188), (196.5573, 42.4852)]",
+            "default"   :   null
+        },
+        {
+            "name"      :   "src_radius_pix",
+            "dtype"     :   "int",
+            "info"      :   "Radius of the island (if src_ra_dec is not None) in pixels. None => radius is set to the FWHM of the beam major axis.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "stop_at",
+            "dtype"     :   "str",
+            "choices"   :   ["isl", "read"],
+            "info"      :   "Stops after: 'isl' = island finding step or 'read' = image reading step",
+            "default"   :   null
+        },
+        {
+            "name"      :   "trim_box",
+            "dtype"     :   "list:int",
+            "info"      :   "Do source detection on only a part of the image. Specify as (xmin, xmax, ymin, ymax) in pixels. E.g., trim_box = (120, 840, 15, 895). None => use entire image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "outfile",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "required"  :   true,
+            "info"      :   "Output file name. None => file is named automatically; 'SAMP' => send to SAMP hub (e.g., to TOPCAT, ds9, or Aladin)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "bbs_patches",
+            "dtype"     :   "str",
+            "choices"   :   ["single", "gaussian", "source", "mask", null],
+            "info"      :   "BBS format, type of patch to use: None => no patches. 'single' => all Gaussians in one patch. 'gaussian' => each Gaussian gets its own patch. 'source' => all Gaussians belonging to a single source are grouped into one patch. 'mask' => use mask file specified by bbs_patches_mask",
+            "default"   :   null
+        },
+        {
+            "name"      :   "bbs_patches_mask",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Name of the mask file (of same size as input image) that defines the patches if bbs_patches = 'mask'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "catalog_type",
+            "dtype"     :   "str",
+            "choices"   :   ["srl", "gaul", "shap"],
+            "info"      :   "Type of catalog to write:  'gaul' - Gaussian list, 'srl' - source list (formed by grouping Gaussians), 'shap' - shapelet list (FITS format only)",
+            "default"   :   "gaul"
+        },
+        {
+            "name"      :   "clobber",
+            "dtype"     :   "bool",
+            "info"      :   "Overwrite existing file?",
+            "default"   :   true
+        },
+        {
+            "name"      :   "correct_proj",
+            "dtype"     :   "bool",
+            "info"      :   "Correct source parameters for image projection (BBS format only)?",
+            "default"   :   true
+        },
+        {
+            "name"      :   "format",
+            "dtype"     :   "str",
+            "choices"   :   ["bbs", "ds9", "fits", "star", "kvis", "ascii", "csv", "casabox","sagecal"],
+            "info"      :   "Format of output catalog",
+            "default"   :   "fits"
+        },
+        {
+            "name"      :   "incl_chan",
+            "dtype"     :   "bool",
+            "info"      :   "Include flux densities from each channel (if any)?",
+            "default"   :   false
+        },
+        {
+            "name"      :   "incl_empty",
+            "dtype"     :   "bool",
+            "info"      :   "Include islands without any valid Gaussians (source list only)?",
+            "default"   :   false
+        },
+        {
+            "name"      :   "srcroot",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Name for entries in the output catalog (BBS format only). None => use image file name",
+            "default"   :   null
+        },
+        {
+            "name"      :   "port2tigger",
+            "dtype"     :   "bool",
+            "info"      :   "Convert output model to tigger format",
+            "default"   :   true
+        }
+    ]
+}

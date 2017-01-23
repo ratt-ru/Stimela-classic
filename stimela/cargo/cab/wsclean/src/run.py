@@ -2,78 +2,53 @@ import os
 import sys
 import re
 
-sys.path.append("/utils")
+sys.path.append('/utils')
 import utils
 
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
+CONFIG = os.environ['CONFIG']
+INPUT = os.environ['INPUT']
+OUTPUT = os.environ['OUTPUT']
+MSDIR = os.environ['MSDIR']
 
+cab = utils.readJson(CONFIG)
+params = cab['parameters']
+args = []
 
-jdict = dict(npix=2048, clean_iterations=1000, cellsize=2, 
-             weight="briggs", robust=0, spw_id=0, 
-             field_id=0, stokes="I", mgain=0.85, column="CORRECTED_DATA")
+for param in params:
+    name = param['name']
+    value = param['value']
 
-jdict.update( utils.readJson(CONFIG) )
+    if name == 'msname':
+        mslist = ' '.join(value)
+        continue
 
-jdict["cellsize"] = jdict["cellsize"]/3600.0
+    if value in [None, False]:
+        continue
+    # only versions > 2.0 have this 
+    if name in ["spws"]:
+        continue
 
-weight = jdict.get("weight")
-if weight=="briggs":
-    jdict["weight"] = "%s %f"%(weight, jdict.pop("robust", 0))
-else:
-    jdict.pop("robust", None)
+    if name == 'scale':
+        if isinstance(value, (int, float)):
+            value = '{0}asec'.format(value)
 
+    if name in 'size trim nwlayers-for-size beamshape'.split():
+        if isinstance(value, int):
+            value = '{0} {0}'.format(value)
+        elif getattr(value, '__iter__'):
+            if len(value) == 1:
+                value.append( value[0])
+            value = ' '.join(map(str, value))
 
-STANDARD_OPTS = { 
-    "field_id" : "field",
-    "spw_id" : "spw",
-    "imageprefix" : "name",
-    "npix" : "size",
-    "cellsize": "scale",
-    "clean_iterations" : "niter",
-    "stokes" : "pol",
-    "column" : "datacolumn",
-}
+    if name in 'spws multiscale-scales pol'.split():
+        if getattr(value, '__iter__'):
+            value = ','.join(map(str, value))
 
-options = {}
+    if value is True:
+        arg = '{0}{1}'.format(cab['prefix'], name)
+    else:
+        arg = '{0}{1} {2}'.format(cab['prefix'], name, value)
 
-jdict.pop("spw_id", None)
-jdict.pop("spw", None)
-jdict.pop("imager", None)
+    args.append(arg)
 
-for key, value in jdict.items():
-    key = STANDARD_OPTS.get(key, key)
-
-    if value not in [None, []]:
-        options[key] = value
-    if key in options and options[key] == None:
-        del options[key]
-    if value == False:
-        del options[key]
-    elif value == True:
-        options[key] = ""
-
-    if key in ["field", "spw"]:
-        options[key] = str(options.get("field", 0))
-    if key in ["psf", "dirty"]:
-        options.pop(key, None)
-
-options["size"] = "%d %d"%(options["size"], options["size"])
-
-msname = options.pop("msname")
-
-if isinstance(msname, (list, tuple)):
-    mslist = " ".join(["%s/%s"%(MSDIR, ms) for ms in msname])
-    vis = msname[0]
-else:
-    vis = msname
-    mslist = MSDIR + "/" + msname
-
-name = options.pop("name", os.path.basename(vis[:-3]))
-options["name"] = utils.substitute_globals(name) or OUTPUT + "/" + name
-
-args = ["-%s %s"%(a,b) for a,b in options.iteritems()]
-
-utils.xrun("wsclean", args + [mslist])
+utils.xrun(cab['binary'], args + [mslist])

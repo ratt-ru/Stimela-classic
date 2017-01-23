@@ -1,8 +1,6 @@
 import os
 import sys
-import json
 import pyfits
-import codecs
 
 sys.path.append("/utils")
 import utils
@@ -11,120 +9,55 @@ CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 
-outfile = "temp.json"
+cab = utils.readJson(CONFIG)
 
-_ANTENNAS = {
-     "meerkat": "meerkat.itrf.txt",
-     "kat-7": "kat-7.itrf.txt",
-     "jvlaa": "vlaa.itrf.txt",
-     "jvlab": "vlab.itrf.txt",
-     "jvlac": "vlac.itrf.txt",
-     "jvlad": "vlad.itrf.txt",
-     "wsrt": "wsrt.itrf.txt",
-     "ska1mid254": "skamid254.itrf.txt",
-     "ska1mid197": "skamid197.itrf.txt",
-}
+params = cab["parameters"]
 
-_OBS = {
-     "meerkat": "meerkat",
-     "kat-7": "kat-7",
-     "jvlaa": "vla",
-     "jvlab": "vla",
-     "jvlac": "vla",
-     "jvlad": "vla",
-     "wsrt": "wsrt",
-     "ska1mid254": "meerkat",
-     "ska1mid197": "meerkat",
-}
+_positional = ['antenna-file']
+positional = []
+for item in _positional:
+    param = filter( lambda a: a['name']==item, params)[0]
+    if param['value']:
+        positional.append(param['value'])
 
-# possible combinations for specifying VLA configurations
-VLA_CONFS = ["vla"]+["vla-%s"%s for s in "abcd"] + ["vla%s"%s for s in "abcd"] + ["jvla-%s"%s for s in "abcd"] + ["jvla%s"%s for s in "abcd"]
-def which_vla(name):
-    name = name.lower()
-    if name in ["vla", "jvla"]:
-        return "jvlad"
-    elif name in VLA_CONFS:
-        return "jvla%s"%(name[-1])
+#f params.pop("from-fits", False) and imagename:
+#   with pyfits.open(imagename) as hdu:
+#       hdr = hdu[0].header
+#       naxis = hdr["naxis"]
+
+#       freq = filter(lambda ind: hdr["ctype%d"%ind].startswith("FREQ"),
+#               range(2, naxis+1, 1))
+#       if freq:
+#           freq = freq[0]
+#       else:
+#           raise TypeError("Your FITS image has no frequency information")
+
+#       nchan = hdr["naxis%d"%freq]
+#       freq0 = hdr["crval%d"%freq]
+#       dfreq = abs(hdr["cdelt%d"%freq])
+
+#       params["freq0"] = freq0
+#       params["dfreq"] = dfreq
+#       params["nchan"] = nchan
+
+#       if not direction:
+#           params["direction"] = "J2000,%fdeg,%fdeg"%(hdr["crval1"], hdr["crval2"])
+
+args = []
+for param in params:
+    key = param['name']
+    value = param['value']
+    if value in [None, False]:
+        continue
+    if value is True:
+        arg = '{0}{1}'.format(cab['prefix'], key)
+    elif hasattr(value, '__iter__'):
+        arg = ' '.join(['{0}{1} {2}'.format(cab['prefix'], key, val) for val in value])
     else:
-        raise NameError("Telescope name could not recognised")
+        if isinstance(value, str):
+            value = '"{}"'.format(value)
+        arg = '{0}{1} {2}'.format(cab['prefix'], key, value)
 
+    args.append(arg)
 
-def readJson(conf):
-
-    with open(conf) as _std:
-        jdict = json.load(_std)
-
-    out = {}
-
-    for key,val in jdict.iteritems():
-
-        if isinstance(val, unicode):
-            val = str(val)
-
-        out[str(key)] = val
-
-    return out
-
-
-jdict = utils.readJson(CONFIG)
-telescope = jdict["telescope"]
-if telescope[:3] in ["vla", "jvl"] and jdict.get("antennas", None) in [None, False, ""]:
-    telescope = which_vla(telescope)
-
-direction = jdict.get("direction", None)
-
-
-jdict["msname"] = MSDIR+"/"+jdict["msname"]
-
-if jdict.get("antennas", False):
-    jdict["pos"] = INDIR+"/"+jdict.get("antennas", "meetkat")
-    jdict["coords"] = jdict.get("coord_sys", "enu")
-else:
-    jdict["pos"] = "/data/observatories/"+_ANTENNAS[telescope]
-    if not os.path.isdir(jdict["pos"]):
-        jdict["pos_type"] = "ascii"
-        jdict["coords"] = "itrf"
-
-jdict["tel"] = _OBS[telescope]
-
-for item in ["antennas", "coord_sys", "telescope"]:
-    jdict.pop(item, None)
-
-imagename = jdict.pop("skymodel", False)
-
-if jdict.pop("predict", False) and imagename:
-
-    for item in [INDIR, "/data/skymodels"]:
-        _imagename = "{:s}/{:s}".format(item, imagename)
-        if os.path.exists(_imagename):
-            break
-
-    imagename = _imagename
-
-    with pyfits.open(imagename) as hdu:
-        hdr = hdu[0].header
-        naxis = hdr["naxis"]
-
-        freq = filter(lambda ind: hdr["ctype%d"%ind].startswith("FREQ"),
-                range(2, naxis+1, 1))
-        if freq:
-            freq = freq[0]
-        else:
-            raise TypeError("Your FITS image has no frequency information")
-
-        nchan = hdr["naxis%d"%freq]
-        freq0 = hdr["crval%d"%freq]
-        dfreq = abs(hdr["cdelt%d"%freq])
-
-        jdict["freq0"] = freq0
-        jdict["dfreq"] = dfreq
-        jdict["nchan"] = nchan
-
-        if not direction:
-            jdict["direction"] = "J2000,%fdeg,%fdeg"%(hdr["crval1"], hdr["crval2"])
-
-with codecs.open(outfile, "w", "utf8") as std:
-    std.write( json.dumps(jdict, ensure_ascii=False) )
-
-# Run simms
-utils.xrun("simms", ["-jc", outfile])
+utils.xrun(cab['binary'], args+['--nolog']+positional)

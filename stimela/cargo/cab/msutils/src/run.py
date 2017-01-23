@@ -1,6 +1,7 @@
 import sys
 import os
 from MSUtils import msutils
+import inspect
 
 sys.path.append("/utils")
 import utils
@@ -10,18 +11,31 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
-cab_dict_update = utils.cab_dict_update
+cab = utils.readJson(CONFIG)
 
-msname = jdict.pop("msname")
-msname = MSDIR + "/" + msname
+args = {}
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-function = jdict.pop("command")
+    if value in [None, False]:
+        continue
+    if value is True:
+        value = ""
+    if name == "command":
+        function = value
+        continue
+
+    args[name] = value
 
 run_func = getattr(msutils, function, None)
 if run_func is None:
-    raise RuntimeError("Function %s is not part of MSUtils"%function)
+    raise RuntimeError("Function '{}' is not part of MSUtils".format(function))
 
-jdict["msname"] = msname
+## Reove default parameters that are not part of this particular function
+func_args = inspect.getargspec(run_func)[0]
+for arg in args.keys():
+    if arg not in func_args:
+        args.pop(arg, None)
 
-run_func(**jdict)
+run_func(**args)

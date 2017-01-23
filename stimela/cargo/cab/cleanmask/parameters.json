@@ -1,0 +1,97 @@
+{
+    "task"          :   "cleanmask",
+    "base"          :   "stimela/astropy",
+    "tag"           :   "0.2.3",
+    "binary"        :   "cleanmask",  
+    "description"   :   "Creates a binary mask from a FITS image",
+    "msdir"         :   false,
+    "prefix"        :   "--",
+    "parameters"    :   [
+        {
+            "name"      :   "image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Name of FITS image from which to derive the mask",
+            "default"   :   null,
+            "required"  :   true
+        },
+        {
+            "name"      :   "output",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Name of resulting binary mask",
+            "default"   :   null,
+            "required"  :   true
+        },
+        {
+            "name"      :   "sigma",
+            "dtype"     :   "float",
+            "info"      :   "The number of standard deviations to use when clipping image",
+            "default"   :   5,
+            "required"  :   false
+        },
+        {
+            "name"      :   "boxes",
+            "dtype"     :   "int",
+            "info"      :   "Will divide image into this number of boxes, then perform sigma clipping in each of these boxes",
+            "default"   :   11,
+            "required"  :   false
+        },
+        {
+            "name"      :   "iters",
+            "dtype"     :   "str",
+            "info"      :   "The number of iterations to perform sigma clipping, or 0 to clip until convergence is achieved.",
+            "default"   :   3,
+            "required"  :   false
+        },
+        {
+            "name"      :   "mask-value",
+            "dtype"     :   "float",
+            "info"      :   "Value to use for masked regions",
+            "default"   :   0,
+            "required"  :   false
+        },
+        {
+            "name"      :   "overlap",
+            "dtype"     :   "float",
+            "info"      :   "Overlap region. As a fraction of -nb/--boxes",
+            "default"   :   0,
+            "required"  :   false
+        },
+        {
+            "name"      :   "dilate",
+            "dtype"     :   "bool",
+            "info"      :   "Dilate mask. This is an attempt to include low surface brightness in an image.",
+            "default"   :   true,
+            "required"  :   false
+        },
+        {
+            "name"      :   "diters",
+            "dtype"     :   "int",
+            "info"      :   "Maximun dilation iterations per island",
+            "default"   :   20,
+            "required"  :   false
+        },
+        {
+            "name"      :   "no-negative",
+            "dtype"     :   "bool",
+            "info"      :   "Include negative pixels when creating mask",
+            "default"   :   false,
+            "required"  :   false
+        },
+        {
+            "name"      :   "tolerance",
+            "dtype"     :   "float",
+            "info"      :   "Tolerance for dilating the mask. Will stop dilating if percentage difference between dilations is smaller than this value.",
+            "default"   :   0.05,
+            "required"  :   false
+        },
+        {
+            "name"      :   "log-level",
+            "dtype"     :   "str",
+            "info"      :   "Log level",
+            "choices"   :   ["INFO", "DEBUG", "CRITICAL"],
+            "default"   :   "INFO"
+        }
+        ]
+}

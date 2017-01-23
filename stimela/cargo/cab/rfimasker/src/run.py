@@ -9,22 +9,19 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
+cab = utils.readJson(CONFIG)
+args = []
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-msname = jdict.pop("msname")
-
-if isinstance(msname, (list, tuple)):
-    mslist = " ".join(["%s/%s"%(MSDIR, ms) for ms in msname])
-    vis = msname[0]
-else:
-    vis = msname
-    mslist = MSDIR + "/" + msname
-
-mask = jdict.pop("mask")
-mask = utils.substitute_globals(mask) or INPUT + "/" + mask
-
-args = ["--mask %s"%mask]
-
-args += ["--%s %s"%(a, "" if isinstance(b, bool) else b) for a,b in jdict.iteritems()]
+    if name == 'ms':
+        mslist = ' '.join(value)
+        continue
+    if value in [None, False]:
+       continue
+    if value is True:
+        value = ""
+    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
 utils.xrun("mask_ms.py", args + [mslist])

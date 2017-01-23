@@ -89,13 +89,10 @@ def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile
 
     # may supply FITS file for freq0, in which case just pull ref frequency from FITS file,
     # else explicit frequency, else get frequency from alpha image
-    print "FREQ0:0", freq0
     if type(freq0) is str:
         freq0 = fitsInfo(freq0)['freq0']
-        print "FREQ0:1", freq0
     else:
         freq0 = freq0 or fits_alpha['freq0']
-    print "FREQ0:2", freq0
 
     model = Tigger.load(lsmname)    # load sky model
     rad = lambda a: a*(180/np.pi) # convert radians to degrees
@@ -129,7 +126,6 @@ def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile
                 subIm_normalization = np.sum(subIm_weight)
 
                 spi = float(np.sum(subIm_weighted)/subIm_normalization)
-                print "SPI", spi
                 if spi > spitol[0] or spi < spitol[-1]:
                     print "INFO: Adding spi: %.3f (at %.3g MHz) to source %s"%(spi, freq0/1e6, src.name)
                     src.spectrum = Tigger.Models.ModelClasses.SpectralIndex(spi, freq0)

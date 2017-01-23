@@ -1,0 +1,144 @@
+{
+    "task"          :   "casa_setjy",
+    "description"   :   "Fills the model column with the visibilities of a calibrator",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "setjy",
+    "msdir"         :   true,
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of input visibility file",
+            "required"  :   true
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "str",
+            "info"      :   "Field Name(s). Comma separated string of field IDs/names",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "Spectral window identifier (list)",
+            "default"   :   null
+        },
+        {  
+            "name"      :   "selectdata",
+            "dtype"     :   "bool",
+            "info"      :   "Other data selection parameters",
+            "default"   :   true
+        },
+        {    
+            "name"      :   "timerange",
+            "dtype"     :   ["str","list:str"],
+            "info"      :   "Time range to operate on (for usescratch=T)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "scan",
+            "dtype"     :   "list:str",
+            "info"      :   "Scan number range (for  usescratch=T)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "observation",
+            "dtype"     :   "str",
+            "info"      :   "Observation ID range (for  usescratch=T)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "intent",
+            "dtype"     :   "str",
+            "info"      :   "Observation intent",
+            "default"   :   null
+        },
+        {
+            "name"      :   "scalebychan",
+            "dtype"     :   "bool",
+            "info"      :   "scale the flux density on a per channel basis or else on a per spw basis",
+            "default"   :   true,
+        },
+        {
+            "name"      :   "standard",
+            "dtype"     :   "str",
+            "choices"   :   ["Perley-Butler 2010","Perley-Butler 2013","Baars","Perley 90","Perley-Taylor 95","Perley-Taylor 99","Scaife-Heald 2012","Stevens-Reynolds 2016","Butler-JPL-Horizons 2010","Butler-JPL-Horizons 2012","manual","fluxscale"],
+            "info"      :   "Flux density standard",
+            "default"   :   "Perley-Butler 2010"
+        },
+        {
+            "name"      :   "interpolation",
+            "dtype"     :   "str",
+            "choices"   :   ["nearest", "linear", "cubic","spline"],
+            "info"      :   "method to be used to interpolate in time",
+            "default"   :   "linear"
+        },
+        {
+            "name"      :   "useephemdir",
+            "dtype"     :   "bool",
+            "info"      :   "use directions in the ephemeris table",
+            "default"   :   false
+        },
+        {
+            "name"      :   "fluxdensity",
+            "dtype"     :   "list:float",
+            "info"      :   "Specified flux density [I,Q,U,V]; (-1 will lookup values)",
+            "default"   :   [1.0, 0.0, 0.0, 0.0]
+        },
+        {
+            "name"      :   "spix",
+            "dtype"     :   ["float","list:float","int","list:int"],
+            "info"      :   "Spectral index of fluxdensity",
+            "default"   :   0.0
+        },
+        {
+            "name"      :   "reffreq",
+            "dtype"     :   "str",
+            "info"      :   "Reference frequency for spix",
+            "default"   :   "1GHz"
+        },
+        {
+            "name"      :   "fluxdict",
+            "dtype"     :   "str",
+            "info"      :   "output dictionary from fluxscale(NB: this is a dictionary)",
+            "default"   :   null   
+        },
+        {    
+            "name"      :   "model",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "check_io"  :   false,
+            "required"  :   "true",
+            "info"      :   "Field model. If using own model, set 'custom_model' to True",
+            "default"   :   null 
+        },
+        {    
+            "name"      :   "custom_model",
+            "dtype"     :   "bool",
+            "info"      :   "Set to 'True' if using custom model",
+            "default"   :   false
+        },
+        {
+            "name"      :   "listmodels",
+            "dtype"     :   "bool",
+            "info"      :   "List the available modimages for VLA calibrators or Tb models for Solar System objects",
+            "default"   :   false
+        },
+        {
+            "name"      :   "usescratch",
+            "dtype"     :   "bool",
+            "info"      :   "Will create if necessary and use the MODEL_DATA",
+            "default"   :   false
+        },
+        {
+            "name"      :   "asynch",
+            "dtype"     :   "bool",
+            "info"      :   "If true the taskname must be started using bandpass(...)",
+            "default"   :   false
+        } 
+    ]
+}

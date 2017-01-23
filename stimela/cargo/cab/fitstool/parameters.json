@@ -1,0 +1,130 @@
+{
+    "task"          :   "fitstool",
+    "base"          :   "stimela/meqtrees",
+    "tag"           :   "0.2.3",
+    "description"  :   "Convinience tools for manipulating FITS images",
+    "binary"        :   "fitstool.py",
+    "msdir"         :   "false",
+    "prefix"        :   "--",
+    "parameters"    :   [
+        {
+            "name"      :   "image",
+            "dtype"     :   "list:file",
+            "io"        :   "input",
+            "info"      :   "Input image(s)",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "output",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Output image",
+            "required"  :   false,
+            "default"   :   null
+        },
+        {
+            "name"      :   "force",
+            "dtype"     :   "bool",
+            "info"      :   "overwrite output file even if it exists",
+            "default"   :   false
+        },
+        {
+            "name"      :   "sanitize",
+            "dtype"     :   "float",
+            "info"      :   "Sanitize FITS files by replacing NANs and INFs with a vlaue",
+            "default"   :   null
+        },
+        {
+            "name"      :   "nonneg",
+            "dtype"     :   "bool",
+            "info"      :   "replace negative values by 0",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "mean",
+            "dtype"     :   "bool",
+            "info"      :   "take mean of input images",
+            "default"   :   false
+        },
+        {
+            "name"      :   "diff",
+            "dtype"     :   "bool",
+            "info"      :   "take difference of 2 input images",
+            "default"   :   false
+        },
+        {
+            "name"      :   "transfer",
+            "dtype"     :   "bool",     
+            "info"      :   "transfer data from image 2 into image 1, preserving the FITS header of image 1",
+            "default"   :   false
+        },
+        {
+            "name"      :   "zoom",
+            "dtype"     :   "int",
+            "info"      :   "Zoom into central sqaure region given in pixles",
+            "default"   :   null
+        },
+        {
+            "name"      :   "rescale",
+            "dtype"     :   "float",
+            "info"      :   "Rescale image values",
+            "default"   :   null
+        },
+        {
+            "name"      :   "edit-header",
+            "dtype"     :   "str",
+            "info"      :   "KEY=VALUE",
+            "default"   :   null
+        },
+        {
+            "name"      :   "stack",
+            "dtype"     :   "bool",
+            "info"      :   "Stack a list of FITS images along a given axis. This axis may given as an integer(as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "unstack",
+            "dtype"     :   "bool",
+            "info"      :   "Unstack a FITS image into smaller chunks each having [each_chunk] planes along a given axis. This axis may given as an integer (as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "unstack-chunk",
+            "dtype"     :   "int",
+            "info"      :   "Unstack FITS image into images of this width (along the given axis)",
+            "default"   :   1
+        },
+        {
+            "name"      :   "fits-axis",
+            "dtype"     :   ["str","int"],
+            "info"      :   "Stack/Unstack along this axis",
+            "default"   :   null
+
+        },
+        {
+            "name"      :   "reorder",
+            "dtype"     :   "str",
+            "info"      :   "Required order. List of comma seperated indeces",
+            "default"   :   null
+        },
+        {
+            "name"      :   "add-axis",
+            "dtype"     :   "str",
+            "info"      :   "Add axis to a FITS image. The AXIS will be described by CTYPE:CRVAL:CRPIX:CDELT[:CUNIT:CROTA]. The keywords in brackets are optinal, while those not in brackets are mendatory. This axis will be the last dimension.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "header",
+            "dtype"     :   "bool",
+            "info"      :   "print header(s) of input image(s)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "stats",
+            "dtype"     :   "bool",
+            "info"      :   "Print stats on images and exit. No output images will be written",
+            "default"   :   false
+        }
+    ]
+}

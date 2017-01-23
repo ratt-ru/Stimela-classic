@@ -1,36 +1,31 @@
-import os
 import sys
+import os
+from MSUtils import msutils
+import inspect
 
-sys.path.append('/utils')
+sys.path.append("/utils")
 import utils
-import json
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
+cab = utils.readJson(CONFIG)
 
-# only msname, task and tasksuite is extracted, the rest must be handled
-# in your Stimela script
-msname = jdict.pop("msname")
-taskname = jdict.pop("task")
-try:
-    tasksuite = jdict.pop("tasksuite")
-except:
-    tasksuite = None
+args = {}
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-assert isinstance(msname, (str, unicode)), "msname parameter must be string"
-msname = "%s/%s"%(MSDIR, msname)
+    if value in [None, False]:
+        continue
+    if value is True:
+        value = ""
+    if name == "task":
+        task = value
+        continue
 
-# after parsing push msname back into the dictionary
-jdict["msname"] = msname
-kwargs = "'%s'" % json.dumps(jdict)
+    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value))
 
-EXEC = ["-m", "politsiyakat"]
-ARGS = [taskname, 
-	("-s " + tasksuite) if tasksuite is not None else (""), 
-	kwargs]
-utils.xrun("python", EXEC + ARGS)
-
+utils.xrun(cab['binary'], args)

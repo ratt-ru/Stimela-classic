@@ -1,8 +1,4 @@
-FROM stimela/meqtrees
-MAINTAINER <bhugo@ska.ac.za>
-
-RUN mkdir -p /input /output
-
+FROM stimela/meqtrees:0.2.3
+MAINTAINER <sphemakh@gmail.com>
 ADD src /code
-
 CMD python /code/run.py

@@ -1,0 +1,125 @@
+{
+    "task"          :   "casa_split",
+    "description"   :   "Create a visibility subset from an existing visibility set",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "split",
+    "msdir"         :   true,
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "info"      :   "Name of input visibility file",
+            "io"        :   "msfile",
+            "required"  :   true
+        },
+        {
+            "name"      :   "output-msname",
+            "mapping"   :   "outputvis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "check_io"  :   false,
+            "info"      :   "Name of output measurement set",
+            "default"   :   null
+        },
+        {
+            "name"      :   "datacolumn",
+            "dtype"     :   "str",
+            "info"      :   "Which data column(s) to split out",
+            "default"   :   "corrected"
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "str",
+            "info"      :   "Select field using ID(s) or name(s). Comma separated string",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "Select spectral window/channels",
+            "default"   :   null
+        },
+        {  
+            "name"      :   "width",
+            "dtype"     :   "int",
+            "info"      :   "Number of channels to average to form one output channel",
+            "default"   :   1
+        },
+        {
+            "name"      :   "timebin",
+            "dtype"     :   "str",
+            "info"      :   "Bin width for time averaging",
+            "default"   :   "0s"
+        },
+        {
+            "name"      :   "combine",
+            "dtype"     :   ["str","list:str"],
+            "choices"   :   ["scan", "state"],
+            "info"      :   "Let time bins span changes in scan and/or state",
+            "default"   :   "scan"
+        },
+        {    
+            "name"      :   "timerange",
+            "dtype"     :   "str",
+            "info"      :   "Select data by time range",
+            "default"   :   null
+        },
+        {
+            "name"      :   "scan",
+            "dtype"     :   "str",
+            "info"      :   "Select data by scan numbers",
+            "default"   :   null
+        },
+        {
+            "name"      :   "observation",
+            "dtype"     :   "str",
+            "info"      :   "Select by observation ID(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "intent",
+            "dtype"     :   "str",
+            "info"      :   "Select data by scan intents",
+            "default"   :   null
+        },
+        {
+            "name"      :   "array",
+            "dtype"     :   "str",
+            "info"      :   "Select (sub)array(s) by array ID number",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "uvrange",
+            "dtype"     :   "str",
+            "info"      :   "Select data by baseline length",
+            "default"   :   null
+        },
+        {
+            "name"      :   "correlation",
+            "dtype"     :   "str",
+            "info"      :   "Select data by baseline length",
+            "default"   :   null
+        },
+        {
+            "name"      :   "keepflags",
+            "dtype"     :   "bool",
+            "info"      :   "If practical, keep *completely flagged rows* instead of dropping them.",
+            "default"   :   true
+        },
+        {
+            "name"      :   "keepms",
+            "dtype"     :   "bool",
+            "info"      :   "If the input is a multi-MS, make the output one, too. (experimental)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "asynch",
+            "dtype"     :   "bool",
+            "info"      :   "If true the taskname must be started using split(...)",
+            "default"   :   false
+        } 
+    ]
+}

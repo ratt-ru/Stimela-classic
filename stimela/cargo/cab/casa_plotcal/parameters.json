@@ -1,0 +1,136 @@
+{
+    "task"          :   "casa_plotcal",
+    "description"   :   "An all-purpose plotter for calibration results",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "plotcal",
+    "prefix"        :   "-",
+    "msdir"         :   false,
+    "parameters"    :   [
+        {   
+            "name"      :   "caltable",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "required"  :   true,
+            "info"      :   "Name of input calibration table",
+        },
+        {
+            "name"      :   "xaxis",
+            "dtype"     :   "str",
+            "choices"   :   ["time","chan","freq","antenna","antenna1","antenna2","scan","amp","phase","real","imag","snr","tsys","delay","spgain"],
+            "info"      :   "Value to plot along x axis (time,chan,freq,antenna,antenna1,antenna2,scan,amp,phase,real,imag,snr,tsys,delay,spgain)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "yaxis",
+            "dtype"     :   "str",
+            "choices"   :   ["time","chan","freq","antenna","antenna1","antenna2","scan","amp","phase","real","imag","snr","tsys","delay","spgain"],
+            "info"      :   "Value to plot along y axis (time,chan,freq,antenna,antenna1,antenna2,scan,amp,phase,real,imag,snr,tsys,delay,spgain)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "poln",
+            "dtype"     :   "str",
+            "choices"   :   ["RL","R","L","XY","X","Y","/"],
+            "info"      :   "Antenna polarization to plot (RL,R,L,XY,X,Y,/)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "str",
+            "info"      :   "field names or index of calibrators: ''==>all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "antenna",
+            "dtype"     :   "str",
+            "info"      :   "antenna/baselines: ''==>all, antenna = '3,VA04'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "spectral window:channels: ''==>all, spw='1:5~57'",
+            "default"   :   null
+        },
+        {    
+            "name"      :   "timerange",
+            "dtype"     :   "str",
+            "info"      :   "time range: ''==>all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "subplot",
+            "dtype"     :   "int",
+            "info"      :   "Panel number on display screen (yxn)",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "overplot",
+            "dtype"     :   "bool",
+            "info"      :   "Overplot solutions on existing display",
+            "default"   :   false
+        },
+        {
+            "name"      :   "clearpanel",
+            "dtype"     :   "str",
+            "info"      :   "Specify if old plots are cleared or not (ignore)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "iteration",
+            "dtype"     :   "str",
+            "info"      :   "Iterate plots on antenna,time,spw,field",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "plotrange",
+            "dtype"     :   "list:float",
+            "info"      :   "plot axes ranges: [xmin,xmax,ymin,ymax]",
+            "default"   :   null
+        },
+        {    
+            "name"      :   "showflags",
+            "dtype"     :   "bool",
+            "info"      :   "If true, show flagged solutions",
+            "default"   :   false 
+        },
+        {
+            "name"      :   "plotsymbol",
+            "dtype"     :   "str",
+            "info"      :   "pylab plot symbol",
+            "default"   :   "o"
+        },
+        {
+            "name"      :   "plotcolor",
+            "dtype"     :   "str",
+            "info"      :   "initial plotting color",
+            "default"   :   "blue"
+        },
+        {
+            "name"      :   "markersize",
+            "dtype"     :   "float",
+            "info"      :   "Size of plotted marks",
+            "default"   :   5.0
+        },
+        {
+            "name"      :   "fontsize",
+            "dtype"     :   "float",
+            "info"      :   "Font size for labels",
+            "default"   :   10.0
+        },
+        {
+            "name"      :   "figfile",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "''= no plot hardcopy, otherwise supply name",
+            "default"   :   null
+        },
+        {
+            "name"      :   "asynch",
+            "dtype"     :   "bool",
+            "info"      :   "If true the taskname must be started using plotcal(...)",
+            "default"   :   false
+        } 
+    ]
+}

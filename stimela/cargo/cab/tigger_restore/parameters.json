@@ -1,0 +1,108 @@
+{
+    "task"          :   "tigger_restore",
+    "description"   :   "Restores sources from sky model into an input image, writes result to output image. If an output image is not specified, makes a name for it automatically",
+    "base"          :   "stimela/tigger",
+    "tag"           :   "0.2.3",
+    "binary"        :   "tigger-restore",
+    "msdir"         :   false,
+    "prefix"        :   "--",
+    "parameters"    :   [   
+        {
+            "name"      :   "input-image",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "input-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Sky model to restore to 'input-image'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-image",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Input image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "force",
+            "mapping"   :   "f",
+            "dtype"     :   "bool",
+            "info"      :   "Forces overwrite of output model.",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "type",
+            "dtype"     :   "str",
+            "choices"   :   ["Tigger", "ASCII", "BBS", "NEWSTAR", "AIPSCC", "AIPSCCFITS", "Gaul", "auto"],
+            "info"      :   "Input model type",
+            "default"   :   "auto"
+        },
+        {
+            "name"      :   "format",
+            "dtype"     :   "str",
+            "info"      :   "Input format, for ASCII or BBS tables. For ASCII tables, default is 'name ra_h ra_m ra_s dec_d dec_m dec_s i q u v spi rm emaj_s emin_s pa_d freq0 tags...'. For BBS tables, the default format is specified in the file header.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "tags",
+            "dtype"     :   "str",
+            "info"      :   "Extract sources with the specified tags.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "num-sources",
+            "dtype"     :   "int",
+            "info"      :   "Only restore the NSRC brightest sources",
+            "default"   :   null
+        },
+        {
+            "name"      :   "scale",
+            "dtype"     :   "list:float",
+            "info"      :   "Rescale model fluxes by given factor. If N is given, rescale N brightest only.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "restoring-beam",
+            "dtype"     :   "list:float",
+            "info"      :   "Specify restoring beam size, overriding BMAJ/BMIN/BPA keywords in input image. Use a single value (arcsec) for circular beam, or else supply major/minor size and position angle (deg).",
+            "default"   :   null
+        },
+        {
+            "name"      :   "psf-file",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Determine restoring beam size by fitting PSF file, overriding BMAJ/BMIN/BPA keywords in input image. 'clear' clear contents of FITS file before adding in sources apply model primary beam function during restoration, if it's defined, and source is not tagged 'nobeam'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "beamgain",
+            "dtype"     :   "float",
+            "info"      :   "Apply beamgain atribute during restoration, if it's defined, and source is not tagged 'nobeam' 'ignore-nobeam' apply PB or beamgain even if source is tagged 'nobeam'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "freq", 
+            "dtype"     :   "float",
+            "info"      :   "Use this frequency (in MHz) (for spectral indices and primary beams)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "verbose",
+            "dtype"     :   "bool",
+            "info"      :   "Set verbosity level (0 is silent, higher numbers mean more messages)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "timestamps",
+            "dtype"     :   "bool",
+            "info"      :   "Enable timestamps in debug messages (useful for timing)",
+            "default"   :   true
+        }
+    ]
+}
+

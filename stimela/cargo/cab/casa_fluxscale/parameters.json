@@ -1,0 +1,82 @@
+{
+    "task"          :   "casa_fluxscale",
+    "description"   :   "Bootstrap the flux density scale from standard calibrators",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "fluxscale",
+    "msdir"         :   true,
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "info"      :   "Name of input visibility file (MS)",
+            "io"        :   "msfile",
+            "required"  :   true
+        },
+        {
+            "name"      :   "caltable",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Name of input calibration table",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fluxtable",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Name of output, flux-scaled calibration table",
+            "default"   :   null
+        },
+        {
+            "name"      :   "reference",
+            "dtype"     :   "list:str",
+            "info"      :   "Reference field name(s) (transfer flux scale FROM)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "transfer",
+            "dtype"     :   "list:str",
+            "info"      :   "Transfer field name(s) (transfer flux scale TO), '' -> all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "listfile",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Name of listfile that contains the fit information. Default is (no file).",
+            "default"   :   null
+        },
+        {
+            "name"      :   "append",
+            "dtype"     :   "bool",
+            "info"      :   "Append solutions?",
+            "default"   :   false
+        },
+        {
+            "name"      :   "refspwmap",
+            "dtype"     :   "list:str",
+            "info"      :   "Scale across spectral window boundaries.  See help fluxscale",
+            "default"   :   null
+        },
+        {
+            "name"      :   "incremental",
+            "dtype"     :   "bool",
+            "info"      :   "incremental caltable",
+            "default"   :   false
+        },
+        {
+            "name"      :   "fitorder",
+            "dtype"     :   "int",
+            "info"      :   "order of spectral fitting",
+            "default"   :   1
+        },
+        {
+            "name"      :   "async",
+            "dtype"     :   "bool",
+            "info"      :   "If true the taskname must be started using fluxscale(...)",
+            "default"   :   false
+        } 
+    ]
+}

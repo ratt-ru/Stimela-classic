@@ -1,5 +1,7 @@
 import os
 import sys
+import drivecasa
+casa = drivecasa.Casapy()
 
 sys.path.append("/utils")
 import utils
@@ -9,17 +11,23 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-options = utils.readJson(CONFIG)
-vis = options.pop("msname")
-options["vis"] = MSDIR + "/" + vis
+cab = utils.readJson(CONFIG)
 
-caltable = options.pop("caltable")
-fluxtable = options.pop("fluxtable")
+args = {}
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-caltable = utils.substitute_globals(caltable) or OUTPUT+"/"+caltable
-fluxtable = utils.substitute_globals(fluxtable) or OUTPUT+"/"+fluxtable
+    if value is None:
+        continue
 
-options["caltable"] = caltable
-options["fluxtable"] = fluxtable
+    args[name] = value
 
-utils.icasa("fluxscale", **options)
+script = ['{0}(**{1})'.format(cab['binary'], args)]
+
+out, err = casa.run_script(script, raise_on_severe=False)
+sys.stdout.write('\n'.join(out))
+
+if len(err)>0:
+        raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is bellow \n {1}".format(cab['binary'], '\n'.join(err)))
+

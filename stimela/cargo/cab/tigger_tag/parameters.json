@@ -1,0 +1,60 @@
+{
+    "task"          :   "tigger_tag",
+    "description"   :   "Sets or changes tags of selected sources in the sky model. Use NAME (with shell-style wildcards allowed) to select sources by name, or  =SELTAG to select sources having the specified (non-zero) tag, or SELTAG<>SELVAL to select sources by comparing a tag to a value, where '<>'  represents a comparison operator, and can be one of == (or =),!=,<=,<,>,>= (or the FORTRAN-  style operators .eq.,.ne.,.le.,.lt.,.gt.,.ge.). SELVAL may also be followed by one of the characters  'd', 'm' or 's', in which case it will be converted from degrees, minutes or seconds into radians. This is useful for selections such as 'r<5d'. Then, with a subset of sources selected, use TAG=TYPE:VALUE (where TYPE is one of: bool, int, float, str, complex) to set a tag on the selected sources to a value of a specific type, or TAG=VALUE to determine type automatically, or +TAG to set a bool True tag, !TAG to set a False tag, and /TAG to remove a tag.",
+    "base"          :   "stimela/tigger",
+    "tag"           :   "0.2.3",
+    "binary"        :   "tigger-tag",
+    "msdir"         :   false,
+    "prefix"        :   "--",
+    "parameters"    :   [   
+        {
+            "name"      :   "input-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input sky model",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-skymodel",
+            "mapping"   :   "output",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Saves changes to different output model. Default is to save in place.",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "tag",
+            "dtype"     :   "str",
+            "info"      :   "Tag",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "force",
+            "dtype"     :   "bool",
+            "info"      :   "Saves changes to model without prompting. Default is to prompt.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "transfer-tags",
+            "dtype"     :   "bool",
+            "info"      :   "Transfers tags from a reference 'input-skymodel' to the 'output-skymodel/output'. That is, for every tag in the given list, finds all sources with those tags in the reference LSM,  then applies these tags to all nearby sources in LSM  (within a radius of 'tolerance' [ARCSEC]).  Saves the result to an LSM file given by -o/--output.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "tolerance",
+            "dtype"     :   "float",
+            "info"      :   "Tolerance for transfer tags. In arcseconds",
+            "default"   :   null
+        },
+        {
+            "name"      :   "debug",
+            "dtype"     :   "int",
+            "info"      :   "(for debugging Python code) sets verbosity level of the named Python context. May be used multiple times.",
+            "default"   :   null
+        }
+    ]
+}
+

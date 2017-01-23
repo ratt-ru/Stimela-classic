@@ -1,0 +1,270 @@
+{
+    "task"          :   "calibrator",
+    "base"          :   "stimela/meqtrees",
+    "tag"           :   "0.2.3",
+    "description"   :   "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)",
+    "binary"        :   "/usr/bin/meqtree-pipeliner.py",
+    "prefix"        :   " ",
+    "msdir"         :   true,
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of MS to be calibrated",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Sky model to use for the calibration",
+            "default"   :   null
+        },
+        {
+            "name"      :   "subset",
+            "dtype"     :   "str",
+            "info"      :   "Source subset to use for the calibration",
+            "default"   :   "all"
+        },
+        {
+            "name"      :   "add-vis-model",
+            "dtype"     :   "bool",
+            "info"      :   "Add visibility model data to the calibration model. This model should be saved in the MODEL_DATA column",
+            "default"   :   false
+        },
+        {
+            "name"      :   "label",
+            "dtype"     :   "str",
+            "info"      :   "Label for gain and diagnostic plots from the caibration. May not be needed if 'prefix' is provided.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "prefix",
+            "dtype"     :   "str",
+            "info"      :   "Prefix for gain and diagnostic plots. If not specified will use basename of MS.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "make-plots",
+            "dtype"     :   "bool",
+            "info"      :   "Make gain plots",
+            "default"   :   false
+        },
+        {
+            "name"      :   "column",
+            "dtype"     :   "str",
+            "info"      :   "Column that has the data to be calibrated",
+            "default"   :   "DATA"
+        },
+        {
+            "name"      :   "output-column",
+            "dtype"     :   "str",
+            "info"      :   "Column that the calibrated data should be dumped into",
+            "default"   :   "CORRECTED_DATA",
+        },
+        {
+            "name"      :   "output-data",
+            "dtype"     :   "str",
+            "info"      :   "Data to be outputed after calibration",
+            "choices"   :   ["CORRECTED_RESIDUAL", "CORRECTED_DATA", "RESIDUAL_DATA"],
+            "default"   :   null
+        },
+        {
+            "name"      :   "threads",
+            "dtype"     :   "int",
+            "info"      :   "Number of CPUs to use for  multithreading",
+            "default"   :   2
+        },
+        {
+            "name"      :   "section",
+            "dtype"     :   "str",
+            "info"      :   "Section to execute in TDL config file. Only needed if using custom TDL config",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field-id",
+            "dtype"     :   "int",
+            "info"      :   "Field ID",
+            "default"   :   0
+        },
+        {
+            "name"      :   "spw-id",
+            "dtype"     :   "int",
+            "info"      :   "SPW ID",
+            "defaut"    :   0
+        },
+        {
+            "name"      :   "Ejones",
+            "dtype"     :   "bool",
+            "info"      :   "Add a primary beam model",
+            "default"   :   false
+        },
+        {
+            "name"      :   "beam-files-pattern",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "check_io"  :   false,
+            "info"      :   "Beam files pattern",
+            "default"   :   null
+        },
+        {
+            "name"      :   "beam-type",
+            "dtype"     :   "str",
+            "choices"   :   ["fits", "emsss"],
+            "info"      :   "Type of input beam files",
+            "default"   :   "fits"
+        },
+        {
+            "name"      :   "beam-l-axis",
+            "dtype"     :   "str",
+            "info"      :   "Beam l axis",
+            "default"   :   "X"
+        },
+        {
+            "name"      :   "beam-m-axis",
+            "dtype"     :   "str",
+            "info"      :   "Beam m axis",
+            "default"   :   "Y"
+        },
+        {
+            "name"      :   "paralactic-angle-rotation",
+            "dtype"     :   "bool",
+            "info"      :   "Enable paralactic angle rotation. Enable if telescope mount is ALT-AZ",
+            "default"   :   false
+        },
+        {
+            "name"      :   "Gjones",
+            "dtype"     :   "bool",
+            "info"      :   "Enable direction dependent calibration",
+            "default"   :   false
+        },
+        {
+            "name"      :   "Gjones-solution-intervals",
+            "dtype"     :   "list:int",
+            "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
+            "default"   :   null
+        },
+        {
+            "name"      :   "Gjones-smooothing-intervals",
+            "dtype"     :   "list:int",
+            "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
+            "default"   :   null
+        },
+        {
+            "name"      :   "Gjones-ampl-clipping",
+            "dtype"     :   "bool",
+            "info"      :   "Gjones amplitude clipping",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "Gjones-chisq-clipping",
+            "dtype"     :   "bool",
+            "info"      :   "Gjones chi square clipping",
+            "default"   :   false
+        },
+        {
+            "name"      :   "Gjones-thresh-sigma",
+            "dtype"     :   "float",
+            "info"      :   "Gjones threshold level",
+            "default"   :   10
+        },
+        {
+            "name"      :   "Gjones-flag-ampl-low",
+            "dtype"     :   "float",
+            "info"      :   "Gjones flagging amplitude",
+            "default"   :   0.2
+        },
+        {
+            "name"      :   "Gjones-flag-ampl-high",
+            "dtype"     :   "float",
+            "info"      :   "Gjones flagging amplitude",
+            "default"   :   1.8
+        },
+        {
+            "name"      :   "Gjones-apply-only",
+            "dtype"     :   "bool",
+            "info"      :   "Apply existing gains",
+            "default"   :   false
+        },
+        {
+            "name"      :  "DDjones",
+            "dtype"     :  "bool",
+            "info"      :  "Enable direction dependent calibration",
+            "default"   :   false
+        },
+        {
+            "name"      :   "DDjones-niter",
+            "dtype"     :   "int",
+            "info"      :   "Number of iterations",
+            "default"   :   50
+        },
+        {
+            "name"      :   "DDjones-tag",
+            "dtype"     :   "str",
+            "info"      :   "Tag for sources that will recieve DD calibration",
+            "default"   :   "dE"
+        },
+        {
+            "name"      :   "DDjones-solution-intervals",
+            "dtype"     :   "list:int",
+            "info"      :   "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
+            "default"   :   null
+        },
+        {
+            "name"      :   "DDjones-smoothing-intervals",
+            "dtype"     :   "list:int",
+            "info"      :   "Smoothing intervals in time and frequency in time/frequency bins. Should be given as a list of two integers",
+            "default"   :   null
+        },
+        {
+            "name"      :   "DDjones-ampl-clipping",
+            "dtype"     :   "bool",
+            "info"      :   "DDjones amplitude clipping",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "DDjones-chisq-clipping",
+            "dtype"     :   "bool",
+            "info"      :   "DDjones chi square clipping",
+            "default"   :   false
+        },
+        {
+            "name"      :   "DDjones-thresh-sigma",
+            "dtype"     :   "float",
+            "info"      :   "DDjones threshold level",
+            "default"   :   10
+        },
+        {
+            "name"      :   "DDjones-flag-ampl-low",
+            "dtype"     :   "float",
+            "info"      :   "DDjones flagging amplitude",
+            "default"   :   0.2
+        },
+        {
+            "name"      :   "DDjones-flag-ampl-high",
+            "dtype"     :   "float",
+            "info"      :   "DDjones flagging amplitude",
+            "default"   :   1.8
+        },
+        {
+            "name"      :   "DDjones-apply-only",
+            "dtype"     :   "bool",
+            "info"      :   "Apply existing gains",
+            "default"   :   false
+        },
+        {
+            "name"      :   "IFRjones",
+            "dtype"     :   "bool",
+            "info"      :   "Enable interferometer based gain solutions",
+            "default"   :   false
+        },
+        {
+            "name"      :   "IFRjones-apply-only",
+            "dtype"     :   "bool",
+            "info"      :   "Apply existing gains",
+            "default"   :   false
+        }
+    ]
+}

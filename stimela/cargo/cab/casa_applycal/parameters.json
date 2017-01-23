@@ -1,0 +1,148 @@
+{
+    "task"          :   "casa_applycal",
+    "description"   :   "Apply calibrations solutions(s) to data",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "applycal",
+    "msdir"         :   true,
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "info"      :   "Name of input visibility file",
+            "io"        :   "msfile",
+            "required"  :   true
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "str",
+            "info"      :   "Select field using field id(s) or field name(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "Select spectral window/channels",
+            "default"   :   null
+        },
+        {
+            "name"      :   "intent",
+            "dtype"     :   "str",
+            "info"      :   "Select observing intent",
+            "default"   :   null
+        },
+        {
+            "name"      :   "selectdata",
+            "dtype"     :   "bool",
+            "info"      :   "Other data selection parameters",
+            "default"   :   true
+        },
+        {
+            "name"      :   "timerange",
+            "dtype"     :   "str",
+            "info"      :   "Select data based on time range",
+            "default"   :   null
+        },
+        {
+            "name"      :   "uvrange",
+            "dtype"     :   "str",
+            "info"      :   "Select data within uvrange (default units meters)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "antenna",
+            "dtype"     :   "str",
+            "info"      :   "Select data based on antenna/baseline",
+            "default"   :   null
+        },
+        {
+            "name"      :   "scan",
+            "dtype"     :   "str",
+            "info"      :   "Scan number range",
+            "default"   :   null
+        },
+        {
+            "name"      :   "observation",
+            "dtype"     :   "str",
+            "info"      :   "Select by observation ID(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "msselect",
+            "dtype"     :   "bool",
+            "info"      :   "Optional complex data selection (ignore for now)",
+            "default"   :   true
+        },
+        {
+            "name"      :   "docallib",
+            "dtype"     :   "bool",
+            "info"      :   "Use callib or traditional cal apply parameters",
+            "default"   :   true
+        },
+        {
+            "name"      :   "callib",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Cal Library filename",
+            "default"   :   null
+        },
+        {
+            "name"      :   "gaintable",
+            "dtype"     :   "list:file",
+            "io" :   "input",
+            "info"      :   "Gain calibration table(s) to apply on the fly",
+            "default"   :   null
+        },
+        {
+            "name"      :   "gainfield",
+            "dtype"     :   ["list:int","list:str"],
+            "info"      :   "Select a subset of calibrators from gaintable(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "interp",
+            "dtype"     :   "list:str",
+            "info"      :   "Temporal interpolation for each gaintable (=linear)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spwmap",
+            "dtype"     :   "list:list",
+            "info"      :   "Spectral windows combinations to form for gaintables(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "calwt",
+            "dtype"     :   "list:bool",
+            "info"      :   "Calibrate data weights per gaintable.",
+            "default"   :   [true]
+        },
+        {
+            "name"      :   "parang",
+            "dtype"     :   "bool",
+            "info"      :   "Apply parallactic angle correction on the fly",
+            "default"   :   false
+        },
+        {
+            "name"      :   "applymode",
+            "dtype"     :   "str",
+            "choices"   :   ["calflag","calflagstrict","trial","flagonly","flagonlystrict","calonly"],
+            "info"      :   "Calibration mode: '' = 'calflag','calflagstrict','trial','flagonly','flagonlystrict', or 'calonly'",
+            "default"   :   ""
+        },
+        {
+            "name"      :   "flagbackup",
+            "dtype"     :   "bool",
+            "info"      :   "Automatically back up the state of flags before the run?",
+            "default"   :   true
+        },
+        {
+            "name"      :   "async",
+            "dtype"     :   "bool",
+            "info"      :   "If true the taskname must be started using applycal(...)",
+            "default"   :   false
+        } 
+    ]
+}

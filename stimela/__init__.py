@@ -9,7 +9,9 @@ import signal
 
 import inspect
 import stimela
+import stimela_version
 from stimela import utils, cargo
+from stimela.cargo import cab
 from recipe import Recipe as Pipeline
 from recipe import Recipe, PipelineException
 from stimela import docker
@@ -22,9 +24,17 @@ LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
 LOG_PROCESS = LOG_HOME + "/stimela_process.log"
 LOG_CABS = LOG_HOME + "/stimela_cab.log"
 
-#BASE = "base simms casa meqtrees lwimager wsclean aoflagger owlcat sourcery tigger moresa".split()
+
 BASE = os.listdir(cargo.BASE_PATH)
-CAB = os.listdir(cargo.CAB_PATH)
+CAB = []
+for item in os.listdir(cargo.CAB_PATH):
+    try:
+        dockerfile = 'Dockerfile' in os.listdir('{0}/{1}'.format(cargo.CAB_PATH, item))
+    except OSError:
+        continue
+    if dockerfile:
+        CAB.append(item)
+
 
 NOT_PUBLIC = ["ddfacet"]
 
@@ -32,7 +42,9 @@ USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
 
-__version__ = "0.2.2"
+container_home = '/home/{}'.format(USER)
+
+__version__ = stimela_version.version
 
 GLOBALS = {}
 
@@ -46,11 +58,9 @@ class MultilineFormatter(argparse.HelpFormatter):
             multiline_text = multiline_text + formatted_paragraph
         return multiline_text
 
-
 def register_globals():
     frame = inspect.currentframe().f_back
     frame.f_globals.update(GLOBALS)
-
 
 def build(argv):
     for i, arg in enumerate(argv):
@@ -61,27 +71,35 @@ def build(argv):
             help="Build base images")
 
     parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
-            help="executor image name, location of executor image files")
+            help="Executor image (name) name, location of executor image files")
+
+    parser.add_argument("-uo", "--us-only",
+            help="Only build these cabs. Comma separated cab names")
 
     parser.add_argument("-i", "--ignore-cabs", default="",
             help="Comma separated cabs (executor images) to ignore.")
+
+    parser.add_argument("-nc", "--no-cache", action="store_true",
+            help="Do not use cache when building the image")
 
     args = parser.parse_args(argv)
 
     if args.base:
         for image in BASE:
             dockerfile = "{:s}/{:s}".format(cargo.BASE_PATH, image)
-            image = "stimela/{:s}".format(image)
+            image = "stimela/{0}:{1}".format(image, __version__)
             docker.build(image,
                          dockerfile)
         return 0
 
-    workdir = "/home/%s/output/"%USER
-    build_args = ["RUN groupadd -g %d %s"%(UID, USER),
-                  "RUN useradd -u %d -g %d %s"%(UID, UID, USER),
-                  "WORKDIR %s"%workdir,
-                  "ENV HOME %s"%USER,
-                  "USER %s"%USER]
+    workdir = "/home/{}/output/".format(USER)
+    build_args = ["RUN groupadd -g {:d} {:s}".format(UID, USER),
+                  "RUN useradd -u {:d} -g {:d} {:s}".format(UID, UID, USER),
+                  "WORKDIR {:s}".format(workdir),
+                  "ENV HOME {:s}".format(USER),
+                  "USER {:s}".format(USER)]
+
+    no_cache = ["--no-cache"] if args.no_cache else []
 
     if args.cab:
         cab_args = args.cab.split(",")
@@ -95,7 +113,7 @@ def build(argv):
 
         docker.build(cab,
                      path,
-                     build_args=build_args)
+                     build_args=build_args, args=no_cache)
 
         img = stimela_logger.Image(LOG_CABS)
         img.add(dict(name=cab))
@@ -115,11 +133,23 @@ def build(argv):
         image = "{:s}_cab/{:s}".format(USER, image)
         docker.build(image,
                      dockerfile,
-                     build_args=build_args)
+                     build_args=build_args, args=no_cache)
 
         img.add(dict(name=image))
 
     img.write()
+
+
+def info(cabname, header=False):
+    """ prints out help information about a cab """
+
+    # First check if cab exists
+    if cabname not in CAB:
+        raise RuntimeError("Cab '{}' could not be found. The available cabs are listed below \n {}".format(cabname, CAB))
+
+    pfile = "{0}/{1}/parameters.json".format(cargo.CAB_PATH, cabname)
+    cab_definition = cab.CabDefinition(parameter_file=pfile)
+    cab_definition.display(header)
 
 
 def cabs(argv):
@@ -127,10 +157,23 @@ def cabs(argv):
         if (arg[0] == '-') and arg[1].isdigit(): argv = ' ' + arg
 
     parser = ArgumentParser(description='List executor (a.k.a cab) images')
+    parser.add_argument("-i", "--cab-doc", 
+        help="Will display document about the specified cab. For example, \
+to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
+
+    parser.add_argument("-ls", "--list", action="store_true",
+            help="List cabs")
+
     args = parser.parse_args(argv)
 
-    img = stimela_logger.Image(LOG_CABS)
-    img.display()
+    if args.cab_doc:
+        info(args.cab_doc)
+    else:
+        for cab in CAB:
+            try:
+                info(cab, header=True)
+            except IOError:
+                pass
 
 
 def run(argv):
@@ -154,45 +197,18 @@ def run(argv):
     add("-j", "--ncores", type=int,
             help="Number of cores to when stimela parallesization (stimea.utils.pper function) ")
 
-    add("-L", "--load-from-log", dest="from_log",  metavar="LOG:TAG[:DIR]",
-            help="Load base images from stimela log file. The resulting executor images will be tagged 'TAG', and the build contexts will be stored at 'DIR'")
-
     add("script",
-            help="Penthesilea script")
+            help="Run script")
 
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
             help="Global variables to pass to script. The type is assumed to string unless specified")
 
     args = parser.parse_args(argv)
-
     tag =  None
 
-    if args.from_log:
-
-        destdir = "."
-
-        tmp = args.from_log.split(":")
-        if len(tmp) == 2:
-            log, tag = tmp
-        elif len(tmp) == 3:
-            log, tag, destdir = tmp
-            if not os.path.exists(destdir):
-                os.mkdir(destdir)
-
-        images = set(utils.get_base_images(log))
-
-        for image in images:
-
-            image_, base = image
-            path = "{:s}/{:s}".format(STIMELA_CAB_PATH, image_.split("/")[-1])
-            dirname, dockerfile = utils.change_Dockerfile_base_image(path, base, image_.split("/")[-1], destdir=destdir)
-
-            # Build executor image
-            docker.build("cab/{:s}:{:s}".format(image_.split("/")[-1], tag),
-                       dirname)
 
     _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output,
-                    STIMELA_DATA=cargo.DATA_PATH, STIMELA_MSDIR=args.msdir,
+                    STIMELA_MSDIR=args.msdir,
                     CAB_TAG=tag)
 
     nargs = len(args.globals)
@@ -240,7 +256,6 @@ def pull(argv):
             if not img.find(image):
                 docker.pull(image)
                 img.add(dict(name=image, tag=tagargs.tag))
-
     else:
 
         base = []
@@ -256,6 +271,7 @@ def pull(argv):
             if not img.find(image) and image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
                 docker.pull(image)
                 img.add(dict(name=image, tag=args.tag))
+
 
 def images(argv):
     for i, arg in enumerate(argv):
@@ -315,7 +331,6 @@ def ps(argv):
         procs.clear()
 
 
-
 def kill(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
@@ -366,7 +381,6 @@ def kill(argv):
         except OSError:
             pass
 
-
 def main(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
@@ -405,7 +419,10 @@ def main(argv):
     args = parser.parse_args(argv)
 
     # Command is help and no other commands following
-    main_help = (args.command[0] == "help" and len(args.command) == 1)
+    try:
+        main_help = (args.command[0] == "help" and len(args.command) == 1)
+    except IndexError:
+        main_help = True
 
     if args.help or main_help:
         parser.print_help()

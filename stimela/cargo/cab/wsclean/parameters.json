@@ -1,0 +1,558 @@
+{
+    "task"          :   "wsclean",
+    "description"   :   "WSClean imaging software",
+    "base"          :   "stimela/wsclean",
+    "tag"           :   "0.2.3",
+    "binary"        :   "/usr/bin/wsclean",
+    "msdir"         :   true,
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "dtype"     :   "list:file",
+            "info"      :   "MS(s) to be imaged. If multiple mses are specified, they need to be phase-rotated to the same point on the sky",
+            "io"        :   "msfile",
+            "required"  :   true,
+            "default"    :   null
+        },
+        {   "name"      :   "prefix",
+            "mapping"   :   "name",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Prefix for output products. Default is prefix of MS",
+            "default"   :   null
+        },
+        {
+            "name"      :   "threads",
+            "dtype"     :   "int",   
+            "info"      :   "Specify number of computing threads to use, i.e., number of cpu cores that will be used. None means use all  cores",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mem",
+            "dtype"     :   "float",
+            "info"      :   "Limit memory usage to the given fraction of the total system memory. This is an approximate value.",
+            "default"   :   100
+        },
+        {
+            "name"      :   "absmem",
+            "dtype"     :   "float",
+            "info"      :   "Like 'mem', but this specifies a fixed amount of memory in gigabytes.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "verbose",
+            "dtype"     :   "bool",
+            "info"      :   "Increase verbosity of output",
+            "default"   :   false
+        },
+        {
+            "name"      :   "log-time",
+            "dtype"     :   "bool",
+            "info"      :   "Add date and time to each line in the output.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "quite",
+            "dtype"     :   "bool",
+            "info"      :   "Do not output anything but errors.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "reoder",
+            "dtype"     :   "bool",
+            "info"      :   "Force or disable reordering of Measurement Set. This can be faster when the measurement set needs to be iterated several times, such as with many major iterations or in channel imaging mode. If unspecified will only be enabled in channel imaging mode",
+            "default"   :   null
+        },
+        {
+            "name"      :   "no-update-model-required",
+            "dtype"     :   "bool",
+            "info"      :   "Save model data in model data column after imaging. It can save time not to update the model data column.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "no-dirty",
+            "dtype"     :   "bool",
+            "info"      :   "Do not save the dirty image",
+            "default"   :   false
+        },
+        {
+            "name"      :   "saveweights",
+            "dtype"     :   "bool",
+            "info"      :   "Save the gridded weights in the a fits file named <image-prefix>-weights.fits.",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "apply-primary-beam",
+            "dtype"     :   "bool",
+            "info"      :   "Calculate and apply the primary beam and save images for the Jones components, with weighting identical to the weighting as used by the imager. Only available for LOFAR.",
+            "defualt"   :   false
+        },
+        {
+            "name"      :   "reuse-primary-beam",
+            "dtype"     :   "bool",
+            "info"      :   "If a primary beam image exists on disk, reuse those images (not implemented yet)",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "saveuv",
+            "dtype"     :   "bool",
+            "info"      :   "Save the gridded uv plane, i.e., the FFT of the residual image. The UV plane is complex, hence two images will be output: <prefix>-uv-real.fits and <prefix>-uv-imag.fits",
+            "default"   :   false
+        },
+        {
+            "name"      :   "set-differential-lofar-beam",
+            "dtype"     :   "bool",
+            "info"      :   "Assume the visibilities have already been beam-corrected for the reference direction.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "weight",
+            "dtype"     :   "str",
+            "info"      :   "Weightmode can be: natural, uniform, briggs. Default: uniform. When using Briggs' weighting, add the robustness parameter, like: 'weight briggs 0.5'",
+            "default"   :   "briggs 0"
+        },
+        {
+            "name"      :   "superweight",
+            "dtype"     :   "float",
+            "info"      :   "Increase the weight gridding box size, similar to Casa's superuniform weighting scheme. The factor can be rational and can be less than one for subpixel weighting.",
+            "default"   :   1.0
+        },
+        {
+            "name"      :   "nomfsweighting",
+            "dtype"     :   "bool",
+            "info"      :   "In spectral mode, calculate the weights as if the image was made using MFS. This makes sure that the sum of channel images equals the MFS weights. Otherwise, the channel image will become a bit more naturally weighted. This is only relevant for weighting modes that require gridding (i.e., Uniform, Briggs').",
+           "default"    :   false
+        },
+        {
+            "name"      :   "weighting-rank-filter",
+            "dtype"     :   "float",
+            "info"      :   "Filter the weights and set high weights to the local mean. The level parameter specifies the filter level; any value larger than level*localmean will be set to level*localmean.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "weighting-rank-filter-size",
+            "dtype"     :   "float",
+            "info"      :   "Set size of weighting rank filter",
+            "default"   :   16
+        },
+        {
+            "name"      :   "taper-gaussian",
+            "dtype"     :   "str",
+            "info"      :   "Taper the weights with a Gaussian function. This will reduce the contribution of long baselines. The beamsize is by default in asec, but a unit can be specified as '2amin'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "taper-tukey",
+            "dtype"     :   "float",
+            "info"      :   "Taper the outer weights with a Tukey transition. Lambda specifies the size of the transition; use in combination with -maxuv-l.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "taper-inner-tukey",
+            "dtype"     :   "float",
+            "info"      :   "aper the weights with a Tukey transition. Lambda specifies the size of the transition; use in combination with 'minuv-l'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "taper-edge",
+            "dtype"     :   "float",
+            "info"      :   "Taper the weights with a rectangle, to keep a space of lambda between the edge and gridded visibilities.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "taper-edge-tukey",
+            "dtype"     :   "float",
+            "info"      :   "Taper the edge weights with a Tukey window. Lambda is the size of the Tukey transition. When 'taper-edge' is also specified, the Tukey transition starts inside the inner rectangle.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "npix",
+            "dtype"     :   "list:int",
+            "info"      :   "Image size in pixels. List of integers (width and height) or a single integer for a square image",
+            "mapping"   :   "size",
+            "default"   :   [2048,2048]
+        },
+        {
+            "name"      :   "trim",
+            "dtype"     :   "list:int",
+            "info"      :   "After inversion, trim the image to the given size.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "cellsize",
+            "mapping"   :   "scale",
+            "dtype"     :   ["float","str"],
+            "info"      :   "Scale of a pixel. Default unit is arcsec, but can be specificied, e.g. 'scale 20asec'",
+            "default"   :   2
+        },
+        {
+            "name"      :   "continue",
+            "dtype"     :   "bool",
+            "info"      :   "Will continue an earlier WSClean run. Earlier model images will be read and model visibilities will be subtracted to create the first dirty residual. CS should have been used in the earlier run, and model data should have been written to the measurement set for this to work",
+            "default"   :   false
+        },
+        {
+            "name"      :   "subtract-model",
+            "dtype"     :   "bool",
+            "info"      :   "Subtract the model from the data column in the first iteration. This can be used to reimage an already cleaned image, e.g. at a different resolution.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "channelsout",
+            "dtype"     :   "int",
+            "info"      :   "Splits the bandwidth and makes count nr. of images",
+            "default"   :   1
+        },
+        {
+            "name"      :   "nwlayers",
+            "dtype"     :   "int",
+            "info"      :   "Use the minimum suggested w-layers for an image of the given size. Can e.g. be used to increase accuracy when predicting small part of full image.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "nwlayers-for-size",
+            "dtype"     :   "list:int",
+            "info"      :   "Use the minimum suggested w-layers for an image of the given size. Can e.g. be used to increase accuracy when predicting small part of full image.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "nosmallinversion",
+            "dtype"     :   "bool",
+            "info"      :   "Perform inversion at the Nyquist resolution and upscale the image to the requested image size afterwards. This speeds up inversion considerably, but makes aliasing slightly worse. This effect is in most cases <1%",
+            "default"   :   false
+        },
+        {
+            "name"      :   "gridmode",
+            "dtype"     :   "str",
+            "choices"   :   ["nn", "kb", "rect"],
+            "info"      :   " Kernel and mode used for gridding: kb = Kaiser-Bessel (default with 7 pixels), nn = nearest neighbour (no kernel), rect = rectangular window.",
+            "default"   :   "kb"
+        },
+        {
+            "name"      :   "gkernelsize",
+            "dtype"     :   "int",
+            "info"      :   "Gridding antialiasing kernel size",
+            "default"   :   7
+        },
+        {
+            "name"      :   "oversampling",
+            "dtype"     :   "float",
+            "info"      :   "Oversampling factor used during gridding",
+            "default"   :   63
+        },
+        {
+            "name"      :   "make-psf",
+            "dtype"     :   "bool",
+            "info"      :   "Always make the psf, even when no cleaning is performed.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "make-psf-only",
+            "dtype"     :   "bool",
+            "info"      :   "Only make psf. No other images are made.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "savegridding",
+            "dtype"     :   "bool",
+            "info"      :   "Save the gridding correction image. This shows the effect of the antialiasing filter",
+            "default"   :   false
+        },
+        {
+
+            "name"      :   "dft-prediction",
+            "dtype"     :   "bool",  
+            "info"      :   "Predict via a direct Fourier transform. This is slow, but can account for direction-dependent effects. This has only effect when 'mgain' is set or 'predict' is given.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "dft-with-beam",
+            "dtype"     :   "bool",
+            "info"      :   "Apply the beam during DFT. Currently only works for LOFAR.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "visibility-weighting-mode",
+            "dtype"     :   "str",
+            "info"      :   "Specify visibility weighting modi. Affects how the weights (normally) stored in WEIGHT_SPECTRUM column are applied. Useful for estimating e.g. EoR power spectra errors. Normally one would use this in combination with 'no-normalize-for-weighting'.",
+            "choices"   :   ["normal","squared","unit"],
+            "default"   :   null
+        },
+        {
+            "name"      :   "no-normalize-for-weighting",
+            "dtype"     :   "bool",
+            "info"      :   "Disable the normalization for the weights, which makes the PSF's peak one. See 'visibility-weighting-mode'. Only useful with natural weighting.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "baseline-averaging",
+            "dtype"     :   "int",
+            "info"      :   "Enable baseline-dependent averaging. The specified size is in number of wavelengths (i.e., uvw-units). One way to calculate this is with <baseline in nr. of lambdas> * 2pi * <acceptable integration in s> /(24*60*60).",
+            "default"   :   null
+        },
+        {
+            "name"      :   "simulate-noise",
+            "dtype"     :   "float",
+            "info"      :   "Will replace every visibility by a Gaussian distributed value with given standard deviation before imaging." ,
+            "default"   :   null
+        },
+        {
+            "name"      :   "stokes",
+            "dtype"     :   ["list:str", "str"],
+            "info"      :   "Default: 'I'. Possible values: XX, XY, YX, YY, I, Q, U, V, RR, RL, LR or LL (case insensitive). Multiple values can be separated with commas, e.g.: 'xx,xy,yx,yy'. Two or four polarizations can be joinedly cleaned (see '-joinpolarizations'), but this is not the default. I, Q, U and V polarizations will be directly calculated from the visibilities, which is not appropriate for telescopes with non-orthogonal feeds, such as MWA and LOFAR. The 'xy' polarization will output both a real and an imaginary image, which allows calculating true Stokes polarizations for those telescopes.",
+           "mapping"    :   "pol",
+           "default"    :   "I"
+        },
+        {
+            "name"      :   "interval",
+            "dtype"     :   "list:int",
+            "info"      :   "Only image the given time interval. Indices specify the timesteps, end index is exclusive.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "intervalsout",
+            "dtype"     :   "int",
+            "info"      :   "Number of intervals to image inside the selected global interval",
+            "default"   :   1
+        },
+        {
+            "name"      :   "channelrange",
+            "dtype"     :   "list:int",
+            "info"      :   "Only image the given channel range. Indices specify channel indices, end index is exclusive",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "int",
+            "info"      :   "Image the given field id. Default: first field (id 0)",
+            "default"   :   0
+        },
+        {
+            "name"      :   "spws",
+            "dtype"     :   "list:int",
+            "info"      :   "Selects only the spws given in the list. list should be a comma-separated list of integers",
+            "default"   :   0
+        },
+        {
+            "name"      :   "column",
+            "mapping"   :   "datacolumn",
+            "dtype"     :   "str",
+            "info"      :   "CORRECTED_DATA if it exists, otherwise DATA will be used.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "maxuvw-m",
+            "dtype"     :   "float",
+            "info"      :   "Set maximum baseline distance",
+            "default"   :   null
+        },
+        {
+            "name"      :   "minuvw-m",
+            "dtype"     :   "float",
+            "info"      :   "Set minimum baseline distance",
+            "default"   :   null
+        },
+        {
+            "name"      :   "maxuvw-l",
+            "dtype"     :   "float",
+            "info"      :   "Set maximum uv distance",
+            "default"   :   null
+        },
+        {
+            "name"      :   "maxuvw-l",
+            "dtype"     :   "float",
+            "info"      :   "Set maximum uv distance",
+            "default"   :   null
+        },
+        {
+            "name"      :   "clean_iterations",
+            "mapping"   :   "niter",
+            "dtype"     :   "int",
+            "info"      :   "Maximum number of clean iterations to perform",
+            "default"   :   0
+        },
+        {
+            "name"      :   "threshold",
+            "dtype"     :   "float",
+            "info"      :   "Stopping clean thresholding in Jy",
+            "default"   :   0
+        },
+        {
+            "name"      :   "auto-threshold",
+            "dtype"     :   "float",
+            "info"      :   "Estimate noise level using a robust estimator and stop at sigma x stddev.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "gain",
+            "dtype"     :   "float",
+            "info"      :   "Cleaning gain: Ratio of peak that will be subtracted in each iteration",
+            "default"   :   0.1
+        },
+        {
+            "name"      :   "mgain",
+            "dtype"     :   "float",
+            "info"      :   "Cleaning gain for major iterations: Ratio of peak that will be subtracted in each major iteration. To use major iterations, 0.85 is a good value.",
+            "default"   :   1.0
+        },
+        {
+            "name"      :   "joinpolarizations",
+            "dtype"     :   "bool",
+            "info"      :   "Perform cleaning by searching for peaks in the sum of squares of the polarizations, but subtract components from the individual images. Only possible when imaging two or four Stokes or linear parameters",
+            "default"   :   false
+        },
+        {
+            "name"      :   "joinchannels",
+            "dtype"     :   "bool",
+            "info"      :   "Perform cleaning by searching for peaks in the MFS image, but subtract components from individual channels. This will turn on mfsweighting by default",
+            "default"   :   false
+        },
+        {
+            "name"      :   "multiscale",
+            "dtype"     :   "bool",
+            "info"      :   "Clean on different scales. This is a new algorithm. This parameter invokes the v1.9 multiscale algorithm, which is slower but more accurate compared to the older algorithm, and therefore the recommended one to use. The older algorithm is now invoked with 'fast-multiscale'.",
+           "default"    :   false
+        },
+        {
+            "name"      :   "fast-multiscale",
+            "dtype"     :   "bool",
+            "info"      :   "Clean on different scales. This is a new fast experimental algorithm. This method used to be invoked with 'multiscale' before v1.9, but the newer multiscale",
+            "default"   :   false
+        },
+        {
+            "name"      :   "multiscale-threshold-bias",
+            "dtype"     :   "float",
+            "info"      :   "Parameter to lower the threshold for larger scales. The used threshold for a scale is threshold(scale)=pointsource_threshold x tbias^scale. A lower bias will clean larger scales deeper.",
+            "default"   :   0.7
+        },
+        {
+            "name"      :   "multiscale-scale-bias",
+            "dtype"     :   "float",
+            "info"      :   "Parameter to prevent cleaning small scales in the large-scale iterations. A higher bias will give more focus to larger scales",
+            "default"   :   0.6
+        },
+        {
+            "name"      :   "multiscale-scales",
+            "dtype"     :   "list:int",
+            "info"      :   "Sets a list of scales to use in multi-scale cleaning. If unset, WSClean will select the delta (zero) scale, scales starting at four times the synthesized PSF, and increase by a factor of two until the maximum scale is reached. Example: -multiscale-scales 0,5,12.5",
+            "default"    :   null
+        },
+        {
+            "name"      :   "iuwt",
+            "dtype"     :   "bool",
+            "info"      :   "Use the IUWT deconvolution algorithm",
+            "default"   :   false
+        },
+        {
+            "name"      :   "iuwt-snr-test",
+            "dtype"     :   "bool",
+            "info"      :   "Stop IUWT when the SNR decreases. This might help limitting divergence, but can occasionally also stop the algorithm too early.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "cleanborder",
+            "dtype"     :   "float",
+            "info"      :   "Set the border size in which no cleaning is performed, in percentage of the width/height of the image. With an image size of 1000 and clean border of 1%, each border is 10 pixels.",
+            "default"   :   5,
+        },
+        {
+            "name"      :   "fitsmask",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Use the specified fits-file as mask during cleaning.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "casamask",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Use the specified CASA mask as mask during cleaning.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "smallpsf",
+            "dtype"     :   "bool",
+            "info"      :   "Resize the psf to speed up minor clean iterations",
+            "default"   :   false
+        },
+        {
+            "name"      :   "nonegative",
+            "dtype"     :   "bool",
+            "info"      :   "Do not allow negative components during cleaning",
+            "default"   :   false
+        },
+        {
+            "name"      :   "stopnegative",
+            "dtype"     :   "bool",
+            "info"      :   "Stop on negative components",
+            "default"   :   false
+        },
+        {
+            "name"      :   "fit-spectral-pol",
+            "dtype"     :   "int",
+            "info"      :   "Fit a polynomial over frequency to each clean component. This has only effect when the channels are joined with 'joinchannels'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "deconvolution-channels",
+            "dtype"     :   "int",
+            "info"      :   "Decrease the number of channels as specified by 'channelsout' to the given number for deconvolution. Only possible in combination with one of the 'fit-spectral' options. Proper residuals/restored images will only be returned when mgain < 1.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "squared-channel-joining",
+            "dtype"     :   "bool",
+            "info"      :   "Use with 'joinchannels' to perform peak finding in the sum of squared values over channels, instead of the normal sum. This is useful for imaging QU polarizations with non-zero rotation measures, for which the normal sum is insensitive.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "force-dynamic-join",
+            "dtype"     :   "bool",
+            "info"      :   "Use alternative joined clean algorithm (feature for testing)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "beamsize",
+            "dtype"     :   "float",
+            "info"      :   "Set a circular beam size (FWHM) in arcsec for restoring the clean components.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "beamshape",
+            "dtype"     :   "list:int",
+            "info"      :   "Set the FWHM beam shape for restoring the clean components. Defaults units for maj and min are arcsec, and degrees for PA. Can be overriden, e.g. 'beamshape 1amin 1amin 3deg'. Default is use PSF FWHM sizes",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fitbeam",
+            "dtype"     :   "bool",
+            "info"      :   "Determine beam shape by fitting the PSF.",
+            "default"   :   true
+        },
+        {
+            "name"      :   "theoreticbeam",
+            "dtype"     :   "bool",
+            "info"      :   "Write the beam in output fits files as calculated from the longest projected baseline. This method results in slightly less accurate beam size/integrated fluxes, but provides a beam size without making the PSF for quick imaging.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "nofitbeam",
+            "dtype"     :   "bool",
+            "info"      :   "Do not determine beam shape from the PSF",
+            "default"   :   false
+        },
+        {
+            "name"      :   "circularbeam",
+            "dtype"     :   "bool",
+            "info"      :   "Force restoring beam to be circular",
+            "default"   :   false
+        },
+        {
+            "name"      :   "ellipticalbeam",
+            "dtype"     :   "bool",
+            "info"      :   "Allow restoring beam to be elliptical",
+            "default"   :   true
+        }
+    ]
+}

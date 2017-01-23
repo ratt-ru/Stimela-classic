@@ -1,0 +1,214 @@
+{
+    "task"          :   "flagms",
+    "base"          :   "stimela/meqtrees",
+    "tag"           :   "0.2.3",
+    "description"   :   "This program will execute an RFI strategy as can be created with the RFI gui and executes it on one or several   observations.",
+    "msdir"         :   true,
+    "binary"        :   "flag-ms.py",
+    "prefix"        :   "--",
+    "parameters"    :   [   
+        {
+            "name"      :   "msname",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of MS to be flagged",
+            "default"   :   null
+        },
+        {
+            "name"      :   "channels",
+            "dtype"     :   "list:int",
+            "delimiter" :   ":",
+            "info"      :   "channel selection: single number or start:end[:step] to select channels start through end-1, or start~end[:step] to select channels start through end, with an optional stepping.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "timeslots",
+            "dtype"     :   "list:int",
+            "delimiter" :   ":",
+            "info"      :   "timeslot selection: single number or start:end to select timeslots start through end-1, or start~end to select timeslots start through end.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "timeslot-multiplier",
+            "dtype"     :   "int",
+            "info"      :   "multiplies the timeslot numbers given to -T by the given factor.",
+            "default"   :   1
+        },
+        {
+            "name"      :   "corrs",
+            "dtype"     :   "list:int",
+            "delimiter" :   ",",
+            "info"      :   "correlation selection. Use comma-separated list of correlation indices.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "stations",
+            "dtype"     :   "list:int",
+            "delimiter" :   ",",
+            "info"      :   "station (=antenna) selection. Use comma-separated list of station indices.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "ifrs",
+            "dtype"     :   "str",
+            "info"      :   "interferometer selection.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "ddid",
+            "dtype"     :   "list:int",
+            "delimiter" :   ",",
+            "info"      :   "DATA_DESC_ID selection. Single number, or comma-separated list.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "list:int",
+            "delimiter" :   ",",
+            "info"      :   "FIELD_ID selection. Single number, or comma-separated list.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "taql",
+            "dtype"     :   "str",
+            "info"      :   "Additional TaQL selection to restrict subset. Selection by data value",
+            "default"   :   null
+        },
+        {
+            "name"      :   "above",
+            "dtype"     :   "float",
+            "info"      :   "select on abs(data)>X",
+            "default"   :   null
+        },
+        {
+            "name"      :   "below",
+            "dtype"     :   "float",
+            "info"      :   "select on abs(data)<X",
+            "default"   :   null
+        },
+        {
+            "name"      :   "nan",
+            "dtype"     :   "bool",
+            "info"      :   "select on invalid data (NaN or infinite)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "fm-above",
+            "dtype"     :   "float",
+            "info"      :   "select on mean(abs(data))>X, where mean is over frequencies",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fm-below=X",
+            "dtype"     :   "float",
+            "info"      :   "select on mean(abs(data))<X, where mean is over frequencies",
+            "default"   :   null
+        },
+        {
+            "name"      :   "column",
+            "mapping"   :   "data-column",
+            "dtype"     :   "str",
+            "info"      :   "data column for --above/--below/--nan options.",
+            "default"   :   "CORRECTED_DATA"
+        },
+        {
+            "name"      :   "data-flagmask",
+            "dtype"     :   "str",
+            "info"      :   "flags to apply to data column (when e.g. computing mean). Default is ALL. See below for details on specifying flags.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "flagged-any",
+            "dtype"     :   "list:str",
+            "delimiter" :   ",",
+            "info"      :   "Selects if any of the specified flags are raised. For this and all other options taking a FLAGS argument, FLAGS can be a flagset name or an integer bitmask (if bitflags are in use -- see also the -l/--list option). Prefix the bitmask by '0x' to use hex. Append a '+L' to include legacy boolean FLAG/FLAG_ROW columns. Use 'all' for all bitflags, and 'ALL' for all bitflags plus legacy flags (equivalent to 'all+L'). FLAGS may also be a comma-separated list of any of the above terms.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "flagged-all",
+            "dtype"     :   "str",
+            "info"      :   "Selects if all of the specified flags are raised",
+            "default"   :   null
+        },
+        {
+            "name"      :   "flagged-none",
+            "dtype"     :   "bool",
+            "info"      :   "Selects if none of the specified flags are raised",
+            "default"   :   false
+        },
+        {
+            "name"      :   "extend-all-corr",
+            "dtype"     :   "bool",
+            "info"      :   "Apply selection to all correlations if at least one is selected",
+            "default"   :   false
+        },
+        {
+            "name"      :   "flag",
+            "dtype"     :   "str",
+            "info"      :   "Raise the specified FLAGS",
+            "default"   :   null
+        },
+        {
+            "name"      :   "unflag",
+            "dtype"     :   "str",
+            "info"      :   "Clear the specified flags",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fill-legacy",
+            "dtype"     :   "str",
+            "info"      :   "Fills legacy FLAG/FLAG_ROW columns using the specified FLAGS. When -f/--flag or -u/--unflag or -r/--remove is used, legacy flags are implicitly reset using all bitflags: use '-g -' to skip this step. You may also use this option on its own to reset legacy flags (within the specified data subset) using some bitmask. Use '-g 0' to clear legacy flags. -c, --create for -f/--flag option only: if a named flagset doesn't exist, creates it. Without this option, an error is reported.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "list",
+            "dtype"     :   "bool",
+            "info"      :   "lists various info about the MS, including its flagsets.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "stats",
+            "dtype"     :   "bool",
+            "info"      :   "prints per-flagset flagging stats.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "remove",
+            "dtype"     :   "str",
+            "info"      :   "Unflags and removes named flagset(s). You can use a comma-separated list.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "export",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "exports all flags to flag file. FILENAME may end with .gz to produce a gzip-compressed file. If any flagging actions are specified, these will be done before the export.",
+            "default"    :   null
+        },
+        {
+            "name"      :   "import", 
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Imports flags from flag file. If any flagging actions are specified, these will be done after the import.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "verbose",
+            "dtype"     :   "int",
+            "info"      :   "Verbosity level for messages. Higher is more verbose",
+            "default"   :   0
+        },
+        {
+            "name"      :   "timestamps",
+            "dtype"     :   "str",
+            "info"      :   "adds timestamps to verbosity messages.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "chunk-size",
+            "dtype"     :   "int",
+            "info"      :   "Number of rows to process at once. Set to higher values if you have RAM to spare.",
+            "default"   :   20000
+        }
+   ]
+}

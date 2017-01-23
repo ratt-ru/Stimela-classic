@@ -1,0 +1,349 @@
+{
+    "task"          :   "lwimager",
+    "base"          :   "stimela/casarest",
+    "tag"           :   "0.2.3",
+    "description"   :   "Image and deconvolve a measurement set (MS)",
+    "binary"        :   "lwimager",
+    "msdir"         :   true,
+    "prefix"        :   " ",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "ms",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "MS to be imaged and/or deconvolved",
+            "required"  :   true,
+            "default"   :   null,
+        },
+        {
+            "name"      :   "prefix",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Prefix for output images. If not specified, will use the basename of MS.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "column",
+            "mapping"   :   "data",
+            "dtype"     :   "str",
+            "info"      :   "Column to be imaged. Note that you can only make a clean (or restored) image from the CORRECTED_DATA column",
+            "default"   :   "CORRECTED_DATA"
+        },
+        {
+            "name"      :   "npix",
+            "dtype"     :   "int",
+            "info"      :   "Image size in pixels",
+            "default"   :   2048
+        },
+        {
+            "name"      :   "cellsize",
+            "dtype"     :   ["str", "float"],
+            "info"      :   "Size of a pixel in arcsec. But can also be specified as '2arcsec/2armnin etc.",
+            "default"   :   "2arcsec"
+        },
+        {
+            "name"      :   "weight",
+            "dtype"     :   "str",
+            "info"      :   "Visibility weighting mode",
+            "choices"   :   ["briggs", "natural", "uniform", "radial"],
+            "default"   :   "briggs"
+        },
+        {
+            "name"      :   "robust",
+            "dtype"     :   "float",
+            "info"      :   "Briggs robustness parameter",
+            "default"   :   0.0
+        },
+        {
+            "name"      :   "hdf5",
+            "dtype"     :   "bool",
+            "info"      :   "Make hdf5 file",
+            "default"   :   false
+        },
+        {
+            "name"      :   "prior",
+            "dtype"     :   "file",
+            "io"        :   input,
+            "info"      :   "Name of prior image file",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mode",
+            "dtype"     :   "str",
+            "choices"   :   ["mfs", "channel", "velocity"],
+            "info"      :   "Imaging mode",
+            "default"   :   "mfs"
+        },
+        {
+            "name"      :   "filter",
+            "dtype"     :   "str",
+            "info"      :   "Apply gaussian tapering filter; specify as major,minor,pa",
+            "default"   :   null
+        },
+        {
+            "name"      :   "clean_beam",
+            "dtype"     :   "str",
+            "info"      :   "Specify clean restoring beam; specify as major axis,minor axis,position angle with unitsi",
+            "default"   :   null
+        },
+        {
+            "name"      :   "weight_fov",
+            "dtype"     :   "str",
+            "info"      :   "Field of view size for uniform/briggs weighting, if different from image size",
+            "default"   :   null  
+        },
+        {
+            "name"      :   "noise",
+            "dtype"     :   "float",
+            "info"      :   "Noise (in Jy) for briggsabs weightingfloat",
+            "default"   :   null
+        },
+        {
+            "name"      :   "wprojplanes",
+            "dtype"     :   "int",
+            "info"      :   "if >0 specifies nr of convolution functions to use in W-projection",
+            "default"   :   0
+        },
+        {
+            "name"      :   "padding",
+            "dtype"     :   "float",
+            "info"      :   "padding factor in image plane (>=1.0)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "cachesize",
+            "dtype"     :   "int",
+            "info"      :   "Maximum size of gridding cache (in MB)",
+            "default"   :   512,
+        },
+        {
+            "name"      :   "stokes",
+            "dtype"     :   "str",
+            "info"      :   "Stokes parameters to image",
+            "default"   :   "I",
+        },
+        {
+            "name"      :   "nfacets",
+            "dtype"     :   "int",
+            "info"      :   "Number of facets in x or y",
+            "default"   :   null
+        },
+        {
+            "name"      :   "phasecenter",
+            "dtype"     :   "str",
+            "info"      :   "Phase center to be used (e.g. 'j2000,05h30m,-30.2deg')",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field-id",
+            "mapping"   :   "field",
+            "dtype"     :   "int",
+            "info"      :   "Field ID",
+            "default"   :   0
+        },
+        {
+            "name"      :   "spw-id",
+            "mapping"   :   "spwid",
+            "dtype"     :   "str",
+            "info"      :   "Spectral window ID(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "chanmode",
+            "dtype"     :   "str",
+            "info"      :   "Frequency channel mode",
+            "default"   :   "channel",
+        },
+        {
+            "name"      :   "nchan",
+            "dtype"     :   ["str","int"],
+            "info"      :   "number of frequency channels to select from each spectral window (one number per spw). Comma separated string",
+            "default"   :   1
+        },
+        {
+            "name"      :   "chanstart",
+            "dtype"     :   ["str","int"],
+            "info"      :   "First frequency channel per each spw (0-relative). Comma separated string",
+            "default"   :   0
+        },
+        {
+            "name"      :   "chanstep",
+            "dtype"     :   ["str","int"],
+            "info"      :   "fre`iquency channel step per each spw. Comma separated string",
+            "default"   :   1
+        },
+        {
+            "name"      :   "img_nchan",
+            "dtype"     :   "int",
+            "info"      :   "Number of frequency channels in image",
+            "default"   :   1
+        },
+        {
+            "name"      :   "img_chanstart",
+            "dtype"     :   "int",
+            "info"      :   "first frequency channel in image (0-relative)",
+            "default"   :   0
+        },
+        {
+            "name"      :   "img_chanstep",
+            "dtype"     :   "int",
+            "info"      :   "frequency channel step in image",
+            "default"   :   1
+        },
+        {
+            "name"      :   "uvrange",
+            "dtype"     :   "str",
+            "info"      :   "UV range filter for MS",
+            "default"   :   null
+        },
+        {
+            "name"      :   "select",
+            "dtype"     :   "str",
+            "info"      :   "TaQL selection string for MS",
+            "default"   :   null
+        },
+        {
+            "name"      :   "operation",
+            "dtype"     :   "str",
+            "choices"   :   ["empty", "image", "psf", "clark", "hogbom", "csclean", "multiscale", "entropy"],
+            "info"      :   "Operation",
+            "default"   :   "image"
+        },
+        {
+            "name"      :   "clean_iterations",
+            "mapping"   :   "niter",
+            "dtype"     :   "int",
+            "info"      :   "Number of clean iterations",
+            "default"   :   0,
+        },
+        {
+            "name"      :   "gain",
+            "dtype"     :   "float",
+            "info"      :   "Loop gain for cleaning",
+            "default"   :   0.1
+        },
+        {
+            "name"      :   "threshold",
+            "dtype"     :   ["float","str"],
+            "info"      :   "Flux level at which to stop cleaning. Assumed to be in Jy if units not specified.",
+            "default"   :   0
+        },
+        {
+            "name"      :   "targetflux",
+            "dtype"     :   ["float", "str"],
+            "info"      :   "Target flux for maximum entropy",
+            "default"   :   null
+        },
+        {
+            "name"      :   "sigma",
+            "dtype"     :   ["float", "str"],
+            "info"      :   "Deviation for maximum entropy",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fixed",
+            "dtype"     :   "bool",
+            "info"      :   "Keep clean model fixed",
+            "default"   :   false
+        },
+        {
+            "name"      :   "fillmodel",
+            "dtype"     :   "bool",
+            "info"      :   "Fill MODEL_DATA column with clean model visibilities, else keeps model in memory",
+            "default"   :   true
+        },
+        {
+            "name"      :   "constrainflux",
+            "dtype"     :   "bool",
+            "info"      :   "Constrain image to match target flux? For max entropy",
+            "default"   :   null
+        },
+        {
+            "name"      :   "prefervelocity",
+            "dtype"     :   "bool",
+            "info"      :   "Should FITS image spectral axis be velocity or frequency",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mask",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Name of the mask to use in cleaning",
+            "default"   :   null
+        },
+        {
+            "name"      :   "maskblc",
+            "dtype"       :   "str",
+            "info"      :   "Bottom left corner of mask region",
+            "default"   :   null
+        },
+        {
+            "name"      :   "masktrc",
+            "dtype"     :   "str",
+            "info"      :   "Top right corner of mask region",
+            "default"   :   null
+        },
+        {
+            "name"      :   "nscales",
+            "dtype"     :   "int",
+            "info"      :   "Scales for multiscale clean",
+            "default"   :   null
+        },
+        {
+            "name"      :   "uservector",
+            "dtype"     :   "str",
+            "info"      :   "User-defined scales for multiscale clean. Comma separated string",
+            "default"   :   null
+        },
+        {
+            "name"      :   "maskvalue",
+            "dtype"     :   "float",
+            "info"      :   "Value to store in mask region; if given, mask is created; if mask not exists, defaults to 1.0",
+            "default"   :   null
+        },
+        {
+            "name"      :   "simulate_fits",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Simulate a FITS image into MS",
+            "default"   :   null
+        },
+        {
+            "name"      :   "chanchunk",
+            "dtype"     :   "int",
+            "info"      :   "Predict from FITS files in chunks in the frequency axis",
+            "default"   :   null
+        },
+        {
+            "name"      :   "cyclefactor",
+            "dtype"     :   "float",
+            "info"      :   "Multi-field deconvolution parameter; see casapy's imager.setmfcontrol",
+            "default"   :   null
+        },
+        {
+            "name"      :   "cyclespeedup",
+            "dtype"     :   "float",
+            "info"      :   "multi-field deconvolution parameter; see casapy's imager.setmfcontrol",
+            "default"   :   null
+        },
+        {
+            "name"      :   "cyclemaxpsffraction",
+            "dtype"     :   "int",
+            "info"      :   "Multi-field deconvolution parameter; see casapy's imager.setmfcontrol",
+            "default"   :   null
+        },
+        {
+            "name"      :   "stoplargenegatives",
+            "dtype"     :   "int",
+            "info"      :   "Multi-field deconvolution parameter; see casapy's imager.setmfcontrol",
+            "default"   :   null
+        },
+        {
+            "name"      :   "stoppointmode",
+            "dtype"     :   "int",
+            "info"      :   "Multi-field deconvolution parameter; see casapy's imager.setmfcontrol",
+            "default"   :   null
+        }
+    ]
+}

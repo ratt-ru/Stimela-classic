@@ -1,31 +1,59 @@
 import os
 import sys
 
-sys.path.append('/utils')
+sys.path.append("/utils")
 import utils
-import json
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
+cab = utils.readJson(CONFIG)
 
-imagenames = jdict.pop("image-names")
-if isinstance(imagenames, str):
-   imagenames = [imagenames]
-imagenames = [OUTPUT + "/" + img for img in imagenames]
+args = []
+inimage = None
+outimage = None
+stack = False
+unstack = False
+axis = None
+chunk = 1
 
-try:
-    output = jdict.pop("output") #output argument of flagms not OUTPUT
-    if output is not None:
-        assert isinstance(output, (str, unicode)), "msname parameter must be string"
-    output = OUTPUT + "/" + output
-except:
-    output = None
+for param in cab['parameters']:
+    value = param['value']
+    name = param['name']
 
-OPT_ARGS = ["--%s %s" % (k, v) for k, v in jdict.iteritems()]
-ARGS = [" ".join(imagenames)]
-utils.xrun("fitstool.py", OPT_ARGS + ARGS)
+    if value in [None, False]:
+        continue
+    
+    if name == 'image':
+        inimage = ' '.join(value)
+        continue
+    elif name == 'output':
+        outimage = value
+        continue
+    elif name == 'stack':
+        stack = True
+        continue
+    elif name == 'unstack':
+        stack = True
+        continue
+    elif name == 'unstack-chunk':
+        chunk = value
+        continue
+    elif name == 'fits-axis':
+        axis = value
+        continue
 
+    elif value is True:
+        value = ""
+
+    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
+
+if stack and axis:
+    args.append( '{0}stack {1}:{2}'.format(cab['prefix'], outimage, axis))
+    outimage = None
+elif unstack and axis:
+    args.append( '{0}stack {1}:{2}:{3}'.format(cab['prefix'], outimage, axis, chunk))
+    
+utils.xrun("fitstool.py", args+[inimage, outimage or ""])

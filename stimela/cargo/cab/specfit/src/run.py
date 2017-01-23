@@ -11,57 +11,36 @@ INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
+cab = utils.readJson(CONFIG)
+params = {}
+for param in cab['parameters']:
+    params[param['name']] = param['value']
 
-image = jdict.pop("image", None)
-mask = jdict.pop("mask", None)
-make_spi = jdict.pop("make_spi", False)
-spi_image = jdict.pop("spi_image", None)
-spi_err = jdict.pop("spi_err_image", None)
-lsmname = jdict.pop("skymodel", None)
-outlsm = jdict.pop("skymodel_out", None)
-sigma = jdict.pop("sigma", 20)
-add_spi = jdict.pop("add_spi", None)
-freq0 = jdict.pop("freq0", 0)
-tol = jdict.pop("tol", None)
+image = params.pop("image", None)
+mask = params.pop("mask-image", None)
+in_spi_image = params.pop("input-spi-image", None)
+in_spi_err = params.pop("input-spi-error-image", None)
+out_spi_image = params.pop("output-spi-image", None)
+out_spi_err = params.pop("output-spi-error-image", None)
+lsmname = params.pop("input-skymodel", None)
+outlsm = params.pop("output-skymodel", None)
+sigma = params.pop("sigma-level", 20) or 20
+freq0 = params.pop("freq0", 0)
+tol = params.pop("tolerance-range", None) or (-10,10)
 
-
-for item in "image mask spi_image spi_err lsmname outlsm freq0 lsmname".split():
-    if isinstance(globals()[item], str):
-        globals()[item] = utils.substitute_globals(globals()[item]) or INPUT + "/" + globals()[item]
-
-if spi_image:
-    if make_spi:
-        spi_image = spi_image + ".alpha.fits"
-        spi_err = spi_image + ".alpha.err.fits"
-
-made_spi = False
-
-if image and make_spi:
-    if isinstance(image, (str, unicode)):
-        cube = image
-
-    elif isinstance(image, (list, tuple)):
-        for i, im in enumerate(image):
-            image[i] = im
-        cube = image
-    else:
-        raise TypeError("Image has to be either a string or list of strings")
-
-    made_spi = True
+if out_spi_image:
     import specfit
-    specfit.spifit(cube, mask=mask, sigma=sigma,
-                  spi_image=spi_image,
-                  spi_err_image=spi_err)
+    specfit.spifit(image, mask=mask, sigma=sigma,
+                  spi_image=out_spi_image,
+                  spi_err_image=out_spi_err)
+    spi_image = out_spi_image
+    spi_err = out_spi_err
+else:
+    spi_image = in_spi_image
+    spi_err = in_spi_err
 
+if lsmname and outlsm:
+    sys.stdout.write("Extracting spi from image")
 
-if add_spi and lsmname:
-    print "Extracting spi from image"
-
-    if isinstance(freq0, (str, unicode)):
-        freq0 = str(freq0)
-
-    print "FREQ0", freq0
-    sys.exit(0)
     import addSPI
     addSPI.addSPI(spi_image, spi_err, lsmname, outlsm or lsmname, freq0=freq0, spitol=tol)

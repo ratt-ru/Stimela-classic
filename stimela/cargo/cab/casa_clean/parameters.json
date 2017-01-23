@@ -1,0 +1,437 @@
+{
+    "task"          :   "casa_clean",
+    "description"   :   "CASA Clean task. For imaging and deconvolution",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "clean",
+    "msdir"         :   true,
+    "prefix"        :   "",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "list:file",
+            "delimiter" :   ",",
+            "info"      :   "Name of input visibility file",
+            "io"        :   "msfile",
+            "required"  :   true
+        },
+        {   
+            "name"      :   "prefix",
+            "mapping"   :   "imagename",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Pre-name of output images",
+            "default"   :   null
+        },
+        {   
+            "name"      :   "outlierfile",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Text file with image names, sizes,centers for outliers",
+            "default"   :   null
+        },
+  
+        {
+            "name"      :   "field",
+            "dtype"     :   ["list:str","list:int"],
+            "delimiter" :   ",",
+            "info"      :   "Field Name or id",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "Spectral windows e.g. '0~3', '' is all",
+            "delimiter" :   " ",
+            "default"   :   null
+        },
+        {  
+            "name"      :   "selectdata",
+            "dtype"     :   "bool",
+            "info"      :   "Other data selection parameters",
+            "default"   :   true
+        },
+        {    
+            "name"      :   "timerange",
+            "dtype"     :   ["str","list:str"],
+            "delimiter" :   ",",
+            "info"      :   "Range of time to select from data, e.g. timerange = 'YYYY/MM/DD/hh:mm:ss~YYYY/MM/DD/hh:mm:ss'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "uvrange",
+            "dtype"     :   ["str","list:str"],
+            "delimiter" :   ",",
+            "info"      :   "Select data within uvrange",
+            "default"   :   null
+        },
+        {
+            "name"      :   "antenna",
+            "dtype"     :   ["str","list:str"],
+            "delimiter" :   " ",
+            "info"      :   "Select data based on antenna/baseline",
+            "default"   :   null
+        },
+        {
+            "name"      :   "scan",
+            "dtype"     :   ["str","list:str"],
+            "delimiter" :   " ",
+            "info"      :   "Scan number range",
+            "default"   :   null
+        },
+        {
+            "name"      :   "observation",
+            "dtype"     :   ["str","list:str"],
+            "delimiter" :   " ",
+            "info"      :   "Observation ID range",
+            "default"   :   null
+        },
+        {
+            "name"      :   "intent",
+            "dtype"     :   ["str","list:str"],
+            "delimiter" :   " ",
+            "info"      :   "Scan Intent(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mode",
+            "dtype"     :   "str",
+            "choices"   :   ["mfs","channel","velocity","frequency"], 
+            "info"      :   "Spectral gridding type (mfs, channel,velocity, frequency)",
+            "default"   :   "mfs",
+        },
+        {
+            "name"      :   "nchan",
+            "dtype"     :   "int",
+            "info"      :   "Number of channels (planes) in output image; -1 = all",
+            "default"   :   -1
+        },
+        {    
+            "name"      :   "start",
+            "dtype"     :   ["str","int","float"],
+            "info"      :   "Begin the output cube at the frequency of this channel in the MS",
+            "default"   :   null 
+        },
+        {
+            "name"      :   "width",
+            "dtype"     :   ["str","int","float"],
+            "info"      :   "Width of output channel relative to MS channel (# to average)",
+            "default"   :   1
+        },
+
+        {
+            "name"      :   "interpolation",
+            "dtype"     :   "str",
+            "choices"   :   ["nearest","linear","cubic"],
+            "info"      :   "Spectral interpolation (nearest, linear, cubic).",
+            "default"   :   "linear"
+        },
+        {
+            "name"      :   "resmooth",
+            "dtype"     :   "bool",
+            "info"      :   "Re-restore the cube image to a common beam when True",
+            "default"   :   false
+        },
+        {
+            "name"      :   "chaniter",
+            "dtype"     :   "bool",
+            "info"      :   "Clean each channel to completion (True), or all channels each cycle (False)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "outframe",
+            "dtype"     :   "str",
+            "choices"   :   ["","LSRK","LSRD","BARY","GEO","TOPO","GALACTO",  
+                          "LGROUP","CMB"],
+            "info"      :   "velocity frame of output image",
+            "default"   :   null
+        },
+        {
+            "name"      :   "veltype",
+            "dtype"     :   "str",
+            "choices"   :   ["radio","optical"],
+            "info"      :   "Velocity definition of output image",
+            "default"   :   "radio"
+        },
+        {
+            "name"      :   "nterms",
+            "dtype"     :   "int",
+            "info"      :   "Number of Taylor coefficients to model the sky frequency dependence",
+            "default"   :   1
+        },
+        {
+            "name"      :   "reffreq",
+            "dtype"     :   "str",
+            "info"      :   "Reference frequency (nterms > 1),'' uses central data-frequency",
+            "default"   :   null
+        },
+        {
+            "name"      :   "gridmode",
+            "dtype"     :   "str",
+            "choices"   :   ["","widefield","aprojection"],
+            "info"      :   "Gridding kernel for FFT-based transforms",
+            "default"   :   null
+        },
+        {
+            "name"      :   "wprojplanes",
+            "dtype"     :   "int",
+            "info"      :   "Number of w-projection planes for convolution",
+            "default"   :   1
+        },
+        {
+            "name"      :   "facets",
+            "dtype"     :   "int",
+            "info"      :   "Number of facets along each axis (main image only)",
+            "default"   :   1
+        },
+        {
+            "name"      :   "cfcache",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Convolution function cache directory",
+            "default"   :   null
+        },
+        {
+            "name"      :   "rotpainc",
+            "dtype"     :   "float",
+            "info"      :   "Parallactic angle increment (degrees) for OTF A-term rotation",
+            "default"   :   5.0
+        },
+        {
+            "name"      :   "painc",
+            "dtype"     :   "float",
+            "info"      :   "Parallactic angle increment (degrees) for computing A-term",
+            "default"   :   360.0
+        },
+        {
+            "name"      :   "niter",
+            "dtype"     :   "int",
+            "info"      :   "Maximum number of iterations",
+            "default"   :   500
+        },
+        {   
+            "name"      :   "gain",
+            "dtype"     :   "float",
+            "info"      :   "Loop gain for cleaning",
+            "default"   :   0.1
+        },
+        {
+            "name"      :   "threshold",
+            "dtype"     :   "str",
+            "info"      :   "Flux level to stop cleaning, must include units: '1.0mJy'",
+            "default"   :   '0.0mJy'
+        },
+        {
+            "name"      :   "psfmode",
+            "dtype"     :   "str",
+            "choices"   :   ["clark","clarkstokes","hogbom"],
+            "info"      :   "Method of PSF calculation to use during minor cycles",
+            "default"   :   'clark'
+        },
+        {
+            "name"      :   "imagermode",
+            "dtype"     :   "str",
+            "choices"   :   ["csclean","mosaic"],
+            "info"      :   "Options: 'csclean' or 'mosaic', '', uses psfmode",
+            "default"   :   'csclean'
+        },
+        {
+            "name"      :   "mosweight",
+            "dtype"     :   "bool",
+            "info"      :   "Individually weight the fields of the mosaic",
+            "default"   :   false
+        },
+        {
+            "name"      :   "ftmachine",
+            "dtype"     :   "str",
+            "choices"   :   ["mosaic","ft","wproject"],
+            "info"      :   "Gridding method for the image",
+            "default"   :   "mosaic"
+        },
+        {
+            "name"      :   "scaletype",
+            "dtype"     :   "str",
+            "choices"   :   ["SAULT","PBCOR"],
+            "info"      :   "Controls scaling of pixels in the image plane. default='SAULT'; example: scaletype='PBCOR' Options:'PBCOR','SAULT'",
+            "default"   :   "SAULT"
+        },
+        {
+            "name"      :   "flatnoise",
+            "dtype"     :   "bool",
+            "info"      :   "Controls whether searching for clean components is done in a constant noise residual image (True) or in an optimal signal-to-noise residual image (False)",
+            "default"   :   true
+        },
+        {
+            "name"      :   "cyclefactor",
+            "dtype"     :   "float",
+            "info"      :   "Controls how often major cycles are done. (e.g. 5 for frequently)",
+            "default"   :   1.5
+        },
+        {
+            "name"      :   "cyclespeedup",
+            "dtype"     :   "int",
+            "info"      :   "Cycle threshold doubles in this number of iterations",
+            "default"   :   -1
+        },
+        {
+            "name"      :   "multiscale",
+            "dtype"     :   "list",
+            "info"      :   "Deconvolution scales (pixels); [] = standard clean",
+            "default"   :   null
+        },
+        {
+            "name"      :   "negcomponent",
+            "dtype"     :   "int",
+            "info"      :   "Stop cleaning if the largest scale finds this number of neg components",
+            "default"   :   -1
+        },
+        {
+            "name"      :   "smallscalebias",
+            "dtype"     :   "float",
+            "info"      :   "a bias to give more weight toward smaller scales",
+            "default"   :   0.6
+        },
+        {
+            "name"      :   "interactive",
+            "dtype"     :   "bool",
+            "info"      :   "Use interactive clean (with GUI viewer)",
+            "default"   :   false
+        },
+        {
+            "name"      :   "npercycle",
+            "dtype"     :   "int",
+            "info"      :   "Clean iterations before interactive prompt (can be changed)",
+            "default"   :   100
+        },
+        {
+            "name"      :   "mask",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Cleanbox(es), mask image(s),region(s), or a level",
+            "default"   :   null
+        },
+        {
+            "name"      :   "npix",
+            "mapping"   :   "imsize",
+            "dtype"     :   ["list", "int"],
+            "info"      :   "x and y image size in pixels.  Single value: same for both",
+            "default"   :   [1024, 1024]
+        },
+        {
+            "name"      :   "cellsize",
+            "mapping"   :   "cell",
+            "dtype"     :   ["list", "str", "float"],
+            "info"      :   "x and y cell size(s). Default unit arcsec.",
+            "default"   :   ["1.0arcsec"]
+        },
+        {
+            "name"      :   "phasecenter",
+            "dtype"     :   "str",
+            "info"      :   "Image center: direction or field index",
+            "default"   :   null
+        },
+        {
+            "name"      :   "restfreq",
+            "dtype"     :   "str",
+            "info"      :   "Rest frequency to assign to image (see help)",
+            "default"   :   null
+        },
+        { 
+            "name"      :   "stokes",
+            "dtype"     :   "str",
+            "info"      :   "Stokes params to image (eg I,IV,IQ,IQUV)",
+            "default"   :   "I"
+        },
+        {
+            "name"      :   "weight",
+            "mapping"   :   "weighting",
+            "dtype"     :   "str",
+            "choices"   :   ["natural","uniform","briggs"],
+            "info"      :   "Weighting of uv (natural, uniform,briggs, ...)",
+            "default"   :   "uniform"
+        },
+        {
+            "name"      :   "robust",
+            "dtype"     :   "float",
+            "info"      :   "Briggs robustness parameter",
+            "default"   :   0.0
+        },
+        {
+            "name"      :   "npixels",
+            "dtype"     :   "int",
+            "info"      :   "number of pixels to determine uv-cell size 0=> field of view",
+            "default"   :   0
+        },
+
+        {
+            "name"      :   "uvtaper",
+            "dtype"     :   "bool",
+            "info"      :   "Apply additional uv tapering of visibilities",
+            "default"   :   false
+        },
+        {
+            "name"      :   "outertaper",
+            "dtype"     :   "list:str",
+            "delimiter" :   " ",
+            "info"      :   "uv-taper on outer baselines in uv-plane",
+            "default"   :   null
+        },
+        {
+            "name"      :   "innertaper",
+            "dtype"     :   "list:str",
+            "delimiter" :   " ",
+            "info"      :   "uv-taper in center of uv-plane (not implemented)",
+            "default"   :   null
+        },
+        {   "name"      :   "modelimage",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Name of model image(s) to initialize cleaning",
+            "default"   :   null
+        },
+        {
+            "name"      :   "restoringbeam",
+            "dtype"     :   "list:str",
+            "delimiter" :   " ",
+            "info"      :   "Output Gaussian restoring beam for CLEAN image",
+            "default"   :   null
+        },
+        {  
+            "name"      :   "pbcor",
+            "dtype"     :   "bool",
+            "info"      :   "Output primary beam-corrected image",
+            "default"   :   false
+        },
+        {
+            "name"      :   "minpb",
+            "dtype"     :   "float",
+            "info"      :   "Minimum PB level to use",
+            "default"   :   0.2
+        },
+        {
+            "name"      :   "usescratch",
+            "dtype"     :   "bool",
+            "info"      :   "True if to save model visibilities in MODEL_DATA column",
+            "default"   :   false
+        },
+        { 
+            "name"      :   "allowchunk",
+            "dtype"     :   "bool",
+            "info"      :   "Divide large image cubes into channel chunks for deconvolution",
+            "default"   :   false
+        },
+        {
+            "name"      :   "port2fits",
+            "dtype"     :   "bool",
+            "info"      :   "Convert output images to FITS files",
+            "default"   :   true
+        },
+        {
+            "name"      :   "keep_casa_images",
+            "dtype"     :   "bool",
+            "info"      :   "Keep casa images when 'port2fits' is enabled",
+            "default"   :   false
+        }
+    ]
+}

@@ -18,7 +18,7 @@ LSM = "nvss1deg.lsm.html"
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                   ms_dir=MSDIR)             # Folder in which to find MSs
 
-## 1: Make empty MS 
+ # 1: Make empty MS 
 simms_dict = {
     "msname"   :   MS,                     
     "telescope" :   "meerkat",              # Telescope name
@@ -38,7 +38,7 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              label="Creating MS")           # Process label
 
 
-## 2: Simulate visibilities into it
+ # 2: Simulate visibilities into it
 simulator_dict = {
     "msname"    :   MS,
     "skymodel"  :   LSM,                    # Sky model to simulate into MS
@@ -59,7 +59,6 @@ pipeline.add("cab/simulator",
 # Make things a bit interesting by imaging with different weights 
 imager_dict = {
     "msname"    :   MS,
-    "weight"    :   "briggs",               # Use Briggs weighting to weigh visibilities for imaging
     "npix"      :   2048,                   # Image size in pixels
     "cellsize"  :   2,                      # Size of each square pixel
     "clean_iterations"  :   1000            # Perform 1000 iterarions of clean (Deconvolution)
@@ -70,16 +69,16 @@ briggs_robust = 2, 0, -2
 
 for i, robust in enumerate(briggs_robust):
 
-    imager_dict["robust"] = robust # update Briggs robust parameter
-    imager_dict["imageprefix"] = "%s_robust-%d"%(PREFIX, i) # Prefix for output images
+    imager_dict["weight"] = "briggs {:f}".format(robust) # update Briggs robust parameter
+    imager_dict["prefix"] = "{:s}_robust-{:f}".format(PREFIX, robust) # Prefix for output images
 
     pipeline.add("cab/wsclean",
-                 "imager_example_%d"%i, 
+                 "imager_example_robust_{:f}".format(robust), 
                  imager_dict, 
                  input=INPUT, 
                  output=OUTPUT, 
-                 label="Imaging MS, robust=%f"%robust)
+                 label="Imaging MS, robust={:f}".format(robust))
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
-# executed in the sequence that they were addedd
+# executed in the sequence that they were added
 pipeline.run()

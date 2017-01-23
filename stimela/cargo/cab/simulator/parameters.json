@@ -1,0 +1,205 @@
+{
+    "task"          :   "simulator",
+    "base"          :   "stimela/meqtrees",
+    "tag"           :   "0.2.3",
+    "description"   :   "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)",
+    "binary"        :   "meqtree-pipeliner.py",
+    "msdir"         :   true,
+    "prefix"        :   " ",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "MS to simulate sky model into",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "tdlconf",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "TDL configuration file. If not specified, will use a default template",
+            "default"   :   null
+        },
+        {
+            "name"      :   "threads",
+            "dtype"     :   "int",
+            "info"      :   "Number of CPUs to use for  multithreading",
+            "default"   :   2
+        },
+        {
+            "name"      :   "section",
+            "dtype"     :   "str",
+            "info"      :   "Section to execute in TDL config file. Only needed if using custom TDL config",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mode",
+            "dtype"     :   "str",
+            "choices"   :   ["simulate", "subtract", "add"],
+            "info"      :   "Simulation mode. You can; i) 'simulate' - replace; ii) 'add' to; iii) or 'subtract' from the data in the specified column",
+            "default"   :   "simulate"
+        },
+        {
+            "name"      :   "skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Sky model to be simulated",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field-center",
+            "dtype"     :   "str",
+            "info"      :   "Recenter the sky model to this direction",
+            "default"   :   null
+        },
+        {
+            "name"      :   "recenter",
+            "dtype"     :   "bool",
+            "info"      :   "Recenter skymodel to phase center of MS",
+            "default"   :   false
+        },
+        {
+            "name"      :   "addnoise",
+            "dtype"     :   "bool",
+            "info"      :   "Add noise to simulated data",
+            "default"   :   false
+        },
+        {
+            "name"      :   "sefd",
+            "dtype"     :   "float",
+            "info"      :   "Noise to be added to the simulated data will be derived from this value (~sefd/sqrt(dt*dv))",
+            "default"   :   null
+        },
+        {
+            "name"      :   "Gjones",
+            "dtype"     :   "bool",
+            "info"      :   "Enable direction independent corruptions to simulated data",
+            "default"   :   false
+        },
+        {
+            "name"      :   "field-id",
+            "dtype"     :   "int",
+            "info"      :   "Field ID",
+            "default"   :   0
+        },
+        {
+            "name"      :   "spw-id",
+            "dtype"     :   "int",
+            "info"      :   "SPW ID",
+            "defaut"    :   0
+        },
+        {
+            "name"      :   "noise",
+            "dtype"     :   "float",
+            "info"      :   "Noise to add to visibility data. In Jy",
+            "default"   :   0
+        },
+        {
+            "name"      :   "column",
+            "dtype"     :   "str",
+            "info"      :   "Column name",
+            "default"   :   "CORRECTED_DATA"
+        },
+        {
+            "name"      :   "input-column",
+            "dtype"     :   "str",
+            "info"      :   "Input column. Needed for 'mode' = 'add, subtract'.",
+            "default"   :   "DATA"
+        },
+        {
+            "name"      :   "gain-max-period",
+            "dtype"     :   "int",
+            "info"      :   "Maximum period for direction independent gain corruption. In hours",
+            "default"   :   30
+        },
+        {
+            "name"      :   "gain-min-period",
+            "dtype"     :   "int",
+            "info"      :   "Minimum period for direction independent gain corruption. In hours",
+            "default"   :   5
+        },
+        {
+            "name"      :   "gain-max-error",
+            "dtype"     :   "int",
+            "info"      :   "Maximum period for direction independent gain corruption. In deg",
+            "default"   :   1.2,
+        },
+        {
+            "name"      :   "gain-min-error",
+            "dtype"     :   "int",
+            "info"      :   "Minimum period for direction independent gain corruption. In deg",
+            "default"   :   0.8
+        },
+        {
+            "name"      :   "phase-max-period",
+            "dtype"     :   "int",
+            "info"      :   "Maximum period for direction independent gain corruption. In hours",
+            "default"   :   30
+        },
+        {
+            "name"      :   "phase-min-period",
+            "dtype"     :   "int",
+            "info"      :   "Minimum period for direction independent gain corruption. In hours",
+            "default"   :   5
+        },
+        {
+            "name"      :   "phase-max-error",
+            "dtype"     :   "int",
+            "info"      :   "Maximum period for direction independent gain corruption. In deg",
+            "default"   :   1.2,
+        },
+        {
+            "name"      :   "phase-min-error",
+            "dtype"     :   "int",
+            "info"      :   "Minimum period for direction independent gain corruption. In deg",
+            "default"   :   0.8
+        },
+        {
+            "name"      :   "Ejones",
+            "dtype"     :   "bool",
+            "info"      :   "Add a primary beam model",
+            "default"   :   false
+        },
+        {
+            "name"      :   "beam-files-pattern",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "check_io"  :   false,
+            "info"      :   "Beam files pattern",
+            "default"   :   null
+        },
+        {
+            "name"      :   "beam-type",
+            "dtype"     :   "str",
+            "choices"   :   ["fits", "emsss"],
+            "info"      :   "Type of input beam files",
+            "default"   :   "fits"
+        },
+        {
+            "name"      :   "beam-l-axis",
+            "dtype"     :   "str",
+            "info"      :   "Beam l axis",
+            "default"   :   "X"
+        },
+        {
+            "name"      :   "beam-m-axis",
+            "dtype"     :   "str",
+            "info"      :   "Beam m axis",
+            "default"   :   "Y"
+        },
+        {
+            "name"      :   "paralactic-angle-rotation",
+            "dtype"     :   "bool",
+            "info"      :   "Enable paralactic angle rotation. Enable if telescope mount is ALT-AZ",
+            "default"   :   false
+        },
+        {
+            "name"      :   "pointing-accuracy",
+            "dtype"     :   "float",
+            "info"      :   "Pointing accuracy in arcsec. If set to non-zero value, will introduce pointing errors into simulation",
+            "default"   :   0
+        }
+    ]
+}

@@ -59,17 +59,18 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                   stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
                   shell=True)
-
+    out, err = None, None
     if process.stdout or process.stderr:
 
         out, err = process.comunicate()
         sys.stdout.write(out)
         sys.stderr.write(err)
-        return out
+        return out, err
     else:
         process.wait()
     if process.returncode:
          raise SystemError('%s: returns errr code %d'%(command, process.returncode))
+    return out, err
 
 
 def pper(iterable, command, cpus=None, stagger=2, logger=None):
@@ -250,11 +251,9 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
         task_cmds = ", ".join(task_cmds)
         run_cmd += """ 
 %s
-
 os.chdir('%s')
 %s
 %s(%s)
-
 """%(_load, cdir,"clearstart()" if clearstart else "", taskname, task_cmds)
 
     tf = tempfile.NamedTemporaryFile(suffix='.py')

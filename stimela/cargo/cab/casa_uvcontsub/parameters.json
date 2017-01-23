@@ -1,0 +1,69 @@
+{
+    "task"          :   "casa_uvcontsub",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "description"   :   "Continuum fitting and subtraction in the uv plane. This task estimates the continuum emission by fitting polynomials to the real and imaginary parts of the spectral windows and channels selected by fitspw.  This fit represents a model of the continuum in  all channels. The fitted continuum spectrum is subtracted from all channels selected in spw, and the result (presumably only line emission)  is stored in a new MS (vis + '.contsub'). If an MS with the output name already exists, it will be overwritten. It will read from the CORRECTED_DATA column of vis if it is present, or DATA if it is not.  Whichever column is read is presumed to have already been calibrated. If want_cont is True, the continuum fit is placed in a second new MS (vis + '.cont', also overwritten if it already exists).  N.B. because the continuum model is necessarily a smoothed fit, images made with it are liable to have their field of view reduced in some strange way.  Images of the continuum should be made by simply excluding the line channels (and probably averaging the remaining ones) in clean.",
+    "binary"        :   "uvcontsub",
+    "prefix"        :   "",
+    "msdir"         :   true,
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of input MS.  Output goes to vis + '.contsub' (will be overwritten if already exists)",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "str",
+            "info"      :   "Select field(s) using id(s) or name(s)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fitspw",
+            "dtype"     :   "str",
+            "info"      :   "Spectral window:channel selection for fitting the continuum",
+            "default"   :   null
+        },
+        {
+            "name"      :   "excludechans",
+            "dtype"     :   "str",
+            "info"      :   "Exclude Spectral window:channel selection in fitspw for fitting",
+            "default"   :   null
+        },
+        {
+            "name"      :   "combine",
+            "dtype"     :   "str",
+            "choices"   :   [null, "spw", "scan"],
+            "info"      :   "Data axes to combine for the continuum estimation (none, or spw and/or scan)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "solint",
+            "dtype"     :   "str",
+            "info"      :   "Continuum fit timescale (int recommended!)",
+            "default"   :   "int"
+        },
+        {
+            "name"      :   "fitorder",
+            "dtype"     :   "int",
+            "info"      :   "Polynomial order for the fits",
+            "default"   :   0
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "Spectral window selection for output",
+            "default"   :   null
+        },
+        {
+            "name"      :   "want_cont",
+            "dtype"     :   "bool",
+            "info"      :   "Create vis + '.cont' to hold the continuum estimate.",
+            "default"   :   false
+        }
+    ]
+}

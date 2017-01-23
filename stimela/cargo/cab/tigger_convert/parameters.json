@@ -1,0 +1,270 @@
+{
+    "task"          :   "tigger-convert",
+    "description"   :   "Source finding in radio images",
+    "base"          :   "stimela/tigger",
+    "tag"           :   "0.2.3",
+    "binary"        :   "tigger-convert",
+    "msdir"         :   false,
+    "prefix"        :   "--",
+    "parameters"    :   [   
+        {
+            "name"      :   "input-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Input skymodel",
+            "required"  :   true,
+            "default"   :   true
+        },
+        {
+            "name"      :   "output-skymodel",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Output skymodel",
+            "required"  :   true,
+            "default"   :   true
+        },
+        {
+            "name"      :   "force",
+            "dtype"     :   "bool",
+            "info"      :   "Forces overwrite of output model.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "type",
+            "dtype"     :   "str",
+            "choices"   :   ["Tigger", "ASCII", "BBS", "NEWSTAR", "AIPSCC", "AIPSCCFITS", "Gaul", "auto"],
+            "info"      :   "Input model type",
+            "default"   :   "auto"
+        },
+        {
+            "name"      :   "output-type",
+            "dtype"     :   "str",
+            "choices"   :   ["Tigger", "ASCII", "BBS", "NEWSTAR", "auto"],
+            "info"      :   "Output model type.",
+            "default"   :   "auto"
+        },
+        {
+            "name"      :   "append-type",
+            "dtype"     :   "str",
+            "choices"   :   ["Tigger", "ASCII", "BBS", "NEWSTAR", "AIPSCC", "AIPSCCFITS", "Gaul", "auto"],
+            "info"      :   "Append another model to input model. May be given multiple times. --append-type=TYPE  Appended model type (Tigger, ASCII, BBS, NEWSTAR, AIPSCC, AIPSCCFITS, Gaul, auto). Default is none.",
+            "default"   :   "auto"
+        },
+        {
+            "name"      :   "format",
+            "dtype"     :   "str",
+            "info"      :   "Input format, for ASCII or BBS tables. For ASCII tables, default is 'name ra_h ra_m ra_s dec_d dec_m dec_s i q u v spi rm emaj_s emin_s pa_d freq0 tags...'. For BBS tables, the default format is specified in the file header.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "append-format",
+            "dtype"     :   "str",
+            "choices"   :   ["Tigger", "ASCII", "BBS", "NEWSTAR", "AIPSCC", "AIPSCCFITS", "Gaul", "auto"],
+            "info"      :   "Format of appended file, for ASCII or BBS tables. Default is to use 'format'.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-format",
+            "dtype"     :   "str",
+            "choices"   :   ["Tigger", "ASCII", "BBS", "NEWSTAR", "AIPSCC", "AIPSCCFITS", "Gaul", "auto"],
+            "info"      :   "Output format, for ASCII or BBS tables. If the model was originally imported from an ASCII or BBS table, the default output format will be the same as the original format.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "help-format",
+            "dtype"     :   "bool",
+            "info"      :   "Prints help on format strings.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "min-extent",
+            "dtype"     :   "float",
+            "info"      :   "Minimal source extent, when importing NEWSTAR or ASCII files. Sources with a smaller extent will be treated as point sources.",
+            "default"   :   0.0
+        },
+        {
+            "name"      :   "tags",
+            "dtype"     :   "str",
+            "info"      :   "Extract sources with the specified tags.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "select",
+            "dtype"     :   "str",
+            "info"      :   "Selects a subset of sources by comparing the named TAG to a float VALUE. '<>' represents the comparison operator, and can be one of == (or =),!=,<=,<,>,>=. Alternatively, you may use the FORTRAN-style operators .eq.,.ne.,.le.,.lt.,.gt.,.ge. Multiple select options may be given, in which case the effect is a logical- AND. Note that VALUE may be followed by one of the characters d, m or s, in which case it will be converted from degrees, minutes or seconds into radians. This is useful for selections such as 'r<5d'. 'remove-nans' Removes the named source(s) from the model. NAME may contain * and ? wildcards.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "app-to-int",
+            "dtype"     :   "bool",
+            "info"      :   "Treat fluxes as apparent, and rescale them into intrinsic using the supplied primary beam model (see 'primary-beam' option).",
+            "default"   :   false
+        },
+        {
+            "name"      :   "int-to-app",
+            "dtype"     :   "bool",
+            "info"      :   "Treat fluxes as intrinsic, and rescale them into apparent using the supplied primary beam model (see 'primary-beam' option).",
+            "default"   :   false,
+        },
+        {
+            "name"      :   "newstar-app-to-int",
+            "dtype"     :   "bool",
+            "info"      :   "Convert NEWSTAR apparent fluxes in input model to intrinsic. Only works for NEWSTAR or NEWSTAR-derived input models.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "newstar-int-to-app",
+            "dtype"     :   "bool",
+            "info"      :   "Convert NEWSTAR intrinsic fluxes in input model to apparent. Only works for NEWSTAR or NEWSTAR-derived input models.",
+            "defaullt"  :   false
+        },
+        {
+            "name"      :   "center",
+            "dtype"     :   "str",
+            "info"      :   "Override coordinates of the nominal field center specified in the input model. Use the form 'Xdeg,Ydeg' or 'Xdeg,Yrad' to specify RA,Dec in degrees or radians, or else a a pyrap.measures direction string of the form REF,C1,C2, for example 'j2000,1h5m0.2s,+30d14m15s'. See the pyrap.measures documentation for more details.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "refresh-r",
+            "dtype"     :   "bool",
+            "info"      :   "Recompute the 'r' (radial distance from center) attribute of each source based on the current field  center. 'ref-freq'=MHz Set or change the reference frequency of the model.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "primary-beam",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "check_io"  :   false,
+            "info"      :   "Apply a primary beam expression to estimate apparent fluxes. Any valid Python expression using the variables 'r' and 'fq' is accepted. Use 'refresh' to re-estimate fluxes using the current expression. Example (for the WSRT-like 25m dish PB): 'cos(min(65*fq*1e-9*r,1.0881))**6'. OR: give a set of FITS primary beam patterns of the form e.g. FILENAME_$(xy)_$(reim).fits, these are the  same FITS files used in MeqTrees pybeams_fits.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "linear-pol",
+            "dtype"     :   "str",
+            "info"      :   "Use XY basis correlations for beam filenames and Mueller matrices.",
+            "default"   :   "RL"
+        },
+        {
+            "name"      :   "fits-l-axis",
+            "dtype"     :   "str",
+            "info"      :   "CTYPE for L axis in the FITS PB file. Note that our internal L points East (increasing RA), if the FITS beam axis points the opposite way, prefix the CTYPE with a '-'' character.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "fits-m-axis",
+            "dtype"     :   "str",
+            "info"      :   "CTYPE for M axis in the FITS PB file. Note that our internal M points North (increasing Dec), if the FITS beam axis points the opposite way, prefix the CTYPE with a '-'' character.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "beam-freq",
+            "dtype"     :   "float",
+            "info"      :   "Use given frequency (in MHz) for primary beam model, rather than the model reference frequency",
+            "default"   :   null
+        },
+        {
+            "name"      :   "beam-clip",
+            "dtype"     :   "float",
+            "info"      :   "when using a FITS beam, clip (power) beam gains at this level to keep intrinsic source fluxes from blowing up. Sources below this beamgain will be tagged 'nobeam'. Default: 0.001",
+            "default"   :   null
+        },
+        {
+            "name"      :   "beam-spi",
+            "dtype"     :   "float",
+            "info"      :   "perform a spectral index fit to each source based on a frequency dependent FITS beam, requires --primary-beam option to be used with a FITS file. Apply this spectral index to LSM sources. Must supply a band width (centred on --beam-freq) over which the beam spi is estimated",
+            "default"   :   null
+        },
+        {
+            "name"      :   "force-beam-spi-wo-spectrum",
+            "dtype"     :   "bool",
+            "info"      :   "Apply beam-derived spectral indices even to sources without an intrinsic spectrum. Default is to only apply to sources that already have a spectrum. 'beam-nopol' apply intensity beam model only, ignoring polarization. Default is to use polarization. 'beam-diag' use diagonal Jones terms only for beam model. Default is to use all four terms if available.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "pa",
+            "dtype"     :   "float",
+            "info"      :   "Rotate the primary beam pattern through a parallactic angle (in degrees).",
+            "default"   :   null
+        },
+        {
+            "name"      :   "pa-range",
+            "dtype"     :   "list:float",
+            "info"      :   "Rotate the primary beam pattern through a range of parallactic angles (in degrees) and use the average value over PA.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "pa-from-ms",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Rotate the primary beam pattern through a range of parallactic angles as given by the MS and take the average over time. This is more accurate than --pa-range.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field-id",
+            "dtype"     :   "int",
+            "info"      :   "Field ID for 'pa-from-ms' calculation",
+            "default"   :   0
+        },
+        {
+            "name"      :   "beam-average-jones",
+            "dtype"     :   "bool",
+            "info"      :   "Correct approach to rotational averaging is to convert Jones(PA) to Mueller(PA), then average over PA. Tigger versions<=1.3.3 took the incorrect approach of averaging Jones over PA, then converting to Mueller. Use this option to mimic the old approach.",
+            "default"   :   true
+        },
+        {
+            "name"      :   "cluster-dist",
+            "dtype"     :   "float",
+            "info"      :   "Distance parameter for source clustering, 0 to disable. Default is 60.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "rename",
+            "dtype"     :   "bool",
+            "info"      :   "Rename sources according to the COPART (cluster ordering, P.A., radial distance, type) scheme",
+            "default"   :   false
+        },
+        {
+            "name"      :   "radial-step",
+            "dtype"     :   "float",
+            "info"      :   "Size of one step in radial distance for the COPART scheme.",
+            "default"   :   10
+        },
+        {
+            "name"      :   "merge-clusters",
+            "dtype"     :   "str",
+            "info"      :   "Merge source clusters bearing the specified tags, replacing them with a single point source. Multiple tags may be given separated by commas. Use 'ALL' to merge all clusters.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "prefix", 
+            "dtype"     :   "str",
+            "info"      :   "Prefix all source names with the given string",
+            "default"   :   null
+        },
+        {
+            "name"      :   "remove-source",
+            "dtype"     :   "str",
+            "info"      :   " Removes the named source(s) from the model. NAME may contain * and ? wildcards.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "recenter",
+            "dtype"     :   "bool",
+            "info"      :   "Shift the sky model from the nominal center to a different field center. COORDINATES specified as per the --center option.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "verbose",
+            "dtype"     :   "bool",
+            "info"      :   "Increase verbosity",
+            "default"   :   false
+        },
+        {
+            "name"      :   "enable-plots",
+            "dtype"     :   "bool",
+            "info"      :   "Enables various diagnostic plots",
+            "default"   :   false
+        }
+    ]
+}
+

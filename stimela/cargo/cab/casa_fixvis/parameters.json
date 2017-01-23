@@ -1,0 +1,65 @@
+{
+    "task"          :   "casa_fixvis",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "description"   :   "Recalculates (u, v, w) and/or changes Phase Center",
+    "binary"        :   "fixvis",
+    "msdir"         :   true,
+    "prefix"        :   "",
+    "parameters"    :   [
+        {
+            "name"      :  "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of the input visibility set.",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "output-msname",
+            "mapping"   :   "outputvis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of the output visibility set.  (Can be the same as vis.)",
+            "required"  :   true,
+            "default"   :   false
+        },
+        {
+            "name"      :   "datacolumn",
+            "dtype"     :   "str",
+            "info"      :   "When applying a phase center shift, modify visibilities only in this/these column(s). Comma separated list",
+            "default"   :   "all",
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "str",
+            "info"      :   "Fields to operate on. ''  = all.",
+            "default"   :   ""
+        },
+        {
+            "name"      :   "refcode",
+            "dtype"     :   "str",
+            "info"      :   "Reference frame to convert UVW coordinates to",
+            "default"   :   null
+        },
+        {
+            "name"      :   "reuse",
+            "dtype"     :   "bool",
+            "info"      :   "Base UVW calculation on the old values?",
+            "default"   :   true
+        },
+        {
+            "name"      :   "phasecenter",
+            "dtype"     :   "str",
+            "info"      :   "Use this direction as phase center",
+            "default"   :   null
+        },
+        {
+            "name"      :   "distances",
+            "dtype"     :   "list:str",
+            "info"      :   "(experimental) List of the distances (as quanta) of the fields selected by field.",
+            "default"   :   null
+        }
+    ]
+}

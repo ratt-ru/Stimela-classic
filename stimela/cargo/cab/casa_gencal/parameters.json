@@ -1,0 +1,63 @@
+{
+    "task"          :   "casa_gencal",
+    "description"   :   "Specify Calibration Values of Various Types",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "gencal",
+    "msdir"         :   true,
+    "prefix"        :   " ",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "info"      :   "Name of input visibility file",
+            "io"        :   "msfile",
+            "required"  :   true
+        },
+        {   
+            "name"      :   "caltable",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "The new/existing calibration table",
+            "default"   :   null
+        },
+        {   
+            "name"      :   "caltype",
+            "dtype"     :   "str",
+            "choices"   :   ["amp","ph","sbd","mbd","antpos","antposvla","tsys","evlagain","opac","gc","gceff","eff"],
+            "info"      :   "The calibration type: 'amp','ph', 'sbd','mbd','antpos','antposvla','tsys''evlagain','opac','gc','gceff','eff'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "Calibration spw(s) selection",
+            "default"   :   null
+        },
+        {
+            "name"      :   "antenna",
+            "dtype"     :   "str",
+            "info"      :   "Calibration antenna(s) selection",
+            "default"   :   null
+        },
+        {
+            "name"      :   "pol",
+            "dtype"     :   "str",
+            "info"      :   "Calibration polarizations(s) selection",
+            "default"   :   null
+        },
+        {
+            "name"      :   "parameter",
+            "dtype"     :   "list:float",
+            "info"      :   "The calibration values",
+            "default"   :   null
+        },
+        {
+            "name"      :   "asynch",
+            "dtype"     :   "bool",
+            "info"      :   "If true the taskname must be started using gencal(...)",
+            "default"   :   false
+        } 
+    ]
+}

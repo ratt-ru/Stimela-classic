@@ -23,6 +23,8 @@ for param in cab['parameters']:
 
     args[name] = value
 
+args['showgui'] = False
+
 script = ['{0}(**{1})'.format(cab['binary'], args)]
 
 out, err = casa.run_script(script, raise_on_severe=False)

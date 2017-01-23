@@ -20,6 +20,7 @@
             "mapping"   :   "outputvis",
             "dtype"     :   "file",
             "io"        :   "msfile",
+            "check_io"  :   false,
             "info"      :   "Name of output measurement set",
             "default"   :   null
         },
@@ -31,8 +32,8 @@
         },
         {
             "name"      :   "field",
-            "dtype"     :   ["list:str","list:int"],
-            "info"      :   "Select field using ID(s) or name(s)",
+            "dtype"     :   "str",
+            "info"      :   "Select field using ID(s) or name(s). Comma separated string",
             "default"   :   null
         },
         {

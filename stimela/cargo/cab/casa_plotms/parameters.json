@@ -150,7 +150,7 @@
         },
         {
             "name"      :   "avgtime",
-            "dtype"     :   "int",
+            "dtype"     :   ["int","str"],
             "info"      :   "Average over time? (blank = False, otherwise value in seconds)",
             "default"   :   null
         },

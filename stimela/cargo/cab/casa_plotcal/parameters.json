@@ -120,14 +120,9 @@
             "default"   :   10.0
         },
         {
-            "name"      :   "showgui",
-            "dtype"     :   "bool",
-            "info"      :   "Show plot on gui",
-            "default"   :   true
-        },
-        {
             "name"      :   "figfile",
-            "dtype"     :   "str",
+            "dtype"     :   "file",
+            "io"        :   "output",
             "info"      :   "''= no plot hardcopy, otherwise supply name",
             "default"   :   null
         },

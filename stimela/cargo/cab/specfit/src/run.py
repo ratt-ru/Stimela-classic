@@ -28,7 +28,7 @@ tol = jdict.pop("tol", None)
 
 for item in "image mask spi_image spi_err lsmname outlsm freq0 lsmname".split():
     if isinstance(globals()[item], str):
-    globals()[item] = utils.substitute_globals(globals()[item]) or INPUT + "/" + globals()[item]
+        globals()[item] = utils.substitute_globals(globals()[item]) or INPUT + "/" + globals()[item]
 
 if spi_image:
     if make_spi:

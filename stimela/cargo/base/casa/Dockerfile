@@ -1,1 +1,1 @@
-FROM kernsuite/casa
+FROM kernsuite/casa:latest

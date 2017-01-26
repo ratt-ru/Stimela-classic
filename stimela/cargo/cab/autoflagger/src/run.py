@@ -9,18 +9,26 @@ CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 
-jdict = utils.readJson(CONFIG)
-msname = jdict.pop("msname")
+cab = utils.readJson(CONFIG)
+args = []
+msname = None
+for param in cab['parameters']:
+    name = param['name']
+    value = param['value']
 
-if isinstance(msname, (str, unicode)):
-    msname = [msname]
+    if value is None:
+        continue
+    elif value is False:
+        continue
+    elif value is True:
+        value = ''
+    elif name == 'msname':
+        msname = value
+        continue
 
-msname = " ".join( ["%s/%s"%(MSDIR , ms)  for ms in msname] )
+    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-strategy = jdict.pop("strategy", None)
-if strategy:
-    strategy = utils.substitute_globals(strategy) or INPUT + "/" + strategy
-strategy = "-strategy %s"%(strategy) if strategy else ""
-
-flag_cmd = ["-%s %s"%(a, "" if isinstance(b, bool) else b) for a,b in jdict.iteritems()] or [""]
-utils.xrun("aoflagger", flag_cmd+[strategy, msname])
+if msname:
+    utils.xrun(cab['binary'], args+[msname])
+else:
+    raise RuntimeError('MS name has not be specified')

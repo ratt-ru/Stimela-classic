@@ -7,7 +7,15 @@
     "binary"        :   "aoflagger",
     "prefix"        :   "-",
     "parameters"    :   [
-        {
+       {
+            "name"      :   "msname",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "required"  :   true,
+            "info"      :   "MS name to be flagged",
+            "default"   :   false
+       },
+       {
             "name"      :   "verbose",
             "mapping"   :   "v",
             "dtype"     :   "bool",
@@ -27,12 +35,6 @@
             "io"        :   "input",
             "info"      :   "specifies a possible customized strategy",
             "default"   :   null
-        },
-        {
-            "name"      :   "indirect-read",
-            "dtype"     :   "bool",
-            "info"      :   "will perform the slowest IO but will always work.",
-            "default"   :   false
         },
         {
             "name"      :   "indirect-read",
@@ -73,14 +75,13 @@
         {
             "name"      :   "bands",
             "dtype"     :   "list:int",
-            "delimiter" :   ",",
             "info"      :   "comma separated list of (zero-indexed) band ids to process",
             "default"   :   null
         },
         {
             "name"      :   "fields",
-            "dtype"     :   "list:int",
-            "delimiter" :   ",",
+            "dtype"     :   ["int","str"],
+            "info"      :   "Field ID(s). Comma separated string if more than one field",  
             "default"   :   null
         }
     ]

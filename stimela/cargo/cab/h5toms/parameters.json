@@ -8,7 +8,7 @@
     "binary"        :   "h5toms.py",
     "parameters"    :   [
         {
-            "name"      :   "hd5file",
+            "name"      :   "hd5files",
             "dtype"     :   "list:file",
             "io"        :   "input",
             "delimiter" :   " ",

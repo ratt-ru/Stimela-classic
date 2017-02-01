@@ -1,23 +1,52 @@
-FROM radioastro/base
+FROM stimela/base:0.2.7
 MAINTAINER <sphemakh@gmail.com>
 
-RUN apt-add-repository -s ppa:radio-astro/main && \
-    apt-get update && \
+ENV PACKAGES \
+    software-properties-common \
+    python-software-properties \
+    python-pip \
+    git \
+    build-essential \
+    cmake \
+    gfortran \
+    g++ \
+    libncurses5-dev \
+    libreadline-dev \
+    flex \
+    bison \
+    libblas-dev \
+    liblapacke-dev \
+    libcfitsio3-dev \
+    wcslib-dev \
+    libhdf5-serial-dev \
+    libfftw3-dev \
+    python-numpy \
+    libboost-python-dev \
+    libpython3.5-dev \
+    libpython2.7-dev
+
+# enable universe, multiverse, restricted with world wide mirrors
+RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y git-core \
-        libpython-dev \
-        libcasacore2-dev \
-        libboost-python-dev \
-        libcfitsio3-dev \
-        wget && \
+    apt-get install -y $PACKAGES && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Force upgrade of pip since pip install --upgrade pip doesn't work
-RUN easy_install -U pip setuptools==30.1.0
+# Install custom branch of casacore
+RUN git clone --depth 1 https://github.com/sjperkins/casacore.git -b expose-record-to-tabledesc-static-members /src/casacore && \
+    mkdir -p /src/casacore/build && \
+    cd /src/casacore/build && \
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && \
+    make -j 8 && \
+    make install && \
+    cd / && \
+    rm -rf /src
 
-RUN pip install -I -U git+git://github.com/ska-sa/katdal.git \
-    python-casacore pyyaml
+# Install pyyaml
+RUN pip install pyyaml
 
-RUN mkdir -p /var/kat/static && wget https://github.com/ska-sa/katdal/raw/master/blank.ms.tgz -O - | tar -C ./var/kat/static -xzvf -
+# Install custom branch of python-casacore
+RUN pip install git+https://github.com/sjperkins/python-casacore.git@create-default-ms#egg=python-casacore
 
+# Install custom branch of katdal
+RUN pip  install git+https://github.com/sjperkins/katdal.git@use-python-casacore-ms-creation#egg=katdal

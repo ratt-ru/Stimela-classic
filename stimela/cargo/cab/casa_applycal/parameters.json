@@ -97,7 +97,7 @@
         },
         {
             "name"      :   "gainfield",
-            "dtype"     :   ["list:int","list:str"],
+            "dtype"     :   ["list:str"],
             "info"      :   "Select a subset of calibrators from gaintable(s)",
             "default"   :   null
         },

@@ -1,7 +1,9 @@
 import os
 import sys
 import drivecasa
-casa = drivecasa.Casapy()
+casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600) 
+# I set timeout to a day. Not my business to
+# decide how long the process should tak
 
 sys.path.append("/utils")
 import utils
@@ -25,9 +27,7 @@ for param in cab['parameters']:
 
 script = ['{0}(**{1})'.format(cab['binary'], args)]
 
-out, err = casa.run_script(script, raise_on_severe=False)
-sys.stdout.write('\n'.join(out))
+_, err = casa.run_script(script, raise_on_severe=False)
 
 if len(err)>0:
-        raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is bellow \n {1}".format(cab['binary'], '\n'.join(err)))
-
+    raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is above".format(cab['binary']))

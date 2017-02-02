@@ -68,7 +68,7 @@
             "name"      :   "output-data",
             "dtype"     :   "str",
             "info"      :   "Data to be outputed after calibration",
-            "choices"   :   ["CORRECTED_RESIDUAL", "CORRECTED_DATA", "RESIDUAL_DATA"],
+            "choices"   :   ["CORRECTED_RESIDUAL", "CORRECTED_DATA", "RESIDUAL_DATA", "CORR_RES"],
             "default"   :   null
         },
         {
@@ -171,13 +171,13 @@
             "default"   :   10
         },
         {
-            "name"      :   "Gjones-flag-ampl-low",
+            "name"      :   "Gjones-ampl-clipping-low",
             "dtype"     :   "float",
             "info"      :   "Gjones flagging amplitude",
             "default"   :   0.2
         },
         {
-            "name"      :   "Gjones-flag-ampl-high",
+            "name"      :   "Gjones-ampl-clipping-high",
             "dtype"     :   "float",
             "info"      :   "Gjones flagging amplitude",
             "default"   :   1.8
@@ -237,13 +237,13 @@
             "default"   :   10
         },
         {
-            "name"      :   "DDjones-flag-ampl-low",
+            "name"      :   "DDjones-ampl-clipping-low",
             "dtype"     :   "float",
             "info"      :   "DDjones flagging amplitude",
             "default"   :   0.2
         },
         {
-            "name"      :   "DDjones-flag-ampl-high",
+            "name"      :   "DDjones-ampl-clipping-high",
             "dtype"     :   "float",
             "info"      :   "DDjones flagging amplitude",
             "default"   :   1.8

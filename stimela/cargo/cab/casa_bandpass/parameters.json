@@ -194,7 +194,6 @@
         {   
             "name"      :   "interp",
             "dtype"     :   "list:str",
-            "choices"   :   ["nearest","linear","spline","cubic"],
             "info"      :   "Interpolation mode (in time) to use for each gaintable",
             "default"   :   null
         },
@@ -210,6 +209,12 @@
             "io"        :   "input",
             "info"      :   "Cal Library filename",
             "default"   :   null
+        },
+        {
+            "name"      :   "minsnr",
+            "dtype"     :   "float",
+            "info"      :   "Reject solutions below this SNR (only applies for bandtype = B)",
+            "default"   :   3.0
         },
         {
             "name"      :   "parang",

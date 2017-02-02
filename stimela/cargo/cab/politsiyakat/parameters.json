@@ -23,18 +23,56 @@
             "default"   :   null
         },
         {
-            "name"      :   "kwargs",
-            "dtype"     :   "str",
-            "required"  :   true,
-            "info"      :   "Python dictionary string containing keyword arguments to the task, for example '{\"msname\":\"helloworld.ms\"}'",
+            "name"      :   "msname",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Measurement set",
             "default"   :   null
-        }
+        },
+        {
+            "name"      :   "column",
+            "mapping"   :   "data_column",
+            "dtype"     :   "str",
+            "info"      :   "Data column in MS",
+            "default"   :   "CORRECTED_DATA"
+        },
+        {
+            "name"      :   "field",
+            "mapping"   :   "cal_field",
+            "dtype"     :   "str",
+            "info"      :   "Field",
+            "default"   :   null
+        },
+        {
+            "name"      :   "valid_phase_range",
+            "dtype"     :   "str",
+            "info"      :   "Valid phase range",
+            "default"   :   null
+        },
+        {
+            "name"      :   "max_invalid_datapoints",
+            "dtype"     :   "float",
+            "info"      :   "percentage of all unflagged data per channel",
+            "default"   :   null
+        },
+        {
+            "name"      :   "output_dir",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Output directory",
+            "default"   :   null
+        },
+        {
+            "name"      :   "nrows_chunk",
+            "dtype"     :   "int",
+            "info"      :   "Nrwos to process on each run",
+            "default"   :   null
+        },
+        {
+            "name"      :   "simulate",
+            "dtype"     :   "bool",
+            "info"      :   "simulate",
+            "default"   :   false
+        } 
     ]
 }
-
-
-
-
-
-
-

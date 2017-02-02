@@ -32,6 +32,10 @@ for param in cab['parameters']:
         msname = value
         continue
 
+    if name=='flagged-any':
+        args += ['{0}flagged-any {1}'.format(cab['prefix'], a) for a in value]
+        continue
+
     args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
 
 utils.xrun(cab['binary'], args+[msname])

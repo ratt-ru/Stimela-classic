@@ -8,10 +8,9 @@
     "binary"        :   "h5toms.py",
     "parameters"    :   [
         {
-            "name"      :   "hd5files",
+            "name"      :   "hdf5files",
             "dtype"     :   "list:file",
             "io"        :   "input",
-            "delimiter" :   " ",
             "info"      :   "HDF5 file(s)",
             "required"  :   true,
             "default"   :   null
@@ -53,6 +52,7 @@
         },
         {
             "name"      :   "full-pol",
+            "mapping"   :   "full_pol",
             "dtype"     :   "bool",
             "info"      :   "Produce a full polarisation MS in CASA canonical order (HH, HV, VH, VV). Default is to produce HH,VV only",
             "default"   :   true

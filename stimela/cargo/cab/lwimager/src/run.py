@@ -3,15 +3,19 @@ import os
 import sys
 from pyrap.tables import table
 from MSUtils import msutils
+import tempfile
 
 sys.path.append('/utils')
 import utils
 
 CONFIG = os.environ['CONFIG']
+OUTPUT = os.environ['OUTPUT']
 
 cab = utils.readJson(CONFIG)
 params = cab['parameters']
 
+tdir = tempfile.mkdtemp(dir='.')
+os.chdir(tdir)
 
 def rm_fr(item):
     os.system('rm -fr {}'.format(item))
@@ -23,7 +27,7 @@ def _run (prefix=None, predict=False, **kw):
         utils.xrun(cab['binary'], args)
         return
 
-    if kw['niter']>0:
+    if kw.get('niter', 0) >0:
         if kw.get('operation', None) not in ['clark', 'hogbom', 'csclean', 'multiscale', 'entropy']:
             kw['operation'] = 'csclean'
         images = {
@@ -32,7 +36,7 @@ def _run (prefix=None, predict=False, **kw):
             "residual"  :   [ '{0}.residual.{1}'.format(prefix, a) for a in ['fits', 'img']],
         }
 
-    elif kw['niter'] == 0:
+    elif kw.get('niter', 0) == 0:
         kw["operation"] = 'image'
 
         images = {
@@ -58,7 +62,7 @@ def predict_vis (msname, image, column="MODEL_DATA",
   """Converts image into predicted visibilities"""
 
   # CASA to convert them
-  casaimage = '{}.img'.format(image)
+  casaimage = '{0}/{1}.img'.format(OUTPUT, os.path.basename(image))
   
   # convert to CASA image
   img = pyrap.images.image(image)
@@ -144,11 +148,6 @@ for param in params:
 
     if value is None:
         continue
-#    if param['dtype']=='bool':
-#        if value is True:
-#            value = 1
-#        else:
-#            value = 0
     if name == 'cellsize':
         if isinstance(value, (float, int)):
             value = '{}arcsec'.format(value)
@@ -161,8 +160,16 @@ for param in params:
 
 predict = options.pop('simulate_fits', False)
 if predict:
-    predict_vis(msname=options['ms'], image=predict, column='MODEL_DATA', 
+    tfile = tempfile.NamedTemporaryFile(suffix='.fits')
+    tfile.flush()
+    utils.xrun('python /code/predict_from_fits.py', [predict, options['ms'], options.get('cellsize', '1arcsec'),
+                tfile.name])
+    predict_vis(msname=options['ms'], image=tfile.name, column='MODEL_DATA', 
         chanchunk=options.get('chanchunk', None), chanstart=options.get('img_chanstart', 0), 
         chanstep=options.get('img_chanstep', 1))
+    tfile.close()
 else:
     _run(prefix, **options)
+
+os.chdir(OUTPUT)
+os.system('rm -r {}'.format(tdir))

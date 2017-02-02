@@ -10,7 +10,7 @@
         {
             "name"      :   "msname",
             "mapping"   :   "vis",
-            "dtype"     :   "file"
+            "dtype"     :   "file",
             "io"        :   "msfile",
             "info"      :   "Name of input visibility file (MS",
             "default"   :   null

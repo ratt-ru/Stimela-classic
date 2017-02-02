@@ -313,7 +313,7 @@ class Recipe(object):
                     container._cab.update(container.config, container.parameter_file_name)
 
                 self.log.info('Running Container {}'.format(container.name))
-                self.log.info('STEP {0} :: {1}'.format(i, container.label))
+                self.log.info('STEP {0} :: {1}'.format(i+1, container.label))
                 self.active = container
 
                 container.create()

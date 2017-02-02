@@ -1,4 +1,4 @@
-FROM stimela/katdal
+FROM stimela/katdal:0.2.3
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code

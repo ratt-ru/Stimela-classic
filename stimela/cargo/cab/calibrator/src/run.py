@@ -78,8 +78,8 @@ if gjones:
         "stefcal_gain.flag_ampl"    :   jdict.get("Gjones-ampl-clipping", 0),
         "stefcal_gain.flag_chisq"   :   jdict.get("Gjones-chisq-clipping", 0),
         "stefcal_gain.flag_chisq_threshold" :   jdict.get("Gjones-thresh-sigma", 10),
-        "stefcal_gain.flag_ampl_low"    :   jdict.get("Gjones-flag-ampl-low", 0.3),
-        "stefcal_gain.flag_ampl_high"   :   jdict.get("Gjones-flag-ampl-high", 2),
+        "stefcal_gain.flag_ampl_low"    :   jdict.get("Gjones-ampl-clipping-low", 0.3),
+        "stefcal_gain.flag_ampl_high"   :   jdict.get("Gjones-ampl-clipping-high", 2),
         "stefcal_gain.table" : gjones_gains,
     })
     

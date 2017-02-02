@@ -434,6 +434,20 @@
             "default"   :   true
         },
         {
+            "name"      :   "expformat",
+            "dtype"     :   "str",
+            "choices"   :   ["png","jpg","pdf","ps","txt"],
+            "info"      :   "Export format type (jpg, png, ps, pdf, txt), if not provided, plotfile extension will be used",
+            "default"   :   "png"
+        },
+        {
+            "name"      :   "exprange",
+            "dtype"     :   "str",
+            "choices"   :   ["all", "current"],
+            "info"      :   "Export all iteration plots or only the current one",
+            "default"   :   null
+        },
+        {
             "name"      :   "overwrite",
             "dtype"     :   "bool",
             "info"      :   "Overwrite exsting file",

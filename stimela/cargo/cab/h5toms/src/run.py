@@ -10,23 +10,20 @@ INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 OUTDIR = os.environ["OUTPUT"]
 
-jdict = utils.readJson(CONFIG)
+cab = utils.readJson(CONFIG)
+args = []
+for param in cab['parameters']:
+    value = param['value']
+    name = param['name']
 
-# Create options for boolean flags
-flags = ["full_pol", "flag_av"]
+    if value in [None, False]:
+        continue
+    elif value is True:
+        value = ""
+    elif name == 'hdf5files':
+        files = value
+        continue
 
-flags = ['--%s' % (f,) for f, v in (
-    (f, jdict.pop(f, False)) for f in flags)
-    if v is True]
+    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-h5s = [os.path.join(INPUT, n) for n in jdict.pop('hdf5files')]
-
-try:
-    ms = ["--output-ms %s" % os.path.join(MSDIR, jdict.pop('output-ms'))]
-except KeyError:
-    files = [os.splitext(os.path.split(f)[1])[0] for f in h5s]
-    ms = ["--output-ms %s.ms" % os.path.join(MSDIR, f) for f in files[0:1]]
-
-cmd = [ "--%s %s"%(key, "" if isinstance(val, bool) else val) for (key,val) in jdict.iteritems()]
-
-utils.xrun("h5toms.py", cmd+flags+ms+h5s )
+utils.xrun("h5toms.py", args+files )

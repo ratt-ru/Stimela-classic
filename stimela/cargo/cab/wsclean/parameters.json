@@ -324,7 +324,7 @@
         },
         {
             "name"      :   "field",
-            "dtype"     :   "int",
+            "dtype"     :   ["int","str"],
             "info"      :   "Image the given field id. Default: first field (id 0)",
             "default"   :   0
         },

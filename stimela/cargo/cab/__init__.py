@@ -253,6 +253,8 @@ class CabDefinition(object):
                         for _value in value:
                             val = _value.split(":")
                             if len(val)==2:
+                                if val[1] not in IODEST.keys():
+                                    raise IOError('The location \'{0}\' specified for parameter \'{1}\', is unknown. Choices are {2}'.format(val[1], param.name, IODEST.keys()))
                                 self.log.info("Location of '{0}' was specified as '{1}'. Will overide default.".format(param.name, val[1]))
                                 _value = val[0]
                                 location = val[1]

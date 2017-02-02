@@ -112,7 +112,6 @@
             "dtype"     :   "file",
             "io"        :   "input",
             "check_io"  :   false,
-            "required"  :   "true",
             "info"      :   "Field model. If using own model, set 'custom_model' to True",
             "default"   :   null 
         },

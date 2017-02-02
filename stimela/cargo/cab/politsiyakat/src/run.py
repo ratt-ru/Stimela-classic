@@ -1,7 +1,6 @@
 import sys
 import os
-from MSUtils import msutils
-import inspect
+import json
 
 sys.path.append("/utils")
 import utils
@@ -14,18 +13,25 @@ MSDIR = os.environ["MSDIR"]
 cab = utils.readJson(CONFIG)
 
 args = {}
+tasksuite = None
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
 
-    if value in [None, False]:
+    if value is None:
         continue
-    if value is True:
-        value = ""
-    if name == "task":
+    elif name == "task":
         task = value
         continue
+    elif name=='tasksuite':
+        tasksuite = tasksuite
 
-    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value))
+    args[name] = value
 
-utils.xrun(cab['binary'], args)
+kwargs = "'{}'".format(json.dumps(args))
+
+ARGS = [task, 
+    ("-s " + tasksuite) if tasksuite is not None else (""), 
+        kwargs]
+
+utils.xrun(cab['binary'], ARGS)

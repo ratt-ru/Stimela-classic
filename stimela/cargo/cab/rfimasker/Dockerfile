@@ -1,6 +1,4 @@
-FROM stimela/rfimasker:0.2.3
-
-RUN mkdir /input /output
+FROM stimela/rfimasker:0.2.4
 
 ADD src /code
 

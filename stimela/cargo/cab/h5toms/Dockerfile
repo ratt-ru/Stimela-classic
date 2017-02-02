@@ -1,7 +1,4 @@
-FROM stimela/katdal:0.2.3
+FROM stimela/katdal:0.2.4
 MAINTAINER <sphemakh@gmail.com>
-
 ADD src /code
-RUN mkdir -p /input /output
-
 CMD python /code/run.py

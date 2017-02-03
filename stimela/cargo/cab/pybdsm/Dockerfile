@@ -1,10 +1,6 @@
-FROM stimela/lofar:0.2.3
+FROM stimela/lofar:0.2.4
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code
-
-RUN mkdir -p /input /output
-
-WORKDIR /output
 
 CMD python /code/run.py

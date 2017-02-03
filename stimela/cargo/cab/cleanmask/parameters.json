@@ -39,7 +39,7 @@
         },
         {
             "name"      :   "iters",
-            "dtype"     :   "str",
+            "dtype"     :   "int",
             "info"      :   "The number of iterations to perform sigma clipping, or 0 to clip until convergence is achieved.",
             "default"   :   3,
             "required"  :   false

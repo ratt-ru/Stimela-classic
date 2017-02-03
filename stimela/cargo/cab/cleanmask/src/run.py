@@ -13,12 +13,12 @@ params = cab["parameters"]
 
 args = []
 for param in params:
-    if param.value is False:
+    if param['value'] in [False, None]:
         continue
-    elif param.value is True:
+    elif param['value'] is True:
         arg = "{0}{1}".format(param["prefix"], param["name"])
     else:
-        arg = "{0}{1} {2}".format(param["prefix"], param["name"], param["value"])
+        arg = "{0}{1} {2}".format(cab["prefix"], param["name"], param["value"])
 
     args.append(arg)
 

@@ -320,7 +320,7 @@ class Recipe(object):
                 created = True
                 container.start()
                 self.log2recipe(container, recipe, step, 'completed')
-            except Exception as e:
+            except BaseException as e:
                 self.completed = [cont[1] for cont in containers[:i]]
                 self.remaining = [cont[1] for cont in containers[i+1:]]
                 self.failed = container
@@ -331,7 +331,7 @@ class Recipe(object):
 
                 self.log2recipe(container, recipe, step, 'failed')
                 for step, cont in containers[i+1:]:
-                    self.log.info('Logging remaining task: {}'.format(cont.label))
+                    self.log.info('Logging remaining task: {}'.format(cont.label or cont.name))
                     self.log2recipe(cont, recipe, step, 'remaining')
 
                 self.log.info('Saving pipeline information in {}'.format(self.resume_file))

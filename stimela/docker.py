@@ -151,13 +151,13 @@ class Container(object):
         tstart = time.time()
         self.status = "running"
         self.log_container.update(self.info(), uptime="00:00:00")
-
+        
         try:
-            utils.xrun("docker",["start", "-a", self.name])
+            utils.xrun("docker", ["start", "-a", self.name])
         except KeyboardInterrupt:
-           self.stop()
-           self.remove()
-           raise KeyboardInterrupt("Terminating process")
+            utils.xrun("docker", ["kill", self.name])
+            raise 
+
            
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime
@@ -174,11 +174,12 @@ class Container(object):
         dinfo = self.info()
         status = dinfo["State"]["Status"]
         killed = False
-        if status == "running":
+        if status in ["running", "paused"]:
             try:
                 utils.xrun("docker stop", [self.name])
             except KeyboardInterrupt("Received terminate signal. Will stop and remove container first"):
                 killed = True
+        self.status = 'exited'
 
         self._print("Container {} has been stopped.".format(self.name))
         self.log_container.update(self.info(), self.uptime)
@@ -192,7 +193,7 @@ class Container(object):
         dinfo = self.info()
         status = dinfo["State"]["Status"]
         killed = False
-        if status != "running":
+        if status == "exited":
             try:
                 utils.xrun("docker rm", [self.name])
             except KeyboardInterrupt:

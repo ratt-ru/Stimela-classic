@@ -24,7 +24,7 @@ simms_dict = {
     "telescope" :   "meerkat",              # Telescope name
     "direction" :   "J2000,0deg,-30deg",   # Phase tracking centre of observation
     "synthesis" :   0.125,                      # Synthesis time of observation
-    "dtime"     :   30,                      # Exposure time
+    "dtime"     :   4,                      # Integration time in seconds
     "freq0"     :   "750MHz",               # Start frequency of observation
     "dfreq"     :   "1MHz",                 # Channel width
     "nchan"     :   1                      # Number of channels

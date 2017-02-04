@@ -59,7 +59,9 @@ for base in os.listdir('{0}/stimela/cargo/base'.format(root)):
 
         for i,line in enumerate(lines):
             if line.startswith('FROM') and line.split()[1].startswith('stimela'):
-                new = 'FROM stimela/{0}:{1}\n'.format(base, version)
+                image = line.split()[1].split(':')[0]
+                new = 'FROM {0}:{1}\n'.format(image, version)
+                print new
                 lines[i] = new
                 changed = True
 

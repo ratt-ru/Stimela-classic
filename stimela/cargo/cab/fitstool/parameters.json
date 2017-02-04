@@ -1,130 +1,132 @@
 {
-    "task"          :   "fitstool",
-    "base"          :   "stimela/meqtrees",
-    "tag"           :   "0.2.3",
-    "description"  :   "Convinience tools for manipulating FITS images",
-    "binary"        :   "fitstool.py",
-    "msdir"         :   "false",
-    "prefix"        :   "--",
-    "parameters"    :   [
+    "task": "fitstool", 
+    "base": "stimela/meqtrees", 
+    "tag": "0.2.5", 
+    "description": "Convinience tools for manipulating FITS images", 
+    "prefix": "--", 
+    "binary": "fitstool.py", 
+    "msdir": "false", 
+    "parameters": [
         {
-            "name"      :   "image",
-            "dtype"     :   "list:file",
-            "io"        :   "input",
-            "info"      :   "Input image(s)",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "Input image(s)", 
+            "name": "image", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "list:file", 
+            "required": true
+        }, 
         {
-            "name"      :   "output",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Output image",
-            "required"  :   false,
-            "default"   :   null
-        },
+            "info": "Output image", 
+            "name": "output", 
+            "io": "output", 
+            "default": null, 
+            "dtype": "file", 
+            "required": false
+        }, 
         {
-            "name"      :   "force",
-            "dtype"     :   "bool",
-            "info"      :   "overwrite output file even if it exists",
-            "default"   :   false
-        },
+            "info": "overwrite output file even if it exists", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "force"
+        }, 
         {
-            "name"      :   "sanitize",
-            "dtype"     :   "float",
-            "info"      :   "Sanitize FITS files by replacing NANs and INFs with a vlaue",
-            "default"   :   null
-        },
+            "info": "Sanitize FITS files by replacing NANs and INFs with a vlaue", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "sanitize"
+        }, 
         {
-            "name"      :   "nonneg",
-            "dtype"     :   "bool",
-            "info"      :   "replace negative values by 0",
-            "default"   :   false,
-        },
+            "info": "replace negative values by 0", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "nonneg"
+        }, 
         {
-            "name"      :   "mean",
-            "dtype"     :   "bool",
-            "info"      :   "take mean of input images",
-            "default"   :   false
-        },
+            "info": "take mean of input images", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "mean"
+        }, 
         {
-            "name"      :   "diff",
-            "dtype"     :   "bool",
-            "info"      :   "take difference of 2 input images",
-            "default"   :   false
-        },
+            "info": "take difference of 2 input images", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "diff"
+        }, 
         {
-            "name"      :   "transfer",
-            "dtype"     :   "bool",     
-            "info"      :   "transfer data from image 2 into image 1, preserving the FITS header of image 1",
-            "default"   :   false
-        },
+            "info": "transfer data from image 2 into image 1, preserving the FITS header of image 1", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "transfer"
+        }, 
         {
-            "name"      :   "zoom",
-            "dtype"     :   "int",
-            "info"      :   "Zoom into central sqaure region given in pixles",
-            "default"   :   null
-        },
+            "info": "Zoom into central sqaure region given in pixles", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "zoom"
+        }, 
         {
-            "name"      :   "rescale",
-            "dtype"     :   "float",
-            "info"      :   "Rescale image values",
-            "default"   :   null
-        },
+            "info": "Rescale image values", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "rescale"
+        }, 
         {
-            "name"      :   "edit-header",
-            "dtype"     :   "str",
-            "info"      :   "KEY=VALUE",
-            "default"   :   null
-        },
+            "info": "KEY=VALUE", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "edit-header"
+        }, 
         {
-            "name"      :   "stack",
-            "dtype"     :   "bool",
-            "info"      :   "Stack a list of FITS images along a given axis. This axis may given as an integer(as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)",
-            "default"   :   null
-        },
+            "info": "Stack a list of FITS images along a given axis. This axis may given as an integer(as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "stack"
+        }, 
         {
-            "name"      :   "unstack",
-            "dtype"     :   "bool",
-            "info"      :   "Unstack a FITS image into smaller chunks each having [each_chunk] planes along a given axis. This axis may given as an integer (as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)",
-            "default"   :   false
-        },
+            "info": "Unstack a FITS image into smaller chunks each having [each_chunk] planes along a given axis. This axis may given as an integer (as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "unstack"
+        }, 
         {
-            "name"      :   "unstack-chunk",
-            "dtype"     :   "int",
-            "info"      :   "Unstack FITS image into images of this width (along the given axis)",
-            "default"   :   1
-        },
+            "info": "Unstack FITS image into images of this width (along the given axis)", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "unstack-chunk"
+        }, 
         {
-            "name"      :   "fits-axis",
-            "dtype"     :   ["str","int"],
-            "info"      :   "Stack/Unstack along this axis",
-            "default"   :   null
-
-        },
+            "info": "Stack/Unstack along this axis", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "fits-axis"
+        }, 
         {
-            "name"      :   "reorder",
-            "dtype"     :   "str",
-            "info"      :   "Required order. List of comma seperated indeces",
-            "default"   :   null
-        },
+            "info": "Required order. List of comma seperated indeces", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "reorder"
+        }, 
         {
-            "name"      :   "add-axis",
-            "dtype"     :   "str",
-            "info"      :   "Add axis to a FITS image. The AXIS will be described by CTYPE:CRVAL:CRPIX:CDELT[:CUNIT:CROTA]. The keywords in brackets are optinal, while those not in brackets are mendatory. This axis will be the last dimension.",
-            "default"   :   null
-        },
+            "info": "Add axis to a FITS image. The AXIS will be described by CTYPE:CRVAL:CRPIX:CDELT[:CUNIT:CROTA]. The keywords in brackets are optinal, while those not in brackets are mendatory. This axis will be the last dimension.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "add-axis"
+        }, 
         {
-            "name"      :   "header",
-            "dtype"     :   "bool",
-            "info"      :   "print header(s) of input image(s)",
-            "default"   :   false
-        },
+            "info": "print header(s) of input image(s)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "header"
+        }, 
         {
-            "name"      :   "stats",
-            "dtype"     :   "bool",
-            "info"      :   "Print stats on images and exit. No output images will be written",
-            "default"   :   false
+            "info": "Print stats on images and exit. No output images will be written", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "stats"
         }
     ]
 }

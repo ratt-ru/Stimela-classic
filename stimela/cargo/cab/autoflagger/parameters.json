@@ -1,88 +1,91 @@
 {
-    "task"          :   "autoflagger",
-    "base"          :   "stimela/aoflagger",
-    "tag"           :   "0.2.3",
-    "description"   :   "This program will execute an RFI strategy as can be created with the RFI gui and executes it on one or several observations.",
-    "msdir"         :   true,
-    "binary"        :   "aoflagger",
-    "prefix"        :   "-",
-    "parameters"    :   [
-       {
-            "name"      :   "msname",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "required"  :   true,
-            "info"      :   "MS name to be flagged",
-            "default"   :   false
-       },
-       {
-            "name"      :   "verbose",
-            "mapping"   :   "v",
-            "dtype"     :   "bool",
-            "info"      :   "Produce verbose output",
-            "default"   :   false
-        },
+    "task": "autoflagger", 
+    "base": "stimela/aoflagger", 
+    "tag": "0.2.5", 
+    "description": "This program will execute an RFI strategy as can be created with the RFI gui and executes it on one or several observations.", 
+    "prefix": "-", 
+    "binary": "aoflagger", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "threads",
-            "mapping"   :   "j",
-            "dtype"     :   "int",
-            "info"      :   "overrides the number of threads specified in the strategy (default: one thread for each CPU core)",
-            "default"   :   null
-        },
+            "info": "MS name to be flagged", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": false, 
+            "dtype": "file", 
+            "required": true
+        }, 
         {
-            "name"      :   "strategy",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "specifies a possible customized strategy",
-            "default"   :   null
-        },
+            "info": "Produce verbose output", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "verbose", 
+            "mapping": "v"
+        }, 
         {
-            "name"      :   "indirect-read",
-            "dtype"     :   "bool",
-            "info"      :   "will reorder the measurement set before starting, which is normally faster but requires free disk space to reorder the data to",
-            "default"   :   true
-        },
+            "info": "overrides the number of threads specified in the strategy (default: one thread for each CPU core)", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "threads", 
+            "mapping": "j"
+        }, 
         {
-            "name"      :   "memory-read",
-            "dtype"     :   "bool",
-            "info"      :   "will read the entire measurement set in memory. This is the fastest, but requires much memory.",
-            "default"   :   false,
-        },
+            "info": "specifies a possible customized strategy", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "strategy", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "auto-read-mode",
-            "dtype"     :   "bool",
-            "info"      :   "will select either memory or direct mode based on available memory",
-            "default"   :   true
-        },
+            "info": "will reorder the measurement set before starting, which is normally faster but requires free disk space to reorder the data to", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "indirect-read"
+        }, 
         {
-            "name"      :   "uvw",
-            "dtype"     :   "bool",
-            "info"      :   "reads uvw values (some exotic strategies require these)",
-            "default"   :   false
-        },
+            "info": "will read the entire measurement set in memory. This is the fastest, but requires much memory.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "memory-read"
+        }, 
         {
-            "name"      :   "column",
-            "dtype"     :   "str",
-            "info"      :   "specify column to flag",
-            "default"   :   "DATA"
-        },
+            "info": "will select either memory or direct mode based on available memory", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "auto-read-mode"
+        }, 
         {
-            "name"      :   "skip-flagged",
-            "dtype"     :   "bool",
-            "info"      :   "will skip an ms if it has already been processed by AOFlagger according to its HISTORY table.",
-            "default"   :   false
-        },
+            "info": "reads uvw values (some exotic strategies require these)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "uvw"
+        }, 
         {
-            "name"      :   "bands",
-            "dtype"     :   "list:int",
-            "info"      :   "comma separated list of (zero-indexed) band ids to process",
-            "default"   :   null
-        },
+            "info": "specify column to flag", 
+            "dtype": "str", 
+            "default": "DATA", 
+            "name": "column"
+        }, 
         {
-            "name"      :   "fields",
-            "dtype"     :   ["int","str"],
-            "info"      :   "Field ID(s). Comma separated string if more than one field",  
-            "default"   :   null
+            "info": "will skip an ms if it has already been processed by AOFlagger according to its HISTORY table.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "skip-flagged"
+        }, 
+        {
+            "info": "comma separated list of (zero-indexed) band ids to process", 
+            "dtype": "list:int", 
+            "default": null, 
+            "name": "bands"
+        }, 
+        {
+            "info": "Field ID(s). Comma separated string if more than one field", 
+            "dtype": [
+                "int", 
+                "str"
+            ], 
+            "default": null, 
+            "name": "fields"
         }
     ]
 }

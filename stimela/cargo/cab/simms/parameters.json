@@ -1,158 +1,174 @@
 {
-    "task"          :   "simms",
-    "description"   :   "Uses the CASA simulator tool to create a simulated measurement set (MS)",
-    "base"          :   "stimela/simms",
-    "tag"           :   "0.2.3",
-    "msdir"         :   true,
-    "binary"        :   "simms",
-    "prefix"        :   "--",
-    "parameters"    :   [
+    "task": "simms", 
+    "base": "stimela/simms", 
+    "tag": "0.2.5", 
+    "description": "Uses the CASA simulator tool to create a simulated measurement set (MS)", 
+    "prefix": "--", 
+    "binary": "simms", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "msname",
-            "mapping"   :   "name",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "check_io"  :   false,
-            "info"      :   "Name of MS file to be created",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "Name of MS file to be created", 
+            "check_io": false, 
+            "name": "msname", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "name", 
+            "io": "msfile"
+        }, 
         {
-            "name"      :   "telescope",
-            "mapping"   :   "tel",
-            "dtype"     :   "str",
-            "info"      :   "Name of telescope that being simulated",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "Name of telescope that being simulated", 
+            "name": "telescope", 
+            "default": null, 
+            "dtype": "str", 
+            "required": true, 
+            "mapping": "tel"
+        }, 
         {
-            "name"      :   "antenna-file",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "File that contains antenna coordinates",
-            "default"   :   null
-        },
+            "info": "File that contains antenna coordinates", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "antenna-file", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "type",
-            "dtype"     :   "str",
-            "choices"   :   ["casa","ascii"],
-            "info"      :   "Type of antenna file",
-            "default"   :   "casa"
-        },
+            "info": "Type of antenna file", 
+            "dtype": "str", 
+            "default": "casa", 
+            "name": "type", 
+            "choices": [
+                "casa", 
+                "ascii"
+            ]
+        }, 
         {
-            "name"      :   "coord-sys",
-            "dtype"     :   "str",
-            "choices"   :   ["itrf", "enu", "wgs84"],
-            "info"      :   "Coordinate system of antenna coordinates in 'antenna-file'. Only needed if 'type' is 'ascii'; CASA tables are assumed to be in ITRF coords",
-            "default"   :   "itrf"
-        },
+            "info": "Coordinate system of antenna coordinates in 'antenna-file'. Only needed if 'type' is 'ascii'; CASA tables are assumed to be in ITRF coords", 
+            "dtype": "str", 
+            "default": "itrf", 
+            "name": "coord-sys", 
+            "choices": [
+                "itrf", 
+                "enu", 
+                "wgs84"
+            ]
+        }, 
         {
-            "name"      :   "lon-lat-elv",
-            "dtype"     :   "list:float",
-            "info"      :   "Reference position of telescope. Comma seperated longitude,lattitude and elevation 'deg,deg,m'. Elevation is not crucial, lon,lat should be enough. If not specified, we'll try to get this info from the CASA database (assuming that your telescope is known to CASA)",
-            "default"   :   null
-        },
+            "info": "Reference position of telescope. Comma seperated longitude,lattitude and elevation 'deg,deg,m'. Elevation is not crucial, lon,lat should be enough. If not specified, we'll try to get this info from the CASA database (assuming that your telescope is known to CASA)", 
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "lon-lat-elv"
+        }, 
         {
-            "name"      :   "noup",
-            "dtype"     :   "bool",
-            "info"      :   "Enable this to indicate that your ENU file does not have an 'up' dimension",
-            "default"   :   false
-        },
+            "info": "Enable this to indicate that your ENU file does not have an 'up' dimension", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "noup"
+        }, 
         {
-            "name"      :   "direction",
-            "dtype"     :   ["list:str","str"],
-            "info"      :   "Pointing direction. Example J2000,0h0m0s,-30d0m0d. Option --direction may be specified multiple times for multiple pointings. Provide a list of directions for multiple pointings; each pointing will have a unique field ID",
-            "default"   :   "J2000,0deg,-30deg"
-        },
+            "info": "Pointing direction. Example J2000,0h0m0s,-30d0m0d. Option --direction may be specified multiple times for multiple pointings. Provide a list of directions for multiple pointings; each pointing will have a unique field ID", 
+            "dtype": [
+                "list:str", 
+                "str"
+            ], 
+            "default": "J2000,0deg,-30deg", 
+            "name": "direction"
+        }, 
         {
-            "name"      :   "synthesis",
-            "dtype"     :   "float",
-            "info"      :   "Synthesis time in hours",
-            "default"   :   4
-        },
+            "info": "Synthesis time in hours", 
+            "dtype": "float", 
+            "default": 4, 
+            "name": "synthesis"
+        }, 
         {
-            "name"      :   "scan-length",
-            "dtype"     :   "float",
-            "info"      :   "Durration of a single scan. Default is the entire observation (synthesis)",
-            "default"   :   null
-        },
+            "info": "Durration of a single scan. Default is the entire observation (synthesis)", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "scan-length"
+        }, 
         {
-            "name"      :   "dtime",
-            "dtype"     :   "int",
-            "info"      :   "Integration time in seconds",
-            "default"   :   2
-        },
+            "info": "Integration time in seconds", 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "dtime"
+        }, 
         {
-            "name"      :   "freq0",
-            "dtype"     :   ["list:str","list:float"],
-            "info"      :   "Start frequency. This is the middle of the first channel. Specify as val[unit]. E.g 700MHz, no unit => Hz . Use a comma seperated list for multiple start frequencies (for multiple subbands)",
-            "default"   :   "1.4GHz"
-        },
+            "info": "Start frequency. This is the middle of the first channel. Specify as val[unit]. E.g 700MHz, no unit => Hz . Use a comma seperated list for multiple start frequencies (for multiple subbands)", 
+            "dtype": [
+                "list:str", 
+                "list:float"
+            ], 
+            "default": "1.4GHz", 
+            "name": "freq0"
+        }, 
         {
-            "name"      :   "dfreq",
-            "dtype"     :   ["list:str","list:float"],
-            "info"      :   "Channel width. Specify as val[unit]. E.g 700MHz, no unit => Hz Use a comma separated list of channel widths (for multiple subbands)",
-            "default"   :   "2MHz"
-        },
+            "info": "Channel width. Specify as val[unit]. E.g 700MHz, no unit => Hz Use a comma separated list of channel widths (for multiple subbands)", 
+            "dtype": [
+                "list:str", 
+                "list:float"
+            ], 
+            "default": "2MHz", 
+            "name": "dfreq"
+        }, 
         {
-            "name"      :   "nband",
-            "dtype"     :   "int",
-            "info"      :   "Number of subands",
-            "default"   :   1,
-        },
+            "info": "Number of subands", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "nband"
+        }, 
         {
-            "name"      :   "nchan",
-            "dtype"     :   "list:int",
-            "info"      :   "Number of channels. Can be used in tandemn with 'freq0, dfreq, nband' to customise the partitioning of the subands",
-            "default"   :   1
-        },
+            "info": "Number of channels. Can be used in tandemn with 'freq0, dfreq, nband' to customise the partitioning of the subands", 
+            "dtype": "list:int", 
+            "default": 1, 
+            "name": "nchan"
+        }, 
         {
-            "name"      :   "init-ha",
-            "dtype"     :   "float",
-            "info"      :   "Initial hour angle. 'scan-length/2' is the default",
-            "default"   :   null
-        },
+            "info": "Initial hour angle. 'scan-length/2' is the default", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "init-ha"
+        }, 
         {
-            "name"      :   "pol",
-            "dtype"     :   "str",
-            "info"      :   "polarization",
-            "default"   :   "XX XY YX YY"
-        },
+            "info": "polarization", 
+            "dtype": "str", 
+            "default": "XX XY YX YY", 
+            "name": "pol"
+        }, 
         {
-            "name"      :   "feed",
-            "dtype"     :   "str",
-            "info"      :   "Feed type",
-            "default"   :   "perfect X Y"
-        },
+            "info": "Feed type", 
+            "dtype": "str", 
+            "default": "perfect X Y", 
+            "name": "feed"
+        }, 
         {
-            "name"      :   "scan-lag",
-            "dtype"     :   "float",
-            "info"      :   "Lag time between scans",
-            "default"   :   0
-        },
+            "info": "Lag time between scans", 
+            "dtype": "float", 
+            "default": 0, 
+            "name": "scan-lag"
+        }, 
         {
-            "name"      :   "set-limits",
-            "dtype"     :   "bool",
-            "info"      :   "Set telescope limits. Elevation and shadow limts. Works in tandem with 'shadow-limit, elevation-limit'",
-            "default"   :   false
-        },
+            "info": "Set telescope limits. Elevation and shadow limts. Works in tandem with 'shadow-limit, elevation-limit'", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "set-limits"
+        }, 
         {
-            "name"      :   "elevation-limit",
-            "dtype"     :   "float",
-            "info"      :   "Dish elevation limit. Will only be taken into account if 'set-limits' is enabled.",
-            "default"   :   null,
-        },
+            "info": "Dish elevation limit. Will only be taken into account if 'set-limits' is enabled.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "elevation-limit"
+        }, 
         {
-            "name"      :   "shadow-limit",
-            "dtype"     :   "float",
-            "info"      :   "Shadow limit. Will only be taken into account if 'set-limits' is enabled.",
-            "default"   :   null
-        },
+            "info": "Shadow limit. Will only be taken into account if 'set-limits' is enabled.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "shadow-limit"
+        }, 
         {
-            "name"      :   "auto-correlations",
-            "dtype"     :   "bool",
-            "info"      :   "Don't flag autocorrelations",
-            "default"   :   false
+            "info": "Don't flag autocorrelations", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "auto-correlations"
         }
     ]
 }

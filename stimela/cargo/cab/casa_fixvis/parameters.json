@@ -1,65 +1,65 @@
 {
-    "task"          :   "casa_fixvis",
-    "base"          :   "stimela/casa",
-    "tag"           :   "0.2.3",
-    "description"   :   "Recalculates (u, v, w) and/or changes Phase Center",
-    "binary"        :   "fixvis",
-    "msdir"         :   true,
-    "prefix"        :   "",
-    "parameters"    :   [
+    "task": "casa_fixvis", 
+    "base": "stimela/casa", 
+    "tag": "0.2.5", 
+    "description": "Recalculates (u, v, w) and/or changes Phase Center", 
+    "prefix": "", 
+    "binary": "fixvis", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :  "msname",
-            "mapping"   :   "vis",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "Name of the input visibility set.",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "Name of the input visibility set.", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
         {
-            "name"      :   "output-msname",
-            "mapping"   :   "outputvis",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "Name of the output visibility set.  (Can be the same as vis.)",
-            "required"  :   true,
-            "default"   :   false
-        },
+            "info": "Name of the output visibility set.  (Can be the same as vis.)", 
+            "name": "output-msname", 
+            "io": "msfile", 
+            "default": false, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "outputvis"
+        }, 
         {
-            "name"      :   "datacolumn",
-            "dtype"     :   "str",
-            "info"      :   "When applying a phase center shift, modify visibilities only in this/these column(s). Comma separated list",
-            "default"   :   "all",
-        },
+            "info": "When applying a phase center shift, modify visibilities only in this/these column(s). Comma separated list", 
+            "dtype": "str", 
+            "default": "all", 
+            "name": "datacolumn"
+        }, 
         {
-            "name"      :   "field",
-            "dtype"     :   "str",
-            "info"      :   "Fields to operate on. ''  = all.",
-            "default"   :   ""
-        },
+            "info": "Fields to operate on. ''  = all.", 
+            "dtype": "str", 
+            "default": "", 
+            "name": "field"
+        }, 
         {
-            "name"      :   "refcode",
-            "dtype"     :   "str",
-            "info"      :   "Reference frame to convert UVW coordinates to",
-            "default"   :   null
-        },
+            "info": "Reference frame to convert UVW coordinates to", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "refcode"
+        }, 
         {
-            "name"      :   "reuse",
-            "dtype"     :   "bool",
-            "info"      :   "Base UVW calculation on the old values?",
-            "default"   :   true
-        },
+            "info": "Base UVW calculation on the old values?", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "reuse"
+        }, 
         {
-            "name"      :   "phasecenter",
-            "dtype"     :   "str",
-            "info"      :   "Use this direction as phase center",
-            "default"   :   null
-        },
+            "info": "Use this direction as phase center", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "phasecenter"
+        }, 
         {
-            "name"      :   "distances",
-            "dtype"     :   "list:str",
-            "info"      :   "(experimental) List of the distances (as quanta) of the fields selected by field.",
-            "default"   :   null
+            "info": "(experimental) List of the distances (as quanta) of the fields selected by field.", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "distances"
         }
     ]
 }

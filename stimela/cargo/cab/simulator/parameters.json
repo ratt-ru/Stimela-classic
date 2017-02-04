@@ -1,205 +1,212 @@
 {
-    "task"          :   "simulator",
-    "base"          :   "stimela/meqtrees",
-    "tag"           :   "0.2.3",
-    "description"   :   "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)",
-    "binary"        :   "meqtree-pipeliner.py",
-    "msdir"         :   true,
-    "prefix"        :   " ",
-    "parameters"    :   [
+    "task": "simulator", 
+    "base": "stimela/meqtrees", 
+    "tag": "0.2.5", 
+    "description": "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)", 
+    "prefix": " ", 
+    "binary": "meqtree-pipeliner.py", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "msname",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "MS to simulate sky model into",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "MS to simulate sky model into", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
         {
-            "name"      :   "tdlconf",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "TDL configuration file. If not specified, will use a default template",
-            "default"   :   null
-        },
+            "info": "TDL configuration file. If not specified, will use a default template", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "tdlconf", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "threads",
-            "dtype"     :   "int",
-            "info"      :   "Number of CPUs to use for  multithreading",
-            "default"   :   2
-        },
+            "info": "Number of CPUs to use for  multithreading", 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "threads"
+        }, 
         {
-            "name"      :   "section",
-            "dtype"     :   "str",
-            "info"      :   "Section to execute in TDL config file. Only needed if using custom TDL config",
-            "default"   :   null
-        },
+            "info": "Section to execute in TDL config file. Only needed if using custom TDL config", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "section"
+        }, 
         {
-            "name"      :   "mode",
-            "dtype"     :   "str",
-            "choices"   :   ["simulate", "subtract", "add"],
-            "info"      :   "Simulation mode. You can; i) 'simulate' - replace; ii) 'add' to; iii) or 'subtract' from the data in the specified column",
-            "default"   :   "simulate"
-        },
+            "info": "Simulation mode. You can; i) 'simulate' - replace; ii) 'add' to; iii) or 'subtract' from the data in the specified column", 
+            "dtype": "str", 
+            "default": "simulate", 
+            "name": "mode", 
+            "choices": [
+                "simulate", 
+                "subtract", 
+                "add"
+            ]
+        }, 
         {
-            "name"      :   "skymodel",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Sky model to be simulated",
-            "default"   :   null
-        },
+            "info": "Sky model to be simulated", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "skymodel", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "field-center",
-            "dtype"     :   "str",
-            "info"      :   "Recenter the sky model to this direction",
-            "default"   :   null
-        },
+            "info": "Recenter the sky model to this direction", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field-center"
+        }, 
         {
-            "name"      :   "recenter",
-            "dtype"     :   "bool",
-            "info"      :   "Recenter skymodel to phase center of MS",
-            "default"   :   false
-        },
+            "info": "Recenter skymodel to phase center of MS", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "recenter"
+        }, 
         {
-            "name"      :   "addnoise",
-            "dtype"     :   "bool",
-            "info"      :   "Add noise to simulated data",
-            "default"   :   false
-        },
+            "info": "Add noise to simulated data", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "addnoise"
+        }, 
         {
-            "name"      :   "sefd",
-            "dtype"     :   "float",
-            "info"      :   "Noise to be added to the simulated data will be derived from this value (~sefd/sqrt(dt*dv))",
-            "default"   :   null
-        },
+            "info": "Noise to be added to the simulated data will be derived from this value (~sefd/sqrt(dt*dv))", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "sefd"
+        }, 
         {
-            "name"      :   "Gjones",
-            "dtype"     :   "bool",
-            "info"      :   "Enable direction independent corruptions to simulated data",
-            "default"   :   false
-        },
+            "info": "Enable direction independent corruptions to simulated data", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "Gjones"
+        }, 
         {
-            "name"      :   "field-id",
-            "dtype"     :   "int",
-            "info"      :   "Field ID",
-            "default"   :   0
-        },
+            "info": "Field ID", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "field-id"
+        }, 
         {
-            "name"      :   "spw-id",
-            "dtype"     :   "int",
-            "info"      :   "SPW ID",
-            "defaut"    :   0
-        },
+            "info": "SPW ID", 
+            "dtype": "int", 
+            "name": "spw-id", 
+            "defaut": 0
+        }, 
         {
-            "name"      :   "noise",
-            "dtype"     :   "float",
-            "info"      :   "Noise to add to visibility data. In Jy",
-            "default"   :   0
-        },
+            "info": "Noise to add to visibility data. In Jy", 
+            "dtype": "float", 
+            "default": 0, 
+            "name": "noise"
+        }, 
         {
-            "name"      :   "column",
-            "dtype"     :   "str",
-            "info"      :   "Column name",
-            "default"   :   "CORRECTED_DATA"
-        },
+            "info": "Column name", 
+            "dtype": "str", 
+            "default": "CORRECTED_DATA", 
+            "name": "column"
+        }, 
         {
-            "name"      :   "input-column",
-            "dtype"     :   "str",
-            "info"      :   "Input column. Needed for 'mode' = 'add, subtract'.",
-            "default"   :   "DATA"
-        },
+            "info": "Input column. Needed for 'mode' = 'add, subtract'.", 
+            "dtype": "str", 
+            "default": "DATA", 
+            "name": "input-column"
+        }, 
         {
-            "name"      :   "gain-max-period",
-            "dtype"     :   "int",
-            "info"      :   "Maximum period for direction independent gain corruption. In hours",
-            "default"   :   30
-        },
+            "info": "Maximum period for direction independent gain corruption. In hours", 
+            "dtype": "int", 
+            "default": 30, 
+            "name": "gain-max-period"
+        }, 
         {
-            "name"      :   "gain-min-period",
-            "dtype"     :   "int",
-            "info"      :   "Minimum period for direction independent gain corruption. In hours",
-            "default"   :   5
-        },
+            "info": "Minimum period for direction independent gain corruption. In hours", 
+            "dtype": "int", 
+            "default": 5, 
+            "name": "gain-min-period"
+        }, 
         {
-            "name"      :   "gain-max-error",
-            "dtype"     :   "int",
-            "info"      :   "Maximum period for direction independent gain corruption. In deg",
-            "default"   :   1.2,
-        },
+            "info": "Maximum period for direction independent gain corruption. In deg", 
+            "dtype": "int", 
+            "default": 1.2, 
+            "name": "gain-max-error"
+        }, 
         {
-            "name"      :   "gain-min-error",
-            "dtype"     :   "int",
-            "info"      :   "Minimum period for direction independent gain corruption. In deg",
-            "default"   :   0.8
-        },
+            "info": "Minimum period for direction independent gain corruption. In deg", 
+            "dtype": "int", 
+            "default": 0.8, 
+            "name": "gain-min-error"
+        }, 
         {
-            "name"      :   "phase-max-period",
-            "dtype"     :   "int",
-            "info"      :   "Maximum period for direction independent gain corruption. In hours",
-            "default"   :   30
-        },
+            "info": "Maximum period for direction independent gain corruption. In hours", 
+            "dtype": "int", 
+            "default": 30, 
+            "name": "phase-max-period"
+        }, 
         {
-            "name"      :   "phase-min-period",
-            "dtype"     :   "int",
-            "info"      :   "Minimum period for direction independent gain corruption. In hours",
-            "default"   :   5
-        },
+            "info": "Minimum period for direction independent gain corruption. In hours", 
+            "dtype": "int", 
+            "default": 5, 
+            "name": "phase-min-period"
+        }, 
         {
-            "name"      :   "phase-max-error",
-            "dtype"     :   "int",
-            "info"      :   "Maximum period for direction independent gain corruption. In deg",
-            "default"   :   1.2,
-        },
+            "info": "Maximum period for direction independent gain corruption. In deg", 
+            "dtype": "int", 
+            "default": 1.2, 
+            "name": "phase-max-error"
+        }, 
         {
-            "name"      :   "phase-min-error",
-            "dtype"     :   "int",
-            "info"      :   "Minimum period for direction independent gain corruption. In deg",
-            "default"   :   0.8
-        },
+            "info": "Minimum period for direction independent gain corruption. In deg", 
+            "dtype": "int", 
+            "default": 0.8, 
+            "name": "phase-min-error"
+        }, 
         {
-            "name"      :   "Ejones",
-            "dtype"     :   "bool",
-            "info"      :   "Add a primary beam model",
-            "default"   :   false
-        },
+            "info": "Add a primary beam model", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "Ejones"
+        }, 
         {
-            "name"      :   "beam-files-pattern",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "check_io"  :   false,
-            "info"      :   "Beam files pattern",
-            "default"   :   null
-        },
+            "info": "Beam files pattern", 
+            "check_io": false, 
+            "name": "beam-files-pattern", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "file"
+        }, 
         {
-            "name"      :   "beam-type",
-            "dtype"     :   "str",
-            "choices"   :   ["fits", "emsss"],
-            "info"      :   "Type of input beam files",
-            "default"   :   "fits"
-        },
+            "info": "Type of input beam files", 
+            "dtype": "str", 
+            "default": "fits", 
+            "name": "beam-type", 
+            "choices": [
+                "fits", 
+                "emsss"
+            ]
+        }, 
         {
-            "name"      :   "beam-l-axis",
-            "dtype"     :   "str",
-            "info"      :   "Beam l axis",
-            "default"   :   "X"
-        },
+            "info": "Beam l axis", 
+            "dtype": "str", 
+            "default": "X", 
+            "name": "beam-l-axis"
+        }, 
         {
-            "name"      :   "beam-m-axis",
-            "dtype"     :   "str",
-            "info"      :   "Beam m axis",
-            "default"   :   "Y"
-        },
+            "info": "Beam m axis", 
+            "dtype": "str", 
+            "default": "Y", 
+            "name": "beam-m-axis"
+        }, 
         {
-            "name"      :   "paralactic-angle-rotation",
-            "dtype"     :   "bool",
-            "info"      :   "Enable paralactic angle rotation. Enable if telescope mount is ALT-AZ",
-            "default"   :   false
-        },
+            "info": "Enable paralactic angle rotation. Enable if telescope mount is ALT-AZ", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "paralactic-angle-rotation"
+        }, 
         {
-            "name"      :   "pointing-accuracy",
-            "dtype"     :   "float",
-            "info"      :   "Pointing accuracy in arcsec. If set to non-zero value, will introduce pointing errors into simulation",
-            "default"   :   0
+            "info": "Pointing accuracy in arcsec. If set to non-zero value, will introduce pointing errors into simulation", 
+            "dtype": "float", 
+            "default": 0, 
+            "name": "pointing-accuracy"
         }
     ]
 }

@@ -1,26 +1,25 @@
 {
-    "task"          :   "casa_uvsub",
-    "base"          :   "stimela/casa",
-    "tag"           :   "0.2.4",
-    "description"   :   "Subtract/add model from/to the corrected visibility data.",
-    "binary"        :   "uvsub",
-    "prefix"        :   "",
-    "msdir"         :   true,
-    "parameters"    :   [
+    "task": "casa_uvsub", 
+    "base": "stimela/casa", 
+    "tag": "0.2.5", 
+    "description": "Subtract/add model from/to the corrected visibility data.", 
+    "prefix": "", 
+    "binary": "uvsub", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "msname",
-            "mapping"   :   "vis",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "Name of input visibility file (MS",
-            "default"   :   null
-        },
+            "info": "Name of input visibility file (MS", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "mapping": "vis"
+        }, 
         {
-            "name"      :   "reverse",
-            "dtype"     :   "bool",
-            "info"      :   "reverse the operation (add rather than subtract)",
-            "default"   :   false
+            "info": "reverse the operation (add rather than subtract)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "reverse"
         }
     ]
 }
-

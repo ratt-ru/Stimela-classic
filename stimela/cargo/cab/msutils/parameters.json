@@ -1,133 +1,144 @@
 {
-    "task"          :   "msutils",
-    "base"          :   "stimela/msutils",
-    "tag"           :   "0.2.3",
-    "description"   :   "Tools for manipulating measurement sets (MSs)",
-    "msdir"         :   true,
-    "binary"        :   "msutils",
-    "prefix"        :   " ",
-    "parameters"    :   [
+    "task": "msutils", 
+    "base": "stimela/msutils", 
+    "tag": "0.2.5", 
+    "description": "Tools for manipulating measurement sets (MSs)", 
+    "prefix": " ", 
+    "binary": "msutils", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "command",
-            "dtype"     :   "str",
-            "info"      :   "MSUtils command to execute",
-            "choices"   :   ["addcol", "sumcols", "copycol", "compute_vis_noise", "verify_antpos", "prep", "addnoise"],
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "MSUtils command to execute", 
+            "name": "command", 
+            "default": null, 
+            "dtype": "str", 
+            "required": true, 
+            "choices": [
+                "addcol", 
+                "sumcols", 
+                "copycol", 
+                "compute_vis_noise", 
+                "verify_antpos", 
+                "prep", 
+                "addnoise"
+            ]
+        }, 
         {
-            "name"      :   "msname",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "required"  :   true,
-            "info"      :   "MS name"
-        },
+            "info": "MS name", 
+            "dtype": "file", 
+            "required": true, 
+            "name": "msname", 
+            "io": "msfile"
+        }, 
         {
-            "name"      :   "column",
-            "mapping"   :   "colname",
-            "dtype"     :   "str",
-            "info"      :   "Column name",
-            "default"   :   null,
-        },
+            "info": "Column name", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "column", 
+            "mapping": "colname"
+        }, 
         {
-            "name"      :   "shape",
-            "dtype"     :   "str",
-            "info"      :   "Shape of column to add to MS",
-            "default"   :   null,
-        },
+            "info": "Shape of column to add to MS", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "shape"
+        }, 
         {
-            "name"      :   "valuetype",
-            "dtype"     :   "str",
-            "info"      :   "Column data type",
-            "default"   :   null
-        },
+            "info": "Column data type", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "valuetype"
+        }, 
         {
-            "name"      :   "data_desc_type",
-            "dtype"     :   "str",
-            "choices"   :   ["array", "scalar"],
-            "info"      :   "Data description type for data in column to be added",
-            "default"   :   "array"
-        },
+            "info": "Data description type for data in column to be added", 
+            "dtype": "str", 
+            "default": "array", 
+            "name": "data_desc_type", 
+            "choices": [
+                "array", 
+                "scalar"
+            ]
+        }, 
         {
-            "name"      :   "init_with",
-            "dtype"     :   "float",
-            "info"      :   "Value to initialize new data column with",
-            "default"   :   true
-        },
+            "info": "Value to initialize new data column with", 
+            "dtype": "float", 
+            "default": true, 
+            "name": "init_with"
+        }, 
         {
-            "name"      :   "col1",
-            "dtype"     :   "str",
-            "info"      :   "First column to add/subtract",
-            "default"   :   null
-        },
+            "info": "First column to add/subtract", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "col1"
+        }, 
         {
-            "name"      :   "col2",
-            "dtype"     :   "str",
-            "info"      :   "Second column to add/subtract",
-            "default"   :   null
-        },
+            "info": "Second column to add/subtract", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "col2"
+        }, 
         {
-            "name"      :   "cols",
-            "dtype"     :   "list:str",
-            "delimiter" :   ",",
-            "info"      :   "Columns to sum",
-            "default"   :   null
-        },
+            "info": "Columns to sum", 
+            "dtype": "list:str", 
+            "delimiter": ",", 
+            "name": "cols", 
+            "default": null
+        }, 
         {
-            "name"      :   "subtract",
-            "dtype"     :   "bool",
-            "info"      :   "Subtract 'col2' from 'col1' ",
-            "default"   :   false
-        },
+            "info": "Subtract 'col2' from 'col1' ", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "subtract"
+        }, 
         {
-            "name"      :   "fromcol",
-            "dtype"     :   "str",
-            "info"      :   "Column to copy data from",
-            "default"   :   null
-        },
+            "info": "Column to copy data from", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "fromcol"
+        }, 
         {
-            "name"      :   "tocol",
-            "dtype"     :   "str",
-            "info"      :   "Column to copy data to",
-            "default"   :   null
-        },
+            "info": "Column to copy data to", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "tocol"
+        }, 
         {
-            "name"      :   "addnoise",
-            "dtype"     :   "bool",
-            "info"      :   "Add noise to MS. Will add to 'column/colname'",
-            "default"   :   false
-        },
+            "info": "Add noise to MS. Will add to 'column/colname'", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "addnoise"
+        }, 
         {
-            "name"      :   "sefd",
-            "dtype"     :   "float",
-            "info"      :   "System Equivalent Flux Density, in Jy. The noise will be calculated using this value",
-            "default"   :   0
-        },
+            "info": "System Equivalent Flux Density, in Jy. The noise will be calculated using this value", 
+            "dtype": "float", 
+            "default": 0, 
+            "name": "sefd"
+        }, 
         {
-            "name"      :   "addToCol",
-            "dtype"     :   "str",
-            "info"      :   "Add noise to data in this column",
-            "default"   :   null
-        },
+            "info": "Add noise to data in this column", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "addToCol"
+        }, 
         {
-            "name"      :   "noise",
-            "dtype"     :   "float",
-            "info"      :   "Noise in Jy to 'column/colname' data in Jy",
-            "default"   :   0
-        },
+            "info": "Noise in Jy to 'column/colname' data in Jy", 
+            "dtype": "float", 
+            "default": 0, 
+            "name": "noise"
+        }, 
         {
-            "name"      :   "spw-id",
-            "mapping"   :   "spw_id",
-            "dtype"     :   "int",
-            "info"      :   "SPW ID",
-            "default"   : 0
-        },
+            "info": "SPW ID", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "spw-id", 
+            "mapping": "spw_id"
+        }, 
         {
-            "name"      :   "verify-antpos",
-            "mapping"   :   "verify",
-            "dtype"     :   "bool",
-            "info"      :   "Verifies antenna Y positions in MS. If Y coordinate convention is wrong, either fixes the positions (fix=True) or raises an error. hemisphere=-1 makes it assume that the observatory is in the Western hemisphere, hemisphere=1 in the Eastern, or else tries to find observatory name using MS and pyrap.measure",
-            "default"   :   true
+            "info": "Verifies antenna Y positions in MS. If Y coordinate convention is wrong, either fixes the positions (fix=True) or raises an error. hemisphere=-1 makes it assume that the observatory is in the Western hemisphere, hemisphere=1 in the Eastern, or else tries to find observatory name using MS and pyrap.measure", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "verify-antpos", 
+            "mapping": "verify"
         }
     ]
 }

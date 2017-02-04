@@ -1,136 +1,176 @@
 {
-    "task"          :   "casa_plotcal",
-    "description"   :   "An all-purpose plotter for calibration results",
-    "base"          :   "stimela/casa",
-    "tag"           :   "0.2.3",
-    "binary"        :   "plotcal",
-    "prefix"        :   "-",
-    "msdir"         :   false,
-    "parameters"    :   [
-        {   
-            "name"      :   "caltable",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "required"  :   true,
-            "info"      :   "Name of input calibration table",
-        },
+    "task": "casa_plotcal", 
+    "base": "stimela/casa", 
+    "tag": "0.2.5", 
+    "description": "An all-purpose plotter for calibration results", 
+    "prefix": "-", 
+    "binary": "plotcal", 
+    "msdir": false, 
+    "parameters": [
         {
-            "name"      :   "xaxis",
-            "dtype"     :   "str",
-            "choices"   :   ["time","chan","freq","antenna","antenna1","antenna2","scan","amp","phase","real","imag","snr","tsys","delay","spgain"],
-            "info"      :   "Value to plot along x axis (time,chan,freq,antenna,antenna1,antenna2,scan,amp,phase,real,imag,snr,tsys,delay,spgain)",
-            "default"   :   null
-        },
+            "info": "Name of input calibration table", 
+            "dtype": "file", 
+            "required": true, 
+            "name": "caltable", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "yaxis",
-            "dtype"     :   "str",
-            "choices"   :   ["time","chan","freq","antenna","antenna1","antenna2","scan","amp","phase","real","imag","snr","tsys","delay","spgain"],
-            "info"      :   "Value to plot along y axis (time,chan,freq,antenna,antenna1,antenna2,scan,amp,phase,real,imag,snr,tsys,delay,spgain)",
-            "default"   :   null
-        },
+            "info": "Value to plot along x axis (time,chan,freq,antenna,antenna1,antenna2,scan,amp,phase,real,imag,snr,tsys,delay,spgain)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "xaxis", 
+            "choices": [
+                "time", 
+                "chan", 
+                "freq", 
+                "antenna", 
+                "antenna1", 
+                "antenna2", 
+                "scan", 
+                "amp", 
+                "phase", 
+                "real", 
+                "imag", 
+                "snr", 
+                "tsys", 
+                "delay", 
+                "spgain"
+            ]
+        }, 
         {
-            "name"      :   "poln",
-            "dtype"     :   "str",
-            "choices"   :   ["RL","R","L","XY","X","Y","/"],
-            "info"      :   "Antenna polarization to plot (RL,R,L,XY,X,Y,/)",
-            "default"   :   null
-        },
+            "info": "Value to plot along y axis (time,chan,freq,antenna,antenna1,antenna2,scan,amp,phase,real,imag,snr,tsys,delay,spgain)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "yaxis", 
+            "choices": [
+                "time", 
+                "chan", 
+                "freq", 
+                "antenna", 
+                "antenna1", 
+                "antenna2", 
+                "scan", 
+                "amp", 
+                "phase", 
+                "real", 
+                "imag", 
+                "snr", 
+                "tsys", 
+                "delay", 
+                "spgain"
+            ]
+        }, 
         {
-            "name"      :   "field",
-            "dtype"     :   "str",
-            "info"      :   "field names or index of calibrators: ''==>all",
-            "default"   :   null
-        },
+            "info": "Antenna polarization to plot (RL,R,L,XY,X,Y,/)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "poln", 
+            "choices": [
+                "RL", 
+                "R", 
+                "L", 
+                "XY", 
+                "X", 
+                "Y", 
+                "/"
+            ]
+        }, 
         {
-            "name"      :   "antenna",
-            "dtype"     :   "str",
-            "info"      :   "antenna/baselines: ''==>all, antenna = '3,VA04'",
-            "default"   :   null
-        },
+            "info": "field names or index of calibrators: ''==>all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
         {
-            "name"      :   "spw",
-            "dtype"     :   "str",
-            "info"      :   "spectral window:channels: ''==>all, spw='1:5~57'",
-            "default"   :   null
-        },
-        {    
-            "name"      :   "timerange",
-            "dtype"     :   "str",
-            "info"      :   "time range: ''==>all",
-            "default"   :   null
-        },
+            "info": "antenna/baselines: ''==>all, antenna = '3,VA04'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
         {
-            "name"      :   "subplot",
-            "dtype"     :   "int",
-            "info"      :   "Panel number on display screen (yxn)",
-            "default"   :   null,
-        },
+            "info": "spectral window:channels: ''==>all, spw='1:5~57'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
         {
-            "name"      :   "overplot",
-            "dtype"     :   "bool",
-            "info"      :   "Overplot solutions on existing display",
-            "default"   :   false
-        },
+            "info": "time range: ''==>all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
         {
-            "name"      :   "clearpanel",
-            "dtype"     :   "str",
-            "info"      :   "Specify if old plots are cleared or not (ignore)",
-            "default"   :   null
-        },
+            "info": "Panel number on display screen (yxn)", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "subplot"
+        }, 
         {
-            "name"      :   "iteration",
-            "dtype"     :   "str",
-            "info"      :   "Iterate plots on antenna,time,spw,field",
-            "default"   :   null,
-        },
+            "info": "Overplot solutions on existing display", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "overplot"
+        }, 
         {
-            "name"      :   "plotrange",
-            "dtype"     :   "list:float",
-            "info"      :   "plot axes ranges: [xmin,xmax,ymin,ymax]",
-            "default"   :   null
-        },
-        {    
-            "name"      :   "showflags",
-            "dtype"     :   "bool",
-            "info"      :   "If true, show flagged solutions",
-            "default"   :   false 
-        },
+            "info": "Specify if old plots are cleared or not (ignore)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "clearpanel"
+        }, 
         {
-            "name"      :   "plotsymbol",
-            "dtype"     :   "str",
-            "info"      :   "pylab plot symbol",
-            "default"   :   "o"
-        },
+            "info": "Iterate plots on antenna,time,spw,field", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "iteration"
+        }, 
         {
-            "name"      :   "plotcolor",
-            "dtype"     :   "str",
-            "info"      :   "initial plotting color",
-            "default"   :   "blue"
-        },
+            "info": "plot axes ranges: [xmin,xmax,ymin,ymax]", 
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "plotrange"
+        }, 
         {
-            "name"      :   "markersize",
-            "dtype"     :   "float",
-            "info"      :   "Size of plotted marks",
-            "default"   :   5.0
-        },
+            "info": "If true, show flagged solutions", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "showflags"
+        }, 
         {
-            "name"      :   "fontsize",
-            "dtype"     :   "float",
-            "info"      :   "Font size for labels",
-            "default"   :   10.0
-        },
+            "info": "pylab plot symbol", 
+            "dtype": "str", 
+            "default": "o", 
+            "name": "plotsymbol"
+        }, 
         {
-            "name"      :   "figfile",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "''= no plot hardcopy, otherwise supply name",
-            "default"   :   null
-        },
+            "info": "initial plotting color", 
+            "dtype": "str", 
+            "default": "blue", 
+            "name": "plotcolor"
+        }, 
         {
-            "name"      :   "asynch",
-            "dtype"     :   "bool",
-            "info"      :   "If true the taskname must be started using plotcal(...)",
-            "default"   :   false
-        } 
+            "info": "Size of plotted marks", 
+            "dtype": "float", 
+            "default": 5.0, 
+            "name": "markersize"
+        }, 
+        {
+            "info": "Font size for labels", 
+            "dtype": "float", 
+            "default": 10.0, 
+            "name": "fontsize"
+        }, 
+        {
+            "info": "''= no plot hardcopy, otherwise supply name", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "figfile", 
+            "io": "output"
+        }, 
+        {
+            "info": "If true the taskname must be started using plotcal(...)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "asynch"
+        }
     ]
 }

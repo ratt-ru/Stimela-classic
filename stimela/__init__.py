@@ -80,6 +80,7 @@ def build(argv):
             help="Do not use cache when building the image")
 
     args = parser.parse_args(argv)
+    log = logger.StimelaLogger(LOG_FILE)
 
     if args.base:
         for image in BASE:
@@ -87,6 +88,10 @@ def build(argv):
             image = "stimela/{0}:{1}".format(image, __version__)
             docker.build(image,
                          dockerfile)
+
+        log.log_image(image, replace=True)
+        log.write()
+
         return 0
 
     workdir = "/home/{}/output/".format(USER)
@@ -98,7 +103,6 @@ def build(argv):
 
     no_cache = ["--no-cache"] if args.no_cache else []
 
-    log = logger.StimelaLogger(LOG_FILE)
 
     if args.cab:
         cab_args = args.cab.split(",")
@@ -114,7 +118,8 @@ def build(argv):
                      path,
                      build_args=build_args, args=no_cache)
 
-        log.log_image(image)
+        log.log_image(image, replace=True, cab=True)
+        log.write()
         return
 
     for image in CAB:
@@ -128,9 +133,9 @@ def build(argv):
                      dockerfile,
                      build_args=build_args, args=no_cache)
 
-        log.log_image(image)
+        log.log_image(image, replace=True, cab=True)
+        log.write()
 
-    log.write()
 
 
 def info(cabname, header=False):
@@ -244,7 +249,6 @@ def pull(argv):
 
     if args.image:
         for image in args.image:
-            log = 
 
             if not img.find(image):
                 docker.pull(image)
@@ -259,7 +263,7 @@ def pull(argv):
         base = set(base)
 
         for image in base:
-            if not img.find(image) and image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
+            if image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
                 docker.pull(image)
                 log.log_image(image)
 
@@ -301,9 +305,9 @@ def containers(argv):
     args = parser.parse_args(argv)
 
     log = logger.StimelaLogger(LOG_FILE)
-    log.display('images')
+    log.display('containers')
     if args.clear:
-        log.clear('images')
+        log.clear('containers')
         log.write()
 
 
@@ -351,12 +355,84 @@ def kill(argv):
             continue
 
         try:
-            os.kill(pid, signal.SIGKILL)
+            os.kill(int(pid), signal.SIGINT)
         except OSError:
             raise OSError('Process with PID {} could not be killed'.format(pid))
 
         log.remove('processes', pid)
     log.write()
+
+
+def clean(argv):
+    for i, arg in enumerate(argv):
+        if (arg[0] == '-') and arg[1].isdigit(): argv[i] = ' ' + arg
+
+    parser = ArgumentParser(description='Convience tools for cleaning up after stimela')
+    add = parser.add_argument
+
+    add("-ai", "--all-images", action="store_true",
+        help="Remove all images pulled/built by stimela. This include CAB images")
+    
+    add("-ab", "--all-base", action="store_true",
+        help="Remove all base images")
+
+    add("-ac", "--all-cabs", action="store_true", 
+        help="Remove all CAB images")
+
+    add("-aC", "--all-containers", action="store_true",
+        help="Stop and/or Remove all stimela containers")
+
+    args = parser.parse_args(argv)
+
+    log = logger.StimelaLogger(LOG_FILE)
+
+    if args.all_images:
+        images = log.info['images'].keys()
+        for image in images:
+            utils.xrun('docker', ['rmi', image])
+            log.remove('images', image)
+            log.write()
+
+    if args.all_base:
+        images = log.info['images'].keys()
+        for image in images:
+            if log.info['images'][image]['CAB'] is False:
+                utils.xrun('docker', ['rmi', image])
+                log.remove('images', image)
+                log.write()
+
+    if args.all_cabs:
+        images = log.info['images'].keys()
+        for image in images:
+            if log.info['images'][image]['CAB']:
+                utils.xrun('docker', ['rmi', image])
+                log.remove('images', image)
+                log.write()
+
+        
+    if args.all_containers:
+        containers = log.info['containers'].keys()
+        for container in containers:
+            cont = docker.Container(log.info['containers'][container]['IMAGE'], container)
+            try:
+                status = cont.info()['State']['Status']
+            except OSError:
+                print('Could not inspect container {}. It probably doesn\'t exist, will remove it from log'.format(container))
+                status = False
+                log.remove('containers', container)
+                log.write()
+                continue
+
+            if status == 'running':
+            # Kill the container instead of stopping it, so that effect can be felt py parent process
+                utils.xrun('docker', ['kill', container])
+                cont.remove()
+                log.remove('containers', container)
+                log.write()
+            elif status == 'exited':
+                cont.remove()
+                log.remove('containers', container)
+                log.write()
 
 
 def main(argv):
@@ -382,7 +458,8 @@ def main(argv):
     options = []
     commands = dict(pull=pull, build=build, run=run,
                     images=images, cabs=cabs, ps=ps,
-                    containers=containers, kill=kill)
+                    containers=containers, kill=kill,
+                    clean=clean)
 
     command = "failure"
 
@@ -416,6 +493,7 @@ images  : List stimela images
 cabs    : List active stimela containers
 ps      : List running stimela scripts
 kill    : Gracefully kill runing stimela process
+clean   : Clean up tools for stimela
 
 """)
 

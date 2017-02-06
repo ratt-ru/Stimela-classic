@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import stimela
 from stimela import docker, utils, cargo
 from stimela.cargo import cab
 import logging
@@ -99,6 +100,11 @@ class Recipe(object):
         self.completed = []
         self.failed = None
         self.remaining = []
+
+        self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
+        self.pid = os.getpid()
+        self.proc_logger.log_process(self.pid, self.name)
+        self.proc_logger.write()
 
 
     def add(self, image, name=None, config=None,
@@ -345,6 +351,8 @@ class Recipe(object):
                 if created:
                     container.stop()
                     container.remove()
+                self.proc_logger.remove('processes', self.pid)
+                self.proc_logger.write()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)

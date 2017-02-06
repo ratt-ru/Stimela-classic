@@ -29,13 +29,14 @@ class StimelaLogger(object):
         return jdict
 
 
-    def log_image(self, name):
+    def log_image(self, name, replace=False, cab=False):
         info = self._inspect(name)
 
-        if name not in self.info['images'].keys():
+        if name not in self.info['images'].keys() or replace:
             self.info['images'][name] = {
-                'TIME'  :   info['Created'].split('.')[0],
-                'ID'    :   info['Id'].split(':')[1],
+                'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
+                'ID'        :   info['Id'].split(':')[1],
+                'CAB'       :   cab,
             }
         else:
             print('Image {0} has already been logged.'.format(name))
@@ -46,7 +47,7 @@ class StimelaLogger(object):
 
         if name not in self.info['containers'].keys():
             self.info['containers'][name] = {
-                'TIME'      :   info['State']['StartedAt'].split('.')[0],
+                'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
                 'IMAGE'     :   info['Config']['Image'],
                 'ID'        :   info['Id'],
             }
@@ -67,8 +68,9 @@ class StimelaLogger(object):
 
 
     def remove(self, ltype, name):
-        self.info[ltype].pop(name, None)
-
+        if self.info[ltype].pop(str(name), None) is None:
+            print('WARNING:: Could not remove object \'{0}:{1}\' from logger'.format(ltype, name))
+    
     
     def read(self, lfile=None):
         try:

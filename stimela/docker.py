@@ -4,7 +4,6 @@ import sys
 from cStringIO import StringIO as io
 from stimela import utils
 import json
-from utils import logger as cont_logger
 import stimela
 import time
 import datetime
@@ -77,7 +76,7 @@ class Container(object):
         self.PID = os.getpid()
         self.uptime = "00:00:00"
 
-        self.cont_logger = cont_logger.StimelaLogger(log_container or stimela.LOG_FILE)
+        self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
 
 
     def  add_volume(self, host, container, perm="rw"):
@@ -197,7 +196,7 @@ class Container(object):
         else:
             raise DockerError("Container [{}] has not been stopped, cannot remove".format(self.name))
 
-        self.cont_logger.log_container('container', self.name)
+        self.cont_logger.remove('containers', self.name)
         self.cont_logger.write()
 
     def _print(self, message):

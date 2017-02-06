@@ -76,7 +76,8 @@ class Container(object):
         self.shared_memory = shared_memory
         self.PID = os.getpid()
         self.uptime = "00:00:00"
-        self.cont_logger = cont_logger.StimelaLogger(log_container)
+
+        self.cont_logger = cont_logger.StimelaLogger(log_container or stimela.LOG_FILE)
 
 
     def  add_volume(self, host, container, perm="rw"):

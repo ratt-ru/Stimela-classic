@@ -143,7 +143,7 @@ class Recipe(object):
 
         cont = docker.Container(image, name,
                      label=label, logger=self.log,
-                     shared_memory=shared_memory)
+                     shared_memory=shared_memory, log_container=stimela.LOG_FILE)
 
         
 #        parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)

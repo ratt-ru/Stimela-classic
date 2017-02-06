@@ -135,6 +135,7 @@ def predict_vis (msname, image, column="MODEL_DATA",
   rm_fr(casaimage)
   
   if column != "MODEL_DATA":
+    print('Data was predicted to MODEL_DATA column. Will now copy it to the {} column as requested'.format(column))
     msutils.copycol(msname=msname, fromcol="MODEL_DATA", tocol=column)
 
 

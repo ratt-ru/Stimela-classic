@@ -4,7 +4,7 @@ import sys
 from cStringIO import StringIO as io
 from stimela import utils
 import json
-from utils import stimela_logger
+from utils import logger as cont_logger
 import stimela
 import time
 import datetime
@@ -59,7 +59,7 @@ class Container(object):
                  volumes=None, environs=None,
                  label="", logger=None, 
                  shared_memory="1gb",
-                 log_container=True):
+                 log_container=None):
         """
         Python wrapper to docker engine tools for managing containers.
         """
@@ -76,9 +76,7 @@ class Container(object):
         self.shared_memory = shared_memory
         self.PID = os.getpid()
         self.uptime = "00:00:00"
-
-        if log_container:
-            self.log_container = stimela_logger.Container(stimela.LOG_CONTAINERS)
+        self.cont_logger = cont_logger.StimelaLogger(log_container)
 
 
     def  add_volume(self, host, container, perm="rw"):
@@ -117,9 +115,7 @@ class Container(object):
                         self.image,
                         self.COMMAND or ""])
 
-        self.log_container.add(self.info(), self.PID)
         self.status = "created"
-        self.log_container.write()
 
     def info(self):
 
@@ -150,24 +146,22 @@ class Container(object):
         running = True
         tstart = time.time()
         self.status = "running"
-        self.log_container.update(self.info(), uptime="00:00:00")
         
+        self.cont_logger.log_container(self.name)
+        self.cont_logger.write()
         try:
             utils.xrun("docker", ["start", "-a", self.name])
         except KeyboardInterrupt:
             utils.xrun("docker", ["kill", self.name])
             raise 
-
            
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime
         self._print("Container [{0}] has executed successfully".format(self.name))
 
         self._print("Runtime was {0}.".format(uptime))
-        self.log_container.update(self.info(), uptime=uptime)
         
         self.status = "exited"
-        self.log_container.write()
 
 
     def stop(self):
@@ -182,8 +176,6 @@ class Container(object):
         self.status = 'exited'
 
         self._print("Container {} has been stopped.".format(self.name))
-        self.log_container.update(self.info(), self.uptime)
-        self.log_container.write()
         if killed:
             self.remove()
             raise KeyboardInterrupt
@@ -204,8 +196,8 @@ class Container(object):
         else:
             raise DockerError("Container [{}] has not been stopped, cannot remove".format(self.name))
 
-        self.log_container.rm(self.name)
-        self.log_container.write()
+        self.cont_logger.log_container('container', self.name)
+        self.cont_logger.write()
 
     def _print(self, message):
         if self.logger:

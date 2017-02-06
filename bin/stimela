@@ -10,21 +10,4 @@ import stimela
 if not os.path.exists(stimela.LOG_HOME):
     os.mkdir(stimela.LOG_HOME)
 
-if not os.path.exists(stimela.LOG_IMAGES):
-    with open(stimela.LOG_IMAGES, "w") as std:
-        pass
-
-
-if not os.path.exists(stimela.LOG_CONTAINERS):
-    with open(stimela.LOG_CONTAINERS, "w") as std:
-        pass
-
-if not os.path.exists(stimela.LOG_PROCESS):
-    with open(stimela.LOG_PROCESS, "w") as std:
-        pass
-
-if not os.path.exists(stimela.LOG_CABS):
-    with open(stimela.LOG_CABS, "w") as std:
-        pass
-
 stimela.main([a for a in sys.argv[1:]])

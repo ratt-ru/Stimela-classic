@@ -16,13 +16,10 @@ from recipe import Recipe as Pipeline
 from recipe import Recipe, PipelineException
 from stimela import docker
 
-from stimela.utils import stimela_logger
+from stimela.utils import logger
 
 LOG_HOME = os.path.expanduser("~/.stimela")
-LOG_IMAGES = LOG_HOME + "/stimela_images.log"
-LOG_CONTAINERS = LOG_HOME + "/stimela_containers.log"
-LOG_PROCESS = LOG_HOME + "/stimela_process.log"
-LOG_CABS = LOG_HOME + "/stimela_cab.log"
+LOG_FILE = LOG_HOME + "/stimela_logfile.json"
 
 
 BASE = os.listdir(cargo.BASE_PATH)
@@ -101,6 +98,8 @@ def build(argv):
 
     no_cache = ["--no-cache"] if args.no_cache else []
 
+    log = logger.StimelaLogger(LOG_FILE)
+
     if args.cab:
         cab_args = args.cab.split(",")
 
@@ -115,14 +114,8 @@ def build(argv):
                      path,
                      build_args=build_args, args=no_cache)
 
-        img = stimela_logger.Image(LOG_CABS)
-        img.add(dict(name=cab))
-        img.write()
+        log.log_image(image)
         return
-
-    # clear old cabs
-    img = stimela_logger.Image(LOG_CABS)
-    img.clear()
 
     for image in CAB:
         IGNORE = args.ignore_cabs.split(",")
@@ -135,9 +128,9 @@ def build(argv):
                      dockerfile,
                      build_args=build_args, args=no_cache)
 
-        img.add(dict(name=image))
+        log.log_image(image)
 
-    img.write()
+    log.write()
 
 
 def info(cabname, header=False):
@@ -206,7 +199,6 @@ def run(argv):
     args = parser.parse_args(argv)
     tag =  None
 
-
     _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output,
                     STIMELA_MSDIR=args.msdir,
                     CAB_TAG=tag)
@@ -248,14 +240,15 @@ def pull(argv):
             help="Tag")
 
     args = parser.parse_args(argv)
+    log = logger.StimelaLogger(LOG_FILE)
 
     if args.image:
         for image in args.image:
-            img = stimela_logger.Image(LOG_IMAGES)
+            log = 
 
             if not img.find(image):
                 docker.pull(image)
-                img.add(dict(name=image, tag=tagargs.tag))
+                log.log_image(image)
     else:
 
         base = []
@@ -266,11 +259,11 @@ def pull(argv):
         base = set(base)
 
         for image in base:
-            img = stimela_logger.Image(LOG_IMAGES)
-
             if not img.find(image) and image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
                 docker.pull(image)
-                img.add(dict(name=image, tag=args.tag))
+                log.log_image(image)
+
+    log.write()
 
 
 def images(argv):
@@ -286,11 +279,12 @@ def images(argv):
 
     args = parser.parse_args(argv)
 
-    img = stimela_logger.Image(stimela.LOG_IMAGES)
-    img.display()
+    log = logger.StimelaLogger(LOG_FILE)
+    log.display('images')
 
     if args.clear:
-        img.clear()
+        log.clear('images')
+        log.write()
 
 
 def containers(argv):
@@ -306,10 +300,11 @@ def containers(argv):
 
     args = parser.parse_args(argv)
 
-    conts = stimela_logger.Container(stimela.LOG_CONTAINERS)
-    conts.display()
+    log = logger.StimelaLogger(LOG_FILE)
+    log.display('images')
     if args.clear:
-        conts.clear()
+        log.clear('images')
+        log.write()
 
 
 def ps(argv):
@@ -325,10 +320,11 @@ def ps(argv):
 
     args = parser.parse_args(argv)
 
-    procs = stimela_logger.Process(stimela.LOG_PROCESS)
-    procs.display()
+    log = logger.StimelaLogger(LOG_FILE)
+    log.display('processes')
     if args.clear:
-        procs.clear()
+        log.clear('processes')
+        log.write()
 
 
 def kill(argv):
@@ -344,42 +340,24 @@ def kill(argv):
 
     args = parser.parse_args(argv)
 
-    procs = stimela_logger.Process(LOG_PROCESS)
+    log = logger.StimelaLogger(LOG_FILE)
 
-    for pid in map(int, args.pid):
+    for pid in args.pid:
 
-        found = procs.find(pid)
+        found = pid in log.info['processes'].keys()
 
         if not found:
-            print "Could not find process {0}".format(pid)
+            print("Could not find process {0}".format(pid))
             continue
-
-        conts = stimela_logger.Container(LOG_CONTAINERS)
-        lines = []
-
-        procs.rm(pid)
-        procs.write()
-
-        for cont in conts.lines:
-            if cont.find(str(pid)) > 0:
-                lines.append(cont)
-
-        for line in lines:
-            cont, _id, utime, _pid, status = line.split()
-            if status.find("removed")<0:
-                cont_ = docker.Container(None, cont, None, None)
-                cont_.started = True
-                cont_.stop()
-                cont_.remove()
-
-                conts.rm(line)
-
-        conts.write()
 
         try:
             os.kill(pid, signal.SIGKILL)
         except OSError:
-            pass
+            raise OSError('Process with PID {} could not be killed'.format(pid))
+
+        log.remove('processes', pid)
+    log.write()
+
 
 def main(argv):
     for i, arg in enumerate(argv):

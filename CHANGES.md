@@ -19,3 +19,5 @@
   signal to container.   
 - Improve handling of FITS images when predicting
   visibilities; allow for minimal FITS images.  
+- Add clean fuction to help clean up after stimela  
+- Improve/Fx logging of images and containers

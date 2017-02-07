@@ -279,7 +279,7 @@ def images(argv):
     add = parser.add_argument
 
     add("-c", "--clear", action="store_true",
-            help="Clear images log file")
+            help="Clear the logfile that keeps track of stimela images. This does not do anythig to the images.")
 
     args = parser.parse_args(argv)
 
@@ -300,7 +300,7 @@ def containers(argv):
     add = parser.add_argument
 
     add("-c", "--clear", action="store_true",
-            help="Clear containers log file")
+            help="Clear the log file that keeps track of stimela containers. This doesn't do anything to the containers.")
 
     args = parser.parse_args(argv)
 
@@ -320,7 +320,7 @@ def ps(argv):
     add = parser.add_argument
 
     add("-c", "--clear", action="store_true",
-            help="Clear Log file")
+            help="Clear logfile that keeps track of stimela processes. This doesn't do anything ot the processes themselves.")
 
     args = parser.parse_args(argv)
 

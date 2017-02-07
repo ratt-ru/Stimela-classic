@@ -1,190 +1,185 @@
 {
-    "task"          :   "casa_polcal",
-    "description"   :   "Specify Calibration Values of Various Types",
-    "base"          :   "stimela/casa",
-    "tag"           :   "0.2.3",
-    "binary"        :   "casa_gaincal",
-    "msdir"         :   true,
-    "prefix"        :   "-",
-    "parameters"    :   [
+    "task": "casa_polcal", 
+    "base": "stimela/casa", 
+    "tag": "0.2.5", 
+    "description": "Specify Calibration Values of Various Types", 
+    "prefix": "-", 
+    "binary": "casa_gaincal", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "vis",
-            "dtype"     :   "file",
-            "info"      :   "Name of input visibility file",
-            "io"        :   "msfile",
-            "required"  :   true
-        },
-        {   
-            "name"      :   "caltable",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Name of output gain calibration table",
-            "default"   :   null
-        },
+            "info": "Name of input visibility file", 
+            "dtype": "file", 
+            "required": true, 
+            "name": "vis", 
+            "io": "msfile"
+        }, 
         {
-            "name"      :   "field",
-            "dtype"     :   "str",
-            "info"      :   "Select field using field id(s) or field name(s)",
-            "default"   :   null
-        },
-
-  
+            "info": "Name of output gain calibration table", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "caltable", 
+            "io": "output"
+        }, 
         {
-            "name"      :   "spw",
-            "dtype"     :   "str",
-            "info"      :   "Select spectral window/channels",
-            "default"   :   null
-        },
+            "info": "Select field using field id(s) or field name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
         {
-            "name"      :   "selectdata",
-            "dtype"     :   "bool",
-            "info"      :   "Other data selection parameters",
-            "default"   :   true
-        },
+            "info": "Select spectral window/channels", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
         {
-            "name"      :   "timerange",
-            "dtype"     :   "str",
-            "info"      :   "Select data based on time range",
-            "default"   :   null
-        },
+            "info": "Other data selection parameters", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "selectdata"
+        }, 
         {
-            "name"      :   "uvrange",
-            "dtype"     :   "str",
-            "info"      :   "Select data within uvrange (default units meters)",
-            "default"   :   null
-        },
-
-      
-
+            "info": "Select data based on time range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
         {
-            "name"      :   "antenna",
-            "dtype"     :   "str",
-            "info"      :   "Select data based on antenna/baseline",
-            "default"   :   null
-        },
+            "info": "Select data within uvrange (default units meters)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "uvrange"
+        }, 
         {
-            "name"      :   "scan",
-            "dtype"     :   "str",
-            "info"      :   "Scan number range",
-            "default"   :   null
-        },
+            "info": "Select data based on antenna/baseline", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
         {
-            "name"      :   "observation",
-            "dtype"     :   "str",
-            "info"      :   "Select by observation ID(s)",
-            "default"   :   null
-        },
+            "info": "Scan number range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
         {
-            "name"      :   "msselect",
-            "dtype"     :   "bool",
-            "info"      :   "Optional complex data selection (ignore for now)",
-            "default"   :   true
-        },
-
+            "info": "Select by observation ID(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
         {
-            "name"      :   "solint",
-            "dtype"     :   ["str","float","int"],
-            "info"      :   "Solution interval: egs. 'inf', '60s' (see help)",
-            "default"   :   "inf"
-        },
+            "info": "Optional complex data selection (ignore for now)", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "msselect"
+        }, 
         {
-            "name"      :   "combine",
-            "dtype"     :   "str",
-            "info"      :   "Data axes which to combine for solve (obs, scan, spw, and/or field)",
-            "default"   :   "obs,scan"
-        },
+            "info": "Solution interval: egs. 'inf', '60s' (see help)", 
+            "dtype": [
+                "str", 
+                "float", 
+                "int"
+            ], 
+            "default": "inf", 
+            "name": "solint"
+        }, 
         {
-            "name"      :   "preavg",
-            "dtype"     :   "float",
-            "info"      :   "Pre-averaging interval (sec) ",
-            "default"   :   300.0
-        },
+            "info": "Data axes which to combine for solve (obs, scan, spw, and/or field)", 
+            "dtype": "str", 
+            "default": "obs,scan", 
+            "name": "combine"
+        }, 
         {
-            "name"      :   "refant",
-            "dtype"     :   "str",
-            "info"      :   "Reference antenna name(s)",
-            "default"   :   null
-        },
+            "info": "Pre-averaging interval (sec) ", 
+            "dtype": "float", 
+            "default": 300.0, 
+            "name": "preavg"
+        }, 
         {
-            "name"      :   "minblperant",
-            "dtype"     :   "int",
-            "info"      :   "Minimum baselines _per antenna_ required for solve",
-            "default"   :   4
-        },
+            "info": "Reference antenna name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "refant"
+        }, 
         {
-            "name"      :   "minsnr",
-            "dtype"     :   "float",
-            "info"      :   "Reject solutions below this SNR",
-            "default"   :   3.0
-        },
+            "info": "Minimum baselines _per antenna_ required for solve", 
+            "dtype": "int", 
+            "default": 4, 
+            "name": "minblperant"
+        }, 
         {
-            "name"      :   "poltype",
-            "dtype"     :   "str",
-            "info"      :   "Type of instrumental polarization solution (see help)",
-            "default"   :   "D+QU"
-        },
-
+            "info": "Reject solutions below this SNR", 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "minsnr"
+        }, 
         {
-            "name"      :   "smodel",
-            "dtype"     :   "list:float",
-            "delimiter" :   ",",
-            "info"      :   "Point source Stokes parameters for source model.",
-            "default"   :   null
-        },
-
+            "info": "Type of instrumental polarization solution (see help)", 
+            "dtype": "str", 
+            "default": "D+QU", 
+            "name": "poltype"
+        }, 
         {
-            "name"      :   "append",
-            "dtype"     :   "bool",
-            "info"      :   "Append solutions to the (existing) table",
-            "default"   :   false
-        },
+            "info": "Point source Stokes parameters for source model.", 
+            "dtype": "list:float", 
+            "delimiter": ",", 
+            "name": "smodel", 
+            "default": null
+        }, 
         {
-            "name"      :   "docallib",
-            "dtype"     :   "bool",
-            "info"      :   "Use callib or traditional cal apply parameters",
-            "default"   :   false
-        },
+            "info": "Append solutions to the (existing) table", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "append"
+        }, 
         {
-            "name"      :   "callib",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Cal Library filename",
-            "default"   :   null
-        },
+            "info": "Use callib or traditional cal apply parameters", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "docallib"
+        }, 
         {
-            "name"      :   "gaintable",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
-            "info"      :   "Gain calibration table(s) to apply on the fly",
-            "default"   :   null
-        },
+            "info": "Cal Library filename", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "callib", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "gainfield",
-            "dtype"     :   "list:str",
-            "delimeter" :   ",",
-            "info"      :   "Select a subset of calibrators from gaintable(s)",
-            "default"   :   null
-        },
+            "info": "Gain calibration table(s) to apply on the fly", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "gaintable", 
+            "delimeter": ","
+        }, 
         {
-            "name"      :   "interp",
-            "dtype"     :   "list:str",
-            "delimeter"  :   ",",
-            "info"      :   "Interpolation mode (in time) to use for each gaintable(s)",
-            "default"   :   null
-        },
+            "info": "Select a subset of calibrators from gaintable(s)", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "gainfield", 
+            "delimeter": ","
+        }, 
         {
-            "name"      :   "spwmap",
-            "dtype"     :   "list:int",
-            "delimeter"  :   ",",
-            "info"      :   "Spectral windows combinations to form for gaintables(s)",
-            "default"   :   null
-        },
-     
+            "info": "Interpolation mode (in time) to use for each gaintable(s)", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "interp", 
+            "delimeter": ","
+        }, 
         {
-            "name"      :   "async",
-            "dtype"     :   "bool",
-            "info"      :   "If true the taskname must be started using polcal(...)",
-            "default"   :   false
-        } 
+            "info": "Spectral windows combinations to form for gaintables(s)", 
+            "dtype": "list:int", 
+            "default": null, 
+            "name": "spwmap", 
+            "delimeter": ","
+        }, 
+        {
+            "info": "If true the taskname must be started using polcal(...)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "async"
+        }
     ]
 }

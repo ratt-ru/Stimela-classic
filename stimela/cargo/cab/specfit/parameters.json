@@ -1,87 +1,88 @@
 {
-    "task"          :   "specfit",
-    "base"          :   "stimela/tigger",
-    "tag"           :   "0.2.3",
-    "description"   :   "Tools for continuum spectral fitting. Only fits spectral indices",
-    "binary"        :   "python",
-    "prefix"        :   "",
-    "msdir"         :   false,
-    "parameters"    :   [
+    "task": "specfit", 
+    "base": "stimela/tigger", 
+    "tag": "0.2.5", 
+    "description": "Tools for continuum spectral fitting. Only fits spectral indices", 
+    "prefix": "", 
+    "binary": "python", 
+    "msdir": false, 
+    "parameters": [
         {
-            "name"      :   "image",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Image to exctract SPIs from. Must have a frequency axis with more than one plane.",
-            "default"   :   null
-        },
+            "info": "Image to exctract SPIs from. Must have a frequency axis with more than one plane.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "image", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "output-spi-image",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Output SPI image",
-            "default"   :   null
-        },
+            "info": "Output SPI image", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "output-spi-image", 
+            "io": "output"
+        }, 
         {
-            "name"      :   "output-spi-error-image",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Output SPI image",
-            "default"   :   null
-        },
+            "info": "Output SPI image", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "output-spi-error-image", 
+            "io": "output"
+        }, 
         {
-            "name"      :   "input-spi-image",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Input SPI image",
-            "default"   :   null
-        },
+            "info": "Input SPI image", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input-spi-image", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "input-spi-error-image",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Input SPI image",
-            "default"   :   null
-        },
+            "info": "Input SPI image", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input-spi-error-image", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "mask-image",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Mask image",
-            "default"   :   null
-        },
+            "info": "Mask image", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "mask-image", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "input-skymodel",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Input sky model",
-            "default"   :   null
-        },
+            "info": "Input sky model", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input-skymodel", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "output-skymodel",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Output sky model",
-            "default"   :   null
-        },
+            "info": "Output sky model", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "output-skymodel", 
+            "io": "output"
+        }, 
         {
-            "name"      :   "sigma-level",
-            "dtype"     :   "float",
-            "info"      :   "Sigma level",
-            "default"   :   20
-        },
+            "info": "Sigma level", 
+            "dtype": "float", 
+            "default": 20, 
+            "name": "sigma-level"
+        }, 
         {
-            "name"      :   "freq0",
-            "dtype"     :   "float",
-            "info"      :   "SPI reference frequency in Hz",
-            "default"   :   null
-        },
+            "info": "SPI reference frequency in Hz", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "freq0"
+        }, 
         {
-            "name"      :   "tolerance-range",
-            "dtype"     :   "list:float",
-            "info"      :   "SPI values outside this range will be set to zero",
-            "default"   :   [-10,10]
+            "info": "SPI values outside this range will be set to zero", 
+            "dtype": "list:float", 
+            "default": [
+                -10, 
+                10
+            ], 
+            "name": "tolerance-range"
         }
     ]
 }
-
-

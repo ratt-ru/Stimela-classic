@@ -1,78 +1,80 @@
 {
-    "task"          :   "politsiyakat",
-    "base"          :   "stimela/base",
-    "tag"           :   "0.2.3",
-    "description"   :   "Routines for automated post-1GC error detection and mitigation",
-    "binary"        :   "python -m politsiyakat",
-    "prefix"        :   "--",
-    "msdir"         :   "true",
-    "parameters"    :   [
+    "task": "politsiyakat", 
+    "base": "stimela/base", 
+    "tag": "0.2.5", 
+    "description": "Routines for automated post-1GC error detection and mitigation", 
+    "prefix": "--", 
+    "binary": "python -m politsiyakat", 
+    "msdir": "true", 
+    "parameters": [
         {
-            "name"      :   "tasksuite",
-            "dtype"     :   "str",
-            "info"      :   "Specify which suite to search for the required task",
-            "choices"   :   ["antenna_mod"],
-            "default"   :   "antenna_mod"
-        },
+            "info": "Specify which suite to search for the required task", 
+            "dtype": "str", 
+            "default": "antenna_mod", 
+            "name": "tasksuite", 
+            "choices": [
+                "antenna_mod"
+            ]
+        }, 
         {
-            "name"      :   "command",
-            "mapping"   :   "task",
-            "dtype"     :   "str",
-            "required"  :   "true",
-            "info"      :   "name of task to execute",
-            "default"   :   null
-        },
+            "info": "name of task to execute", 
+            "name": "command", 
+            "default": null, 
+            "dtype": "str", 
+            "required": "true", 
+            "mapping": "task"
+        }, 
         {
-            "name"      :   "msname",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "Measurement set",
-            "default"   :   null
-        },
+            "info": "Measurement set", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "msname", 
+            "io": "msfile"
+        }, 
         {
-            "name"      :   "column",
-            "mapping"   :   "data_column",
-            "dtype"     :   "str",
-            "info"      :   "Data column in MS",
-            "default"   :   "CORRECTED_DATA"
-        },
+            "info": "Data column in MS", 
+            "dtype": "str", 
+            "default": "CORRECTED_DATA", 
+            "name": "column", 
+            "mapping": "data_column"
+        }, 
         {
-            "name"      :   "field",
-            "mapping"   :   "cal_field",
-            "dtype"     :   "str",
-            "info"      :   "Field",
-            "default"   :   null
-        },
+            "info": "Field", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field", 
+            "mapping": "cal_field"
+        }, 
         {
-            "name"      :   "valid_phase_range",
-            "dtype"     :   "str",
-            "info"      :   "Valid phase range",
-            "default"   :   null
-        },
+            "info": "Valid phase range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "valid_phase_range"
+        }, 
         {
-            "name"      :   "max_invalid_datapoints",
-            "dtype"     :   "float",
-            "info"      :   "percentage of all unflagged data per channel",
-            "default"   :   null
-        },
+            "info": "percentage of all unflagged data per channel", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "max_invalid_datapoints"
+        }, 
         {
-            "name"      :   "output_dir",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Output directory",
-            "default"   :   null
-        },
+            "info": "Output directory", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "output_dir", 
+            "io": "output"
+        }, 
         {
-            "name"      :   "nrows_chunk",
-            "dtype"     :   "int",
-            "info"      :   "Nrwos to process on each run",
-            "default"   :   null
-        },
+            "info": "Nrwos to process on each run", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "nrows_chunk"
+        }, 
         {
-            "name"      :   "simulate",
-            "dtype"     :   "bool",
-            "info"      :   "simulate",
-            "default"   :   false
-        } 
+            "info": "simulate", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "simulate"
+        }
     ]
 }

@@ -1,4 +1,4 @@
-FROM stimela/casa:0.2.4
+FROM stimela/casa:0.2.5
 MAINTAINER <sphemakh@gmail.com>
 ADD src /code
 CMD python /code/run.py

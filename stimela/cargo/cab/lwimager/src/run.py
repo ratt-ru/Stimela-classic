@@ -4,6 +4,7 @@ import sys
 from pyrap.tables import table
 from MSUtils import msutils
 import tempfile
+import pyfits
 
 sys.path.append('/utils')
 import utils
@@ -134,6 +135,7 @@ def predict_vis (msname, image, column="MODEL_DATA",
   rm_fr(casaimage)
   
   if column != "MODEL_DATA":
+    print('Data was predicted to MODEL_DATA column. Will now copy it to the {} column as requested'.format(column))
     msutils.copycol(msname=msname, fromcol="MODEL_DATA", tocol=column)
 
 
@@ -162,9 +164,18 @@ predict = options.pop('simulate_fits', False)
 if predict:
     tfile = tempfile.NamedTemporaryFile(suffix='.fits')
     tfile.flush()
-    utils.xrun('python /code/predict_from_fits.py', [predict, options['ms'], options.get('cellsize', '1arcsec'),
+    cell = options.get('cellsize', None)
+    if cell is None:
+        with pyfits.open(predict) as _hdu:
+            if hasattr(_hdu, '__iter__'):
+                hdu = _hdu[0]
+            else:
+                hdu = _hdu
+            cell = '{:f}arcsec'.format(abs(hdu.header.get('CDELT1', None))*3600)
+    cell = cell or '1arcsec' 
+    utils.xrun('python /code/predict_from_fits.py', [predict, options['ms'], cell,
                 tfile.name])
-    predict_vis(msname=options['ms'], image=tfile.name, column='MODEL_DATA', 
+    predict_vis(msname=options['ms'], image=tfile.name, column=options.get('data','MODEL_DATA'), 
         chanchunk=options.get('chanchunk', None), chanstart=options.get('img_chanstart', 0), 
         chanstep=options.get('img_chanstep', 1))
     tfile.close()

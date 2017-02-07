@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import stimela
 from stimela import docker, utils, cargo
 from stimela.cargo import cab
 import logging
@@ -100,6 +101,11 @@ class Recipe(object):
         self.failed = None
         self.remaining = []
 
+        self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
+        self.pid = os.getpid()
+        self.proc_logger.log_process(self.pid, self.name)
+        self.proc_logger.write()
+
 
     def add(self, image, name=None, config=None,
             input=None, output=None, msdir=None,
@@ -143,7 +149,7 @@ class Recipe(object):
 
         cont = docker.Container(image, name,
                      label=label, logger=self.log,
-                     shared_memory=shared_memory)
+                     shared_memory=shared_memory, log_container=stimela.LOG_FILE)
 
         
 #        parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
@@ -320,7 +326,7 @@ class Recipe(object):
                 created = True
                 container.start()
                 self.log2recipe(container, recipe, step, 'completed')
-            except Exception as e:
+            except BaseException as e:
                 self.completed = [cont[1] for cont in containers[:i]]
                 self.remaining = [cont[1] for cont in containers[i+1:]]
                 self.failed = container
@@ -331,7 +337,7 @@ class Recipe(object):
 
                 self.log2recipe(container, recipe, step, 'failed')
                 for step, cont in containers[i+1:]:
-                    self.log.info('Logging remaining task: {}'.format(cont.label))
+                    self.log.info('Logging remaining task: {}'.format(cont.label or cont.name))
                     self.log2recipe(cont, recipe, step, 'remaining')
 
                 self.log.info('Saving pipeline information in {}'.format(self.resume_file))
@@ -345,6 +351,8 @@ class Recipe(object):
                 if created:
                     container.stop()
                     container.remove()
+                self.proc_logger.remove('processes', self.pid)
+                self.proc_logger.write()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)

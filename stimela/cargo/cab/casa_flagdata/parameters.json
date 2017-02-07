@@ -1,390 +1,437 @@
 {
-    "task"          :   "casa_flagdata",
-    "description"   :   "All-purpose flagging task based on data-selections and flagging modes/algorithms.",
-    "base"          :   "stimela/casa",
-    "tag"           :   "0.2.3",
-    "binary"        :   "flagdata",
-    "msdir"         :   true,
-    "prefix"        :   " ",
-    "parameters"    :   [
+    "task": "casa_flagdata", 
+    "base": "stimela/casa", 
+    "tag": "0.2.5", 
+    "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.", 
+    "prefix": " ", 
+    "binary": "flagdata", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "msname",
-            "mapping"   :   "vis",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "Name of MS file or calibration table",
-            "required"  :   true
-        },
+            "info": "Name of MS file or calibration table", 
+            "name": "msname", 
+            "io": "msfile", 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
         {
-            "name"      :   "mode",
-            "dtype"     :   "str",
-            "choices"   :   ["manual","list","clip","quack","shadow","elevation", "tfcrop", "extend", "unflag", "summary"],
-            "info"      :   "Flagging mode",
-            "default"   :   "manual"
-        },
+            "info": "Flagging mode", 
+            "dtype": "str", 
+            "default": "manual", 
+            "name": "mode", 
+            "choices": [
+                "manual", 
+                "list", 
+                "clip", 
+                "quack", 
+                "shadow", 
+                "elevation", 
+                "tfcrop", 
+                "extend", 
+                "unflag", 
+                "summary"
+            ]
+        }, 
         {
-            "name"      :   "field",
-            "dtype"     :   "str",
-            "info"      :   "Field names or field index numbers:'' ==> all, field='0~2,3C286'",
-            "default"   :   null
-        },
+            "info": "Field names or field index numbers:'' ==> all, field='0~2,3C286'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
         {
-            "name"      :   "spw",
-            "dtype"     :   "str",
-            "info"      :   "Spectral-window/frequency/channel: '' ==> all, spw='0:17~19'",
-            "default"   :   null
-        },
+            "info": "Spectral-window/frequency/channel: '' ==> all, spw='0:17~19'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
         {
-            "name"      :   "antenna",
-            "dtype"     :   "str",
-            "info"      :   "Antenna/baselines: '' ==> all, antenna ='3,VA04'",
-            "default"   :   null
-        },
+            "info": "Antenna/baselines: '' ==> all, antenna ='3,VA04'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
         {
-            "name"      :   "timerange",
-            "dtype"     :   "str",
-            "info"      :   "Time range: '' ==> all,timerange='09:14:0~09:54:0'",
-            "default"   :   null
-        },
+            "info": "Time range: '' ==> all,timerange='09:14:0~09:54:0'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
         {
-            "name"      :   "correlation",
-            "dtype"     :   "str",
-            "info"      :   "Correlation: '' ==> all, correlation='XX,YY'",
-            "default"   :   null
-        },
+            "info": "Correlation: '' ==> all, correlation='XX,YY'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "correlation"
+        }, 
         {
-            "name"      :   "scan",
-            "dtype"     :   "str",
-            "info"      :   "Scan numbers: '' ==> all",
-            "default"   :   null
-        },
+            "info": "Scan numbers: '' ==> all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
         {
-            "name"      :   "intent",
-            "dtype"     :   "str",
-            "info"      :   "Observation intent: '' ==> all, intent='CAL*POINT*'",
-            "default"   :   null
-        },
+            "info": "Observation intent: '' ==> all, intent='CAL*POINT*'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "intent"
+        }, 
         {
-            "name"      :   "array",
-            "dtype"     :   "str",
-            "info"      :   "(Sub)array numbers: '' ==> all",
-            "default"   :   null
-        },
+            "info": "(Sub)array numbers: '' ==> all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "array"
+        }, 
         {
-            "name"      :   "uvrange",
-            "dtype"     :   "str",
-            "info"      :   "UV range: '' ==> all; uvrange ='0~100klambda', default units=meters",
-            "default"   :   null
-        },
+            "info": "UV range: '' ==> all; uvrange ='0~100klambda', default units=meters", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "uvrange"
+        }, 
         {
-            "name"      :   "observation",
-            "dtype"     :   "str",
-            "info"      :   "Observation ID: '' ==> all",
-            "default"   :   null
-        },
+            "info": "Observation ID: '' ==> all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
         {
-            "name"      :   "feed",
-            "dtype"     :   "str",
-            "info"      :   " Multi-feed numbers: Not yet implemented",
-            "default"   :   null
-        },
+            "info": " Multi-feed numbers: Not yet implemented", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "feed"
+        }, 
         {
-            "name"      :   "autocorr",
-            "dtype"     :   "bool",
-            "info"      :   "Flag only the auto-correlations",
-            "default"   :   false
-        },
+            "info": "Flag only the auto-correlations", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "autocorr"
+        }, 
         {
-            "name"      :   "inpfile",
-            "dtype"     :   ["file","list:str"],
-            "io"        :   "input",
-            "info"      :   "Input ASCII file, list of files or Python list of strings with flag commands",
-            "default"   :   null
-        },
+            "info": "Input ASCII file, list of files or Python list of strings with flag commands", 
+            "dtype": [
+                "file", 
+                "list:str"
+            ], 
+            "default": null, 
+            "name": "inpfile", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "reason",
-            "dtype"     :   "list:str",
-            "info"      :   "Select by REASON types",
-            "default"   :   "any"
-        },
+            "info": "Select by REASON types", 
+            "dtype": "list:str", 
+            "default": "any", 
+            "name": "reason"
+        }, 
         {
-            "name"      :   "tbuff",
-            "dtype"     :   "list:float",
-            "info"      :   "List of time buffers (sec) to pad timerange in flag commands",
-            "default"   :   null
-        },
+            "info": "List of time buffers (sec) to pad timerange in flag commands", 
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "tbuff"
+        }, 
         {
-            "name"      :   "datacolumn",
-            "dtype"     :   "str",
-            "info"      :   "Data column on which to operate (data,corrected,model,weight,etc.)",
-            "default"   :   "corrected"
-        },
+            "info": "Data column on which to operate (data,corrected,model,weight,etc.)", 
+            "dtype": "str", 
+            "default": "corrected", 
+            "name": "datacolumn"
+        }, 
         {
-            "name"      :   "clipminmax",
-            "dtype"     :   "list:float",
-            "info"      :   "Range to use for clipping",
-            "default"   :   null
-        },
+            "info": "Range to use for clipping", 
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "clipminmax"
+        }, 
         {
-            "name"      :   "clipoutside",
-            "dtype"     :   "bool",
-            "info"      :   "Clip outside the range, or within it",
-            "default"   :   true
-        },
+            "info": "Clip outside the range, or within it", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "clipoutside"
+        }, 
         {
-            "name"      :   "channelavg",
-            "dtype"     :   "bool",
-            "info"      :   "Average over channels (scalar average)",
-            "default"   :   false
-        },
+            "info": "Average over channels (scalar average)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "channelavg"
+        }, 
         {
-            "name"      :   "clipzeros",
-            "dtype"     :   "bool",
-            "info"      :   "Clip zero-value data",
-            "default"   :   false
-        },
+            "info": "Clip zero-value data", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "clipzeros"
+        }, 
         {
-            "name"      :   "quackinterval",
-            "dtype"     :   "float",
-            "info"      :   "Quack n seconds from scan beginning or end",
-            "default"   :   0.0
-        },
+            "info": "Quack n seconds from scan beginning or end", 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "quackinterval"
+        }, 
         {
-            "name"      :   "quackmode",
-            "dtype"     :   "str",
-            "choices"   :   ["beg","endb","end","tail"],
-            "info"      :   "Quack mode. 'beg' ==> first n seconds of scan.'endb' ==> last n seconds of scan. 'end' ==> all but first n seconds of scan. 'tail' ==> all but last n seconds of scan.",
-            "default"   :   "beg"
-        },
+            "info": "Quack mode. 'beg' ==> first n seconds of scan.'endb' ==> last n seconds of scan. 'end' ==> all but first n seconds of scan. 'tail' ==> all but last n seconds of scan.", 
+            "dtype": "str", 
+            "default": "beg", 
+            "name": "quackmode", 
+            "choices": [
+                "beg", 
+                "endb", 
+                "end", 
+                "tail"
+            ]
+        }, 
         {
-            "name"      :   "quackincrement",
-            "dtype"     :   "bool",
-            "info"      :   "Flag incrementally in time?",
-            "default"   :   false
-        },
+            "info": "Flag incrementally in time?", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "quackincrement"
+        }, 
         {
-            "name"      :   "tolerance",
-            "dtype"     :   "float",
-            "info"      :   "Amount of shadow allowed (in meters)",
-            "default"   :   0.0
-        },
+            "info": "Amount of shadow allowed (in meters)", 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "tolerance"
+        }, 
         {
-            "name"      :   "addantenna",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "File name or dictionary with additional antenna names, positions and diameters",
-            "default"   :   null
-        },
+            "info": "File name or dictionary with additional antenna names, positions and diameters", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "addantenna", 
+            "io": "input"
+        }, 
         {
-            "name"      :   "lowerlimit",
-            "dtype"     :   "int",
-            "info"      :   "Lower limiting elevation (in degrees)",
-            "default"   :   0.0
-        },
+            "info": "Lower limiting elevation (in degrees)", 
+            "dtype": "int", 
+            "default": 0.0, 
+            "name": "lowerlimit"
+        }, 
         {
-            "name"      :   "upperlimit",
-            "dtype"     :   "int",
-            "info"      :   "Upper limiting elevation (in degrees)",
-            "default"   :   90.0
-        },
+            "info": "Upper limiting elevation (in degrees)", 
+            "dtype": "int", 
+            "default": 90.0, 
+            "name": "upperlimit"
+        }, 
         {
-            "name"      :   "ntime",
-            "dtype"     :   ["float","int","str"],
-            "info"      :   "Time-range to use for each chunk (in seconds or minutes)",
-            "default"   :   "scan"
-        },
+            "info": "Time-range to use for each chunk (in seconds or minutes)", 
+            "dtype": [
+                "float", 
+                "int", 
+                "str"
+            ], 
+            "default": "scan", 
+            "name": "ntime"
+        }, 
         {
-            "name"      :   "combinescans",
-            "dtype"     :   "bool",
-            "info"      :   "Accumulate data across scans depending on the value of ntime.",
-            "default"   :   false
-        },
+            "info": "Accumulate data across scans depending on the value of ntime.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "combinescans"
+        }, 
         {
-            "name"      :   "timecutoff",
-            "dtype"     :   "float",
-            "info"      :   "Flagging thresholds in units of deviation from the fit",
-            "default"   :   4.0
-        },
+            "info": "Flagging thresholds in units of deviation from the fit", 
+            "dtype": "float", 
+            "default": 4.0, 
+            "name": "timecutoff"
+        }, 
         {
-            "name"      :   "freqcutoff",
-            "dtype"     :   "float",
-            "info"      :   "Flagging thresholds in units of deviation from the fit",
-            "default"   :   3.0
-        },
+            "info": "Flagging thresholds in units of deviation from the fit", 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "freqcutoff"
+        }, 
         {
-            "name"      :   "timefit",
-            "dtype"     :   "str",
-            "choices"   :   ["poly","line"],
-            "info"      :   "Fitting function for the time direction (poly/line)",
-            "default"   :   "line"
-        },
+            "info": "Fitting function for the time direction (poly/line)", 
+            "dtype": "str", 
+            "default": "line", 
+            "name": "timefit", 
+            "choices": [
+                "poly", 
+                "line"
+            ]
+        }, 
         {
-            "name"      :   "freqfit",
-            "dtype"     :   "str",
-            "choices"   :   ["poly","line"],
-            "info"      :   "Fitting function for the frequency direction (poly/line)",
-            "default"   :   "poly"
-        },
+            "info": "Fitting function for the frequency direction (poly/line)", 
+            "dtype": "str", 
+            "default": "poly", 
+            "name": "freqfit", 
+            "choices": [
+                "poly", 
+                "line"
+            ]
+        }, 
         {
-            "name"      :   "maxnpieces",
-            "dtype"     :   "int",
-            "info"      :   "Number of pieces in the polynomial-fits (for 'freqfit' or 'timefit' ='poly')",
-            "default"   :   7
-        },
+            "info": "Number of pieces in the polynomial-fits (for 'freqfit' or 'timefit' ='poly')", 
+            "dtype": "int", 
+            "default": 7, 
+            "name": "maxnpieces"
+        }, 
         {
-            "name"      :   "flagdimension",
-            "dtype"     :   "str",
-            "choices"   :   ["freq","time","freqtime","timefreq"],
-            "info"      :   "Dimensions along which to calculate fits (freq/time/freqtime/timefreq)",
-            "default"   :   "freqtime"
-        },
+            "info": "Dimensions along which to calculate fits (freq/time/freqtime/timefreq)", 
+            "dtype": "str", 
+            "default": "freqtime", 
+            "name": "flagdimension", 
+            "choices": [
+                "freq", 
+                "time", 
+                "freqtime", 
+                "timefreq"
+            ]
+        }, 
         {
-            "name"      :   "usewindowstats",
-            "dtype"     :   "str",
-            "choices"   :   ["none","sum","std","both"],
-            "info"      :   "Calculate additional flags using sliding window statistics (none,sum,std,both)",
-            "default"   :   "none"
-        },
+            "info": "Calculate additional flags using sliding window statistics (none,sum,std,both)", 
+            "dtype": "str", 
+            "default": "none", 
+            "name": "usewindowstats", 
+            "choices": [
+                "none", 
+                "sum", 
+                "std", 
+                "both"
+            ]
+        }, 
         {
-            "name"      :   "halfwin",
-            "dtype"     :   "int",
-            "info"      :   "Half-width of sliding window to use with 'usewindowstats' (1,2,3).",
-            "default"   :   1
-        },
+            "info": "Half-width of sliding window to use with 'usewindowstats' (1,2,3).", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "halfwin"
+        }, 
         {
-            "name"      :   "extendflags",
-            "dtype"     :   "bool",
-            "info"      :   "Extend flags along time, frequency and correlation.",
-            "default"   :   true
-        },
+            "info": "Extend flags along time, frequency and correlation.", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "extendflags"
+        }, 
         {
-            "name"      :   "extendpols",
-            "dtype"     :   "bool",
-            "info"      :   "If any correlation is flagged, flag all correlations",
-            "default"   :   true
-        },
+            "info": "If any correlation is flagged, flag all correlations", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "extendpols"
+        }, 
         {
-            "name"      :   "growtime",
-            "dtype"     :   "float",
-            "info"      :   "Flag all 'ntime' integrations if more than X% of the timerange is flagged (0-100)",
-            "default"   :   50.0
-        },
+            "info": "Flag all 'ntime' integrations if more than X% of the timerange is flagged (0-100)", 
+            "dtype": "float", 
+            "default": 50.0, 
+            "name": "growtime"
+        }, 
         {
-            "name"      :   "growfreq",
-            "dtype"     :   "float",
-            "info"      :   "Flag all selected channels if more than X% of the frequency range is flagged(0-100)",
-            "default"   :   50.0
-        },
+            "info": "Flag all selected channels if more than X% of the frequency range is flagged(0-100)", 
+            "dtype": "float", 
+            "default": 50.0, 
+            "name": "growfreq"
+        }, 
         {
-            "name"      :   "growaround",
-            "dtype"     :   "bool",
-            "info"      :   "Flag data based on surrounding flags",
-            "default"   :   false
-        },
+            "info": "Flag data based on surrounding flags", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "growaround"
+        }, 
         {
-            "name"      :   "flagneartime",
-            "dtype"     :   "bool",
-            "info"      :   "Flag one timestep before and after a flagged one (True/False)",
-            "default"   :   false
-        },
+            "info": "Flag one timestep before and after a flagged one (True/False)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "flagneartime"
+        }, 
         {
-            "name"      :   "flagnearfreq",
-            "dtype"     :   "bool",
-            "info"      :   "Flag one channel before and after a flagged one (True/False)",
-            "default"   :   false
-        },
+            "info": "Flag one channel before and after a flagged one (True/False)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "flagnearfreq"
+        }, 
         {
-            "name"      :   "minrel",
-            "dtype"     :   "float",
-            "info"      :   "minimum number of flags (relative)",
-            "default"   :   0.0
-        },
+            "info": "minimum number of flags (relative)", 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "minrel"
+        }, 
         {
-            "name"      :   "maxrel",
-            "dtype"     :   "float",
-            "info"      :   "maximum number of flags (relative)",
-            "default"   :   1.0
-        },
+            "info": "maximum number of flags (relative)", 
+            "dtype": "float", 
+            "default": 1.0, 
+            "name": "maxrel"
+        }, 
         {
-            "name"      :   "minabs",
-            "dtype"     :   "int",
-            "info"      :   "minimum number of flags (absolute)",
-            "default"   :   0
-        },
+            "info": "minimum number of flags (absolute)", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "minabs"
+        }, 
         {
-            "name"      :   "maxabs",
-            "dtype"     :   "int",
-            "info"      :   "maximum number of flags (absolute). Use a negative value to indicate infinity.",
-            "default"   :   -1
-        },
+            "info": "maximum number of flags (absolute). Use a negative value to indicate infinity.", 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "maxabs"
+        }, 
         {
-            "name"      :   "spwchan",
-            "dtype"     :   "bool",
-            "info"      :   "Print summary of channels per spw",
-            "default"   :   false
-        },
+            "info": "Print summary of channels per spw", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "spwchan"
+        }, 
         {
-            "name"      :   "spwcorr",
-            "dtype"     :   "bool",
-            "info"      :   "Print summary of correlation per spw",
-            "default"   :   false
-        },
+            "info": "Print summary of correlation per spw", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "spwcorr"
+        }, 
         {
-            "name"      :   "basecnt",
-            "dtype"     :   "bool",
-            "info"      :   "Print summary counts per baseline",
-            "default"   :   false
-        },
+            "info": "Print summary counts per baseline", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "basecnt"
+        }, 
         {
-            "name"      :   "name",
-            "dtype"     :   "str",
-            "info"      :   "Name of this summary report (key in summary dictionary)",
-            "default"   :   "Summary"
-        },
+            "info": "Name of this summary report (key in summary dictionary)", 
+            "dtype": "str", 
+            "default": "Summary", 
+            "name": "name"
+        }, 
         {
-            "name"      :   "action",
-            "dtype"     :   "str",
-            "choices"   :   ["none","apply","calculate"],
-            "info"      :   "Action to perform in MS and/or in inpfile (none/apply/calculate)",
-            "default"   :   null
-        },
+            "info": "Action to perform in MS and/or in inpfile (none/apply/calculate)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "action", 
+            "choices": [
+                "none", 
+                "apply", 
+                "calculate"
+            ]
+        }, 
         {
-            "name"      :   "display",
-            "dtype"     :   "str",
-            "choices"   :   ["data","report","both"],
-            "info"      :   "Display data and/or end-of-MS reports at runtime (data/report/both).",
-            "default"   :   null
-        },
+            "info": "Display data and/or end-of-MS reports at runtime (data/report/both).", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "display", 
+            "choices": [
+                "data", 
+                "report", 
+                "both"
+            ]
+        }, 
         {
-            "name"      :   "flagbackup",
-            "dtype"     :   "bool",
-            "info"      :   "Back up the state of flags before the run",
-            "default"   :   true
-        },
+            "info": "Back up the state of flags before the run", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "flagbackup"
+        }, 
         {
-            "name"      :   "savepars",
-            "dtype"     :   "bool",
-            "info"      :   "Save the current parameters to the FLAG_CMD table or to a file",
-            "default"   :   false
-        },
+            "info": "Save the current parameters to the FLAG_CMD table or to a file", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "savepars"
+        }, 
         {
-            "name"      :   "cmdreason",
-            "dtype"     :   "str",
-            "info"      :   "Reason to save to output file or to FLAG_CMD table.",
-            "default"   :   null
-        },
+            "info": "Reason to save to output file or to FLAG_CMD table.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "cmdreason"
+        }, 
         {
-            "name"      :   "outfile",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Name of output file to save current parameters. If empty, save to FLAG_CMD",
-            "default"   :   null
-        },
+            "info": "Name of output file to save current parameters. If empty, save to FLAG_CMD", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "outfile", 
+            "io": "output"
+        }, 
         {
-            "name"      :   "async",
-            "dtype"     :   "bool",
-            "info"      :   "If true the taskname must be started using flagdata(...)",
-            "default"   :   false
-        } 
+            "info": "If true the taskname must be started using flagdata(...)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "async"
+        }
     ]
 }

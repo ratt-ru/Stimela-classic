@@ -1,97 +1,101 @@
 {
-    "task"          :   "cleanmask",
-    "base"          :   "stimela/astropy",
-    "tag"           :   "0.2.3",
-    "binary"        :   "cleanmask",  
-    "description"   :   "Creates a binary mask from a FITS image",
-    "msdir"         :   false,
-    "prefix"        :   "--",
-    "parameters"    :   [
+    "task": "cleanmask", 
+    "base": "stimela/astropy", 
+    "tag": "0.2.5", 
+    "description": "Creates a binary mask from a FITS image", 
+    "prefix": "--", 
+    "binary": "cleanmask", 
+    "msdir": false, 
+    "parameters": [
         {
-            "name"      :   "image",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "info"      :   "Name of FITS image from which to derive the mask",
-            "default"   :   null,
-            "required"  :   true
-        },
+            "info": "Name of FITS image from which to derive the mask", 
+            "name": "image", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
         {
-            "name"      :   "output",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Name of resulting binary mask",
-            "default"   :   null,
-            "required"  :   true
-        },
+            "info": "Name of resulting binary mask", 
+            "name": "output", 
+            "io": "output", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
         {
-            "name"      :   "sigma",
-            "dtype"     :   "float",
-            "info"      :   "The number of standard deviations to use when clipping image",
-            "default"   :   5,
-            "required"  :   false
-        },
+            "info": "The number of standard deviations to use when clipping image", 
+            "dtype": "float", 
+            "default": 5, 
+            "required": false, 
+            "name": "sigma"
+        }, 
         {
-            "name"      :   "boxes",
-            "dtype"     :   "int",
-            "info"      :   "Will divide image into this number of boxes, then perform sigma clipping in each of these boxes",
-            "default"   :   11,
-            "required"  :   false
-        },
+            "info": "Will divide image into this number of boxes, then perform sigma clipping in each of these boxes", 
+            "dtype": "int", 
+            "default": 11, 
+            "required": false, 
+            "name": "boxes"
+        }, 
         {
-            "name"      :   "iters",
-            "dtype"     :   "int",
-            "info"      :   "The number of iterations to perform sigma clipping, or 0 to clip until convergence is achieved.",
-            "default"   :   3,
-            "required"  :   false
-        },
+            "info": "The number of iterations to perform sigma clipping, or 0 to clip until convergence is achieved.", 
+            "dtype": "int", 
+            "default": 3, 
+            "required": false, 
+            "name": "iters"
+        }, 
         {
-            "name"      :   "mask-value",
-            "dtype"     :   "float",
-            "info"      :   "Value to use for masked regions",
-            "default"   :   0,
-            "required"  :   false
-        },
+            "info": "Value to use for masked regions", 
+            "dtype": "float", 
+            "default": 0, 
+            "required": false, 
+            "name": "mask-value"
+        }, 
         {
-            "name"      :   "overlap",
-            "dtype"     :   "float",
-            "info"      :   "Overlap region. As a fraction of -nb/--boxes",
-            "default"   :   0,
-            "required"  :   false
-        },
+            "info": "Overlap region. As a fraction of -nb/--boxes", 
+            "dtype": "float", 
+            "default": 0, 
+            "required": false, 
+            "name": "overlap"
+        }, 
         {
-            "name"      :   "dilate",
-            "dtype"     :   "bool",
-            "info"      :   "Dilate mask. This is an attempt to include low surface brightness in an image.",
-            "default"   :   true,
-            "required"  :   false
-        },
+            "info": "Dilate mask. This is an attempt to include low surface brightness in an image.", 
+            "dtype": "bool", 
+            "default": true, 
+            "required": false, 
+            "name": "dilate"
+        }, 
         {
-            "name"      :   "diters",
-            "dtype"     :   "int",
-            "info"      :   "Maximun dilation iterations per island",
-            "default"   :   20,
-            "required"  :   false
-        },
+            "info": "Maximun dilation iterations per island", 
+            "dtype": "int", 
+            "default": 20, 
+            "required": false, 
+            "name": "diters"
+        }, 
         {
-            "name"      :   "no-negative",
-            "dtype"     :   "bool",
-            "info"      :   "Include negative pixels when creating mask",
-            "default"   :   false,
-            "required"  :   false
-        },
+            "info": "Include negative pixels when creating mask", 
+            "dtype": "bool", 
+            "default": false, 
+            "required": false, 
+            "name": "no-negative"
+        }, 
         {
-            "name"      :   "tolerance",
-            "dtype"     :   "float",
-            "info"      :   "Tolerance for dilating the mask. Will stop dilating if percentage difference between dilations is smaller than this value.",
-            "default"   :   0.05,
-            "required"  :   false
-        },
+            "info": "Tolerance for dilating the mask. Will stop dilating if percentage difference between dilations is smaller than this value.", 
+            "dtype": "float", 
+            "default": 0.05, 
+            "required": false, 
+            "name": "tolerance"
+        }, 
         {
-            "name"      :   "log-level",
-            "dtype"     :   "str",
-            "info"      :   "Log level",
-            "choices"   :   ["INFO", "DEBUG", "CRITICAL"],
-            "default"   :   "INFO"
+            "info": "Log level", 
+            "dtype": "str", 
+            "default": "INFO", 
+            "name": "log-level", 
+            "choices": [
+                "INFO", 
+                "DEBUG", 
+                "CRITICAL"
+            ]
         }
-        ]
+    ]
 }

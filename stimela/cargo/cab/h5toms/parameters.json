@@ -1,139 +1,139 @@
 {
-    "task"          :   "h5toms",
-    "base"          :   "stimela/katdal",
-    "tag"           :   "0.2.3",
-    "description"   :   "Convert HDF5 file(s) to MeasurementSet",
-    "msdir"         :   "true",
-    "prefix"        :   "--",
-    "binary"        :   "h5toms.py",
-    "parameters"    :   [
+    "task": "h5toms", 
+    "base": "stimela/katdal", 
+    "tag": "0.2.5", 
+    "description": "Convert HDF5 file(s) to MeasurementSet", 
+    "prefix": "--", 
+    "binary": "h5toms.py", 
+    "msdir": "true", 
+    "parameters": [
         {
-            "name"      :   "hdf5files",
-            "dtype"     :   "list:file",
-            "io"        :   "input",
-            "info"      :   "HDF5 file(s)",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "HDF5 file(s)", 
+            "name": "hdf5files", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "list:file", 
+            "required": true
+        }, 
         {
-            "name"      :   "blank-ms",
-            "dtype"     :   "file",
-            "io"        :   "input",
-            "check_io"  :   false,
-            "info"      :   "Blank MS used as template",
-            "default"   :   "/var/kat/static/blank.ms"
-        },
+            "info": "Blank MS used as template", 
+            "check_io": false, 
+            "name": "blank-ms", 
+            "io": "input", 
+            "default": "/var/kat/static/blank.ms", 
+            "dtype": "file"
+        }, 
         {
-            "name"      :   "output-ms",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "check_io"  :   false,
-            "info"      :   "Output MS",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "Output MS", 
+            "check_io": false, 
+            "name": "output-ms", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
         {
-            "name"      :   "circular",
-            "dtype"     :   "bool",
-            "info"      :   "Produce quad circular polarisation. (RR, RL, LR, LL) *** Currently just relabels the linear pols ****",
-            "default"   :   false
-        },
+            "info": "Produce quad circular polarisation. (RR, RL, LR, LL) *** Currently just relabels the linear pols ****", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "circular"
+        }, 
         {
-            "name"      :   "ref-ant",
-            "dtype"     :   "str",
-            "info"      :   "Reference antenna (default is first one used by script)",
-            "default"   :   null
-        },
+            "info": "Reference antenna (default is first one used by script)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "ref-ant"
+        }, 
         {
-            "name"      :   "tar",
-            "dtype"     :   "bool",
-            "info"      :   "Tar-ball the MS",
-            "default"   :   false
-        },
+            "info": "Tar-ball the MS", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "tar"
+        }, 
         {
-            "name"      :   "full-pol",
-            "mapping"   :   "full_pol",
-            "dtype"     :   "bool",
-            "info"      :   "Produce a full polarisation MS in CASA canonical order (HH, HV, VH, VV). Default is to produce HH,VV only",
-            "default"   :   true
-        },
+            "info": "Produce a full polarisation MS in CASA canonical order (HH, HV, VH, VV). Default is to produce HH,VV only", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "full-pol", 
+            "mapping": "full_pol"
+        }, 
         {
-            "name"      :   "verbose",
-            "dtype"     :   "bool",
-            "info"      :   "More verbose progress information",
-            "default"   :   true
-        },
+            "info": "More verbose progress information", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "verbose"
+        }, 
         {
-            "name"      :   "stop-w",
-            "dtype"     :   "bool",
-            "info"      :   "Use W term to stop fringes for each baseline",
-            "default"   :   false
-        },
+            "info": "Use W term to stop fringes for each baseline", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "stop-w"
+        }, 
         {
-            "name"      :   "HH",
-            "dtype"     :   "bool",
-            "info"      :   "Produce a Stokes I MeasurementSet using only HH",
-            "default"   :   false
-        },
+            "info": "Produce a Stokes I MeasurementSet using only HH", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "HH"
+        }, 
         {
-            "name"      :   "VV",
-            "dtype"     :   "bool",
-            "info"      :   "Produce a Stokes I MeasurementSet using only VV",
-            "default"   :   false
-        },
+            "info": "Produce a Stokes I MeasurementSet using only VV", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "VV"
+        }, 
         {
-            "name"      :   "uvfits",
-            "dtype"     :   "bool",
-            "info"      :   "Print command to convert MS to miriad uvfits in casapy",
-            "default"   :   false
-        },
+            "info": "Print command to convert MS to miriad uvfits in casapy", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "uvfits"
+        }, 
         {
-            "name"      :   "no-auto",
-            "dtype"     :   "bool",
-            "info"      :   "MeasurementSet will exclude autocorrelation data",
-            "default"   :   false
-        },
+            "info": "MeasurementSet will exclude autocorrelation data", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "no-auto"
+        }, 
         {
-            "name"      :   "channel-range",
-            "dtype"     :   "str",
-            "info"      :   "Range of frequency channels to keep (zero-based inclusive 'first_chan,last_chan', default is all channels)",
-            "default"   :   null
-        },
+            "info": "Range of frequency channels to keep (zero-based inclusive 'first_chan,last_chan', default is all channels)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "channel-range"
+        }, 
         {
-            "name"      :   "elevation-range",
-            "dtype"     :   "str",
-            "info"      :   "Flag elevations outside the range 'lowest_elevation,highest_elevation'",
-            "default"   :   null
-        },
+            "info": "Flag elevations outside the range 'lowest_elevation,highest_elevation'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "elevation-range"
+        }, 
         {
-            "name"      :   "model-data",
-            "dtype"     :   "bool",
-            "info"      :   "Add MODEL_DATA and CORRECTED_DATA columns to the MS. MODEL_DATA initialised to unity amplitude zero phase, CORRECTED_DATA initialised to DATA.",
-            "default"   :   false
-        },
+            "info": "Add MODEL_DATA and CORRECTED_DATA columns to the MS. MODEL_DATA initialised to unity amplitude zero phase, CORRECTED_DATA initialised to DATA.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "model-data"
+        }, 
         {
-            "name"      :   "flags",
-            "dtype"     :   "str",
-            "info"      :   "List of online flags to apply (from 'static,cam,data_lost,ingest_rfi,cal_rfi,predicted_rfi', default is all flags, '' will apply no flags)",
-            "default"   :   null
-        },
+            "info": "List of online flags to apply (from 'static,cam,data_lost,ingest_rfi,cal_rfi,predicted_rfi', default is all flags, '' will apply no flags)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "flags"
+        }, 
         {
-            "name"      :   "dumptime",
-            "dtype"     :   "float",
-            "info"      :   "Output time averaging interval in seconds, default is no averaging.",
-            "default"   :   0.0
-        },
+            "info": "Output time averaging interval in seconds, default is no averaging.", 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "dumptime"
+        }, 
         {
-            "name"      :   "chanbin",
-            "dtype"     :   "int",
-            "info"      :   "Bin width for channel averaging in channels, default is no averaging",
-            "default"   :   0,
-        },
+            "info": "Bin width for channel averaging in channels, default is no averaging", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "chanbin"
+        }, 
         {
-            "name"      :   "flagav",
-            "dtype"     :   "bool",
-            "info"      :   "If a single element in an averaging bin is flagged, flag the averaged bin.",
-            "default"   :   false
+            "info": "If a single element in an averaging bin is flagged, flag the averaged bin.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "flagav"
         }
     ]
 }

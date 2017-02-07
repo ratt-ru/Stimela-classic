@@ -18,7 +18,7 @@ manager = Manager()
 
 CPUS = 1
 
-def logger(level=0, logfile=None):
+def _logger(level=0, logfile=None):
 
     if logfile:
         logging.basicConfig(filename=logfile)

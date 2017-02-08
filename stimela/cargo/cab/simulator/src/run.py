@@ -33,7 +33,7 @@ threads = params.pop("threads", 4)
 skymodel = params.pop("skymodel", None)
 beam_files_pattern = params.pop("beam-files-pattern", False)
 
-if not os.path.exists(skymodel):
+if skymodel and not os.path.exists(skymodel):
     skymodel = "/data/skymodels/%s"%(os.path.basename(skymodel))
     if not os.path.exists(skymodel):
         raise RuntimeError("ABORT: Could not find the skymodel")
@@ -111,7 +111,7 @@ field_center = params.pop("field-center", None)
 if field_center:
     if field_center.lower() == "ms":
         ftab = table(msname+"/FIELD")
-        ra,dec = ftab.getcol("PHASE_DIR")[field_id][0]
+        ra,dec = ftab.getcol("PHASE_DIR")[params.get('field-id', 0)][0]
         field_center = "J2000,%frad,%frad"%(ra, dec)
     tmp = "recentered_"+os.path.basename(skymodel)
 

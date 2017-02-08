@@ -9,7 +9,7 @@ import signal
 
 import inspect
 import stimela
-import stimela_version
+from stimela_misc import version
 from stimela import utils, cargo
 from stimela.cargo import cab
 from recipe import Recipe as Pipeline
@@ -41,7 +41,7 @@ GID = os.getgid()
 
 container_home = '/home/{}'.format(USER)
 
-__version__ = stimela_version.version
+__version__ = version.version
 
 GLOBALS = {}
 

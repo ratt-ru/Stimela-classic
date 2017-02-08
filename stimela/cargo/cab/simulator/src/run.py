@@ -35,6 +35,7 @@ beam_files_pattern = params.pop("beam-files-pattern", False)
 
 if isinstance(skymodel, str):
     if os.path.exists(skymodel):
+        options['me.sky.tiggerskymodel'] = 1
         options["tiggerlsm.filename"] = skymodel
     else:
         raise RuntimeError("ABORT: Could not find the skymodel")

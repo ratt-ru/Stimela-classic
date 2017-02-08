@@ -68,7 +68,9 @@ class StimelaLogger(object):
 
 
     def remove(self, ltype, name):
-        if self.info[ltype].pop(str(name), None) is None:
+        try:
+            self.info[ltype].pop(str(name))
+        except:
             print('WARNING:: Could not remove object \'{0}:{1}\' from logger'.format(ltype, name))
     
     

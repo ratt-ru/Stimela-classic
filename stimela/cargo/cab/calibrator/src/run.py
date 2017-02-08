@@ -80,6 +80,7 @@ if gjones:
         "stefcal_gain.flag_chisq_threshold" :   jdict.get("Gjones-thresh-sigma", 10),
         "stefcal_gain.flag_ampl_low"    :   jdict.get("Gjones-ampl-clipping-low", 0.3),
         "stefcal_gain.flag_ampl_high"   :   jdict.get("Gjones-ampl-clipping-high", 2),
+        "stefcal_gain.implementation"   :   jdict.get("Gjones-matrix-type", "Gain2x2"),
         "stefcal_gain.table" : gjones_gains,
     })
     
@@ -121,6 +122,7 @@ if ddjones:
         "stefcal_diffgain.table" : ddjones_gains,
         "stefcal_diffgain.timeint" : time_int,
         "stefcal_diffgain.timesmooth" : time_smooth,
+        "stefcal_diffgain.implementation"   :   jdict.get("DDjones-matrix-type", "Gain2x2"),
 })
 
 ifrjones = jdict.pop("DDjones", False)

@@ -33,9 +33,11 @@ threads = params.pop("threads", 4)
 skymodel = params.pop("skymodel", None)
 beam_files_pattern = params.pop("beam-files-pattern", False)
 
-if not os.path.exists(skymodel):
-    skymodel = "/data/skymodels/%s"%(os.path.basename(skymodel))
-    if not os.path.exists(skymodel):
+if isinstance(skymodel, str):
+    if os.path.exists(skymodel):
+        options['me.sky.tiggerskymodel'] = 1
+        options["tiggerlsm.filename"] = skymodel
+    else:
         raise RuntimeError("ABORT: Could not find the skymodel")
 
 modes = {
@@ -52,7 +54,6 @@ options["ms_sel.msname"] = msname
 options["sim_mode"] = modes[mode]
 options["ms_sel.input_column"] = incol
 options["ms_sel.output_column"] = column
-options["tiggerlsm.filename"] = skymodel
 
 addnoise = params.pop("addnoise", False)
 if addnoise:
@@ -108,10 +109,10 @@ if beam and beam_files_pattern:
         options['oms_pointing_errors.pe_l.values_str'] = "'%s'"%mm
 
 field_center = params.pop("field-center", None)
-if field_center:
+if field_center and skymodel:
     if field_center.lower() == "ms":
         ftab = table(msname+"/FIELD")
-        ra,dec = ftab.getcol("PHASE_DIR")[field_id][0]
+        ra,dec = ftab.getcol("PHASE_DIR")[params.get('field-id', 0)][0]
         field_center = "J2000,%frad,%frad"%(ra, dec)
     tmp = "recentered_"+os.path.basename(skymodel)
 

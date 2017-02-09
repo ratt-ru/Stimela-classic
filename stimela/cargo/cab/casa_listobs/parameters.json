@@ -1,0 +1,123 @@
+{
+    "task"          :   "casa_listobs",
+    "description"   :   "List the summary of a data set in the logger or in a file",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.3",
+    "binary"        :   "listobs",
+    "msdir"         :   true,
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of input visibility file",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "listfile",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Name of disk file to write output: ''==>to terminal",
+            "default"   :   null
+        },
+        {
+            "name"      :   "selectdata",
+            "dtype"     :   "bool",
+            "info"      :   "Data selection parameters",
+            "default"   :   null
+        },
+        {
+            "name"      :   "field",
+            "dtype"     :   "str",
+            "info"      :   "Field names or field index numbers. ''==>all, field='0~2,3C286'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "spw",
+            "dtype"     :   "str",
+            "info"      :   "spectral-window/frequency/channel",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "antenna",
+            "dtype"     :   "str",
+            "info"      :   "Antenna/baselines: ''==>all, antenna='3,VA04'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "timerange",
+            "dtype"     :   "str",
+            "info"      :   "time range: ''==>all,timerange='09:14:0~09:54:0'",
+            "default"   :   null
+        },
+        {
+            "name"      :   "correlation",
+            "dtype"     :   "str",
+            "info"      :   "Select data based on correlation",
+            "default"   :   null
+        },
+        {
+            "name"      :   "scan",
+            "dtype"     :   "str",
+            "info"      :   "scan numbers: ''==>all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "intent",
+            "dtype"     :   "str",
+            "info"      :   "Select data based on observation intent: ''==>all",
+            "default"   :   null,
+        },
+        {
+            "name"      :   "feed",
+            "dtype"     :   "str",
+            "info"      :   "Multi-feed numbers: Not yet implemented",
+            "default"   :   null
+        },
+        {
+            "name"      :   "array",
+            "dtype"     :   "str",
+            "info"      :   "(sub)array numbers: ''==>all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "uvrange",
+            "dtype"     :   "str",
+            "info"      :   "uv range: ''==>all; uvrange ='0~100klambda', default units=meters",
+            "default"   :   null
+        },
+        {
+            "name"      :   "observation",
+            "dtype"     :   "str",
+            "info"      :   "Select data based on observation ID: ''==>all",
+            "default"   :   null
+        },
+        {
+            "name"      :   "verbose",
+            "dtype"     :   "bool",
+            "info"      :   "Verbose output",
+            "default"   :   null
+        },
+        {
+            "name"      :   "listunfl",
+            "dtype"     :   "bool",
+            "info"      :   "List unflagged row counts? If true, it can have significant negative performance impact.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "cachesize",
+            "dtype"     :   "int",
+            "info"      :   "EXPERIMENTAL. Maximum size in megabytes of cache in which data structures can be held.",
+            "default"   :   null
+        },
+        {
+            "name"      :   "async",
+            "dtype"     :   "bool",
+            "info"      :   "If true the taskname must be started using listobs(...)",
+            "default"   :   null
+        }
+    ]
+}

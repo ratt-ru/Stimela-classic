@@ -45,7 +45,7 @@ outfile = write_opts.pop('outfile')
 
 img = bdsm.process_image(image, **img_opts)
 
-port2tigger = write_opts.pop('port2tigger', False)
+port2tigger = write_opts.pop('port2tigger', True)
 
 if write_opts.get('format', None) !='fits':
     write_opts['format'] = 'fits'

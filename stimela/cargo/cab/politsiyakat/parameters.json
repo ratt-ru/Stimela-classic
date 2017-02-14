@@ -1,6 +1,6 @@
 {
     "task": "politsiyakat", 
-    "base": "stimela/base", 
+    "base": "stimela/politsiyakat", 
     "tag": "0.2.7", 
     "description": "Routines for automated post-1GC error detection and mitigation", 
     "prefix": "--", 

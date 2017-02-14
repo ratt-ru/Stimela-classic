@@ -1,4 +1,4 @@
-FROM stimela/astropy:0.2.5
+FROM stimela/astropy:0.2.7
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code

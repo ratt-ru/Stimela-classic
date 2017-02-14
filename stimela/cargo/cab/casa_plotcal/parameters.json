@@ -1,7 +1,7 @@
 {
     "task": "casa_plotcal", 
     "base": "stimela/casa", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "An all-purpose plotter for calibration results", 
     "prefix": "-", 
     "binary": "plotcal", 

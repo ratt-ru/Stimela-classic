@@ -1,7 +1,7 @@
 {
     "task": "pybdsm", 
     "base": "stimela/lofar", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "Source finding in radio images", 
     "prefix": " ", 
     "binary": "python", 

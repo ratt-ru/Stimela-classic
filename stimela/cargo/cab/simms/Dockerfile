@@ -1,4 +1,4 @@
-FROM stimela/simms:0.2.5
+FROM stimela/simms:0.2.7
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code

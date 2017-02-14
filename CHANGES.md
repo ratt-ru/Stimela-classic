@@ -26,5 +26,6 @@
 - Use correct package(stimel_misc) to get stimel version 
 
 # 0.2.7
-- Fix noise only simulation in simulator cab. Don't look for file if skymodel is None
+- Fix noise only simulation in simulator cab. Don not look for file if skymodel is None
 - Allow user to specify gain matrix type in simulator   
+- Make custom katdal base image

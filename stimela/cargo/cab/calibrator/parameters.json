@@ -1,7 +1,7 @@
 {
     "task": "calibrator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)", 
     "prefix": " ", 
     "binary": "/usr/bin/meqtree-pipeliner.py", 
@@ -149,12 +149,18 @@
             "name": "Gjones"
         }, 
         {
-            "name"      :   "Gjones-matrix-type",
-            "dtype"     :   "str",
-            "choices"   :   ["Gain2x2", "GainDiag", "GainDiagPhase", "GainDiang2a", "GainDiagCommon"],
-            "info"      :   "Jones matrix type",
-            "default"   :   "Gain2x2",
-        },
+            "info": "Jones matrix type", 
+            "dtype": "str", 
+            "default": "Gain2x2", 
+            "name": "Gjones-matrix-type", 
+            "choices": [
+                "Gain2x2", 
+                "GainDiag", 
+                "GainDiagPhase", 
+                "GainDiang2a", 
+                "GainDiagCommon"
+            ]
+        }, 
         {
             "info": "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers", 
             "dtype": "list:int", 
@@ -208,14 +214,20 @@
             "dtype": "bool", 
             "default": false, 
             "name": "DDjones"
-        },
+        }, 
         {
-            "name"      :   "DDjones-matrix-type",
-            "dtype"     :   "str",
-            "choices"   :   ["Gain2x2", "GainDiag", "GainDiagPhase", "GainDiang2a", "GainDiagCommon"],
-            "info"      :   "Jones matrix type",
-            "default"   :   "Gain2x2",
-        },
+            "info": "Jones matrix type", 
+            "dtype": "str", 
+            "default": "Gain2x2", 
+            "name": "DDjones-matrix-type", 
+            "choices": [
+                "Gain2x2", 
+                "GainDiag", 
+                "GainDiagPhase", 
+                "GainDiang2a", 
+                "GainDiagCommon"
+            ]
+        }, 
         {
             "info": "Number of iterations", 
             "dtype": "int", 

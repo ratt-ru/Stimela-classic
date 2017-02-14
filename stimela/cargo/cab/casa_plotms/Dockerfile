@@ -1,4 +1,4 @@
-FROM stimela/casa:0.2.5
+FROM stimela/casa:0.2.7
 MAINTAINER <sphemakh@gmail.com>
 #This task needs xvfb to be installed
 # @sphemakh I'm placing the fix in this 

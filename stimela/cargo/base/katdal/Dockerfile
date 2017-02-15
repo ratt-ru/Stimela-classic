@@ -2,10 +2,6 @@ FROM stimela/base:0.2.7
 MAINTAINER <sphemakh@gmail.com>
 
 ENV PACKAGES \
-    software-properties-common \
-    python-software-properties \
-    python-pip \
-    git \
     build-essential \
     cmake \
     gfortran \
@@ -41,9 +37,6 @@ RUN git clone --depth 1 https://github.com/sjperkins/casacore.git -b expose-reco
     make install && \
     cd / && \
     rm -rf /src
-
-# Install pyyaml
-RUN pip install pyyaml
 
 # Install custom branch of python-casacore
 RUN pip install git+https://github.com/sjperkins/python-casacore.git@create-default-ms#egg=python-casacore

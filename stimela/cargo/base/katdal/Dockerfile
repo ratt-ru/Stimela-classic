@@ -21,12 +21,8 @@ ENV PACKAGES \
     libpython3.5-dev \
     libpython2.7-dev
 
-# enable universe, multiverse, restricted with world wide mirrors
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y $PACKAGES && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Install packages
+RUN docker-apt-install $PACKAGES
 
 # Install custom branch of casacore
 RUN git clone --depth 1 https://github.com/sjperkins/casacore.git -b expose-record-to-tabledesc-static-members /src/casacore && \

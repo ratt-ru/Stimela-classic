@@ -24,6 +24,12 @@
             "default"   :   null
         },
         {
+            "name"      :   "overwrite",
+            "dtype"     :   "bool",
+            "info"      :   "If True, tacitly overwrite listfile if it exists.",
+            "default"   :   false
+        },
+        {
             "name"      :   "selectdata",
             "dtype"     :   "bool",
             "info"      :   "Data selection parameters",

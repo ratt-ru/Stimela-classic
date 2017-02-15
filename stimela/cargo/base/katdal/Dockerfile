@@ -29,7 +29,7 @@ RUN git clone --depth 1 https://github.com/sjperkins/casacore.git -b expose-reco
     mkdir -p /src/casacore/build && \
     cd /src/casacore/build && \
     cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && \
-    make -j 8 && \
+    make && \
     make install && \
     cd / && \
     rm -rf /src

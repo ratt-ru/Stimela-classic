@@ -1,7 +1,7 @@
 {
     "task": "tigger_tag", 
     "base": "stimela/tigger", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "Sets or changes tags of selected sources in the sky model. Use NAME (with shell-style wildcards allowed) to select sources by name, or  =SELTAG to select sources having the specified (non-zero) tag, or SELTAG<>SELVAL to select sources by comparing a tag to a value, where '<>'  represents a comparison operator, and can be one of == (or =),!=,<=,<,>,>= (or the FORTRAN-  style operators .eq.,.ne.,.le.,.lt.,.gt.,.ge.). SELVAL may also be followed by one of the characters  'd', 'm' or 's', in which case it will be converted from degrees, minutes or seconds into radians. This is useful for selections such as 'r<5d'. Then, with a subset of sources selected, use TAG=TYPE:VALUE (where TYPE is one of: bool, int, float, str, complex) to set a tag on the selected sources to a value of a specific type, or TAG=VALUE to determine type automatically, or +TAG to set a bool True tag, !TAG to set a False tag, and /TAG to remove a tag.", 
     "prefix": "--", 
     "binary": "tigger-tag", 

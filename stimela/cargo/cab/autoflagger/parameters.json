@@ -1,7 +1,7 @@
 {
     "task": "autoflagger", 
     "base": "stimela/aoflagger", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "This program will execute an RFI strategy as can be created with the RFI gui and executes it on one or several observations.", 
     "prefix": "-", 
     "binary": "aoflagger", 

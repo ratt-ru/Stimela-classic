@@ -1,7 +1,7 @@
 {
     "task": "simulator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)", 
     "prefix": " ", 
     "binary": "meqtree-pipeliner.py", 

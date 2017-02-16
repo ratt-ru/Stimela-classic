@@ -1,7 +1,7 @@
 {
     "task": "tigger_restore", 
     "base": "stimela/tigger", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "Restores sources from sky model into an input image, writes result to output image. If an output image is not specified, makes a name for it automatically", 
     "prefix": "--", 
     "binary": "tigger-restore", 

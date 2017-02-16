@@ -1,4 +1,4 @@
-FROM stimela/base:0.2.5
+FROM stimela/base:0.2.7
 RUN docker-apt-install python-numpy python-casacore
 RUN pip install git+https://github.com/bennahugo/RFIMasker
 

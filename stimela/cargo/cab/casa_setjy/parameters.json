@@ -1,7 +1,7 @@
 {
     "task": "casa_setjy", 
     "base": "stimela/casa", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "Fills the model column with the visibilities of a calibrator", 
     "prefix": "-", 
     "binary": "setjy", 

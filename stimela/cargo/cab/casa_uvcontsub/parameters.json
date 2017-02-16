@@ -1,7 +1,7 @@
 {
     "task": "casa_uvcontsub", 
     "base": "stimela/casa", 
-    "tag": "0.2.5", 
+    "tag": "0.2.7", 
     "description": "Continuum fitting and subtraction in the uv plane. This task estimates the continuum emission by fitting polynomials to the real and imaginary parts of the spectral windows and channels selected by fitspw.  This fit represents a model of the continuum in  all channels. The fitted continuum spectrum is subtracted from all channels selected in spw, and the result (presumably only line emission)  is stored in a new MS (vis + '.contsub'). If an MS with the output name already exists, it will be overwritten. It will read from the CORRECTED_DATA column of vis if it is present, or DATA if it is not.  Whichever column is read is presumed to have already been calibrated. If want_cont is True, the continuum fit is placed in a second new MS (vis + '.cont', also overwritten if it already exists).  N.B. because the continuum model is necessarily a smoothed fit, images made with it are liable to have their field of view reduced in some strange way.  Images of the continuum should be made by simply excluding the line channels (and probably averaging the remaining ones) in clean.", 
     "prefix": "", 
     "binary": "uvcontsub", 

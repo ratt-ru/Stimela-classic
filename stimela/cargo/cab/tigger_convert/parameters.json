@@ -22,7 +22,14 @@
             "default": true, 
             "dtype": "file", 
             "required": true
-        }, 
+        },
+        {
+            "name"      :   "append",
+            "dtype"     :   "file",
+            "io"        :   "input",
+            "info"      :   "Append this model to input-skymodel, then write to output-skymodel",
+            "default"   :   null,
+        },
         {
             "info": "Forces overwrite of output model.", 
             "dtype": "bool", 

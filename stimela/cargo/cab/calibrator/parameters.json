@@ -101,6 +101,37 @@
             "defaut": 0
         }, 
         {
+            "name"      :   "write-flags",
+            "dtype"     :   "str",
+            "info"      :   "name of flagset to write new flags to",
+            "defalt"    :   "stefcal"
+        },
+        {
+            "name"      :   "write-flagset-policy",
+            "dtype"     :   "str",
+            "choices"   :   ["add", "replace"],
+            "info"      :   "Add or replace flagset if it already exists.",
+            "default"   :   "replace",
+        },
+        {
+            "name"      :   "read-legacy-flags",
+            "dtype"     :   "bool",
+            "info"      :   "Read legacy flags",
+            "default"   :   true
+        },
+        {
+            "name"      :   "read-flags-from-ms",
+            "dtype"     :   "bool",
+            "info"      :   "Use existing flags from MS",
+            "default"   :   true
+        },
+        {
+            "name"      :  "fill-legacy-flags",
+            "dtype"     :   "bool",
+            "info"      :   "Fill legacy flags",
+            "default"   :   true
+        },
+        {
             "info": "Add a primary beam model", 
             "dtype": "bool", 
             "default": false, 

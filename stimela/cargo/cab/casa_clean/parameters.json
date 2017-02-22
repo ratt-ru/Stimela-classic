@@ -260,7 +260,8 @@
             "info": "Maximum number of iterations", 
             "dtype": "int", 
             "default": 500, 
-            "name": "niter"
+            "name": "clean_iterations",
+            "mapping": "niter"
         }, 
         {
             "info": "Loop gain for cleaning", 

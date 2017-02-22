@@ -3,7 +3,7 @@ import os
 import sys
 
 import drivecasa
-casa = drivecasa.Casapy()
+casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600)
 
 sys.path.append('/utils')
 import utils

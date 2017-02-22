@@ -11,7 +11,6 @@ OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
 cab = utils.readJson(CONFIG)
-force = False
 args = []
 for param in cab['parameters']:
     name = param['name']
@@ -22,22 +21,26 @@ for param in cab['parameters']:
 
     if name in 'restoring-beam scale'.split() and hasattr(value, '__iter__'):
         value = ','.join(value)
+
     if value is True:
         value = ""
-    if name == 'f':
-        force = value
-        continue
+        if name == 'f':
+            args.append('-f')
+            continue
+
     # Positional arguments
     if name == 'input-image':
         inim= value
         continue
+
     elif name == 'input-skymodel':
         inlsm = value
         continue
+
     elif name == 'output-image':
         outim = value
         continue
 
     args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
 
-utils.xrun(cab['binary'], args+[inim, inlsm, outim, '-f' if force else ''])
+utils.xrun(cab['binary'], args+[inim, inlsm, outim])

@@ -1,0 +1,58 @@
+{
+    "task"          :   "casa_flagmanager",
+    "description"   :   "These flag version files are copies of the flag column for a measurement set.  They can be restored to the data set to get back to a previous flag version.  On running importvla, a flag version call 'Original' is automatically produced.",
+    "base"          :   "stimela/casa",
+    "tag"           :   "0.2.7",
+    "binary"        :   "flagmanager",
+    "msdir"         :   true,
+    "prefix"        :   "-",
+    "parameters"    :   [
+        {
+            "name"      :   "msname",
+            "mapping"   :   "vis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of input visibility file",
+            "required"  :   true,
+            "default"   :   null
+        },
+        {
+            "name"      :   "vis",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "Name of input visibility file (MS)",
+            "default"   :   null
+        },
+        {
+            "name"      :   "mode",
+            "dtype"     :   "str",
+            "choices"   :   ["list", "save", "restore", "delete", "rename"],
+            "info"      :   "Flag version operation",
+            "default"   :   "list",
+        },
+        {
+            "name"      :   "versionname",
+            "dtype"     :   "str",
+            "info"      :   "Flag version name",
+            "default"   :   null
+        },
+        {
+            "name"      :   "oldname",
+            "dtype"     :   "str",
+            "info"      :   "Flag version to rename",
+            "default"   :   null
+        },
+        {
+            "name"      :   "comment",
+            "dtype"     :   "str",
+            "info"      :   "Short description of a versionname",
+            "default"   :   null
+        },
+        {
+            "name"      :   "merge",
+            "dtype"     :   "str",
+            "info"      :   "Merge option: replace will save or over-write the flags",
+            "default"   :   "replace"
+        },
+    ]
+}

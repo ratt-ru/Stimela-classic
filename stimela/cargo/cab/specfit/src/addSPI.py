@@ -68,12 +68,15 @@ def rad2arcsec(x):
     return x*3600.0*180.0/np.pi
 
 
-def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile=None, freq0=None, spitol=(-10,10)):
+def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile=None, freq0=None, beam=None, spitol=(-10,10)):
     """
         Add spectral index to a tigger lsm from a spectral index map (fits format)
         takes in a spectral index map, input lsm and output lsm name.
     """
 #    import pylab as plt
+    if beam is None:
+        raise RuntimeError("the beam option must be specified")
+
     print "INFO: Getting fits info from: %s, %s" %(fitsname_alpha, fitsname_alpha_error)
 
     fits_alpha = fitsInfo(fitsname_alpha)    # Get fits info
@@ -100,8 +103,6 @@ def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile
     for src in model.sources: 
         ra = rad(src.pos.ra)
         dec = rad(src.pos.dec)
-        tol = 30./3600. # Tolerance, only add SPIs to sources outside this tolerance (radial distance from centre)
-        beam =  3.971344894833e-03 # psf size, assume all sources are at least as large as the psf
 
         if np.sqrt((ra-fits_alpha["ra"])**2 + (dec-fits_alpha["dec"])**2)>tol: # exclude sources within {tol} of phase centre
             dra = rad(src.shape.ex) if src.shape  else beam # cater for point sources
@@ -127,10 +128,13 @@ def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None, outfile
 
                 spi = float(np.sum(subIm_weighted)/subIm_normalization)
                 if spi > spitol[0] or spi < spitol[-1]:
-                    print "INFO: Adding spi: %.3f (at %.3g MHz) to source %s"%(spi, freq0/1e6, src.name)
+                    sys.stdout.write("INFO: Adding spi: %.3f (at %.3g MHz) to source %s"%(spi, freq0/1e6, src.name))
                     src.spectrum = Tigger.Models.ModelClasses.SpectralIndex(spi, freq0)
             else:
-                print "ALERT: no spi info found in %s for source %s"%(fitsname_alpha, src.name)
+                sys.stdout.write("ALERT: no spi info found in %s for source %s"%(fitsname_alpha, src.name))
+        else:
+            sys.stdout.write("ALERT: All SPI pixels are outside the tolerance range")
+
 
     model.save(outfile)
 

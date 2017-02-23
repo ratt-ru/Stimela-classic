@@ -1,7 +1,7 @@
 {
     "task": "casa_clean", 
     "base": "stimela/casa", 
-    "tag": "0.2.7", 
+    "tag": "0.2.8", 
     "description": "CASA Clean task. For imaging and deconvolution", 
     "prefix": "", 
     "binary": "clean", 
@@ -260,7 +260,7 @@
             "info": "Maximum number of iterations", 
             "dtype": "int", 
             "default": 500, 
-            "name": "clean_iterations",
+            "name": "clean_iterations", 
             "mapping": "niter"
         }, 
         {

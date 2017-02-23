@@ -1,7 +1,7 @@
 {
     "task": "calibrator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.7", 
+    "tag": "0.2.8", 
     "description": "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)", 
     "prefix": " ", 
     "binary": "/usr/bin/meqtree-pipeliner.py", 
@@ -101,36 +101,39 @@
             "defaut": 0
         }, 
         {
-            "name"      :   "write-flags",
-            "dtype"     :   "str",
-            "info"      :   "name of flagset to write new flags to",
-            "defalt"    :   "stefcal"
-        },
+            "info": "name of flagset to write new flags to", 
+            "dtype": "str", 
+            "defalt": "stefcal", 
+            "name": "write-flags"
+        }, 
         {
-            "name"      :   "write-flagset-policy",
-            "dtype"     :   "str",
-            "choices"   :   ["add", "replace"],
-            "info"      :   "Add or replace flagset if it already exists.",
-            "default"   :   "replace",
-        },
+            "info": "Add or replace flagset if it already exists.", 
+            "dtype": "str", 
+            "default": "replace", 
+            "name": "write-flagset-policy", 
+            "choices": [
+                "add", 
+                "replace"
+            ]
+        }, 
         {
-            "name"      :   "read-legacy-flags",
-            "dtype"     :   "bool",
-            "info"      :   "Read legacy flags",
-            "default"   :   true
-        },
+            "info": "Read legacy flags", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "read-legacy-flags"
+        }, 
         {
-            "name"      :   "read-flags-from-ms",
-            "dtype"     :   "bool",
-            "info"      :   "Use existing flags from MS",
-            "default"   :   true
-        },
+            "info": "Use existing flags from MS", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "read-flags-from-ms"
+        }, 
         {
-            "name"      :  "fill-legacy-flags",
-            "dtype"     :   "bool",
-            "info"      :   "Fill legacy flags",
-            "default"   :   true
-        },
+            "info": "Fill legacy flags", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "fill-legacy-flags"
+        }, 
         {
             "info": "Add a primary beam model", 
             "dtype": "bool", 

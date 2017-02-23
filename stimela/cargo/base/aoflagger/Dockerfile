@@ -1,2 +1,2 @@
-FROM stimela/base:0.2.7
+FROM stimela/base:0.2.8
 RUN docker-apt-install aoflagger

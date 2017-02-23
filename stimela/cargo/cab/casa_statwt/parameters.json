@@ -1,117 +1,122 @@
 {
     "task": "casa_statwt", 
     "base": "stimela/casa", 
-    "tag": "0.2.7", 
+    "tag": "0.2.8", 
     "description": "Reweight visibilities according to their scatter (Experimental)", 
     "prefix": "", 
     "binary": "statwt", 
     "msdir": true, 
     "parameters": [
         {
-            "name"      :   "msname",
-            "mapping"   :   "vis",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "Name of measurement set",
-            "default"   :   null
-        },
+            "info": "Name of measurement set", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "mapping": "vis"
+        }, 
         {
-            "name"      :   "dorms",
-            "dtype"     :   "bool",
-            "info"      :   "Use rms instead of stddev",
-            "default"   :   false
-        },
+            "info": "Use rms instead of stddev", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "dorms"
+        }, 
         {
-            "name"      :   "byantenna",
-            "dtype"     :   "bool",
-            "info"      :   "Estimate the noise per antenna -not implemented (vs. per baseline)",
-            "default"   :   false
-        },
+            "info": "Estimate the noise per antenna -not implemented (vs. per baseline)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "byantenna"
+        }, 
         {
-            "name"      :   "fitspw",
-            "dtype"     :   "str",
-            "info"      :   "The signal-free spectral window:channels to estimate the scatter from",
-            "default"   :   null
-        },
+            "info": "The signal-free spectral window:channels to estimate the scatter from", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "fitspw"
+        }, 
         {
-            "name"      :   "fitcorr",
-            "dtype"     :   "str",
-            "info"      :   "The signal-free correlation(s) to estimate the scatter from (not implemented)",
-            "default"   :   null
-        },
+            "info": "The signal-free correlation(s) to estimate the scatter from (not implemented)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "fitcorr"
+        }, 
         {
-            "name"      :   "combine",
-            "dtype"     :   "str",
-            "choices"   :   ["spw", "corr", "scan", "state"],
-            "info"      :   "Let estimates span changes in spw, corr, scan and/or state",
-            "default"   :   null
-        },
+            "info": "Let estimates span changes in spw, corr, scan and/or state", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "combine", 
+            "choices": [
+                "spw", 
+                "corr", 
+                "scan", 
+                "state"
+            ]
+        }, 
         {
-            "name"      :   "timebin",
-            "dtype"     :   "str",
-            "info"      :   "Bin length for estimates (not implemented)",
-            "default"   :   "0s"
-        },
+            "info": "Bin length for estimates (not implemented)", 
+            "dtype": "str", 
+            "default": "0s", 
+            "name": "timebin"
+        }, 
         {
-            "name"      :   "minsamp",
-            "dtype"     :   "int",
-            "info"      :   "Minimum number of unflagged visibilities for estimating the scatter",
-            "default"   :   2
-        },
+            "info": "Minimum number of unflagged visibilities for estimating the scatter", 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "minsamp"
+        }, 
         {
-            "name"      :   "field",
-            "dtype"     :   "str",
-            "info"      :   "Select field using ID(s) or name(s)",
-            "default"   :   '0'
-        },
+            "info": "Select field using ID(s) or name(s)", 
+            "dtype": "str", 
+            "default": "0", 
+            "name": "field"
+        }, 
         {
-            "name"      :   "spw",
-            "dtype"     :  "str",
-            "info"      :  "Select spectral window/channels",
-            "default"   :   null
-        },
+            "info": "Select spectral window/channels", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
         {
-            "name"      :   "antenna",
-            "dtype"     :   "str",
-            "info"      :   "Select data based on antenna/baseline",
-            "default"   :   null
-        },
+            "info": "Select data based on antenna/baseline", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
         {
-            "name"      :   "timerange",
-            "dtype"     :   "str",
-            "info"      :   "Select data by time range",
-            "default"   :   null
-        },
+            "info": "Select data by time range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
         {
-            "name"      :   "scan",
-            "dtype"     :   "str",
-            "info"      :   "Select data by scan numbers",
-            "default"   :   null
-        },
+            "info": "Select data by scan numbers", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
         {
-            "name"      :   "intent",
-            "dtype"     :   "str",
-            "info"      :   "Select data by scan intents",
-            "default"   :   null
-        },
+            "info": "Select data by scan intents", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "intent"
+        }, 
         {
-            "name"      :   "array",
-            "dtype"     :   "str",
-            "info"      :   "Select (sub)array(s) by array ID number",
-            "default"   :   null
-        },
+            "info": "Select (sub)array(s) by array ID number", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "array"
+        }, 
         {
-            "name"      :   "observation",
-            "dtype"     :   "str",
-            "info"      :   "Select by observation ID(s)",
-            "default"   :   null
-        },
+            "info": "Select by observation ID(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
         {
-            "name"      :   "column",
-            "mapping"   :   "datacolumn",
-            "dtype"     :   "str",
-            "info"      :   "Which data column to calculate the scatter from",
-            "default"   :   "corrected"
+            "info": "Which data column to calculate the scatter from", 
+            "dtype": "str", 
+            "default": "corrected", 
+            "name": "column", 
+            "mapping": "datacolumn"
         }
     ]
 }

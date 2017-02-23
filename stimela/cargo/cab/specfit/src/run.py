@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import astropy.io.fits as fitsio
 from pyrap.tables import table
 
 sys.path.append("/utils")

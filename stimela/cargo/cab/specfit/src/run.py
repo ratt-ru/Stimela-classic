@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-import astropy.io.fits as fitsio
+import pyfits
 from pyrap.tables import table
 
 sys.path.append("/utils")
@@ -43,5 +43,12 @@ else:
 if lsmname and outlsm:
     sys.stdout.write("Extracting spi from image")
 
+    with pyfits.open(image) as hdu:
+        header = hdu[0].header
+        bmin = header['BMIN']
+        bmaj = header['BMAJ']
+    beam = (bmin, bmaj)
+
     import addSPI
-    addSPI.addSPI(spi_image, spi_err, lsmname, outlsm or lsmname, freq0=freq0, spitol=tol)
+    addSPI.addSPI(spi_image, spi_err, lsmname, outlsm or lsmname,
+                  beam=beam, freq0=freq0, spitol=tol)

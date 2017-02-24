@@ -75,7 +75,7 @@ gjones = jdict.pop("Gjones", False)
 if gjones:
 
     time_smooth, freq_smooth = params.get("Gjones-smoothing", (1,1))
-    time_int, freq_int = jdict.get("Gjones-intervals", (1,1))
+    time_int, freq_int = jdict.get("Gjones-solution-intervals", (1,1))
     mode = 'apply' if jdict.get('Gjones-apply-only', False) else 'solve-save'
 
     gjones_gains = "{0}/{1}{2}.gain.cp".format(msname, msbase, "-%s"%label if label else "")

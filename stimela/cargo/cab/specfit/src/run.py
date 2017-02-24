@@ -47,8 +47,9 @@ if lsmname and outlsm:
         header = hdu[0].header
         bmin = header['BMIN']
         bmaj = header['BMAJ']
-    beam = (bmin, bmaj)
+        bpa = header['BPA']
+    beam = (bmin, bmaj, bpa)
 
     import addSPI
-    addSPI.addSPI(spi_image, spi_err, lsmname, outlsm or lsmname,
+    addSPI.addSPI(spi_image, spi_err, lsmname=lsmname, outfile=outlsm,
                   beam=beam, freq0=freq0, spitol=tol)

@@ -4,6 +4,7 @@ import numpy as np
 import Tigger
 import sys,os
 from astLib.astWCS import WCS
+from scipy import ndimage
 
 def fitsInfo(fitsname = None):
     """
@@ -35,10 +36,15 @@ def sky2px(wcs,ra,dec,dra,ddec,cell, beam):
     """convert a sky region to pixel positions"""
     dra = beam if dra<beam else dra # assume every source is at least as large as the psf
     ddec = beam if ddec<beam else ddec
-    offsetDec = (ddec/2.)/cell
-    offsetRA = (dra/2.)/cell
-    raPix,decPix = wcs.wcs2pix(ra,dec)
-    return np.array([int(raPix-offsetRA),int(raPix+offsetRA),int(decPix-offsetDec),int(decPix+offsetDec)])
+    offsetDec = int((ddec/2.)/cell)
+    offsetRA = int((dra/2.)/cell)
+    if offsetDec%2==1:
+        offsetDec += 1
+    if offsetRA%2==1:
+        offsetRA += 1
+
+    raPix,decPix = map(int, wcs.wcs2pix(ra,dec))
+    return np.array([raPix-offsetRA,raPix+offsetRA,decPix-offsetDec,decPix+offsetDec])
 
 def RemoveSourcesWithoutSPI(lsmname_in, lsmname_out):
     model = Tigger.load(lsmname_in)
@@ -96,50 +102,61 @@ def addSPI(fitsname_alpha=None, fitsname_alpha_error=None, lsmname=None,
     else:
         freq0 = freq0 or fits_alpha['freq0']
 
-    model = Tigger.load(outfile)    # load output sky model
+    model = Tigger.load(lsmname)    # load output sky model
     rad = lambda a: a*(180/np.pi) # convert radians to degrees
 
     for src in model.sources:
         ra = rad(src.pos.ra)
         dec = rad(src.pos.dec)
 
-        # Include sources within {tol} of beam major axis i.e. beam = (bmin, bmaj)
-        if np.sqrt((ra-fits_alpha["ra"])**2 + (dec-fits_alpha["dec"])**2)<beam[1]:
-            # Cater for point sources and assume source extent equal to the
-            # Gaussian major axis along both ra and dec axis
-            dra = rad(src.shape.ex) if src.shape  else beam[0]
-            ddec = rad(src.shape.ex) if src.shape  else beam[1]
-            # Determine region of interest
-            rgn = sky2px(fits_alpha["wcs"],ra,dec,dra,ddec,fits_alpha["dra"], beam[1])
+        # Cater for point sources and assume source extent equal to the
+        # Gaussian major axis along both ra and dec axis
+        dra = rad(src.shape.ex) if src.shape  else beam[0]
+        ddec = rad(src.shape.ey) if src.shape  else beam[1]
+        pa = rad(src.shape.pa) if src.shape  else beam[2]
 
-            imslice = slice(rgn[2], rgn[3]), slice(rgn[0], rgn[3])
-            alpha = image_alpha[imslice]
-            alpha_error = image_alpha_error[imslice]
-            good = np.where( np.logical_and(alpha!=0, alpha!=np.nan))
-            alpha = alpha[good]
-            alpha_error = alpha_error[good]
-            good = np.where( np.logical_and(alpha_error!=np.nan, alpha_error!=np.inf))
+        emin, emaj = sorted([dra, ddec])
+        # Determine region of interest
+        rgn = sky2px(fits_alpha["wcs"],ra,dec,dra,ddec,fits_alpha["dra"], beam[1])
+        imslice = slice(rgn[2], rgn[3]), slice(rgn[0], rgn[3])
+        alpha = image_alpha[imslice]
+        xpix, ypix = alpha.shape
+        xx, yy = np.ogrid[-xpix:xpix, -ypix:ypix]
 
-            alpha = alpha[good]
-            alpha_error = alpha_error[good]
+        emajPix = emaj/fits_alpha["dra"]
+        eminPix = emin/fits_alpha["dra"]
+        # Create elliptcal mask which has same shape as source
+        mask = ((xx/emajPix)**2 + (yy/eminPix)**2 <= 1)[xpix*2-xpix:xpix*2+xpix, ypix*2-ypix:ypix*2+ypix]
+        mask = ndimage.rotate(mask, angle=pa, order=0, reshape=False)
+        
+        draPix = dra/fits_alpha["dra"]
+        ddPix = ddec/fits_alpha["ddec"]
 
-            subIm_weight = 1/alpha_error
-            subIm_weighted = alpha*subIm_weight
+        alpha *= mask
+        alpha_error = image_alpha_error[imslice]*mask
+        good = np.where( np.logical_and(alpha!=0, alpha!=np.nan))
+        alpha = alpha[good]
+        alpha_error = alpha_error[good]
+        good = np.where( np.logical_and(alpha_error!=np.nan, alpha_error!=np.inf))
 
-            if len(subIm_weighted)>0:
-                subIm_normalization = np.sum(subIm_weight)
-                spi = float(np.sum(subIm_weighted)/subIm_normalization)
-                spi_error = 1/float(subIm_normalization)
-                if spi > spitol[0] or spi < spitol[-1]:
-                    sys.stdout.write("INFO: Adding spi: %.3f (at %.3g MHz) to source %s" % (
-                                     spi, freq0/1e6, src.name))
-                    src.spectrum = Tigger.Models.ModelClasses.SpectralIndex(spi, freq0)
-                    src.setAttribute('spi_error', spi_error)
-            else:
-                sys.stdout.write("ALERT: no spi info found in %s for source %s" % (
-                                 fitsname_alpha, src.name))
+        alpha = alpha[good]
+        alpha_error = alpha_error[good]
+
+        subIm_weight = 1/alpha_error
+        subIm_weighted = alpha*subIm_weight
+
+        if len(subIm_weighted)>0:
+            subIm_normalization = np.sum(subIm_weight)
+            spi = float(np.sum(subIm_weighted)/subIm_normalization)
+            spi_error = 1/float(subIm_normalization)
+            if spi > spitol[0] or spi < spitol[-1]:
+                sys.stdout.write("INFO: Adding spi: %.3f (at %.3g MHz) to source %s" % (
+                                 spi, freq0/1e6, src.name))
+                src.spectrum = Tigger.Models.ModelClasses.SpectralIndex(spi, freq0)
+                src.setAttribute('spi_error', spi_error)
         else:
-            sys.stdout.write("ALERT: All SPI pixels are outside the tolerance range")
+            sys.stdout.write("ALERT: no spi info found in %s for source %s" % (
+                             fitsname_alpha, src.name))
 
     model.save(outfile)
 

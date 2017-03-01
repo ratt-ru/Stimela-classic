@@ -1,129 +1,129 @@
 {
-    "task"          :   "casa_listobs",
-    "description"   :   "List the summary of a data set in the logger or in a file",
-    "base"          :   "stimela/casa",
-    "tag"           :   "0.2.3",
-    "binary"        :   "listobs",
-    "msdir"         :   true,
-    "prefix"        :   "-",
-    "parameters"    :   [
+    "task": "casa_listobs", 
+    "base": "stimela/casa", 
+    "tag": "0.2.8", 
+    "description": "List the summary of a data set in the logger or in a file", 
+    "prefix": "-", 
+    "binary": "listobs", 
+    "msdir": true, 
+    "parameters": [
         {
-            "name"      :   "msname",
-            "mapping"   :   "vis",
-            "dtype"     :   "file",
-            "io"        :   "msfile",
-            "info"      :   "Name of input visibility file",
-            "required"  :   true,
-            "default"   :   null
-        },
+            "info": "Name of input visibility file", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
         {
-            "name"      :   "listfile",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "Name of disk file to write output: ''==>to terminal",
-            "default"   :   null
-        },
+            "info": "Name of disk file to write output: ''==>to terminal", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "listfile", 
+            "io": "output"
+        }, 
         {
-            "name"      :   "overwrite",
-            "dtype"     :   "bool",
-            "info"      :   "If True, tacitly overwrite listfile if it exists.",
-            "default"   :   false
-        },
+            "info": "If True, tacitly overwrite listfile if it exists.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "overwrite"
+        }, 
         {
-            "name"      :   "selectdata",
-            "dtype"     :   "bool",
-            "info"      :   "Data selection parameters",
-            "default"   :   null
-        },
+            "info": "Data selection parameters", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "selectdata"
+        }, 
         {
-            "name"      :   "field",
-            "dtype"     :   "str",
-            "info"      :   "Field names or field index numbers. ''==>all, field='0~2,3C286'",
-            "default"   :   null
-        },
+            "info": "Field names or field index numbers. ''==>all, field='0~2,3C286'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
         {
-            "name"      :   "spw",
-            "dtype"     :   "str",
-            "info"      :   "spectral-window/frequency/channel",
-            "default"   :   null,
-        },
+            "info": "spectral-window/frequency/channel", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
         {
-            "name"      :   "antenna",
-            "dtype"     :   "str",
-            "info"      :   "Antenna/baselines: ''==>all, antenna='3,VA04'",
-            "default"   :   null
-        },
+            "info": "Antenna/baselines: ''==>all, antenna='3,VA04'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
         {
-            "name"      :   "timerange",
-            "dtype"     :   "str",
-            "info"      :   "time range: ''==>all,timerange='09:14:0~09:54:0'",
-            "default"   :   null
-        },
+            "info": "time range: ''==>all,timerange='09:14:0~09:54:0'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
         {
-            "name"      :   "correlation",
-            "dtype"     :   "str",
-            "info"      :   "Select data based on correlation",
-            "default"   :   null
-        },
+            "info": "Select data based on correlation", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "correlation"
+        }, 
         {
-            "name"      :   "scan",
-            "dtype"     :   "str",
-            "info"      :   "scan numbers: ''==>all",
-            "default"   :   null
-        },
+            "info": "scan numbers: ''==>all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
         {
-            "name"      :   "intent",
-            "dtype"     :   "str",
-            "info"      :   "Select data based on observation intent: ''==>all",
-            "default"   :   null,
-        },
+            "info": "Select data based on observation intent: ''==>all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "intent"
+        }, 
         {
-            "name"      :   "feed",
-            "dtype"     :   "str",
-            "info"      :   "Multi-feed numbers: Not yet implemented",
-            "default"   :   null
-        },
+            "info": "Multi-feed numbers: Not yet implemented", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "feed"
+        }, 
         {
-            "name"      :   "array",
-            "dtype"     :   "str",
-            "info"      :   "(sub)array numbers: ''==>all",
-            "default"   :   null
-        },
+            "info": "(sub)array numbers: ''==>all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "array"
+        }, 
         {
-            "name"      :   "uvrange",
-            "dtype"     :   "str",
-            "info"      :   "uv range: ''==>all; uvrange ='0~100klambda', default units=meters",
-            "default"   :   null
-        },
+            "info": "uv range: ''==>all; uvrange ='0~100klambda', default units=meters", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "uvrange"
+        }, 
         {
-            "name"      :   "observation",
-            "dtype"     :   "str",
-            "info"      :   "Select data based on observation ID: ''==>all",
-            "default"   :   null
-        },
+            "info": "Select data based on observation ID: ''==>all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
         {
-            "name"      :   "verbose",
-            "dtype"     :   "bool",
-            "info"      :   "Verbose output",
-            "default"   :   null
-        },
+            "info": "Verbose output", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "verbose"
+        }, 
         {
-            "name"      :   "listunfl",
-            "dtype"     :   "bool",
-            "info"      :   "List unflagged row counts? If true, it can have significant negative performance impact.",
-            "default"   :   null
-        },
+            "info": "List unflagged row counts? If true, it can have significant negative performance impact.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "listunfl"
+        }, 
         {
-            "name"      :   "cachesize",
-            "dtype"     :   "int",
-            "info"      :   "EXPERIMENTAL. Maximum size in megabytes of cache in which data structures can be held.",
-            "default"   :   null
-        },
+            "info": "EXPERIMENTAL. Maximum size in megabytes of cache in which data structures can be held.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "cachesize"
+        }, 
         {
-            "name"      :   "async",
-            "dtype"     :   "bool",
-            "info"      :   "If true the taskname must be started using listobs(...)",
-            "default"   :   null
+            "info": "If true the taskname must be started using listobs(...)", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "async"
         }
     ]
 }

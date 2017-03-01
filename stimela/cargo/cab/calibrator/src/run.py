@@ -37,6 +37,18 @@ msbase = os.path.basename(msname)[:-3]
 prefix = jdict.pop('prefix', None) or '{0}/{1}'.format(OUTPUT, msbase)
 params = {}
 
+# options for writing flags
+flagset = jdict.pop("write-flags", None)
+if flagset:
+    params["ms_sel.ms_write_flags"] = 1
+    params["ms_wfl.write_bitflag"]  = flagset
+    params["ms_sel.ms_fill_legacy_flags"] = jdict.pop("fill-legacy-flags", 1)
+    params["ms_sel.ms_write_flag_policy"] = "add to set" if jdict.pop("write-flag-policy", "add") else "replace set"
+
+# Read flags options
+params["ms_rfl.read_flagsets"] = jdict.pop("read-flagsets", "-stefcal")
+params["ms_rfl.read_legacy_flags"] = jdict.pop("read-legacy-flags", 1)
+
 params["ms_sel.msname"] = msname
 field_id = jdict.pop("field-id", 0)
 spw_id = jdict.pop("spw-id", 0)
@@ -63,7 +75,7 @@ gjones = jdict.pop("Gjones", False)
 if gjones:
 
     time_smooth, freq_smooth = params.get("Gjones-smoothing", (1,1))
-    time_int, freq_int = jdict.get("Gjones-intervals", (1,1))
+    time_int, freq_int = jdict.get("Gjones-solution-intervals", (1,1))
     mode = 'apply' if jdict.get('Gjones-apply-only', False) else 'solve-save'
 
     gjones_gains = "{0}/{1}{2}.gain.cp".format(msname, msbase, "-%s"%label if label else "")

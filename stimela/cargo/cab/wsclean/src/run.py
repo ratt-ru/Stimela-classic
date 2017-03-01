@@ -32,7 +32,7 @@ for param in params:
         if isinstance(value, (int, float)):
             value = '{0}asec'.format(value)
 
-    if name in 'size trim nwlayers-for-size beamshape'.split():
+    if name in 'size trim nwlayers-for-size beamshape channelrange interval'.split():
         if isinstance(value, int):
             value = '{0} {0}'.format(value)
         elif getattr(value, '__iter__'):

@@ -1,4 +1,4 @@
-FROM stimela/lofar:0.2.7
+FROM stimela/lofar:0.2.8
 MAINTAINER <sphemakh@gmail.com>
 
 ADD src /code

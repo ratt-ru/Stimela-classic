@@ -1,7 +1,7 @@
 {
     "task": "calibrator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.7", 
+    "tag": "0.2.8", 
     "description": "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)", 
     "prefix": " ", 
     "binary": "/usr/bin/meqtree-pipeliner.py", 
@@ -99,6 +99,40 @@
             "dtype": "int", 
             "name": "spw-id", 
             "defaut": 0
+        }, 
+        {
+            "info": "name of flagset to write new flags to", 
+            "dtype": "str", 
+            "defalt": "stefcal", 
+            "name": "write-flags"
+        }, 
+        {
+            "info": "Add or replace flagset if it already exists.", 
+            "dtype": "str", 
+            "default": "replace", 
+            "name": "write-flagset-policy", 
+            "choices": [
+                "add", 
+                "replace"
+            ]
+        }, 
+        {
+            "info": "Read legacy flags", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "read-legacy-flags"
+        }, 
+        {
+            "info": "Use existing flags from MS", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "read-flags-from-ms"
+        }, 
+        {
+            "info": "Fill legacy flags", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "fill-legacy-flags"
         }, 
         {
             "info": "Add a primary beam model", 

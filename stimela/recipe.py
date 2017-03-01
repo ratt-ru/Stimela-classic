@@ -40,7 +40,6 @@ class PipelineException(Exception):
     def remaining(self):
         return self._remaining
 
-
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
@@ -75,7 +74,6 @@ class Recipe(object):
         # add the handlers to logger
         self.log.addHandler(ch)
         self.log.addHandler(fh)
-
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -310,7 +308,7 @@ class Recipe(object):
 
 
         containers = [(step, self.containers[step-1]) for step in steps]        
-
+        
         for i, (step, container) in enumerate(containers):
             created = False
             try:
@@ -351,8 +349,9 @@ class Recipe(object):
                 if created:
                     container.stop()
                     container.remove()
-                self.proc_logger.remove('processes', self.pid)
-                self.proc_logger.write()
+
+        self.proc_logger.remove('processes', self.pid)
+        self.proc_logger.write()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)

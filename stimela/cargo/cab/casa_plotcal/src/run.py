@@ -1,7 +1,8 @@
 import os
 import sys
 import drivecasa
-casa = drivecasa.Casapy()
+import logging
+casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600*10)
 
 sys.path.append("/utils")
 import utils
@@ -23,13 +24,15 @@ for param in cab['parameters']:
 
     args[name] = value
 
-args['showgui'] = False
-
 script = ['{0}(**{1})'.format(cab['binary'], args)]
 
-out, err = casa.run_script(script, raise_on_severe=False)
-sys.stdout.write('\n'.join(out))
+def log2term(result):
+    if result[1]:
+        err = '\n'.join(result[1] if result[1] else [''])
+        failed = err.lower().find('an error occurred running task')>=0
+        if failed:
+            raise RuntimeError('CASA Task failed. See error message above')
+        sys.stdout.write('WARNING:: SEVERE messages from CASA run')
 
-if len(err)>0:
-        raise RuntimeError("Caught severe exception while running CASA task {0}. The error message is bellow \n {1}".format(cab['binary'], '\n'.join(err)))
-
+result = casa.run_script(script, raise_on_severe=False)
+log2term(result)

@@ -29,3 +29,8 @@
 - Fix noise only simulation in simulator cab. Don not look for file if skymodel is None
 - Allow user to specify gain matrix type in simulator   
 - Make custom katdal base image
+
+# 0.2.8
+- Parse G Jones solution intervals properly
+- Raise exception if user does not specify pixel size in lwimger predict mode
+- add CASA listobs, statwt, flagmanager

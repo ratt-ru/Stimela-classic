@@ -171,8 +171,15 @@ if predict:
                 hdu = _hdu[0]
             else:
                 hdu = _hdu
-            cell = '{:f}arcsec'.format(abs(hdu.header.get('CDELT1', None))*3600)
-    cell = cell or '1arcsec' 
+
+            cdelt = hdu.header.get('CDELT1', None)
+            if cdelt:
+                cell = '{:f}arcsec'.format(abs(cdelt)*3600)
+
+    if cell is None:
+        raise RuntimeError('The size of a pixel in this FITS image was not specified \
+in FITS header (CDELT1/2), or as parameter for this module ("cellsize"). Cannot proceed')
+    
     utils.xrun('python /code/predict_from_fits.py', [predict, options['ms'], cell,
                 tfile.name])
     predict_vis(msname=options['ms'], image=tfile.name, column=options.get('data','MODEL_DATA'), 

@@ -8,11 +8,11 @@
     "msdir": true, 
     "parameters": [
         {
-            "info": "MS name to be flagged", 
+            "info": "MS name(s) to be flagged", 
             "name": "msname", 
             "io": "msfile", 
             "default": false, 
-            "dtype": "file", 
+            "dtype": "list:file", 
             "required": true
         }, 
         {

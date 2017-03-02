@@ -73,11 +73,11 @@ def tigger_src(src, idx):
     name = "SRC%d"%idx
 
     flux = ModelClasses.Polarization(src["Total_flux"], 0, 0, 0, I_err=src["E_Total_flux"])
-
+    spi, spi_err = (src['Spec_Indx'], src['E_Spec_Indx'])
     ra, ra_err = map(numpy.deg2rad, (src["RA"], src["E_RA"]) )
     dec, dec_err = map(numpy.deg2rad, (src["DEC"], src["E_DEC"]) )
     pos =  ModelClasses.Position(ra, dec, ra_err=ra_err, dec_err=dec_err)
-
+    freq0 = 1.42e9
     ex, ex_err = map(numpy.deg2rad, (src["DC_Maj"], src["E_DC_Maj"]) )
     ey, ey_err = map(numpy.deg2rad, (src["DC_Min"], src["E_DC_Min"]) )
     pa, pa_err = map(numpy.deg2rad, (src["PA"], src["E_PA"]) )
@@ -86,8 +86,10 @@ def tigger_src(src, idx):
         shape = ModelClasses.Gaussian(ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
     else:
         shape = None
-
-    return SkyModel.Source(name, pos, flux, shape=shape)
+    source = SkyModel.Source(name, pos, flux, shape=shape)
+    source.spectrum = ModelClasses.SpectralIndex(spi, freq0)
+    source.setAttribute('spi_error', spi_err)
+    return source
 
 
 with pyfits.open(outfile) as hdu:

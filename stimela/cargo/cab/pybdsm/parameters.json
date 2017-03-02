@@ -466,6 +466,12 @@
             "dtype": "bool", 
             "default": true, 
             "name": "port2tigger"
+        },
+        {
+            "info": "Calculate spectral indices (for multi-channel image)",
+            "dtype": "bool",
+            "default": false,
+            "name": "spectralindex_do"
         }
     ]
 }

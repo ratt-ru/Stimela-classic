@@ -60,7 +60,7 @@ if not port2tigger:
 tfile = tempfile.NamedTemporaryFile(suffix='.txt')
 tfile.flush()
 
-prefix = outfile[:-5]
+prefix = outfile[:-9]
 tname_lsm = prefix + ".lsm.html"
 with open(tfile.name, "w") as stdw:
     stdw.write("#format:name ra_d dec_d i emaj_s emin_s pa_d\n")

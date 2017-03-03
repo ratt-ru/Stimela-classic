@@ -472,6 +472,12 @@
             "dtype": "bool",
             "default": false,
             "name": "spectralindex_do"
+        },
+        {
+            "info": "Start frequency (unit => Hz)",
+            "dtype": "float",
+            "default": null,
+            "name": "freq0"
         }
     ]
 }

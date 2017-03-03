@@ -27,6 +27,9 @@ write_catalog = ['bbs_patches', 'bbs_patches_mask',
 
 img_opts = {}
 write_opts = {}
+# Spectral fitting parameters
+freq0 = None
+spi_do = False
 
 for param in cab['parameters']:
     name = param['name']
@@ -37,8 +40,12 @@ for param in cab['parameters']:
 
     if name in write_catalog:
         write_opts[name] = value
+    elif name == 'freq0':
+        freq0 = value
     else:
         img_opts[name] = value
+        if name == 'spectralindex_do':
+            spi_do = value
 
 image = img_opts.pop('filename')
 outfile = write_opts.pop('outfile')
@@ -73,22 +80,27 @@ def tigger_src(src, idx):
     name = "SRC%d"%idx
 
     flux = ModelClasses.Polarization(src["Total_flux"], 0, 0, 0, I_err=src["E_Total_flux"])
-    spi, spi_err = (src['Spec_Indx'], src['E_Spec_Indx'])
     ra, ra_err = map(numpy.deg2rad, (src["RA"], src["E_RA"]) )
     dec, dec_err = map(numpy.deg2rad, (src["DEC"], src["E_DEC"]) )
     pos =  ModelClasses.Position(ra, dec, ra_err=ra_err, dec_err=dec_err)
-    freq0 = 1.42e9
     ex, ex_err = map(numpy.deg2rad, (src["DC_Maj"], src["E_DC_Maj"]) )
     ey, ey_err = map(numpy.deg2rad, (src["DC_Min"], src["E_DC_Min"]) )
     pa, pa_err = map(numpy.deg2rad, (src["PA"], src["E_PA"]) )
 
-    if ex and ey: 
+    if ex and ey:
         shape = ModelClasses.Gaussian(ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
     else:
         shape = None
     source = SkyModel.Source(name, pos, flux, shape=shape)
-    source.spectrum = ModelClasses.SpectralIndex(spi, freq0)
-    source.setAttribute('spi_error', spi_err)
+    if spi_do:
+        # Check if start frequency is provided if not provided raise error.
+        # It is used to define tigger source spectrum index frequency
+        if freq0:
+            spi, spi_err = (src['Spec_Indx'], src['E_Spec_Indx'])
+            source.spectrum = ModelClasses.SpectralIndex(spi, freq0)
+            source.setAttribute('spi_error', spi_err)
+        else:
+            raise RunTimeError("No start frequency (freq0) provided.")
     return source
 
 

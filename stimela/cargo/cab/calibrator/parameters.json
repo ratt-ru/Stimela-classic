@@ -70,10 +70,12 @@
             "default": null, 
             "name": "output-data", 
             "choices": [
-                "CORRECTED_RESIDUAL", 
-                "CORRECTED_DATA", 
-                "RESIDUAL_DATA", 
-                "CORR_RES"
+                "CORR_DATA", 
+                "RES", 
+                "CORR_RES",
+                "CORR_DATA_SUB", 
+                "PREDICT",
+                "DATA+PREDICT",
             ]
         }, 
         {

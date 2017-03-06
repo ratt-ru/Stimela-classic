@@ -34,3 +34,6 @@
 - Parse G Jones solution intervals properly
 - Raise exception if user does not specify pixel size in lwimger predict mode
 - add CASA listobs, statwt, flagmanager
+
+# 0.2.8
+- display correct options for output-data type [calibrator cab]

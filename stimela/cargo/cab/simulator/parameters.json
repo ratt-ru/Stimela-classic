@@ -23,6 +23,13 @@
             "io": "input"
         }, 
         {
+            "name"      :   "save-config",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "save final configuration (after all command-line arguments have been applied)",
+            "default"   :   null,
+        },
+        {
             "info": "Number of CPUs to use for  multithreading", 
             "dtype": "int", 
             "default": 2, 

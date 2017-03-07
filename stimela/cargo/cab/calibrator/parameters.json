@@ -103,7 +103,14 @@
             "dtype": "str", 
             "default": null, 
             "name": "section"
-        }, 
+        },
+        {
+            "name"      :   "correlations",
+            "dtype"     :   "str",
+            "info"      :   "Correlations to use",
+            "choices"   :   ["2x2", "2x2, diagonal terms only", "2", "1"],
+            "default"   :   "2x2"
+        },
         {
             "info": "Field ID", 
             "dtype": "int", 

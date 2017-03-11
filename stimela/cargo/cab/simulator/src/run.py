@@ -121,7 +121,7 @@ if field_center and skymodel:
     options["tiggerlsm.filename"] = tmp
 
 prefix = ['-s {}'.format(saveconf) if saveconf else ''] + ["--mt {0} -c {1} [{2}]".format(threads, tdlconf, section)]
-suffix = ["%s/Siamese/turbo-sim.py =_tdl_job_1_simulate_MS"%os.environ["MEQTREES_CATTERY_PATH"]]
+suffix = ["%s/Siamese/turbo-sim.py =_simulate_MS"%os.environ["MEQTREES_CATTERY_PATH"]]
 
 args = ["%s=%s"%(key, val) for key,val in options.iteritems()]
 utils.xrun(cab['binary'], prefix + args + suffix)

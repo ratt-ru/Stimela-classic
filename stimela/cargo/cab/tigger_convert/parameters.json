@@ -5,7 +5,7 @@
     "description": "Source finding in radio images", 
     "prefix": "--", 
     "binary": "tigger-convert", 
-    "msdir": false, 
+    "msdir": true, 
     "parameters": [
         {
             "info": "Input skymodel", 

@@ -19,12 +19,13 @@ for param in cab['parameters']:
 
     if value in [False, None]:
         continue
-
+    if name == "primary-beam":
+        value = "'{}'".format(value)
     if name == 'pa-range' and hasattr(value, '__iter__'):
         value = ','.join(value)
     if value is True:
         value = ""
-    
+
     # Positional arguments
     if name == 'input-skymodel':
         inlsm = value

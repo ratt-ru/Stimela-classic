@@ -243,14 +243,14 @@
         }, 
         {
             "info": "Rotate the primary beam pattern through a range of parallactic angles as given by the MS and take the average over time. This is more accurate than --pa-range.", 
-            "dtype": "file", 
+            "dtype": "list:file", 
             "default": null, 
             "name": "pa-from-ms", 
             "io": "msfile"
         }, 
         {
             "info": "Field ID for 'pa-from-ms' calculation", 
-            "dtype": "int", 
+            "dtype": "list:int", 
             "default": 0, 
             "name": "field-id"
         }, 

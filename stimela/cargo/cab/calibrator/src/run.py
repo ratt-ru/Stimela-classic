@@ -68,6 +68,8 @@ params["ms_sel.input_column"] = column
 params["ms_sel.output_column"] = outcol
 params["tiggerlsm.filename"] = skymodel
 params["do_output"] = jdict.pop("output-data", "CORR_RES")
+saveconf = jdict.pop('save-config', None)
+params['ms_sel.ms_corr_sel'] = "'{}'".format(jdict.pop('correlations', '2x2'))
 
 label = jdict.pop("label", None)
 
@@ -167,7 +169,7 @@ def run_meqtrees(msname):
 
     args = prefix + ["%s=%s"%(key, val) for key,val in options.iteritems()] + suffix
 
-    utils.xrun(cab['binary'], args)
+    utils.xrun(cab['binary'], args + ['-s {}'.format(saveconf) if saveconf else ''])
     
     print("MeqTrees Done!")
     # now plot the gains

@@ -70,10 +70,12 @@
             "default": null, 
             "name": "output-data", 
             "choices": [
-                "CORRECTED_RESIDUAL", 
-                "CORRECTED_DATA", 
-                "RESIDUAL_DATA", 
-                "CORR_RES"
+                "CORR_DATA", 
+                "RES", 
+                "CORR_RES",
+                "CORR_DATA_SUB", 
+                "PREDICT",
+                "DATA+PREDICT",
             ]
         }, 
         {
@@ -83,11 +85,32 @@
             "name": "threads"
         }, 
         {
+            "info": "TDL configuration file. If not specified, will use a default template", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "tdlconf", 
+            "io": "input"
+        },
+        {
+            "name"      :   "save-config",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "save final configuration (after all command-line arguments have been applied)",
+            "default"   :   null,
+        },
+        {
             "info": "Section to execute in TDL config file. Only needed if using custom TDL config", 
             "dtype": "str", 
             "default": null, 
             "name": "section"
-        }, 
+        },
+        {
+            "name"      :   "correlations",
+            "dtype"     :   "str",
+            "info"      :   "Correlations to use",
+            "choices"   :   ["2x2", "2x2, diagonal terms only", "2", "1"],
+            "default"   :   "2x2"
+        },
         {
             "info": "Field ID", 
             "dtype": "int", 

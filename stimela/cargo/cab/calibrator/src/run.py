@@ -69,7 +69,7 @@ params["ms_sel.output_column"] = outcol
 params["tiggerlsm.filename"] = skymodel
 params["do_output"] = jdict.pop("output-data", "CORR_RES")
 saveconf = jdict.pop('save-config', None)
-params['ms_sel.ms_corr_sel'] = jdict.pop('correlations', '2x2')
+params['ms_sel.ms_corr_sel'] = "'{}'".format(jdict.pop('correlations', '2x2'))
 
 label = jdict.pop("label", None)
 

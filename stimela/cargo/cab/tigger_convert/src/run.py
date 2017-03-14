@@ -11,6 +11,8 @@ OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
 cab = utils.readJson(CONFIG)
+mslist = []
+field = []
 
 args = []
 for param in cab['parameters']:
@@ -25,6 +27,12 @@ for param in cab['parameters']:
         value = ','.join(value)
     if value is True:
         value = ""
+    if name == 'pa-from-ms' and hasattr(value, '__iter__'):
+        mslist = value
+        continue
+    if name == 'field-id'and hasattr(value, '__iter__'):
+        field = value
+        continue
 
     # Positional arguments
     if name == 'input-skymodel':
@@ -36,4 +44,10 @@ for param in cab['parameters']:
 
     args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
 
-utils.xrun(cab['binary'], args+[inlsm, outlsm])
+if mslist:
+    if len(field)==0:
+        field = [0]*len(mslist)
+    pa_from_ms = ','.join(['{0}:{1}'.format(ms, i) for ms,i in zip(mslist, field)])
+    args.append('--pa-from-ms {}'.format(pa_from_ms))
+
+utils.xrun(cab['binary'], args + [inlsm, outlsm])

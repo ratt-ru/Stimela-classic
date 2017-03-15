@@ -139,16 +139,13 @@ class Recipe(object):
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
          
-
-
-        # Volumes to be mounted into the container
+        ## Volumes to be mounted into the container
         input = input or self.stimela_context.get('STIMELA_INPUT', None)
         output = output or self.stimela_context.get('STIMELA_OUTPUT', None)
 
         cont = docker.Container(image, name,
                      label=label, logger=self.log,
                      shared_memory=shared_memory, log_container=stimela.LOG_FILE)
-
         
 #        parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
 #        _cab.update(config, parameter_file_name)
@@ -164,6 +161,14 @@ class Recipe(object):
         cont.add_volume(self.stimela_path, '/utils', perm='ro')
         cont.add_volume(self.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
+
+        # First mount volumes to ensure the user logs into the container as themselves
+# --volume="/etc/group:/etc/group:ro" --volume="/etc/passwd:/etc/passwd:ro" --volume="/etc/shadow:/etc/shadow:ro"
+        # --volume="/etc/sudoers.d:/etc/sudoers.d:ro" --user=`id -ur`
+        cont.add_volume('/etc/group', '/etc/group', 'ro')
+        cont.add_volume('/etc/passwd', '/etc/passwd', 'ro')
+        cont.add_volume('/etc/shadow', '/etc/shadow', 'ro')
+        cont.add_volume('/etc/sudoers.d', '/etc/sudoers.d', 'ro')
 
         if msdir:
             md = '/home/%s/msdir'%USER
@@ -281,12 +286,15 @@ class Recipe(object):
 
                 _cab = step['cab']
                 number = step['number']
-
+                
+                # Check if the recipe flow has changed
                 if _cab == self.containers[number-1].image:
                     self.log.info('recipe step \'{0}\' is fit for re-execution. CAB = {1}'.format(number, _cab))
                     _steps.append(number)
                 else:
                     raise RuntimeError('Recipe flow, or task scheduling has changed. Cannot resume recipe. CAB= {0}'.format(_cab))
+
+            # Check whether there are steps to resume        
             if len(_steps)==0:
                 self.log.info('All the steps were completed. No steps to resume')
                 sys.exit(0)
@@ -320,10 +328,11 @@ class Recipe(object):
                 self.log.info('STEP {0} :: {1}'.format(i+1, container.label))
                 self.active = container
 
-                container.create()
+                container.create(*['--user {}'.format(UID)])
                 created = True
                 container.start()
                 self.log2recipe(container, recipe, step, 'completed')
+
             except BaseException as e:
                 self.completed = [cont[1] for cont in containers[:i]]
                 self.remaining = [cont[1] for cont in containers[i+1:]]
@@ -344,6 +353,7 @@ class Recipe(object):
                 pe = PipelineException(e, self.completed, container, self.remaining)
 
                 raise pe, None, sys.exc_info()[2]
+
             finally:
                 container.get_log()
                 if created:

@@ -95,11 +95,9 @@ def build(argv):
         return 0
 
     workdir = "/home/{}/output/".format(USER)
-    build_args = ["RUN groupadd -g {:d} {:s}".format(UID, USER),
-                  "RUN useradd -u {:d} -g {:d} {:s}".format(UID, UID, USER),
+    build_args = [
                   "WORKDIR {:s}".format(workdir),
-                  "ENV HOME {:s}".format(USER),
-                  "USER {:s}".format(USER)]
+                  ]
 
     no_cache = ["--no-cache"] if args.no_cache else []
 

@@ -29,7 +29,7 @@
             "info": "File that contains antenna coordinates", 
             "dtype": "file", 
             "default": null, 
-            "name": "antenna-file", 
+            "name": "antenna-file",
             "io": "input"
         }, 
         {

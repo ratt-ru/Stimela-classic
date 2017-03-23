@@ -267,6 +267,13 @@
             "name": "Gjones-apply-only"
         }, 
         {
+            "name"      :   "Gjones-gain-table",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "G Jones gain table file name",
+            "default"   :   "default will based on the MS basename",
+        },
+        {
             "info": "Enable direction dependent calibration", 
             "dtype": "bool", 
             "default": false, 
@@ -346,6 +353,13 @@
             "name": "DDjones-apply-only"
         }, 
         {
+            "name"      :   "DDjones-gain-table",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "DD Jones gain table file name",
+            "default"   :   "default will based on the MS basename",
+        },
+        {
             "info": "Enable interferometer based gain solutions", 
             "dtype": "bool", 
             "default": false, 
@@ -358,10 +372,23 @@
             "name": "IFRjones-apply-only"
         },
         {
+            "name"      :   "IFRjones-gain-table",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "IFR Jones gain table file name",
+            "default"   :   "default will based on the MS basename",
+        },
+        {
             "info": "Size of tile (time bins) to process. Can be used to reduce memory footprint",
             "dtype": "int",
             "default": 1,
             "name": "tile-size"
+        },
+        {
+            "info": "TaQL selction string",
+            "dtype": "str",
+            "default": null,
+            "name": "data-selection"
         }
     ]
 }

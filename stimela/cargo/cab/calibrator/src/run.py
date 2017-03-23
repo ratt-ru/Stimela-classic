@@ -81,7 +81,7 @@ if gjones:
     time_int, freq_int = jdict.get("Gjones-solution-intervals", (1,1))
     mode = 'apply' if jdict.get('Gjones-apply-only', False) else 'solve-save'
 
-    gjones_gains = "{0}/{1}{2}.gain.cp".format(msname, msbase, "-%s"%label if label else "")
+    gjones_gains = jdict.pop('Gjones-gain-table', None) or "{0}/{1}{2}.gain.cp".format(OUTPUT, msbase, "-%s"%label if label else "")
     params.update( {
         "stefcal_gain.mode" : mode, 
         "stefcal_gain.implementation" : jones_type,
@@ -119,7 +119,7 @@ if ddjones:
 
     mode = 'apply' if jdict.get('DDjones-apply-only', False) else 'solve-save'
 
-    ddjones_gains = "{0}/{1}{2}.diffgain.cp".format(msname, msbase, "-%s"%label if label else "")
+    ddjones_gains = jdict.pop('DDjones-gain-table', None) or "{0}/{1}{2}.diffgain.cp".format(OUTPUT, msbase, "-%s"%label if label else "")
     params.update({
         "stefcal_diffgain.enabled" : 1,
         "stefcal_diffgain.flag_ampl" : 0,
@@ -142,7 +142,7 @@ if ddjones:
 
 ifrjones = jdict.pop("DDjones", False)
 if ifrjones:
-    ifrjones_gains = "{0}/{1}{2}.ifrgain.cp".format(msname, msbase, "-%s"%label if label else "")
+    ifrjones_gains = jdict.pop('IFRjones-gain-table', None) or "{0}/{1}{2}.ifrgain.cp".format(OUTPUT, msbase, "-%s"%label if label else "")
     mode = 'apply' if jdict.get('IFRjones-apply-only', False) else 'solve-save'
 
     params.update({
@@ -158,6 +158,7 @@ gjones_plotprefix = prefix+"-gjones_plots"
 ddjones_plotprefix = prefix+"-ddjones_plots"
 ifrjones_plotprefix = prefix+"-ifrjones_plots"
 
+
 def run_meqtrees(msname):
 
     prefix = ["--mt %d -c %s [%s]"%(THREADS, TDL, SECTION)]
@@ -168,8 +169,12 @@ def run_meqtrees(msname):
         options["read_ms_model"] = 1
         options["ms_sel.model_column"] = "MODEL_DATA"
 
-    args = prefix + ["%s=%s"%(key, val) for key,val in options.iteritems()] + suffix
+    taql = jdict.get('data-selection', None)
+    if taql:
+        options["ms_sel.ms_taql_str"] = taql
 
+    args = prefix + ["%s=%s"%(key, val) for key,val in options.iteritems()] + suffix
+    
     utils.xrun(cab['binary'], args + ['-s {}'.format(saveconf) if saveconf else ''])
     
     print("MeqTrees Done!")

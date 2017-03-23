@@ -1,0 +1,43 @@
+{
+    "task": "visfilter", 
+    "base": "stimela/meqtrees", 
+    "tag": "0.2.8", 
+    "description": "Apply weights to uv-coords to filter out visibilities corresponding to a specific resolution range", 
+    "prefix": "--", 
+    "binary": "inner_taper.py", 
+    "msdir": "true", 
+    "parameters": [
+        {
+            "name"      :   "msname",
+            "dtype"     :   "file",
+            "io"        :   "msfile",
+            "info"      :   "MS name",
+            "default"   :   null
+        },
+        {
+            "name"      :   "min-max-resolution",
+            "dtype"     :   "list:float",
+            "info"      :   "Comma sep minimum and maximum resolution in arcsec",
+            "default"   :   null
+        },
+        {
+            "name"      :   "frequency",
+            "dtype"     :   "float",
+            "info"      :   "Frequency in Hz",
+            "default"   :   1.4e6
+        },
+        {
+            "name"      :   "reset-weights",
+            "dtype"     :   "bool",
+            "info"      :   "Rest weights to unity",
+            "default"   :   null
+        },
+        {
+            "name"      :   "save-figure",
+            "dtype"     :   "file",
+            "io"        :   "output",
+            "info"      :   "Save a figure of the weights",
+            "default"   :   null
+        }
+    ]
+}

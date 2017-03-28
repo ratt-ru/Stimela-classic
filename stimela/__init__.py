@@ -112,7 +112,7 @@ def build(argv):
 
         image = "{:s}_cab/{:s}".format(USER, cab)
 
-        docker.build(cab,
+        docker.build(image,
                      path,
                      build_args=build_args, args=no_cache)
 

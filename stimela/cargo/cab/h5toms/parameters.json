@@ -70,16 +70,10 @@
             "name": "stop-w"
         }, 
         {
-            "info": "Produce a Stokes I MeasurementSet using only HH", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "HH"
-        }, 
-        {
-            "info": "Produce a Stokes I MeasurementSet using only VV", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "VV"
+            "info": "Select polarization products to include in MS from HH,VV,HV,VH is all available from HH,VV", 
+            "dtype": "str", 
+            "default": "HH,VV", 
+            "name": "pols-to-use"
         }, 
         {
             "info": "Print command to convert MS to miriad uvfits in casapy", 

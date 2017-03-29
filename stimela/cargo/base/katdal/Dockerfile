@@ -23,19 +23,24 @@ ENV PACKAGES \
 
 # Install packages
 RUN docker-apt-install $PACKAGES
+RUN docker-apt-install python-casacore
+RUN pip install git+https://github.com/ska-sa/katdal.git@single_pol
+RUN docker-apt-install wget
+RUN wget https://raw.githubusercontent.com/ska-sa/katdal/master/blank.ms.tgz
+RUN mkdir /var/kat && mkdir /var/kat/static && tar -xvf blank.ms.tgz -C /var/kat/static/
 
-# Install custom branch of casacore
-RUN git clone --depth 1 https://github.com/sjperkins/casacore.git -b expose-record-to-tabledesc-static-members /src/casacore && \
-    mkdir -p /src/casacore/build && \
-    cd /src/casacore/build && \
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && \
-    make && \
-    make install && \
-    cd / && \
-    rm -rf /src
-
-# Install custom branch of python-casacore
-RUN pip install git+https://github.com/sjperkins/python-casacore.git@create-default-ms#egg=python-casacore
-
-# Install custom branch of katdal
-RUN pip  install git+https://github.com/sjperkins/katdal.git@use-python-casacore-ms-creation#egg=katdal
+## Install custom branch of casacore
+#RUN git clone --depth 1 https://github.com/sjperkins/casacore.git -b expose-record-to-tabledesc-static-members /src/casacore && \
+#    mkdir -p /src/casacore/build && \
+#    cd /src/casacore/build && \
+#    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && \
+#    make && \
+#    make install && \
+#    cd / && \
+#    rm -rf /src
+#
+## Install custom branch of python-casacore
+#RUN pip install git+https://github.com/sjperkins/python-casacore.git@create-default-ms#egg=python-casacore
+#
+## Install custom branch of katdal
+#RUN pip  install git+https://github.com/sjperkins/katdal.git@use-python-casacore-ms-creation#egg=katdal

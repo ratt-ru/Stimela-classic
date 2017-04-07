@@ -27,7 +27,8 @@
                 "quack", 
                 "shadow", 
                 "elevation", 
-                "tfcrop", 
+                "tfcrop",
+                "rflag",
                 "extend", 
                 "unflag", 
                 "summary"

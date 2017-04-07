@@ -63,7 +63,7 @@
             "info": "Force or disable reordering of Measurement Set. This can be faster when the measurement set needs to be iterated several times, such as with many major iterations or in channel imaging mode. If unspecified will only be enabled in channel imaging mode", 
             "dtype": "bool", 
             "default": null, 
-            "name": "reoder"
+            "name": "reorder"
         }, 
         {
             "info": "Save model data in model data column after imaging. It can save time not to update the model data column.", 

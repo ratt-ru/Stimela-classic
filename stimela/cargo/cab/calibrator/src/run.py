@@ -84,6 +84,7 @@ if gjones:
     gjones_gains = "{0}/{1}{2}.gain.cp".format(msname, msbase, "-%s"%label if label else "")
     params.update( {
         "stefcal_gain.mode" : mode, 
+        "stefcal_gain.reset" : 0 if mode=="apply" else 1,
         "stefcal_gain.implementation" : jones_type,
         "tiggerlsm.lsm_subset"  : jdict.get("subset", "all"),
         "stefcal_gain.timeint"  : time_int,
@@ -122,6 +123,7 @@ if ddjones:
     ddjones_gains = "{0}/{1}{2}.diffgain.cp".format(msname, msbase, "-%s"%label if label else "")
     params.update({
         "stefcal_diffgain.enabled" : 1,
+        "stefcal_diffgain.reset" : 0 if mode=="apply" else 1,
         "stefcal_diffgain.flag_ampl" : 0,
         "stefcal_diffgain.flag_chisq" : 1,
         "stefcal_diffgain.flag_chisq_threshold" : 5,
@@ -149,6 +151,7 @@ if ifrjones:
         "stefcal_ifr_gain_mode" : mode,
         "stefcal_ifr_gains" : 1,
         "stefcal_ifr_gain_reset" : 0 if mode=="apply" else 1,
+        "stefcal_reset_ifr_gains" : 0 if mode=="apply" else 1,
         "stefcal_ifr_gain.table" : ifrjones_gains,
     })
 

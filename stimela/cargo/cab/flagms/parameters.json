@@ -9,7 +9,7 @@
     "parameters": [
         {
             "info": "Name of MS to be flagged", 
-            "dtype": "file", 
+            "dtype": "list:file", 
             "default": null, 
             "name": "msname", 
             "io": "msfile"
@@ -141,7 +141,12 @@
             "dtype": "bool", 
             "default": false, 
             "name": "extend-all-corr"
-        }, 
+        },
+        {
+            "name"      :   "create",
+            "dtype"     :   "bool",
+            "info"      :   "for 'flag' option only: if a named flagset doesn't exist, creates it. Without this option, an error is reported",
+        },
         {
             "info": "Raise the specified FLAGS", 
             "dtype": "str", 

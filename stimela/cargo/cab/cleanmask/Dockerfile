@@ -1,6 +1,5 @@
 FROM stimela/astropy:0.2.8
 MAINTAINER <sphemakh@gmail.com>
-
 ADD src /code
-
-CMD python /code/run.py
+ENV LOGFILE ${OUTPUT}/logfile.txt
+CMD python /code/run.py 2>&1 | tee -a $LOGFILE ; (exit ${PIPESTATUS})

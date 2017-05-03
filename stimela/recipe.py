@@ -7,6 +7,7 @@ from stimela.cargo import cab
 import logging
 import inspect
 import re
+from stimela_misc import version
 
 USER = os.environ["USER"]
 UID = os.getuid()
@@ -104,6 +105,9 @@ class Recipe(object):
         self.proc_logger.log_process(self.pid, self.name)
         self.proc_logger.write()
 
+        self.log.info('Stimlela version {0}'.format(version.version))
+        self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
+        self.log.info('')
 
     def add(self, image, name=None, config=None,
             input=None, output=None, msdir=None,
@@ -199,16 +203,18 @@ class Recipe(object):
 
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, '/input'))
 
-        if output:
-            if not os.path.exists(output):
-                os.mkdir(output)
-            od = '/home/%s/output'%USER
-            cont.add_volume(output, od)
-            cont.add_environ('OUTPUT', od)
-            cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
+        if not os.path.exists(output):
+            os.mkdir(output)
+
+        od = '/home/%s/output'%USER
+        cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
+        cont.add_volume(output, od)
+        cont.add_environ('OUTPUT', od)
+        cont.add_environ('LOGFILE', '{0}/log-{1}.txt'.format(od, name.split('-')[0]))
+        self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
         cont.image = '{0}_{1}'.format(USER, image)
+        self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(cont.image, name))
         self.containers.append(cont)
 
@@ -244,6 +250,7 @@ class Recipe(object):
             "steps"     :   []
         }
         start_at = 0
+
 
         if redo:
             recipe = utils.readJson(redo)
@@ -355,7 +362,7 @@ class Recipe(object):
                 raise pe, None, sys.exc_info()[2]
 
             finally:
-                container.get_log()
+                #container.get_log()
                 if created:
                     container.stop()
                     container.remove()

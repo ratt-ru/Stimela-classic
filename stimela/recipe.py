@@ -7,6 +7,7 @@ from stimela.cargo import cab
 import logging
 import inspect
 import re
+from stimela.dismissable import dismissable
 from stimela_misc import version
 
 USER = os.environ["USER"]
@@ -156,6 +157,15 @@ class Recipe(object):
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
         cont.parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
+        # Remove dismissable kw arguments:
+        ops_to_pop = []
+        for op in config:
+            if isinstance(config[op], dismissable):
+                ops_to_pop.append(op)
+        for op in ops_to_pop:
+            arg = config.pop(op)()
+            if arg is not None:
+                config[op] = arg
         cont.config = config
 
         # These are standard volumes and

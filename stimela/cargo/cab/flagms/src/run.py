@@ -30,6 +30,8 @@ for param in cab['parameters']:
     
     if name == 'msname':
         msname = value
+        if isinstance(msname, str):
+            msname = [msname]
         continue
 
     if name=='flagged-any':
@@ -38,4 +40,4 @@ for param in cab['parameters']:
 
     args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
 
-utils.xrun(cab['binary'], args+[msname])
+utils.xrun(cab['binary'], args+msname)

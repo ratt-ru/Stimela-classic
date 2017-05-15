@@ -8,6 +8,7 @@ import logging
 import inspect
 import re
 from stimela.dismissable import dismissable
+from stimela_misc import version
 
 USER = os.environ["USER"]
 UID = os.getuid()
@@ -67,7 +68,7 @@ class Recipe(object):
         fh.setLevel(logging.DEBUG)
         # create console handler with a higher log level
         ch = logging.StreamHandler(sys.stdout)
-        ch.setLevel(logging.ERROR)
+        ch.setLevel(getattr(logging, loglevel))
         # create formatter and add it to the handlers
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
@@ -105,6 +106,10 @@ class Recipe(object):
         self.proc_logger.log_process(self.pid, self.name)
         self.proc_logger.write()
 
+        self.log.info('---------------------------------')
+        self.log.info('Stimlela version {0}'.format(version.version))
+        self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
+        self.log.info('---------------------------------')
 
     def add(self, image, name=None, config=None,
             input=None, output=None, msdir=None,
@@ -148,8 +153,6 @@ class Recipe(object):
                      label=label, logger=self.log,
                      shared_memory=shared_memory, log_container=stimela.LOG_FILE)
         
-#        parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
-#        _cab.update(config, parameter_file_name)
         
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -172,9 +175,6 @@ class Recipe(object):
         cont.add_volume(self.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 
-        # First mount volumes to ensure the user logs into the container as themselves
-# --volume="/etc/group:/etc/group:ro" --volume="/etc/passwd:/etc/passwd:ro" --volume="/etc/shadow:/etc/shadow:ro"
-        # --volume="/etc/sudoers.d:/etc/sudoers.d:ro" --user=`id -ur`
         cont.add_volume('/etc/group', '/etc/group', 'ro')
         cont.add_volume('/etc/passwd', '/etc/passwd', 'ro')
         cont.add_volume('/etc/shadow', '/etc/shadow', 'ro')
@@ -209,14 +209,15 @@ class Recipe(object):
 
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, '/input'))
 
-        if output:
-            if not os.path.exists(output):
-                os.mkdir(output)
-            od = '/home/%s/output'%USER
-            cont.add_volume(output, od)
-            cont.add_environ('OUTPUT', od)
-            cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
+        if not os.path.exists(output):
+            os.mkdir(output)
+
+        od = '/home/%s/output'%USER
+        cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
+        cont.add_volume(output, od)
+        cont.add_environ('OUTPUT', od)
+        cont.add_environ('LOGFILE', '{0}/log-{1}.txt'.format(od, name.split('-')[0]))
+        self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
         cont.image = '{0}_{1}'.format(USER, image)
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(cont.image, name))
@@ -254,6 +255,7 @@ class Recipe(object):
             "steps"     :   []
         }
         start_at = 0
+
 
         if redo:
             recipe = utils.readJson(redo)
@@ -340,6 +342,14 @@ class Recipe(object):
 
                 container.create(*['--user {}'.format(UID)])
                 created = True
+                with open(container.logfile, 'a') as astd:
+                    astd.write('\n-----------------------------------\n')
+                    astd.write('Stimela version     : {}\n'.format(version.version))
+                    astd.write('Cab name            : {}\n'.format(container._cab.task))
+                    astd.write('Cab base            : {}\n'.format(container._cab.base))
+                    astd.write('Cab tag             : {}\n'.format(container._cab.tag))
+                    astd.write('-------------------------------------\n')
+
                 container.start()
                 self.log2recipe(container, recipe, step, 'completed')
 
@@ -365,7 +375,6 @@ class Recipe(object):
                 raise pe, None, sys.exc_info()[2]
 
             finally:
-                container.get_log()
                 if created:
                     container.stop()
                     container.remove()

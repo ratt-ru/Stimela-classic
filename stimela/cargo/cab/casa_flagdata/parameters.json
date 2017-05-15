@@ -27,7 +27,8 @@
                 "quack", 
                 "shadow", 
                 "elevation", 
-                "tfcrop", 
+                "tfcrop",
+                "rflag",
                 "extend", 
                 "unflag", 
                 "summary"
@@ -432,6 +433,66 @@
             "dtype": "bool", 
             "default": false, 
             "name": "async"
+        },
+        {
+            "name"      :   "winsize",
+            "dtype"     :   "int",
+            "info"      :   "Number of timesteps in the sliding time window [aips:fparm(1)]",
+            "default"   :   3
+        },
+        {
+            "name"      :   "timedev",
+            "dtype"     :   "float",
+            "info"      :   "Time-series noise estimate : [aips:noise]",
+            "default"   :   null
+        },
+        {
+            "name"      :   "freqdev",
+            "dtype"     :   "float",
+            "info"      :   "Spectral noise estimate : [aips:scutoff]",
+            "default"   :   null
+        },
+        {
+            "name"      :   "timedevscale",
+            "dtype"     :   "float",
+            "info"      :   "Threshold scaling for timedev : [aips:fparm(9)] ",
+            "default"   :   5.0
+        },
+        {
+            "name"      :   "freqdevscale",
+            "dtype"     :   "float",
+            "info"      :   "Threshold scaling for freqdev : [aips:fparm(10)]",
+            "default"   :   5.0
+        },
+        {
+            "name"      :   "spectralmax",
+            "dtype"     :   "float",
+            "info"      :    "Flag whole spectrum if freqdev is greater than spectralmax",
+            "default"   :   1000000.0
+        },
+        {
+            "name"      :   "spectralmin",
+            "dtype"     :   "float",
+            "info"      :   "Flag whole spectrum if freqdev is less than spectralmin : [aips:fparm(5)]",
+            "default"   :   0.0
+        },
+        {
+            "name"      :   "chanbin",
+            "dtype"     :   "int",
+            "info"      :   "Bin width for channel average in number of input channels",
+            "default"   :   1
+        },
+        {
+            "name"      :   "timeavg",
+            "dtype"     :   "bool",
+            "info"      :   "Pre-average data across time before analyzing visibilities for flagging.",
+            "default"   :   false
+        },
+        {
+            "name"      :   "timebin",
+            "dtype"     :   "int",
+            "info"      :   "Bin width for time average in seconds",
+            "default"   :   1
         }
     ]
 }

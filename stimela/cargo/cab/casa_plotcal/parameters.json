@@ -171,6 +171,12 @@
             "dtype": "bool", 
             "default": false, 
             "name": "asynch"
+        },
+        {
+            "name" : "showgui",
+            "info" : "Show plot on gui",
+            "dtype": "bool",
+            "default": false
         }
     ]
 }

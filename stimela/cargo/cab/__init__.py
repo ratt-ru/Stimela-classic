@@ -126,13 +126,13 @@ class CabDefinition(object):
             parameters0 = cab["parameters"]
             self.parameters = []
             
-
+            import sys
             for param in parameters0:
                 default = param.get("default", param.get("value", None))
                 addme = Parameter(name=param["name"],
                         dtype=param["dtype"],
                         io=param.get("io", None),
-                        info=param.get("info", "No documentation. Bad! Very bad..."),
+                        info=param.get("info", None) or "No documentation. Bad! Very bad...",
                         default=default,
                         mapping=param.get("mapping", None),
                         #delimiter=param.get("delimiter", None),

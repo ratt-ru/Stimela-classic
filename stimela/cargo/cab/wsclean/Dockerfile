@@ -1,4 +1,4 @@
-FROM stimela/wsclean:0.2.3
+FROM stimela/wsclean:dev
 MAINTAINER <sphemakh@gmail.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

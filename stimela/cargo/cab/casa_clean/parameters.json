@@ -431,7 +431,9 @@
             "choices": [
                 "natural", 
                 "uniform", 
-                "briggs"
+                "briggs",
+                "radial",
+                "superuniform"
             ]
         }, 
         {

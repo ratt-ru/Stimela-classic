@@ -87,6 +87,13 @@
             "name": "tolerance"
         }, 
         {
+            "info": "Clip image based on this fraction of the peak pixel in the image. Will ingore sigma option", 
+            "dtype": "float", 
+            "default": null, 
+            "required": false, 
+            "name": "peak-fraction"
+        }, 
+        {
             "info": "Log level", 
             "dtype": "str", 
             "default": "INFO", 

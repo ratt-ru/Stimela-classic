@@ -169,7 +169,7 @@ def get_cabs(logfile):
     
     # Remove images that are not cabs
     for key in cabs_.keys():
-        if not cabs[key]['CAB']:
+        if not cabs_[key]['CAB']:
             del cabs_[key]
 
     return cabs_
@@ -181,8 +181,8 @@ def info(cabdir, header=False):
 
     # First check if cab exists
     pfile = "{}/parameters.json".format(cabdir)
-    if not sys.path.exists(pfile):
-        raise RuntimeError("Cab could not be found")
+    if not os.path.exists(pfile):
+        raise RuntimeError("Cab could not be found at : {}".format(cabdir))
     # Get cab info
     cab_definition = cab.CabDefinition(parameter_file=pfile)
     cab_definition.display(header)
@@ -210,27 +210,31 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
     logfile = '{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label)
 
     cabs_ = get_cabs(logfile)
+    if cabs_:
+        pass
+    else:
+        print('No cab images found, did you run \'stimela build\'')
+        sys.exit(0)
 
     if args.cab_doc:
         name = '{0:s}_{1:s}'.format(args.build_label, args.cab_doc)
-        cabdir = cabs_[name]
+        cabdir = cabs_[name]['DIR']
         info(cabdir)
 
     elif args.list:
         _cabs = []
         for cab in cabs_:
             # strip away the label
-            name = cabs_.split('{}_'.format(args.build_label))[1]
+            name = cab.split('{}_'.format(args.build_label))[1]
             _cabs.append(name)
         # print them cabs
-        print( ','.join(_cabs) )
+        print( ',  '.join(_cabs) )
 
     elif args.list_summary:
-        for cab in cabs_.itervalues():
-            if not cab['CAB']:
+        for key,val in cabs_.iteritems():
+            if not val['CAB']:
                 continue
-            name = '{0:s}_{1:s}'.format(args.build_label, args.cab_doc)
-            cabdir = cabs_[name]
+            cabdir = cabs_[key]['DIR']
             try:
                 info(cabdir, header=True)
             except IOError:
@@ -264,12 +268,15 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
             help="Global variables to pass to script. The type is assumed to string unless specified")
 
+    add("-bl", "--build-label", default=USER,
+            help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
+
     args = parser.parse_args(argv)
     tag =  None
 
-    _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output,
-                    STIMELA_MSDIR=args.msdir,
-                    CAB_TAG=tag)
+    _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
+                    _STIMELA_MSDIR=args.msdir,
+                    CAB_TAG=tag, _STIMELA_BUILD_LABEL=args.build_label)
 
     nargs = len(args.globals)
 

@@ -35,5 +35,8 @@
 - Raise exception if user does not specify pixel size in lwimger predict mode
 - add CASA listobs, statwt, flagmanager
 
-# 0.2.8
+# 0.2.9
 - display correct options for output-data type [calibrator cab]
+- Improve logging system
+- Custom cabs can now don't need to be in stimela/cargo/cab
+- Various fixes to minor bugs. Especiallly in casa_flagdata cab

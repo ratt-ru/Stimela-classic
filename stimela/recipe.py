@@ -45,7 +45,7 @@ class PipelineException(Exception):
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
-                 tag=None, loglevel='INFO'):
+                 tag=None, build_label=None, loglevel='INFO'):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -82,6 +82,7 @@ class Recipe(object):
         self.stimela_path = os.path.dirname(docker.__file__)
 
         self.name = name
+        self.build_label = build_label
         self.ms_dir = ms_dir
         if not os.path.exists(self.ms_dir):
             self.log.info('MS directory \'{}\' does not exist. Will create it'.format(self.ms_dir))
@@ -113,7 +114,7 @@ class Recipe(object):
 
     def add(self, image, name=None, config=None,
             input=None, output=None, msdir=None,
-            label=None, shared_memory='1gb'):
+            label=None, shared_memory='1gb', build_label=None):
         """
         Add a task to a stimela recipe
 
@@ -137,6 +138,8 @@ class Recipe(object):
         parameter_file = '{0}/{1}/parameters.json'.format(CAB_PATH, image.split('/')[-1].split(':')[0])
         msdir = msdir or self.ms_dir
         
+        build_label = build_label or self.build_label
+
         if name is None:
             name = '{0}_{1}-{2}{3}'.format(USER, image, id(image), str(time.time()).replace('.', ''))
         else:
@@ -146,8 +149,10 @@ class Recipe(object):
                     msdir=msdir, parameter_file=parameter_file)
          
         ## Volumes to be mounted into the container
-        input = input or self.stimela_context.get('STIMELA_INPUT', None)
-        output = output or self.stimela_context.get('STIMELA_OUTPUT', None)
+        input = input or self.stimela_context.get('_STIMELA_INPUT', None)
+        output = output or self.stimela_context.get('_STIMELA_OUTPUT', None)
+        msdir = msdir or self.stimela_context.get('_STIMELA_MSDIR', None)
+        build_label = build_label or self.stimela_context.get('_STIMELA_BUILD_LABEL', USER)
 
         cont = docker.Container(image, name,
                      label=label, logger=self.log,
@@ -219,7 +224,7 @@ class Recipe(object):
         cont.add_environ('LOGFILE', '{0}/log-{1}.txt'.format(od, name.split('-')[0]))
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
-        cont.image = '{0}_{1}'.format(USER, image)
+        cont.image = '{0}_{1}'.format(build_label, image)
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(cont.image, name))
         self.containers.append(cont)
 

@@ -9,7 +9,8 @@
     "parameters": [
         {
             "info": "Input sky model", 
-            "name": "input-skymodel", 
+            "mapping": "input-skymodel", 
+            "name"  :   "skymodel",
             "io": "input", 
             "default": null, 
             "dtype": "file", 

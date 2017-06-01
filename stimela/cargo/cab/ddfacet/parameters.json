@@ -1,0 +1,143 @@
+{
+    "task": "ddfacet", 
+    "base": "stimela/ddfacet", 
+    "tag": "0.2.9", 
+    "description": "DDFacet: a facet-based imager", 
+    "prefix": "--", 
+    "binary": "DDF.py", 
+    "msdir": "true", 
+    "parameters": [
+        {
+            "info": "Name(s) of database to image",
+            "name": "Data-MS",
+            "default": null,
+            "dtype": "list:file",
+            "required": false,
+        },
+        {
+            "info": "ColName to image",
+            "name": "Data-ColName",
+            "default": "DATA",
+            "dtype": "str",
+            "required": false, 
+            "choises":["DATA",
+                       "CORRECTED_DATA",
+                       "MODEL_DATA"]
+        },
+        {
+            "info": "Chunk data into time bins of x hours to conserve memory",
+            "name": "Data-ChunkHours",
+            "default": 0,
+            "dtype": "float",
+            "required": false, 
+        },
+        {
+            "info": "Sort the data by baseline-time order internally. Can improve processing speed",
+            "name": "Data-Sort",
+            "default": false,
+            "dtype": "bool",
+            "required": false, 
+        },
+        {
+            "info": "MS column to write predict to. Can be left empty to disable",
+            "name": "Predict-ColName",
+            "default": null,
+            "dtype": "str",
+            "required": false,
+            "choises":["DATA",
+                       "CORRECTED_DATA",
+                       "MODEL_DATA"]
+        },
+        {
+            "info": "Use this field if you want to predict (in/out)side a square region. Syntax is (MaskOutSide,NpixInside). For example setting (0,1000) will predict the outer (1000x1000) square only",
+            "name": "Predict-MaskSquare",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "In --Image-Mode=Predict, will predict data from this image, rather than --Data-InitDicoModel",
+            "name": "Predict-FromImage",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "Resume deconvolution from given DicoModel",
+            "name": "Predict-InitDicoModel",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "Allow overwriting of predict column",
+            "name": "Predict-Overwrite",
+            "default": true,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Default FIELD_ID to read",
+            "name": "Selection-Field",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Default DATA_DESC_ID to read",
+            "name": "Selection-DDID",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Additional TaQL selection string",
+            "name": "Selection-TaQL",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "First channel",
+            "name": "Selection-ChanStart",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Last channel+1, -1 means up and including last channel",
+            "name": "Selection-ChanEnd",
+            "default": -1,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "List of antennas to be flagged, e.g. 'RS,CS017LBA'",
+            "name": "Selection-FlagAnts",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Select baseline range km_min,km_max",
+            "name": "Selection-UVRangeKm",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Select time range, in hours, since start of MS. Format H0,H1",
+            "name": "Selection-TimeRange",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Select antennas by specifying a maximum distance to core",
+            "name": "Selection-DistMaxToCore",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+    ]
+}

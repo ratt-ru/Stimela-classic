@@ -217,7 +217,7 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
         sys.exit(0)
 
     if args.cab_doc:
-        name = '{0:s}_{1:s}'.format(args.build_label, args.cab_doc)
+        name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
         cabdir = cabs_[name]['DIR']
         info(cabdir)
 

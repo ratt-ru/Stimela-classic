@@ -1,5 +1,6 @@
 FROM stimela/base:0.2.9
 RUN docker-apt-install meqtrees time
+RUN pip install astropy
 RUN pip install --upgrade git+https://github.com/SpheMakh/owlcat
 RUN pip install --upgrade git+https://github.com/ska-sa/tigger
 RUN pip install --upgrade git+https://github.com/ska-sa/meqtrees-cattery

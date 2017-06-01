@@ -405,6 +405,31 @@
             "name": "auto-threshold"
         }, 
         {
+            "name": "auto-mask",
+            "info": "Construct a mask from found components and when a threshold of sigma is reached, continue cleaning with the mask down to the normal threshold.",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "rms-background",
+            "info": "Instead of using a single RMS for auto thresholding/masking, use a spatially varying RMS image",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "rms-background-window",
+            "info": "Size of window for creating the RMS background map, in number of PSFs.",
+            "dtype": "int",
+            "default": 25
+        },
+        {
+            "name": "rms-background-method",
+            "info": "Either 'rms' (default, uses sliding window RMS) or 'rms-with-min' (use max(window rms,1.5/5window min))",
+            "dtype": "str",
+            "choices": ["rms","rms-with-min"],
+            "default": "rms"
+        },
+        {
             "info": "Cleaning gain: Ratio of peak that will be subtracted in each iteration", 
             "dtype": "float", 
             "default": 0.1, 

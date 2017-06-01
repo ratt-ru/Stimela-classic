@@ -1,8 +1,6 @@
-FROM kernsuite/base:2
+FROM stimela/base:0.2.9
 
-RUN docker-apt-install git \
-        python \
-        python-pip \
+RUN docker-apt-install python \
         qt5-qmake \
         qt5-default \
         gfortran \
@@ -12,7 +10,6 @@ RUN pip install numpy \
         scipy \
         matplotlib \
         astropy
-RUN pip install pyyaml
 
 RUN git clone https://github.com/SoFiA-Admin/SoFiA /build/sofia
 RUN cd /build/sofia && python setup.py install

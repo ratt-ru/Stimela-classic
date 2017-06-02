@@ -35,13 +35,13 @@ for param in params:
     if name in 'size trim nwlayers-for-size beamshape channelrange interval'.split():
         if isinstance(value, int):
             value = '{0} {0}'.format(value)
-        elif getattr(value, '__iter__'):
+        elif getattr(value, '__iter__', False):
             if len(value) == 1:
                 value.append( value[0])
             value = ' '.join(map(str, value))
 
     if name in 'spws multiscale-scales pol'.split():
-        if getattr(value, '__iter__'):
+        if getattr(value, '__iter__', False):
             value = ','.join(map(str, value))
 
     if value is True:

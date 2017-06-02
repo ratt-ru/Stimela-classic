@@ -419,13 +419,13 @@
         {
             "info": "Size of window for creating the RMS background map, in number of PSFs.", 
             "dtype": "int", 
-            "default": 25, 
+            "default": null, 
             "name": "rms-background-window"
         }, 
         {
             "info": "Either 'rms' (default, uses sliding window RMS) or 'rms-with-min' (use max(window rms,1.5/5window min))", 
             "dtype": "str", 
-            "default": "rms", 
+            "default": null, 
             "name": "rms-background-method", 
             "choices": [
                 "rms", 
@@ -467,12 +467,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "fast-multiscale"
-        }, 
-        {
-            "info": "Parameter to lower the threshold for larger scales. The used threshold for a scale is threshold(scale)=pointsource_threshold x tbias^scale. A lower bias will clean larger scales deeper.", 
-            "dtype": "float", 
-            "default": 0.7, 
-            "name": "multiscale-threshold-bias"
         }, 
         {
             "info": "Parameter to prevent cleaning small scales in the large-scale iterations. A higher bias will give more focus to larger scales", 

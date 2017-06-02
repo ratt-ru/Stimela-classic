@@ -25,7 +25,7 @@ pipeline.add("cab/simms",                   # Executor image to start container 
                 "msname"    :   MS,                     
                 "telescope" :   "meerkat",              # Telescope name
                 "direction" :   "J2000,0deg,-30deg",    # Phase tracking centre of observation
-                "synthesis" :   2,                  # Synthesis time of observation
+                "synthesis" :   0.128,                  # Synthesis time of observation
                 "dtime"     :   10,                      # Integration time in seconds
                 "freq0"     :   "750MHz",               # Start frequency of observation
                 "dfreq"     :   "1MHz",                 # Channel width
@@ -51,6 +51,21 @@ pipeline.add("cab/simulator",
             label="Simulating visibilities")
 
 
+pipeline.add('cab/casa_plotms', 
+            'plot_vis',
+            {
+                "vis"           :   MS,
+                "xaxis"         :   'uvdist',
+                "yaxis"         :   'amp',
+                "xdatacolumn"   :   'corrected',
+                "ydatacolumn"   :   'corrected',
+                "plotfile"      :   PREFIX+'-amp_uvdist.png',
+                "overwrite"     :   True,
+            },
+            input=INPUT,
+            output=OUTPUT,
+            label='plot_amp_uvdist:: Plot amplitude vs uv-distance')
+
 ## 3: Image
 # Make things a bit interesting by imaging with different weights 
 # Briggs robust values to use for each image
@@ -62,15 +77,15 @@ for i, robust in enumerate(briggs_robust):
                  "imager_example_robust_{:d}".format(i), 
                  {
                     "msname"            :   MS,
-                    "weight"            :   "briggs {:f}".format(i),
-                    "prefix"            :   "{:s}_robust-{:f}".format(PREFIX, robust),
+                    "weight"            :   "briggs {:d}".format(i),
+                    "prefix"            :   "{:s}_robust-{:d}".format(PREFIX, robust),
                     "npix"              :   2048,                   # Image size in pixels
                     "cellsize"          :   2,                      # Size of each square pixel
                     "clean_iterations"  :   1000                    # Perform 1000 iterarions of clean (Deconvolution)
                  },
                  input=INPUT, 
                  output=OUTPUT, 
-                 label="Imaging MS, robust={:f}".format(robust))
+                 label="Imaging MS, robust={:d}".format(robust))
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added

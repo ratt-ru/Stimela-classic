@@ -1,7 +1,7 @@
 {
     "task": "simulator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)", 
     "prefix": " ", 
     "binary": "meqtree-pipeliner.py", 
@@ -23,12 +23,12 @@
             "io": "input"
         }, 
         {
-            "name"      :   "save-config",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "save final configuration (after all command-line arguments have been applied)",
-            "default"   :   null,
-        },
+            "info": "save final configuration (after all command-line arguments have been applied)", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "save-config", 
+            "io": "output"
+        }, 
         {
             "info": "Number of CPUs to use for  multithreading", 
             "dtype": "int", 

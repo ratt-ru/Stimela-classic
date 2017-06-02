@@ -1,4 +1,4 @@
-FROM stimela/tigger:0.2.8
+FROM stimela/tigger:0.2.9
 MAINTAINER <sphemakh@gmail.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

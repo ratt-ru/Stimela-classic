@@ -1,7 +1,7 @@
 {
     "task": "casa_plotcal", 
     "base": "stimela/casa", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "An all-purpose plotter for calibration results", 
     "prefix": "-", 
     "binary": "plotcal", 
@@ -171,12 +171,12 @@
             "dtype": "bool", 
             "default": false, 
             "name": "asynch"
-        },
+        }, 
         {
-            "name" : "showgui",
-            "info" : "Show plot on gui",
-            "dtype": "bool",
-            "default": false
+            "info": "Show plot on gui", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "showgui"
         }
     ]
 }

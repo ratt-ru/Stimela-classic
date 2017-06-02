@@ -1,7 +1,7 @@
 {
     "task": "cleanmask", 
     "base": "stimela/astropy", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Creates a binary mask from a FITS image", 
     "prefix": "--", 
     "binary": "cleanmask", 

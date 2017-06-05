@@ -509,12 +509,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "overwrite"
-        }, 
-        {
-            "info": "If true the taskname must be started using plotcal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
         }
     ]
 }

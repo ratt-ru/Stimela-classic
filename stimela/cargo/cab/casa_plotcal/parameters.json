@@ -167,12 +167,6 @@
             "io": "output"
         }, 
         {
-            "info": "If true the taskname must be started using plotcal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
-        }, 
-        {
             "info": "Show plot on gui", 
             "dtype": "bool", 
             "default": false, 

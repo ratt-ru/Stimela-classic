@@ -29,7 +29,7 @@ RUN git clone --depth 1 https://github.com/casacore/casacore.git -b v2.3.0 /src/
     mkdir -p /src/casacore/build && \
     cd /src/casacore/build && \
     cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && \
-    make && \
+    make -j16 && \
     make install && \
     cd / && \
     rm -rf /src

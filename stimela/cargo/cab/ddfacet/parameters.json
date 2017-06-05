@@ -7,6 +7,9 @@
     "binary": "DDF.py", 
     "msdir": "true", 
     "parameters": [
+        #
+        # Data section
+        #
         {
             "info": "Name(s) of database to image",
             "name": "Data-MS",
@@ -38,6 +41,9 @@
             "dtype": "bool",
             "required": false, 
         },
+        #
+        # Predict section
+        #
         {
             "info": "MS column to write predict to. Can be left empty to disable",
             "name": "Predict-ColName",
@@ -76,6 +82,9 @@
             "dtype": "bool",
             "required": false
         },
+        #
+        # Data Selection section
+        #
         {
             "info": "Default FIELD_ID to read",
             "name": "Selection-Field",
@@ -139,5 +148,651 @@
             "dtype": "str",
             "required": false
         },
+        {
+            "info": "Clobber output",
+            "name": "Output-Clobber",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Image name prefix",
+            "name": "Output-Name",
+            "default": "image",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Output name for restoring beam"
+            "name": "Output-RestoringBeam",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Additionally output specified set of images. See Output-Images for arguments"
+            "name": "Output-Also",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Specify cubes to output. Any combination of MmRrIi are acceptable. See Output-Images for explanation on types"
+            "name": "Output-Cubes",
+            "default": "",
+            "dtype": "str",
+            "required": false,
+        },
+        {
+            "info": "Specify images to output. Combination of letter codes indicating what images to save. Uppercase for intrinsic flux scale [D]irty, [M]odel, [C]onvolved model, [R]esiduals, restored [I]mage; Lowercase for apparent flux scale  [d]irty, [m]odel, [c]onvolved model, [r]esiduals, restored [i]mage; Other images: [P]SF, [N]orm, [n]orm facets, [S] flux scale, [A]lpha (spectral index), [X] mixed-scale (intrinsic model, apparent residuals, i.e. Cyrils original output), [o] intermediate mOdels (Model_i), [e] intermediate rEsiduals (Residual_i), [k] intermediate masK image, [z] intermediate auto mask-related noiZe image, [g] intermediate dirty images (only if [Debugging] SaveIntermediateDirtyImages is enabled). Use 'all' to save all. (default: DdPAMRIikz)",
+            "name": "Output-Images",
+            "default": "DdPAMRIikz",
+            "dtype": "str",
+            "required": false,
+        },
+        #
+        # General options section
+        #
+        {
+            "info": "Imager mode",
+            "name": "Imager-Mode",
+            "default": "Clean",
+            "dtype": "str",
+            "required": false,
+            "choises": ["Dirty",
+                        "Clean",
+                        "Predict",
+                        "PSF"]
+        },
+        {
+            "info": "Number of pixels in output Image",
+            "name": "Imager-NPix",
+            "default": 5000,
+            "dtype": "int",
+            "required": false, 
+        },
+        {
+            "info": "Cell size of pixels in output image (in arcseconds)",
+            "name": "Imager-Cell",
+            "default": 5.0,
+            "dtype": "float",
+            "required": false, 
+        },
+        {
+            "info": "Manually specify image phase centre in format RA,DEC",
+            "name": "Image-PhaseCenterRADEC",
+            "default": "",
+            "dtype": "str",
+            "required": false,
+        },
+        {
+            "info": "Manually specify sidelobe search window when fitting the restoring beam. Specify number of pixels",
+            "name": "Image-SidelobeSearchWindow",
+            "default": 200,
+            "dtype": "float",
+            "required": false,
+        },
+        #
+        # Spacial tesselation section
+        #
+        {
+            "info": "Number of facets to use",
+            "name": "Facets-NFacets",
+            "default": 3,
+            "dtype": "int",
+            "required": false, 
+        },
+        {
+            "info": "Override facet directions with catalogue",
+            "name": "Facets-CatNodes",
+            "default": null,
+            "dtype": "file",
+            "required": false, 
+        },
+        {
+            "info": "Maximum facet size (deg). Larger facets will be broken up",
+            "name": "Facets-DiamMax",
+            "default": 180.0,
+            "dtype": "float",
+            "required": false, 
+        },
+        {
+            "info": "Minimum facet size (deg). Smaller facets will be merged",
+            "name": "Facets-DiamMin",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false, 
+        },
+        {
+            "info": "For cleaning, oversize PSF relative to the size of the facet",
+            "name": "Facets-PSFOversize",
+            "default": 1.0,
+            "dtype": "float",
+            "required": false, 
+        },
+        {
+            "info": "Number of PSFs to create. 0: one per facet, 1: one PSF for entire field",
+            "name": "Facets-PSFFacets",
+            "default": 0,
+            "dtype": "int",
+            "required": false, 
+        },
+        {
+            "info": "Facet padding factor. Value should be >>> 1.0 to account for anti-aliasing filter rolloff.",
+            "name": "Facets-Padding",
+            "default": 1.7,
+            "dtype": "float",
+            "required": false, 
+        },
+        #
+        # Data and imaging weight settings
+        #
+        {
+            "info": "Read data weights from specified column. Use WEIGHT_SPECTRUM or WEIGHT, more rarely IMAGING_WEIGHT.",
+            "name": "Weight-ColName",
+            "default": "WEIGHT_SPECTRUM",
+            "dtype": "str",
+            "required": false,
+            "choises": ["WEIGHT_SPECTRUM", "WEIGHT", "IMAGING_WEIGHT"]
+        },
+        {
+            "info": "UV weighting mode",
+            "name": "Weight-Mode",
+            "default": "Briggs",
+            "dtype": "str",
+            "required": false,
+            "choises": ["Natural", "Uniform", "Robust", "Briggs"]
+        },
+        {
+            "name": "Weight-MFS",
+            "info": "If True, MFS uniform/Briggs weighting is used (all channels binned onto one uv grid). If 0, binning is per-band.",
+            "default": true,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Briggs robustness parameter, from -2 (more uniform) to 2 (more natural)",
+            "name": "Weight-Robust",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Super/subuniform weighting: FoV for weighting purposes is taken as X*Image_Size",
+            "name": "Weight-SuperUniform",
+            "default": 1.0,
+            "dtype": "float",
+            "required": false
+        },
+        #
+        # RIME parameters section
+        #
+        {
+            "info": "Gridding polarization mode (non-stokes I is only supported in Imager-Mode=Dirty)",
+            "name": "RIME-PolMode",
+            "default": "I",
+            "dtype": "str",
+            "required": false
+            "choises": ["I","V","Q","U","IQ","QI","IU","UI","IV","VI","UQ","QU","QV","VQ","UV","VU","IQU","IUQ","UIQ","UQI","QUI","QIU","IQV","IVQ","VIQ","VQI","QVI","QIV","IUV","IVU","VIU","VUI","UVI","UIV","QUV","QVU","VQU","VUQ","UVQ","UQV","IQUV","IQVU","IUQV","IUVQ","IVQU","IVUQ","QIUV","QIVU","VIUQ","VIQU","UIVQ","UIQV","QUIV","UQIV","UVIQ","VUIQ","VQIU","QVIU","QUVI","UQVI","UVQI","VUQI","VQUI","QVUI"]
+        },
+        {
+            "info": "FFTW engine",
+            "name": "RIME-FFTMachine",
+            "default": "FFTW",
+            "dtype": "str",
+            "required": false
+            "choises": ["FFTW"]
+        },
+        {
+            "info": "Forward predict engine",
+            "name": "RIME-ForwardMode",
+            "default": "BDA-degrid",
+            "dtype": "str",
+            "required": false
+            "choises": ["BDA-degrid", "Classic", "Montblanc"]
+        },
+        {
+            "info": "Backward inversion engine",
+            "name": "RIME-BackwardMode",
+            "default": "BDA-grid",
+            "dtype": "str",
+            "required": false
+            "choises": ["BDA-grid"]
+        },
+        {
+            "info": "Decorrelation mode (undocumented ???)",
+            "name": "RIME-DecorrMode",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Decorrelation location",
+            "name": "RIME-DecorrLocation",
+            "default": "Edge",
+            "dtype": "str",
+            "required": false,
+            "choises":["Center", "Edge"]
+        },
+        #
+        # Convolution function settings
+        #
+        {
+            "info": "Convolution filter oversampling factor",
+            "name": "CF-OverS",
+            "default": 11,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "AA convolution filter support",
+            "name": "CF-Support",
+            "default": 7,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Number of w-planes. Should be selected such that the projection error at the edge of the facet is << 1 radian per w plane",
+            "name": "CF-Nw",
+            "default": 100,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Overwrite maximum w (in metres) of the interferometer sampling. This controlls the support needed for the w kernels and can bring down computational costs if more error is tolerated on the longest baselines",
+            "name": "CF-wmax",
+            "default": 10000.0,
+            "dtype": "float"
+            "required": false
+        },
+        #
+        # Compression settings
+        #
+        {
+            "info": "Maximum tolerated BDA decorrelation response factor for gridding",
+            "name": "Comp-GridDecorr",
+            "default": 0.02,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "FoV over which gridding decorrelation factor is computed",
+            "name": "Comp-GridFoV",
+            "default": "Facet",
+            "dtype": "str",
+            "required": false,
+            "choises": ["Full", "Facet"]
+        },
+        {
+            "info": "Maximum tolerated BDA decorrelation response factor for degridding",
+            "name": "Comp-GridDecorr",
+            "default": 0.02,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "FoV over which degridding decorrelation factor is computed",
+            "name": "Comp-DegridFoV",
+            "default": "Facet",
+            "dtype": "str",
+            "required": false,
+            "choises": ["Full", "Facet"]
+        },
+        {
+            "info": "Apply sparsification compression to initial major cycles. Sparsification refers to throwing away random visibilities. Supply a list of factors: e.g. 100,30,10 would mean only 1/100 of the data is used for the first major cycle, 1/30 for the second, 1/10 for the third, and full data for the fourth cycle onwards. This can substantially accelerate deconvolution of deep observations, since, in these regimes, very little sensitivity is required for model construction in the initial cycles.",
+            "name": "Comp-Sparcification",
+            "default": "0",
+            "dtype": "str",
+            "required": false
+        },
+        #
+        # Parallelization options
+        #
+        {
+            "info": "Number of processes / threads to use in parallel mode. 0 - all available. 1 - disable parallelism",
+            "name": "Parallel-NCPU",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Sets affinity of the subprocesses / threads.  -1/1/2 determines stepping used in selecting cores. Alternatively specifies a list of length NCPU. Alternatively 'disable' to disable affinity settings Alternatively 'enable_ht' uses stepping of 1 (equivalent to Parallel.Affinity=1), will use all vthreads - the obvious exception is if HT is disabled at BIOS level. Alternatively 'disable_ht' autodetects the NUMA layout of the chip for Debian-based systems and don't use both vthreads per core. Use 1 if unsure.",
+            "name": "Parallel-Affinity",
+            "default": "1",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Pins parent process to specified core. This should be set to a vcore that is not used by forked processes, this option is ignored when using option 'disable' or 'disable_ht' for Parallel-Affinity."
+            "name": "Parallel-Affinity",
+            "default": "0",
+            "dtype": "str",
+            "required": false
+        },
+        #
+        # Cache management section
+        # Note: this is different from the default options for DDF - dont generally want auto-stored state
+        #
+        {
+            "info": "Reset all caches (including PSF and dirty image)",
+            "name": "Cache-Reset",
+            "default": true,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Reset cached smooth beam",
+            "name": "Cache-ResetSmoothBeam",
+            "default": true,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Cache PSF data",
+            "name": "Cache-PSF",
+            "default": "auto",
+            "dtype": "str",
+            "required": false,
+            "choises": ["off", "reset", "auto", "force"]
+        },
+        {
+            "info": "Cache dirty image data",
+            "name": "Cache-Dirty",
+            "default": "auto",
+            "dtype": "str",
+            "required": false,
+            "choises": ["off", "reset", "auto", "force", "forceresidual"]
+        },
+        {
+            "info": "Cache visibility data and flags at runtime",
+            "name": "Cache-VisData",
+            "default": "auto",
+            "dtype": "str",
+            "required": false,
+            "choises": ["off", "auto", "force"]
+        },
+        {
+            "info": "Cache visibility data and flags at runtime",
+            "name": "Cache-VisData",
+            "default": "auto",
+            "dtype": "str",
+            "required": false,
+            "choises": ["off", "auto", "force"]
+        },
+        {
+            "info": "Cache last residual data (at end of last minor cycle)",
+            "name": "Cache-LastResidual",
+            "default": true,
+            "dtype": "bool",
+            "required": false,
+        },
+        {
+            "info": "Directory to store caches in. Default is to keep cache next to the MS, but this can cause performance issues with e.g. NFS volumes. If you have fast local storage, point to it.",
+            "name": "Cache-Dir",
+            "default": "",
+            "dtype": "str",
+            "required": false,
+        },
+        {
+            "info": "Directory in which to store the FFTW wisdom files",
+            "name": "Cache-DirWisdomFFTW",
+            "default": ".fftw_wisdom",
+            "dtype": "file",
+            "io": "output",
+            "required": false,
+        },
+        {
+            "info": "Reset wisdom file",
+            "name": "Cache-ResetWisdom",
+            "default": true,
+            "dtype": "bool",
+            "required": false,
+        },
+        #
+        # Beam section
+        #
+        {
+            "info": "Beam model to use.",
+            "name": "Beam-Model",
+            "default": null,
+            "dtype": "str",
+            "choises": [null,"LOFAR","FITS"],
+            "required": false
+        },
+        {
+            "info": "LOFAR beam mode.",
+            "name": "Beam-LOFARBeamMode",
+            "default": "AE",
+            "dtype": "str",
+            "choises": ["A","AE"],
+            "required": false
+        },
+        {
+            "info": "N Number of channels over which same beam value is used. 0 means use every channel.",
+            "name": "Beam-NBand",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Normalize beam so that its amplitude at the centre is 1.",
+            "name": "Beam-CenterNorm",
+            "default": "False",
+            "dtype": "str",
+            "choises": [0,1],
+            "required": false
+        },
+        {
+            "info": "BEAM_SMOOTH Compute the interpolated smooth beam",
+            "name": "Beam-Smooth",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "BEAM_SMOOTHNPIX Number of pixels the beam is evaluated and smoothed",
+            "name": "Beam-SmoothNPix",
+            "default": 11,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "PATTERN Beam FITS file pattern. A beam pattern consists of eight FITS files, i.e. a real and imaginary part for each of the four Jones terms. The following substitutions are performed to form up the eight filenames: $(corr) or $(xy) is replaced by the Jones element label (e.g. \"xx\" or \"rr\"), $(reim) is replaced by \"re\" or \"im\", $(realimag) is replaced by \"real\" or \"imag\". Uppercase variables are replaced by uppercase values, e.g. $(REIM) by \"RE\" or \"IM\". Correlation labels (XY or RL) are determined by reading the MS, but may be overridden by the FITSFeed option.",
+            "name": "Beam-FITSFile",
+            "default": "beam_$(corr)_$(reim).fits",
+            "dtype": "file",
+            "io": "input",
+            "required": false
+        },
+        {
+            "info": "If set, overrides correlation labels given by the MS.",
+            "name": "Beam-FITSFeed",
+            "default": null,
+            "dtype": "str",
+            "choises": [null ,"xy","XY","rl","RL"],
+            "required": false
+        },
+        {
+            "info": "If set, overrides correlation labels given by the MS.",
+            "name": "Beam-FITSFeed",
+            "default": null,
+            "dtype": "str",
+            "choises": [null,"xy","XY","rl","RL"],
+            "required": false
+        },
+        {
+            "info": "MIN change in minutes on which the beam is re-evaluated",
+            "name": "Beam-DtBeamMin",
+            "default": 5.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "DEG increment in PA in degrees at which the beam is to be re-evaluated (on top of DtBeamMin)",
+            "name": "Beam-FITSParAngleIncDeg",
+            "default": 5.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "AXIS L axis of FITS file. Minus sign indicates reverse coordinate convention.",
+            "name": "Beam-FITSLAxis",
+            "default": "-X",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "AXIS M axis of FITS file. Minus sign indicates reverse coordinate convention.",
+            "name": "Beam-FITSMAxis",
+            "default": "Y",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "LEVEL set to >0 to have verbose output from FITS interpolator classes.",
+            "name": "Beam-FITSVerbosity",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        #
+        # MFS subband selection section
+        #
+        {
+            "info": "MHz Gridding cube frequency step. If 0, --Freq-NBand is used instead.",
+            "name": "Freq-BandMHz",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "MHz Degridding cube frequency step. If 0, --Freq- NDegridBand is used instead.",
+            "name": "Freq-DegridBandMHz",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "N Number of image bands for gridding.",
+            "name": "Freq-NBand",
+            "default": "1",
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "N Number of image bands for degridding. 0 means degrid each channel.",
+            "name": "Freq-NDegridBand",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        #
+        # DDE Solutions application setion
+        # Undocumented: Use at your own peril!
+        {
+            "info": "DDESOLUTIONS_DDSOLS (???)",
+            "name": "DDESolutions-DDSols",
+            "default": null,
+            "io": "input",
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_GLOBALNORM (???)",
+            "name": "DDESolutions-GlobalNorm",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_JONESNORMLIST (???)",
+            "name": "DDESolutions-JonesNormList",
+            "default": "AP",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "(???)",
+            "name": "DDESolutions-JonesMode",
+            "default": "Full",
+            "dtype": "str",
+            "choises": ["Scalar","Diag","Full"],
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_DDMODEGRID (???)",
+            "name": "DDESolutions-DDModeGrid",
+            "default": "AP",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_DDMODEDEGRID (???)",
+            "name": "DDESolutions-DDModeDeGrid",
+            "default": "AP",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_SCALEAMPGRID (???)",
+            "name": "DDESolutions-ScaleAmpGrid",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_SCALEAMPDEGRID (???)",
+            "name": "DDESolutions-ScaleAmpDeGrid",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_CALIBERR (???)",
+            "name": "DDESolutions-CalibErr",
+            "default": "10.0",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "???",
+            "name": "DDESolutions-Type",
+            "default": "Nearest",
+            "dtype": "str",
+            "choises": ["Krigging","Nearest"],
+            "required": false
+        },
+        {
+            "info": "DEG (???)",
+            "name": "DDESolutions-Scale",
+            "default": 1.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_GAMMA (???)",
+            "name": "DDESolutions-gamma",
+            "default": 4.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_RESTORESUB (???)",
+            "name": "DDESolutions-RestoreSub",
+            "default": "False",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "DDESOLUTIONS_REWEIGHTSNR (???)",
+            "name": "DDESolutions-ReWeightSNR",
+            "default": 0.0,
+            "dtype": "str",
+            "required": false
+        },
+        #
+        # General deconvolution options section
+        #
+
     ]
 }

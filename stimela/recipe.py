@@ -420,7 +420,7 @@ class Recipe(object):
         if getattr(steps, '__iter__', False):
             _steps = []
             if isinstance(steps[0], str):
-                labels = [ cont.label.split('::')[0] for job in self.jobs]
+                labels = [ job.label.split('::')[0] for job in self.jobs]
 
                 for step in steps:
                     try:
@@ -431,7 +431,7 @@ class Recipe(object):
         else:
             steps = range(1, len(self.jobs)+1)
 
-        jobs = [(step, self.jobs[step-1]) for step in steps]        
+        jobs = [(step, self.jobs[step-1]) for step in steps]
         
         for i, (step, job) in enumerate(jobs):
 

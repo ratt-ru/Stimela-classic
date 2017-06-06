@@ -133,20 +133,22 @@ def build(argv):
         log.write()
         return
 
-   
+    # Cabs and their locations   
     cabs = []
     dockerfiles = []
-    logged_images = log.read().get('images', {})
 
-    for key,val in logged_images.iteritems():
-        if val['CAB']:
-            cabs.append(key)
-            dockerfiles.append(val['DIR'])
-
-
-    IGNORE = args.ignore_cabs.split(",")
-    
-    CABS = set(CAB).difference(set(IGNORE))
+    if args.us_only:
+        CABS = args.us_only.split(',')
+    else:
+        # Start with images that have been logged
+        logged_images = log.read().get('images', {})
+        for key,val in logged_images.iteritems():
+            if val['CAB']:
+                cabs.append(key)
+                dockerfiles.append(val['DIR'])
+        # If user wants to ignore some cabs
+        IGNORE = args.ignore_cabs.split(",")
+        CABS = set(CAB).difference(set(IGNORE))
 
     cabs += ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS]
     dockerfiles += [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS]

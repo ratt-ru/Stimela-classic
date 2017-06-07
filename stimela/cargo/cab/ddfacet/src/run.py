@@ -23,8 +23,8 @@ for param in cab['parameters']:
     if name == 'Parset' and value is None:
         continue
 
-    if value is True:
-        arg = '{0}{1}'.format(cab['prefix'], name)
+    if isinstance(value, list):
+        arg = "{0}{1} {2}".format(cab['prefix'], name, ",".join(value))
     else:
         arg = '{0}{1} {2}'.format(cab['prefix'], name, value)
 

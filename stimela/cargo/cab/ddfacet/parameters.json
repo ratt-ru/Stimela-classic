@@ -10,7 +10,7 @@
         {
             "info": "Custom parset file (note: all paths in the parset must be relative to the mount points inside the container). Advance usage only.",
             "name": "Parset",
-            "default": "",
+            "default": null,
             "dtype": "file",
             "io": "input",
             "required": false
@@ -104,7 +104,7 @@
         {
             "info": "Additional TaQL selection string",
             "name": "Selection-TaQL",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false
         },
@@ -125,28 +125,28 @@
         {
             "info": "List of antennas to be flagged, e.g. 'RS,CS017LBA'",
             "name": "Selection-FlagAnts",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false
         },
         {
             "info": "Select baseline range km_min,km_max",
             "name": "Selection-UVRangeKm",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false
         },
         {
             "info": "Select time range, in hours, since start of MS. Format H0,H1",
             "name": "Selection-TimeRange",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false
         },
         {
             "info": "Select antennas by specifying a maximum distance to core",
             "name": "Selection-DistMaxToCore",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false
         },
@@ -161,7 +161,8 @@
             "info": "Image name prefix",
             "name": "Output-Name",
             "default": "image",
-            "dtype": "str",
+            "dtype": "file",
+            "io": "output",
             "required": false
         },
         {
@@ -174,14 +175,14 @@
         {
             "info": "Additionally output specified set of images. See Output-Images for arguments",
             "name": "Output-Also",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false
         },
         {
             "info": "Specify cubes to output. Any combination of MmRrIi are acceptable. See Output-Images for explanation on types",
             "name": "Output-Cubes",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false,
         },
@@ -194,7 +195,7 @@
         },
         {
             "info": "Imager mode",
-            "name": "Imager-Mode",
+            "name": "Image-Mode",
             "default": "Clean",
             "dtype": "str",
             "required": false,
@@ -205,14 +206,14 @@
         },
         {
             "info": "Number of pixels in output Image",
-            "name": "Imager-NPix",
+            "name": "Image-NPix",
             "default": 5000,
             "dtype": "int",
             "required": false, 
         },
         {
             "info": "Cell size of pixels in output image (in arcseconds)",
-            "name": "Imager-Cell",
+            "name": "Image-Cell",
             "default": 5.0,
             "dtype": "float",
             "required": false, 
@@ -220,7 +221,7 @@
         {
             "info": "Manually specify image phase centre in format RA,DEC",
             "name": "Image-PhaseCenterRADEC",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false,
         },
@@ -353,7 +354,7 @@
         {
             "info": "Decorrelation mode (undocumented ???)",
             "name": "RIME-DecorrMode",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false
         },
@@ -425,7 +426,7 @@
         },
         {
             "info": "Apply sparsification compression to initial major cycles. Sparsification refers to throwing away random visibilities. Supply a list of factors: e.g. 100,30,10 would mean only 1/100 of the data is used for the first major cycle, 1/30 for the second, 1/10 for the third, and full data for the fourth cycle onwards. This can substantially accelerate deconvolution of deep observations, since, in these regimes, very little sensitivity is required for model construction in the initial cycles.",
-            "name": "Comp-Sparcification",
+            "name": "Comp-Sparsification",
             "default": "0",
             "dtype": "str",
             "required": false
@@ -507,7 +508,7 @@
         {
             "info": "Directory to store caches in. Default is to keep cache next to the MS, but this can cause performance issues with e.g. NFS volumes. If you have fast local storage, point to it.",
             "name": "Cache-Dir",
-            "default": "",
+            "default": "''",
             "dtype": "str",
             "required": false,
         },
@@ -574,10 +575,11 @@
         {
             "info": "PATTERN Beam FITS file pattern. A beam pattern consists of eight FITS files, i.e. a real and imaginary part for each of the four Jones terms. The following substitutions are performed to form up the eight filenames: $(corr) or $(xy) is replaced by the Jones element label (e.g. \"xx\" or \"rr\"), $(reim) is replaced by \"re\" or \"im\", $(realimag) is replaced by \"real\" or \"imag\". Uppercase variables are replaced by uppercase values, e.g. $(REIM) by \"RE\" or \"IM\". Correlation labels (XY or RL) are determined by reading the MS, but may be overridden by the FITSFeed option.",
             "name": "Beam-FITSFile",
-            "default": "beam_$(corr)_$(reim).fits",
+            "default": "'beam_$(corr)_$(reim).fits'",
             "dtype": "file",
             "io": "input",
-            "required": false
+            "required": false,
+            "check_io": false,
         },
         {
             "info": "If set, overrides correlation labels given by the MS.",
@@ -661,7 +663,7 @@
         {
             "info": "DDESOLUTIONS_DDSOLS (???)",
             "name": "DDESolutions-DDSols",
-            "default": null,
+            "default": "''",
             "io": "input",
             "dtype": "file",
             "required": false
@@ -862,7 +864,7 @@
         {
             "info": "MASK_AUTOSTATS The parameters to compute the noise-map-based mask for step i+1 from the residual image at step i. Should be [box_size,box_step,Threshold_in_sigma]",
             "name": "Mask-AutoStats",
-            "default": "[60, 2, 20]",
+            "default": "'[60, 2, 20]'",
             "dtype": "str",
             "required": false
         },
@@ -876,21 +878,21 @@
         {
             "info": "MIN,MAX,N String list of alphas to fit. e.g [-1.0, 1.0, 11]",
             "name": "HMP-Alpha",
-            "default": "[-1.0, 1.0, 11]",
+            "default": "'[-1.0, 1.0, 11]'",
             "dtype": "str",
             "required": false
         },
         {
             "info": "LIST String list of scales to use e.g [0]",
             "name": "HMP-Scales",
-            "default": "[0]",
+            "default": "'[0]'",
             "dtype": "str",
             "required": false
         },
         {
             "info": "HMP_RATIOS (???)",
             "name": "HMP-Ratios",
-            "default": "['']",
+            "default": "\"['']\"",
             "dtype": "str",
             "required": false
         },
@@ -969,7 +971,7 @@
         {
              "info": "URL for the TensorflowServer, e.g. grpc://tensorflow.server.com:8888/",
              "name": "Montblanc-TensorflowServerTarget",
-             "default": "",
+             "default": "''",
              "dtype": "str",
              "required": false
         },
@@ -991,14 +993,14 @@
         {
             "info": "SSDCLEAN_SSDSOLVEPARS (???)",
             "name": "SSDClean-SSDSolvePars",
-            "default": "['S', 'Alpha']",
+            "default": "\"['S', 'Alpha']\"",
             "dtype": "str",
             "required": false
         },
         {
             "info": "SSDCLEAN_SSDCOSTFUNC (???)",
             "name": "SSDClean-SSDCostFunc",
-            "default": "['Chi2', 'MinFlux']",
+            "default": "\"['Chi2', 'MinFlux']\"",
             "dtype": "str",
             "required": false
         },
@@ -1054,7 +1056,7 @@
         {
             "info": "SSDCLEAN_MINMAXGROUPDISTANCE (???)",
             "name": "SSDClean-MinMaxGroupDistance",
-            "default": "[5, 50]",
+            "default": "\"[5, 50]\"",
             "dtype": "str",
             "required": false
         },
@@ -1075,7 +1077,7 @@
         {
             "info": "MORESANE_MOSOLVEPARS (default=[S]): Solving parameters for MORESANE (only Flux & monochannel for the moment)",
             "name": "MORESANE-MOSolvePars",
-            "default": "['S']",
+            "default": "\"['S']\"",
             "dtype": "str",
             "required": false
         },
@@ -1181,8 +1183,7 @@
             "required": false
         },
         {
-            "info": "MORESANE_MINORLOOPMITER (default=30): Maximum number of iterations allowed in the minor loop. Serves as an exit condition
-         when the SNR is does not reach a maximum.",
+            "info": "MORESANE_MINORLOOPMITER (default=30): Maximum number of iterations allowed in the minor loop. Serves as an exit condition when the SNR is does not reach a maximum.",
             "name": "MORESANE-MinorLoopMiter",
             "default": 30,
             "dtype": "int",
@@ -1238,8 +1239,7 @@
             "required": false
         },
         {
-            "info": "MORESANE_TOLERANCE (default=0.75): Tolerance level for object extraction. Significant objects contain wavelet coefficient
-        s greater than the tolerance multiplied by the maximum wavelet coefficient in the scale under consideration.",
+            "info": "MORESANE_TOLERANCE (default=0.75): Tolerance level for object extraction. Significant objects contain wavelet coefficients greater than the tolerance multiplied by the maximum wavelet coefficient in the scale under consideration.",
             "name": "MORESANE-Tolerance",
             "default": 0.75,
             "dtype": "float",
@@ -1276,7 +1276,7 @@
         {
             "info": "L,M Shift in facet coordinates in arcseconds for l and m (this phase steers the sky over the image plane).",
             "name": "Debug-FacetPhaseShift",
-            "default": "[0.0, 0.0]",
+            "default": "\"[0.0, 0.0]\"",
             "dtype": "str",
             "required": false
         },
@@ -1297,7 +1297,7 @@
         {
             "info": "X,Y,R Also dump postage stamps when cleaning within a radius R of X,Y. Implies --Debug-DumpCleanSolutions.",
             "name": "Debug-DumpCleanPostageStamps",
-            "default": "",
+            "default": null,
             "dtype": "str",
             "required": false
         },

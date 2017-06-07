@@ -136,21 +136,20 @@ def build(argv):
    
     cabs = []
     dockerfiles = []
-    logged_images = log.read().get('images', {})
+    # Dont care about any outstanding images. The user should really run build
+    # base before building cabs if they have custom images
+    #logged_images = log.read().get('images', {})
+    #for key,val in logged_images.iteritems():
+    #    if val['CAB']:
+    #        cabs.append(key)
+    #        dockerfiles.append(val['DIR'])
 
-    for key,val in logged_images.iteritems():
-        if val['CAB']:
-            cabs.append(key)
-            dockerfiles.append(val['DIR'])
-
-
+ 
     IGNORE = args.ignore_cabs.split(",")
-    
-    CABS = set(CAB).difference(set(IGNORE))
-
+    USONLY = args.us_only.split(",") if args.us_only is not None else CAB
+    CABS = set(CAB).difference(set(IGNORE)).intersection(set(USONLY))
     cabs += ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS]
     dockerfiles += [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS]
-
     built = []
     for image, dockerfile in zip(cabs,dockerfiles):
         if image not in built:

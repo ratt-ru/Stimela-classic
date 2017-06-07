@@ -177,7 +177,6 @@ def get_cabs(logfile):
     return cabs_
 
 
-
 def info(cabdir, header=False):
     """ prints out help information about a cab """
 

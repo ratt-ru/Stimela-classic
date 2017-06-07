@@ -133,11 +133,11 @@ class StimelaJob(object):
 
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
-
+        
         cont = docker.Container(image, name,
                      label=self.label, logger=self.log,
                      shared_memory=shared_memory, log_container=stimela.LOG_FILE)
-        
+
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
         cont.parameter_file_name = '{0}/{1}.json'.format(self.recipe.parameter_file_dir, name)

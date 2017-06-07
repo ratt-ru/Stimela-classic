@@ -81,7 +81,7 @@ for i, robust in enumerate(briggs_robust):
                     "prefix"            :   "{:s}_robust-{:d}".format(PREFIX, robust),
                     "npix"              :   2048,                   # Image size in pixels
                     "cellsize"          :   2,                      # Size of each square pixel
-                    "clean_iterations"  :   1000                    # Perform 1000 iterarions of clean (Deconvolution)
+                    "clean_iterations"  :   1000,                   # Perform 1000 iterarions of clean (Deconvolution)
                  },
                  input=INPUT, 
                  output=OUTPUT, 

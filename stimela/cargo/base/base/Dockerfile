@@ -1,3 +1,3 @@
-FROM kernsuite/base:1
+FROM kernsuite/base:2
 RUN docker-apt-install git
 RUN pip install pyyaml

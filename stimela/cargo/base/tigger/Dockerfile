@@ -1,2 +1,2 @@
-FROM stimela/meqtrees:0.2.8
-RUN pip install git+git://github.com/SpheMakh/tigger --upgrade
+FROM stimela/meqtrees:0.2.9
+RUN docker-apt-install python-tigger

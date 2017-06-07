@@ -1,7 +1,7 @@
 {
     "task": "casa_flagdata", 
     "base": "stimela/casa", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.", 
     "prefix": " ", 
     "binary": "flagdata", 
@@ -27,8 +27,8 @@
                 "quack", 
                 "shadow", 
                 "elevation", 
-                "tfcrop",
-                "rflag",
+                "tfcrop", 
+                "rflag", 
                 "extend", 
                 "unflag", 
                 "summary"
@@ -433,66 +433,66 @@
             "dtype": "bool", 
             "default": false, 
             "name": "async"
-        },
+        }, 
         {
-            "name"      :   "winsize",
-            "dtype"     :   "int",
-            "info"      :   "Number of timesteps in the sliding time window [aips:fparm(1)]",
-            "default"   :   3
-        },
+            "info": "Number of timesteps in the sliding time window [aips:fparm(1)]", 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "winsize"
+        }, 
         {
-            "name"      :   "timedev",
-            "dtype"     :   "float",
-            "info"      :   "Time-series noise estimate : [aips:noise]",
-            "default"   :   null
-        },
+            "info": "Time-series noise estimate : [aips:noise]", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "timedev"
+        }, 
         {
-            "name"      :   "freqdev",
-            "dtype"     :   "float",
-            "info"      :   "Spectral noise estimate : [aips:scutoff]",
-            "default"   :   null
-        },
+            "info": "Spectral noise estimate : [aips:scutoff]", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "freqdev"
+        }, 
         {
-            "name"      :   "timedevscale",
-            "dtype"     :   "float",
-            "info"      :   "Threshold scaling for timedev : [aips:fparm(9)] ",
-            "default"   :   5.0
-        },
+            "info": "Threshold scaling for timedev : [aips:fparm(9)] ", 
+            "dtype": "float", 
+            "default": 5.0, 
+            "name": "timedevscale"
+        }, 
         {
-            "name"      :   "freqdevscale",
-            "dtype"     :   "float",
-            "info"      :   "Threshold scaling for freqdev : [aips:fparm(10)]",
-            "default"   :   5.0
-        },
+            "info": "Threshold scaling for freqdev : [aips:fparm(10)]", 
+            "dtype": "float", 
+            "default": 5.0, 
+            "name": "freqdevscale"
+        }, 
         {
-            "name"      :   "spectralmax",
-            "dtype"     :   "float",
-            "info"      :    "Flag whole spectrum if freqdev is greater than spectralmax",
-            "default"   :   1000000.0
-        },
+            "info": "Flag whole spectrum if freqdev is greater than spectralmax", 
+            "dtype": "float", 
+            "default": 1000000.0, 
+            "name": "spectralmax"
+        }, 
         {
-            "name"      :   "spectralmin",
-            "dtype"     :   "float",
-            "info"      :   "Flag whole spectrum if freqdev is less than spectralmin : [aips:fparm(5)]",
-            "default"   :   0.0
-        },
+            "info": "Flag whole spectrum if freqdev is less than spectralmin : [aips:fparm(5)]", 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "spectralmin"
+        }, 
         {
-            "name"      :   "chanbin",
-            "dtype"     :   "int",
-            "info"      :   "Bin width for channel average in number of input channels",
-            "default"   :   1
-        },
+            "info": "Bin width for channel average in number of input channels", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "chanbin"
+        }, 
         {
-            "name"      :   "timeavg",
-            "dtype"     :   "bool",
-            "info"      :   "Pre-average data across time before analyzing visibilities for flagging.",
-            "default"   :   false
-        },
+            "info": "Pre-average data across time before analyzing visibilities for flagging.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "timeavg"
+        }, 
         {
-            "name"      :   "timebin",
-            "dtype"     :   "int",
-            "info"      :   "Bin width for time average in seconds",
-            "default"   :   1
+            "info": "Bin width for time average in seconds", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "timebin"
         }
     ]
 }

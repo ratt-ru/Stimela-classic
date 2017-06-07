@@ -1,7 +1,7 @@
 {
     "task": "casa_split", 
     "base": "stimela/casa", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Create a visibility subset from an existing visibility set", 
     "prefix": "-", 
     "binary": "split", 

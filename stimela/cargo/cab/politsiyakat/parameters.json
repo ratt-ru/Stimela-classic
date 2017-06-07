@@ -1,7 +1,7 @@
 {
     "task": "politsiyakat", 
     "base": "stimela/politsiyakat", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Routines for automated post-1GC error detection and mitigation", 
     "prefix": "--", 
     "binary": "python -m politsiyakat", 
@@ -22,12 +22,12 @@
             "default": null, 
             "dtype": "str", 
             "required": "true", 
-            "mapping": "task",
+            "mapping": "task", 
             "choises": [
-                "flag_antennas_with_few_baselines_remaining",
-                "flag_excessive_delay_error",
-                "flag_excessive_amp_phase_error",
-                "read_ms_maintable_chunk",
+                "flag_antennas_with_few_baselines_remaining", 
+                "flag_excessive_delay_error", 
+                "flag_excessive_amp_phase_error", 
+                "read_ms_maintable_chunk", 
                 "check_ms"
             ]
         }, 
@@ -63,9 +63,9 @@
             "default": null, 
             "name": "field", 
             "mapping": "field"
-        },
+        }, 
         {
-            "info": "Calibrator Field(s), subset of 'field'",
+            "info": "Calibrator Field(s), subset of 'field'", 
             "dtype": "str", 
             "default": null, 
             "name": "cal_field", 
@@ -76,13 +76,13 @@
             "dtype": "str", 
             "default": "-15.0~15.0", 
             "name": "phase_range_clip"
-        },
+        }, 
         {
-            "info":"Maximum fractional offset from median power in time and field before clipping",
-            "dtype": "float",
-            "default" : "0.4",
-            "name" : "amp_frac_clip"
-        },
+            "info": "Maximum fractional offset from median power in time and field before clipping", 
+            "dtype": "float", 
+            "default": "0.4", 
+            "name": "amp_frac_clip"
+        }, 
         {
             "info": "Maximum fraction of data flagged due to amplutude or phase accross calibrators before clipping baseline", 
             "dtype": "float", 
@@ -101,7 +101,7 @@
             "dtype": "int", 
             "default": null, 
             "name": "nrows_chunk"
-        },
+        }, 
         {
             "info": "nthreads", 
             "dtype": "int", 

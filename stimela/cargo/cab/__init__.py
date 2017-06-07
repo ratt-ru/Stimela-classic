@@ -201,17 +201,10 @@ class CabDefinition(object):
         
         conf["parameters"] = []
         for param in self.parameters:
-            _value = None if param.value is None else param.value
         
-            if _value is None:
-                value = None
-            elif isinstance(param.dtype[0], tuple):
-                if not hasattr(_value, '__iter__'):
-                    value = [_value]
-                else:
-                    value = _value
-            else:
-                value = _value
+            if isinstance(param.dtype[0], tuple):
+                if not hasattr(param.value, '__iter__') and param.value is not None:
+                    param.value = [param.value]
 
             _types = ""
             for i,_type in enumerate(param.dtype):
@@ -228,7 +221,7 @@ class CabDefinition(object):
                     "info"      :   param.info,
                     "required"  :   param.required,
                     "check_io"  :   param.check_io,
-                    "value"     :   value,
+                    "value"     :   param.default if param.value is None else param.value
                 })
         return conf
 

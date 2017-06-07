@@ -141,6 +141,7 @@ def build(argv):
         CABS = args.us_only.split(',')
     else:
         # Start with images that have been logged
+        # This is crucial for making custom cabs
         logged_images = log.read().get('images', {})
         for key,val in logged_images.iteritems():
             if val['CAB']:
@@ -152,7 +153,6 @@ def build(argv):
 
     cabs += ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS]
     dockerfiles += [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS]
-
     built = []
     for image, dockerfile in zip(cabs,dockerfiles):
         if image not in built:
@@ -497,27 +497,24 @@ def clean(argv):
     if args.all_containers:
         containers = log.info['containers'].keys()
         for container in containers:
+            print container
             cont = docker.Container(log.info['containers'][container]['IMAGE'], container)
             try:
                 status = cont.info()['State']['Status']
-            except OSError:
+            except:
                 print('Could not inspect container {}. It probably doesn\'t exist, will remove it from log'.format(container))
                 status = False
-                log.remove('containers', container)
-                log.write()
                 continue
 
             if status == 'running':
             # Kill the container instead of stopping it, so that effect can be felt py parent process
                 utils.xrun('docker', ['kill', container])
                 cont.remove()
-                log.remove('containers', container)
-                log.write()
             elif status == 'exited':
                 cont.remove()
-                log.remove('containers', container)
-                log.write()
 
+            log.remove('containers', container)
+            log.write()
 
 def main(argv):
     for i, arg in enumerate(argv):
@@ -574,7 +571,7 @@ build   : Build a set of stimela images
 pull    : pull a stimela base images
 run     : Run a stimela script
 images  : List stimela images
-cabs    : List active stimela containers
+cabs    : Manage cab images
 ps      : List running stimela scripts
 kill    : Gracefully kill runing stimela process
 clean   : Clean up tools for stimela

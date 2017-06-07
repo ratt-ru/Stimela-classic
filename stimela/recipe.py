@@ -478,6 +478,9 @@ class Recipe(object):
                     job.job.stop()
                     job.job.remove()
 
+                self.proc_logger.remove('processes', self.pid)
+                self.proc_logger.write()
+
         self.proc_logger.remove('processes', self.pid)
         self.proc_logger.write()
 

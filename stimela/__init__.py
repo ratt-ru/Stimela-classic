@@ -219,17 +219,11 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
 
     if args.cab_doc:
         name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
-        cabdir = cabs_[name]['DIR']
+        try:
+            cabdir = cabs_[name]['DIR']
+        except KeyError:
+            raise RuntimeError('The cab you requested is not known to stimela, or has not been built. Run \'stimela cabs -l\' to see which cabs have been built')
         info(cabdir)
-
-    elif args.list:
-        _cabs = []
-        for cab in cabs_:
-            # strip away the label
-            name = cab.split('{}_'.format(args.build_label))[1]
-            _cabs.append(name)
-        # print them cabs
-        print( ',  '.join(_cabs) )
 
     elif args.list_summary:
         for key,val in cabs_.iteritems():
@@ -240,6 +234,14 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
                 info(cabdir, header=True)
             except IOError:
                 pass
+    else:
+        _cabs = []
+        for cab in cabs_:
+            # strip away the label
+            name = cab.split('{}_'.format(args.build_label))[1].split('/')[1]
+            _cabs.append(name)
+        # print them cabs
+        print( ', '.join(_cabs) )
 
 
 def run(argv):

@@ -3,5 +3,5 @@ MAINTAINER <sphemakh@gmail.com>
 ENV TERM xterm
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-ENTRYPOINT bash
+ENTRYPOINT sh
 CMD python /code/run.py 2>&1 | tee -a $LOGFILE ; (exit ${PIPESTATUS})

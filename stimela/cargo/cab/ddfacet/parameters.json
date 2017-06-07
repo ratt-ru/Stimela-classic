@@ -7,13 +7,19 @@
     "binary": "DDF.py", 
     "msdir": "true", 
     "parameters": [
-        #
-        # Data section
-        #
+        {
+            "info": "Custom parset file (note: all paths in the parset must be relative to the mount points inside the container). Advance usage only.",
+            "name": "Parset",
+            "default": "",
+            "dtype": "file",
+            "io": "input",
+            "required": false
+        },
         {
             "info": "Name(s) of database to image",
             "name": "Data-MS",
             "default": null,
+            "io": "msfile",
             "dtype": "list:file",
             "required": false,
         },
@@ -41,9 +47,6 @@
             "dtype": "bool",
             "required": false, 
         },
-        #
-        # Predict section
-        #
         {
             "info": "MS column to write predict to. Can be left empty to disable",
             "name": "Predict-ColName",
@@ -66,6 +69,7 @@
             "name": "Predict-FromImage",
             "default": null,
             "dtype": "file",
+            "io": "input",
             "required": false
         },
         {
@@ -73,6 +77,7 @@
             "name": "Predict-InitDicoModel",
             "default": null,
             "dtype": "file",
+            "io": "input",
             "required": false
         },
         {
@@ -82,9 +87,6 @@
             "dtype": "bool",
             "required": false
         },
-        #
-        # Data Selection section
-        #
         {
             "info": "Default FIELD_ID to read",
             "name": "Selection-Field",
@@ -163,21 +165,21 @@
             "required": false
         },
         {
-            "info": "Output name for restoring beam"
+            "info": "Output name for restoring beam",
             "name": "Output-RestoringBeam",
             "default": null,
             "dtype": "str",
             "required": false
         },
         {
-            "info": "Additionally output specified set of images. See Output-Images for arguments"
+            "info": "Additionally output specified set of images. See Output-Images for arguments",
             "name": "Output-Also",
             "default": "",
             "dtype": "str",
             "required": false
         },
         {
-            "info": "Specify cubes to output. Any combination of MmRrIi are acceptable. See Output-Images for explanation on types"
+            "info": "Specify cubes to output. Any combination of MmRrIi are acceptable. See Output-Images for explanation on types",
             "name": "Output-Cubes",
             "default": "",
             "dtype": "str",
@@ -190,9 +192,6 @@
             "dtype": "str",
             "required": false,
         },
-        #
-        # General options section
-        #
         {
             "info": "Imager mode",
             "name": "Imager-Mode",
@@ -232,9 +231,6 @@
             "dtype": "float",
             "required": false,
         },
-        #
-        # Spacial tesselation section
-        #
         {
             "info": "Number of facets to use",
             "name": "Facets-NFacets",
@@ -247,6 +243,7 @@
             "name": "Facets-CatNodes",
             "default": null,
             "dtype": "file",
+            "io": "input",
             "required": false, 
         },
         {
@@ -284,9 +281,6 @@
             "dtype": "float",
             "required": false, 
         },
-        #
-        # Data and imaging weight settings
-        #
         {
             "info": "Read data weights from specified column. Use WEIGHT_SPECTRUM or WEIGHT, more rarely IMAGING_WEIGHT.",
             "name": "Weight-ColName",
@@ -324,15 +318,12 @@
             "dtype": "float",
             "required": false
         },
-        #
-        # RIME parameters section
-        #
         {
             "info": "Gridding polarization mode (non-stokes I is only supported in Imager-Mode=Dirty)",
             "name": "RIME-PolMode",
             "default": "I",
             "dtype": "str",
-            "required": false
+            "required": false,
             "choises": ["I","V","Q","U","IQ","QI","IU","UI","IV","VI","UQ","QU","QV","VQ","UV","VU","IQU","IUQ","UIQ","UQI","QUI","QIU","IQV","IVQ","VIQ","VQI","QVI","QIV","IUV","IVU","VIU","VUI","UVI","UIV","QUV","QVU","VQU","VUQ","UVQ","UQV","IQUV","IQVU","IUQV","IUVQ","IVQU","IVUQ","QIUV","QIVU","VIUQ","VIQU","UIVQ","UIQV","QUIV","UQIV","UVIQ","VUIQ","VQIU","QVIU","QUVI","UQVI","UVQI","VUQI","VQUI","QVUI"]
         },
         {
@@ -340,7 +331,7 @@
             "name": "RIME-FFTMachine",
             "default": "FFTW",
             "dtype": "str",
-            "required": false
+            "required": false,
             "choises": ["FFTW"]
         },
         {
@@ -348,7 +339,7 @@
             "name": "RIME-ForwardMode",
             "default": "BDA-degrid",
             "dtype": "str",
-            "required": false
+            "required": false,
             "choises": ["BDA-degrid", "Classic", "Montblanc"]
         },
         {
@@ -356,7 +347,7 @@
             "name": "RIME-BackwardMode",
             "default": "BDA-grid",
             "dtype": "str",
-            "required": false
+            "required": false,
             "choises": ["BDA-grid"]
         },
         {
@@ -374,9 +365,6 @@
             "required": false,
             "choises":["Center", "Edge"]
         },
-        #
-        # Convolution function settings
-        #
         {
             "info": "Convolution filter oversampling factor",
             "name": "CF-OverS",
@@ -402,12 +390,9 @@
             "info": "Overwrite maximum w (in metres) of the interferometer sampling. This controlls the support needed for the w kernels and can bring down computational costs if more error is tolerated on the longest baselines",
             "name": "CF-wmax",
             "default": 10000.0,
-            "dtype": "float"
+            "dtype": "float",
             "required": false
         },
-        #
-        # Compression settings
-        #
         {
             "info": "Maximum tolerated BDA decorrelation response factor for gridding",
             "name": "Comp-GridDecorr",
@@ -445,9 +430,6 @@
             "dtype": "str",
             "required": false
         },
-        #
-        # Parallelization options
-        #
         {
             "info": "Number of processes / threads to use in parallel mode. 0 - all available. 1 - disable parallelism",
             "name": "Parallel-NCPU",
@@ -463,16 +445,12 @@
             "required": false
         },
         {
-            "info": "Pins parent process to specified core. This should be set to a vcore that is not used by forked processes, this option is ignored when using option 'disable' or 'disable_ht' for Parallel-Affinity."
+            "info": "Pins parent process to specified core. This should be set to a vcore that is not used by forked processes, this option is ignored when using option 'disable' or 'disable_ht' for Parallel-Affinity.",
             "name": "Parallel-Affinity",
             "default": "0",
             "dtype": "str",
             "required": false
         },
-        #
-        # Cache management section
-        # Note: this is different from the default options for DDF - dont generally want auto-stored state
-        #
         {
             "info": "Reset all caches (including PSF and dirty image)",
             "name": "Cache-Reset",
@@ -548,9 +526,6 @@
             "dtype": "bool",
             "required": false,
         },
-        #
-        # Beam section
-        #
         {
             "info": "Beam model to use.",
             "name": "Beam-Model",
@@ -655,9 +630,6 @@
             "dtype": "int",
             "required": false
         },
-        #
-        # MFS subband selection section
-        #
         {
             "info": "MHz Gridding cube frequency step. If 0, --Freq-NBand is used instead.",
             "name": "Freq-BandMHz",
@@ -686,9 +658,6 @@
             "dtype": "int",
             "required": false
         },
-        #
-        # DDE Solutions application setion
-        # Undocumented: Use at your own peril!
         {
             "info": "DDESOLUTIONS_DDSOLS (???)",
             "name": "DDESolutions-DDSols",
@@ -790,9 +759,575 @@
             "dtype": "str",
             "required": false
         },
-        #
-        # General deconvolution options section
-        #
-
+        {
+            "info": "Deconvolution algorithm.",
+            "name": "Deconv-Mode",
+            "default": "HMP",
+            "dtype": "str",
+            "choises": ["HMP","Hogbom","SSD","GAClean"],
+            "required": false
+        },
+        {
+            "info": "N Max number of major cycles.",
+            "name": "Deconv-MaxMajorIter",
+            "default": 20,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "N Max number of (overall) minor cycle iterations (HMP, Hogbom).",
+            "name": "Deconv-MaxMinorIter",
+            "default": 20000,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Allow negative components (HMP, Hogbom).",
+            "name": "Deconv-AllowNegative",
+            "default": true,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "GAIN Loop gain (HMP, Hogbom).",
+            "name": "Deconv-Gain",
+            "default": 0.1,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Jy Absolute flux threshold at which deconvolution is stopped (HMP, Hogbom).",
+            "name": "Deconv-FluxThreshold",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "X Cycle factor: used to set a minor cycle stopping threshold based on PSF sidelobe level (HMP, Hogbom). Use 0 to disable, otherwise 2.5 is a reasonable value, but may lead to very shallow minor cycle.",
+            "name": "Deconv-CycleFactor",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "X Set minor cycle stopping threshold to X*{residual RMS} (HMP, Hogbom).",
+            "name": "Deconv-RMSFactor",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "X Set minor cycle stopping threshold to X*{peak residual} (HMP, Hogbom).",
+            "name": "Deconv-PeakFactor",
+            "default": 0.15,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "N How many samples to draw for RMS computation. Use 0 to use all pixels (most precise).",
+            "name": "Deconv-NumRMSSamples",
+            "default": 10000,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "SF when --Comp-Sparsification is on, use approximate (i.e. central facet) PSF for cleaning while operating above the given sparsification factor (SF). This speeds up HMP reinitialization in major cycles. A value of 1-10 is sensible. Set to 0 to always use precise per-facet PSF.",
+            "name": "Deconv-ApproximatePSF",
+            "default": 0,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "BOX determines the size of the PSF subtraction box used in CLEAN-style deconvolution (if appropriate). Use \"auto\" (or \"sidelobe\") for a Clark-CLEAN-style box taken out to a certain sidelobe (faster). Use \"full\" to subtract the full PSF, Hogbom-style (more accurate, can also combine with --Image-PSFOversize for maximum accuracy). Use an integer number to set an explicit box radius, in pixels. (HMP)",
+            "name": "Deconv-PSFBox",
+            "default": "auto",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "FILENAME External clean mask image (FITS format)",
+            "name": "Mask-External",
+            "default": null,
+            "io": "input",
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "MASK_AUTO Use automatic masking",
+            "name": "Mask-Auto",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "MASK_AUTOSTATS The parameters to compute the noise-map-based mask for step i+1 from the residual image at step i. Should be [box_size,box_step,Threshold_in_sigma]",
+            "name": "Mask-AutoStats",
+            "default": "[60, 2, 20]",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "MASK_AUTOBRUTALHMP If noise map is computed, this option enabled, it first computes an image plane deconvolution with a high gain value, and compute the noise-map-based mask using the brutal-restored image",
+            "name": "Mask-AutoBrutalHMP",
+            "default": true,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "MIN,MAX,N String list of alphas to fit. e.g [-1.0, 1.0, 11]",
+            "name": "HMP-Alpha",
+            "default": "[-1.0, 1.0, 11]",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "LIST String list of scales to use e.g [0]",
+            "name": "HMP-Scales",
+            "default": "[0]",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "HMP_RATIOS (???)",
+            "name": "HMP-Ratios",
+            "default": "['']",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "N Number of PA steps to use.",
+            "name": "HMP-NTheta",
+            "default": 6,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Solver mode: pseudoinverse, or non-negative least squares.",
+            "name": "HMP-SolverMode",
+            "default": "PI",
+            "dtype": "str",
+            "choises": ["PI","NNLS"],
+            "required": false
+        },
+        {
+            "info": "Allow the maximum residual to increase within the minor cycle",
+            "name": "HMP-AllowResidIncrease",
+            "default": true,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Weighting taper size for HMP fit. If 0, determined automatically.",
+            "name": "HMP-Taper",
+            "default": 0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Basis function support size. If 0, determined automatically.",
+            "name": "HMP-Support",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "HMP_KAPPA Regularization parameter. If stddev of per-alpha solutions exceeds the maximum solution amplitude divided by Kappa, forces a fully-regularized solution. Use 0 for no such regularization.",
+            "name": "HMP-Kappa",
+            "default": 1.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "HOGBOM_POLYFITORDER polynomial order for frequency fitting",
+            "name": "Hogbom-PolyFitOrder",
+            "default": 3,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "HOGBOM_MAXLENGTHSCALE the value of L at which we specify bounary data (eg. phi(L) = 0)",
+            "name": "Hogbom-MaxLengthScale",
+            "default": 5,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "HOGBOM_FREQMODE Poly or GPR",
+            "name": "Hogbom-FreqMode",
+            "default": "Poly",
+            "dtype": "str",
+            "choises": ["Poly","GPR"],
+            "required": false
+        },
+        {
+            "info": "HOGBOM_NUMBASISFUNCS The number of basis functions to use for the RR GPR",
+            "name": "Hogbom-NumBasisFuncs",
+            "default": 12,
+            "dtype": "int",
+            "required": false
+        },
+        {
+             "info": "URL for the TensorflowServer, e.g. grpc://tensorflow.server.com:8888/",
+             "name": "Montblanc-TensorflowServerTarget",
+             "default": "",
+             "dtype": "str",
+             "required": false
+        },
+        {
+             "info": "Enable parallel mode in SSD clean",
+             "name": "SSDClean-Parallel",
+             "default": true,
+             "dtype": "bool",
+             "required": false
+        },
+        {
+            "info": "SSDCLEAN_ISLANDDECONVMODE (???)",
+            "name": "SSDClean-IslandDeconvMode",
+            "default": "GA",
+            "dtype": "str",
+            "required": false,
+            "choises": ["GA"]
+        },
+        {
+            "info": "SSDCLEAN_SSDSOLVEPARS (???)",
+            "name": "SSDClean-SSDSolvePars",
+            "default": "['S', 'Alpha']",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_SSDCOSTFUNC (???)",
+            "name": "SSDClean-SSDCostFunc",
+            "default": "['Chi2', 'MinFlux']",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_BICFACTOR (???)",
+            "name": "SSDClean-BICFactor",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_ARTIFACTROBUST (???)",
+            "name": "SSDClean-ArtifactRobust",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_CONVFFTSWITCH (???)",
+            "name": "SSDClean-ConvFFTSwitch",
+            "default": 1000,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_NENLARGEPARS (???)",
+            "name": "SSDClean-NEnlargePars",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_NENLARGEDATA (???)",
+            "name": "SSDClean-NEnlargeData",
+            "default": 2,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_RESTOREMETROSWITCH (???)",
+            "name": "SSDClean-RestoreMetroSwitch",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_MINSIZEINITHMP (???)",
+            "name": "SSDClean-MinSizeInitHMP",
+            "default": -1,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "SSDCLEAN_MINMAXGROUPDISTANCE (???)",
+            "name": "SSDClean-MinMaxGroupDistance",
+            "default": "[5, 50]",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "GACLEAN_NSOURCEKIN (???)",
+            "name": "GAClean-NSourceKin",
+            "default": "100",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "GACLEAN_NMAXGEN (???)",
+            "name": "GAClean-NMaxGen",
+            "default": "100",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "MORESANE_MOSOLVEPARS (default=[S]): Solving parameters for MORESANE (only Flux & monochannel for the moment)",
+            "name": "MORESANE-MOSolvePars",
+            "default": "['S']",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "MORESANE_ACCURACY (default=1e-6): Threshold on the standard deviation of the residual noise. Exit main loop when this threshold is reached.",
+            "name": "MORESANE-Accuracy",
+            "default": 1e-06,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "MORESANE_CONVMODE (default='linear'): Specifier for convolution mode - linear or circular.",
+            "name": "MORESANE-ConvMode",
+            "default": "linear",
+            "dtype": "str",
+            "required": false,
+            "choises": ["linear","circular"]
+        },
+        {
+            "info": "MORESANE_CORECOUNT (default=1): For multiprocessing, specifies the number of cores.",
+            "name": "MORESANE-CoreCount",
+            "default": 1,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_DECOMMODE (default='ser'): (ser) = serial, (mp) = multiprocessing of the IUWT decomposition",
+            "name": "MORESANE-DecomMode",
+            "default": "ser",
+            "dtype": "str",
+            "required": false,
+            "choises": ["ser","mp"]
+        },
+        {
+            "info": "MORESANE_EDGEEXCL (default=0) : Width (in pixel) of the area to discard from border",
+            "name": "MORESANE-EdgeExcl",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_EDGEOFFSET (default=0): Numeric value for an additional user- specified number of edge pixels to be ignored. This is added to the minimum suppression.",
+            "name": "MORESANE-EdgeOffset",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_EDGESUPPRESSION (default=False): Boolean specifier for whether or not the edges are to be suppressed.",
+            "name": "MORESANE-EdgeSuppression",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "MORESANE_ENFORCEPOSITIVITY (default=False): Boolean specifier for whether or not a model must be strictly positive.",
+            "name": "MORESANE-EnforcePositivity",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "MORESANE_EXTRACTIONMODE (default='cpu'): Specifier for mode to be used - cpu.",
+            "name": "MORESANE-ExtractionMode",
+            "default": "cpu",
+            "dtype": "str",
+            "required": false,
+            "choises": ["cpu"]
+        },
+        {
+            "info": "MORESANE_FLUXTHRESHOLD (default=0): Float value, assumed to be in Jy, which specifies an approximate convolution depth.",
+            "name": "MORESANE-FluxThreshold",
+            "default": 0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "MORESANE_INTEXCL (default=0) : Width of the box (in pixel) to discard from the center.",
+            "name": "MORESANE-IntExcl",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_LOGLEVEL (default=INFO) : Logging level in the python logger.",
+            "name": "MORESANE-LogLevel",
+            "default": "INFO",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "MORESANE_LOOPGAIN (default=0.1): Loop gain for MORESANE deconvolution.",
+            "name": "MORESANE-LoopGain",
+            "default": 0.5,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "MORESANE_MAJORLOOPMITER (default=100): Maximum number of iterations allowed in the major loop. Exit condition.",
+            "name": "MORESANE-MajorLoopMiter",
+            "default": 100,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_MINORLOOPMITER (default=30): Maximum number of iterations allowed in the minor loop. Serves as an exit condition
+         when the SNR is does not reach a maximum.",
+            "name": "MORESANE-MinorLoopMiter",
+            "default": 30,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_NEGCOMP Enable negative components in model",
+            "name": "MORESANE-NegComp",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "MORESANE_SCALECOUNT (default=None): Maximum scale to be considered - maximum scale considered during initialisation.",
+            "name": "MORESANE-ScaleCount",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "MORESANE_SIGMALEVEL (default=4): Number of sigma at which thresholding is to be performed.",
+            "name": "MORESANE-SigmaLevel",
+            "default": 4,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_SINGLERUN (default=False). If false, will run moresane sequentially scale by scale from startscale to stopscale, else, will use scalecount as a maximum scale.",
+            "name": "MORESANE-SingleRun",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "MORESANE_STARTSCALE Starting wavelet scale in IUWT",
+            "name": "MORESANE-StartScale",
+            "default": 1,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_STOPSCALE Stopping wavelet scale in IUWT",
+            "name": "MORESANE-StopScale",
+            "default": 20,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_SUBREGION (default=None): Size, in pixels, of the central region to be analyzed and deconvolved.",
+            "name": "MORESANE-SubRegion",
+            "default": null,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "MORESANE_TOLERANCE (default=0.75): Tolerance level for object extraction. Significant objects contain wavelet coefficient
+        s greater than the tolerance multiplied by the maximum wavelet coefficient in the scale under consideration.",
+            "name": "MORESANE-Tolerance",
+            "default": 0.75,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "log memory use",
+            "name": "Log-Memory",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "able progress bars and other pretty console output",
+            "name": "Log-Boring",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "append to log file if it exists (default truncates)",
+            "name": "Log-Append",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "grid worker processes upon launch (with SIGSTOP). Useful to attach gdb to workers.",
+            "name": "Debug-PauseGridWorkers",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "L,M Shift in facet coordinates in arcseconds for l and m (this phase steers the sky over the image plane).",
+            "name": "Debug-FacetPhaseShift",
+            "default": "[0.0, 0.0]",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Compute and print RMS in minor cycle iterations.",
+            "name": "Debug-PrintMinorCycleRMS",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Dump intermediate minor cycle solutions to a file. Use 0 or 1, or give an explicit list of things to dump",
+            "name": "Debug-DumpCleanSolutions",
+            "default": "0",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "X,Y,R Also dump postage stamps when cleaning within a radius R of X,Y. Implies --Debug-DumpCleanSolutions.",
+            "name": "Debug-DumpCleanPostageStamps",
+            "default": "",
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Throw an exception when a fitted CLEAN component is below this threshold in flux. Useful for debugging.",
+            "name": "Debug-CleanStallThreshold",
+            "default": 0.0,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Enable memory-greedy mode. Retain certain shared arrays in RAM as long as possible.",
+            "name": "Debug-MemoryGreedy",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Verbosity level for multiprocessing.",
+            "name": "Debug-APPVerbose",
+            "default": "0",
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "N seed random number generator with explicit seed, if given. Useful for reproducibility of the random-based optimizations (sparsification, etc.).",
+            "name": "Misc-RandomSeed",
+            "default": null,
+            "dtype": "int",
+            "required": false
+        }
     ]
 }

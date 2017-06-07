@@ -17,8 +17,10 @@ parset = None
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
-    if name == 'parset':
-        parset = ' '.join(value)
+    if name == 'Parset' and value is not None:
+        parset = value
+        continue
+    if name == 'Parset' and value is None:
         continue
 
     if value is True:
@@ -29,6 +31,5 @@ for param in cab['parameters']:
     args.append(arg)
 
 if parset is not None:
-    args.append(parset)
-
+    args.insert(0, parset)
 utils.xrun(cab['binary'], args)

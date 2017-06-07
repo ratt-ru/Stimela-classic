@@ -1,7 +1,7 @@
 {
     "task": "casa_plotms", 
     "base": "stimela/casa", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "CASA plotms task", 
     "prefix": " ", 
     "binary": "plotms", 
@@ -509,12 +509,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "overwrite"
-        }, 
-        {
-            "info": "If true the taskname must be started using plotcal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
         }
     ]
 }

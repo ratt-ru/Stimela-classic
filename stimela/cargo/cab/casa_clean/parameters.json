@@ -1,7 +1,7 @@
 {
     "task": "casa_clean", 
     "base": "stimela/casa", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "CASA Clean task. For imaging and deconvolution", 
     "prefix": "", 
     "binary": "clean", 
@@ -431,8 +431,8 @@
             "choices": [
                 "natural", 
                 "uniform", 
-                "briggs",
-                "radial",
+                "briggs", 
+                "radial", 
                 "superuniform"
             ]
         }, 

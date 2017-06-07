@@ -1,4 +1,4 @@
-FROM stimela/meqtrees:0.2.9prelease
+FROM stimela/meqtrees:0.2.9
 MAINTAINER <sphemakh@gmail.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

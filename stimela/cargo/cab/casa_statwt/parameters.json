@@ -1,7 +1,7 @@
 {
     "task": "casa_statwt", 
     "base": "stimela/casa", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Reweight visibilities according to their scatter (Experimental)", 
     "prefix": "", 
     "binary": "statwt", 

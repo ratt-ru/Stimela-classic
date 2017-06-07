@@ -1,7 +1,7 @@
 {
     "task": "fitstool", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Convinience tools for manipulating FITS images", 
     "prefix": "--", 
     "binary": "fitstool.py", 

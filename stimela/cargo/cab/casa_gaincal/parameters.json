@@ -1,7 +1,7 @@
 {
     "task": "casa_gaincal", 
     "base": "stimela/casa", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Specify Calibration Values of Various Types", 
     "prefix": "-", 
     "binary": "gaincal", 

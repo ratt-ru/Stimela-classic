@@ -1,7 +1,7 @@
 {
     "task": "SoFiA", 
     "base": "stimela/sofia", 
-    "tag": "dev", 
+    "tag": "0.2.9", 
     "description": "SoFiA, the Source Finding Application, is a new HI source finding pipeline intended to detect and parameterise galaxies in HI data cubes. While the software is still under development, several stable versions of SoFiA have already been released. This wiki contains user documentation and technical information on SoFiA and its individual modules.", 
     "prefix": "--", 
     "binary": "sofia_pipeline.py", 
@@ -28,7 +28,7 @@
         {
             "info": null, 
             "dtype": "float", 
-            "default": 1e-05, 
+            "default": "1e-05", 
             "name": "CNHI.pReq"
         }, 
         {
@@ -178,17 +178,17 @@
         }, 
         {
             "info": null, 
-            "dtype": "file",
+            "dtype": "file", 
             "default": null, 
-            "io"  :  "input",
-            "name": "import.inFile"
+            "name": "import.inFile", 
+            "io": "input"
         }, 
         {
             "info": null, 
             "dtype": "file", 
-            "default": null,
-            "io"  :  "input",
-            "name": "import.maskFile"
+            "default": null, 
+            "name": "import.maskFile", 
+            "io": "input"
         }, 
         {
             "info": null, 
@@ -204,10 +204,10 @@
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io" : "input",
+            "dtype": "file", 
             "default": null, 
-            "name": "import.weightsFile"
+            "name": "import.weightsFile", 
+            "io": "input"
         }, 
         {
             "info": null, 
@@ -255,8 +255,8 @@
             "info": null, 
             "dtype": "file", 
             "default": null, 
-            "io"  :  "input",
-            "name": "optical.sourceCatalogue"
+            "name": "optical.sourceCatalogue", 
+            "io": "input"
         }, 
         {
             "info": null, 

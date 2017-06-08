@@ -174,12 +174,6 @@
             "default": null, 
             "name": "spwmap", 
             "delimeter": ","
-        }, 
-        {
-            "info": "If true the taskname must be started using polcal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "async"
         }
     ]
 }

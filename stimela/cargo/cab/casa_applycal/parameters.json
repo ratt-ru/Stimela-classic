@@ -148,12 +148,6 @@
             "dtype": "bool", 
             "default": true, 
             "name": "flagbackup"
-        }, 
-        {
-            "info": "If true the taskname must be started using applycal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "async"
         }
     ]
 }

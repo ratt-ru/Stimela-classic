@@ -481,18 +481,6 @@
             "dtype": "int", 
             "default": 1, 
             "name": "chanbin"
-        }, 
-        {
-            "info": "Pre-average data across time before analyzing visibilities for flagging.", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "timeavg"
-        }, 
-        {
-            "info": "Bin width for time average in seconds", 
-            "dtype": "int", 
-            "default": 1, 
-            "name": "timebin"
         }
     ]
 }

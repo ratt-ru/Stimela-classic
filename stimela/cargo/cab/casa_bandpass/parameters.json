@@ -226,12 +226,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "parang"
-        }, 
-        {
-            "info": "If true the taskname must be started using bandpass(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
         }
     ]
 }

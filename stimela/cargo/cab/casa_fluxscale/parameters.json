@@ -71,12 +71,6 @@
             "dtype": "int", 
             "default": 1, 
             "name": "fitorder"
-        }, 
-        {
-            "info": "If true the taskname must be started using fluxscale(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "async"
-        }
+        } 
     ]
 }

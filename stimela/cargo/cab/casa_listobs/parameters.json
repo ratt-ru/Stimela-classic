@@ -118,12 +118,6 @@
             "dtype": "int", 
             "default": null, 
             "name": "cachesize"
-        }, 
-        {
-            "info": "If true the taskname must be started using listobs(...)", 
-            "dtype": "bool", 
-            "default": null, 
-            "name": "async"
         }
     ]
 }

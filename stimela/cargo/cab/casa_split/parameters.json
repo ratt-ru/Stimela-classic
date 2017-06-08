@@ -120,12 +120,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "keepms"
-        }, 
-        {
-            "info": "If true the taskname must be started using split(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
         }
     ]
 }

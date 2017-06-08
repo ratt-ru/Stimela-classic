@@ -140,7 +140,7 @@ def build(argv):
     if args.us_only:
         CABS = args.us_only.split(',')
     else:
-        # Start with images that have been logged
+        # Images that have been logged
         # This is crucial for making custom cabs
         logged_images = log.read().get('images', {})
         for key,val in logged_images.iteritems():
@@ -151,8 +151,9 @@ def build(argv):
         IGNORE = args.ignore_cabs.split(",")
         CABS = set(CAB).difference(set(IGNORE))
 
-    cabs += ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS]
-    dockerfiles += [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS]
+    # Prioritise package images over logged images
+    cabs = ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS] + cabs
+    dockerfiles = [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS] + dockerfiles
     built = []
     for image, dockerfile in zip(cabs,dockerfiles):
         if image not in built:

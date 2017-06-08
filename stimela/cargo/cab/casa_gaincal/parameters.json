@@ -75,7 +75,7 @@
         {
             "info": "Optional complex data selection (ignore for now)", 
             "dtype": "str", 
-            "default": "", 
+            "default": null, 
             "name": "msselect"
         }, 
         {

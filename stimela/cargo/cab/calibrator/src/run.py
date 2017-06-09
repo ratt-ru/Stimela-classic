@@ -46,7 +46,9 @@ if flagset:
     params["ms_sel.ms_write_flag_policy"] = "add to set" if jdict.pop("write-flag-policy", "add") else "replace set"
 
 # Read flags options
-params["ms_rfl.read_flagsets"] = jdict.pop("read-flagsets", "-stefcal")
+readflagsets = jdict.pop("read-flagsets", False)
+if readflagsets:
+    params["ms_rfl.read_flagsets"] = readflagsets
 params["ms_rfl.read_legacy_flags"] = jdict.pop("read-legacy-flags", 1)
 
 params["ms_sel.msname"] = msname

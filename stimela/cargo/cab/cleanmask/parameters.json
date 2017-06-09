@@ -70,7 +70,7 @@
             "dtype": "int", 
             "default": 20, 
             "required": false, 
-            "name": "diters"
+            "name": "diter"
         }, 
         {
             "info": "Include negative pixels when creating mask", 

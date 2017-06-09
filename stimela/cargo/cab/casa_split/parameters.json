@@ -119,7 +119,7 @@
             "info": "If the input is a multi-MS, make the output one, too. (experimental)", 
             "dtype": "bool", 
             "default": false, 
-            "name": "keepms"
+            "name": "keepmms"
         }
     ]
 }

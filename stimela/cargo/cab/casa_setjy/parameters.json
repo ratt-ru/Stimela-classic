@@ -139,20 +139,6 @@
             "name": "fluxdict"
         }, 
         {
-            "info": "Field model. If using own model, set 'custom_model' to True", 
-            "check_io": false, 
-            "name": "model", 
-            "io": "input", 
-            "default": null, 
-            "dtype": "file"
-        }, 
-        {
-            "info": "Set to 'True' if using custom model", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "custom_model"
-        }, 
-        {
             "info": "List the available modimages for VLA calibrators or Tb models for Solar System objects", 
             "dtype": "bool", 
             "default": false, 

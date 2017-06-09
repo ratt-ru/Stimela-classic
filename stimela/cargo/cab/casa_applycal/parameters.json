@@ -78,7 +78,7 @@
         {
             "info": "Use callib or traditional cal apply parameters", 
             "dtype": "bool", 
-            "default": true, 
+            "default": false, 
             "name": "docallib"
         }, 
         {

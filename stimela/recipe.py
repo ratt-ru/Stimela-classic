@@ -118,16 +118,22 @@ class StimelaJob(object):
         if offenders:
             raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
                              ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(name))
-        # Get location of template parameters file
-        parameter_file = '{0}/{1}/parameters.json'.format(CAB_PATH, image.split('/')[-1].split(':')[0])
 
         ## Update I/O with values specified on command line
         # TODO (sphe) I think this feature should be removed
         script_context = self.recipe.stimela_context
-        input = input or script_context.get('_STIMELA_INPUT', None)
-        output = output or script_context.get('_STIMELA_OUTPUT', None)
-        msdir = msdir or script_context.get('_STIMELA_MSDIR', None)
-        build_label = build_label or script_context.get('_STIMELA_BUILD_LABEL', USER)
+        input = script_context.get('_STIMELA_INPUT', None) or input
+        output = script_context.get('_STIMELA_OUTPUT', None) or output
+        msdir = script_context.get('_STIMELA_MSDIR', None) or msdir
+        build_label = script_context.get('_STIMELA_BUILD_LABEL', None) or build_label
+
+        # Get location of template parameters file
+        cabs_logger = stimela.get_cabs('{0:s}/{1:s}_stimela_logfile.json'.format(stimela.LOG_HOME, build_label))
+        try:
+            cabpath = cabs_logger['{0:s}_{1:s}'.format(build_label, image)]['DIR']
+        except KeyError:
+            raise RuntimeError('Cab {} has is uknown to stimela. Was it built?'.format(image))
+        parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
 
@@ -249,7 +255,7 @@ class Recipe(object):
         self.stimela_path = os.path.dirname(docker.__file__)
 
         self.name = name
-        self.build_label = build_label
+        self.build_label = USER or build_label
         self.ms_dir = ms_dir
         if not os.path.exists(self.ms_dir):
             self.log.info('MS directory \'{}\' does not exist. Will create it'.format(self.ms_dir))

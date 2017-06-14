@@ -1,0 +1,70 @@
+{
+    "task": "casa_ft", 
+    "base": "stimela/casa", 
+    "tag": "0.2.9", 
+    "description": "Insert a source model  a visibility set",
+    "prefix": "", 
+    "binary": "ft", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input MS.  Output goes to vis + '.contsub' (will be overwritten if already exists)", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Select field(s) using id(s) or name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
+        {
+            "info": "Spw selection", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        },
+        {
+            "name": "model",
+            "info": "Name of input model image(s)",
+            "dtype": "list:file",
+            "io": "input",
+            "default": null
+        },
+        {
+            "name": "nterms",
+            "info": "Number of terms used to model the sky frequency dependence",
+            "dtype": "int",
+            "default": 1
+        },
+        {
+            "name": "reffreq",
+            "info": " Reference frequency (e.g. '1.5e+9' or '1.5GHz')",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "complist",
+            "info": "Name of component list",
+            "dtype": "file",
+            "io": "input",
+            "default": null
+        },
+        {
+            "name": "incremental",
+            "info": "Add to the existing model visibility",
+            "dtype": "bool",
+            "default": null
+        },
+        {
+            "name": "usescratch",
+            "info": "If True predicted  visibility  is stored in MODEL_DATA column",
+            "dtype": "bool",
+            "default": false
+        }
+    ]
+}

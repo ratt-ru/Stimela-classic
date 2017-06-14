@@ -145,6 +145,12 @@
             "name": "listmodels"
         }, 
         {
+            "info": "File location for field model", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "model"
+        }, 
+        {
             "info": "Will create if necessary and use the MODEL_DATA", 
             "dtype": "bool", 
             "default": false, 

@@ -377,13 +377,13 @@
             "info": "Set maximum uv distance", 
             "dtype": "float", 
             "default": null, 
-            "name": "maxuvw-l"
+            "name": "maxuv-l"
         }, 
         {
-            "info": "Set maximum uv distance", 
+            "info": "Set minimum uv distance", 
             "dtype": "float", 
             "default": null, 
-            "name": "maxuvw-l"
+            "name": "minuv-l"
         }, 
         {
             "info": "Maximum number of clean iterations to perform", 

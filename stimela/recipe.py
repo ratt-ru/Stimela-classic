@@ -7,6 +7,7 @@ from stimela.cargo import cab
 import logging
 import inspect
 import re
+from stimela.dismissable import dismissable
 from stimela_misc import version
 
 USER = os.environ["USER"]
@@ -41,78 +42,63 @@ class PipelineException(Exception):
     def remaining(self):
         return self._remaining
 
-class Recipe(object):
-    def __init__(self, name, data=None,
-                 parameter_file_dir=None, ms_dir=None,
-                 tag=None, loglevel='INFO'):
-        """
-        Deifine and manage a stimela recipe instance.        
 
-        name    :   Name of stimela recipe
-        data    :   Path of stimela data. The data is assumed to be at Stimela/stimela/cargo/data
-        msdir   :   Path of MSs to be used during the execution of the recipe
-        tag     :   Use cabs with a specific tag
-        parameter_file_dir :   Will store task specific parameter files here
-        """
-
-        self.log = logging.getLogger('STIMELA')
-        self.log.setLevel(getattr(logging, loglevel))
-        # create file handler which logs even debug
-        # messages
-        name_ = name.lower().replace(' ', '_')
-        self.logfile = 'log-{}.txt'.format(name_)
-        self.resume_file = '.last_{}.json'.format(name_)
-
-        fh = logging.FileHandler(self.logfile)
-        fh.setLevel(logging.DEBUG)
-        # create console handler with a higher log level
-        ch = logging.StreamHandler(sys.stdout)
-        ch.setLevel(getattr(logging, loglevel))
-        # create formatter and add it to the handlers
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        fh.setFormatter(formatter)
-        # add the handlers to logger
-        self.log.addHandler(ch)
-        self.log.addHandler(fh)
-
-        self.stimela_context = inspect.currentframe().f_back.f_globals
-
-        self.stimela_path = os.path.dirname(docker.__file__)
+class StimelaJob(object):
+    def __init__(self, name, recipe, label=None, 
+                jtype='docker'):
 
         self.name = name
-        self.ms_dir = ms_dir
-        if not os.path.exists(self.ms_dir):
-            self.log.info('MS directory \'{}\' does not exist. Will create it'.format(self.ms_dir))
-            os.mkdir(self.ms_dir)
-        self.tag = tag
-        # create a folder to store config files
-        # if it doesn't exist. These config
-        # files can be resued to re-run the
-        # task
-        self.parameter_file_dir = parameter_file_dir or "stimela_parameter_files"
-        if not os.path.exists(self.parameter_file_dir):
-            self.log.info('Config directory not be found. Will create ./{}'.format(self.parameter_file_dir))
-            os.mkdir(self.parameter_file_dir)
+        self.recipe = recipe
+        self.label = label or '{0}_{1}'.format(name, id(name))
+        self.log = recipe.log
+        self.active = False
+        self.jtype = 'docker' # ['docker' or 'python']
+        self.job = None
+        self.created = False
 
-        self.containers = []
-        self.completed = []
-        self.failed = None
-        self.remaining = []
 
-        self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
-        self.pid = os.getpid()
-        self.proc_logger.log_process(self.pid, self.name)
-        self.proc_logger.write()
+    def run_python_job(self):
+            function = self.job['function']
+            options = self.job['parameters']
+            function(**options)
+            
 
-        self.log.info('---------------------------------')
-        self.log.info('Stimlela version {0}'.format(version.version))
-        self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
-        self.log.info('---------------------------------')
+    def run_docker_job(self):
+        if hasattr(self.job, '_cab'):
+            self.job._cab.update(self.job.config,
+                    self.job.parameter_file_name)
+	
+        self.created = False
+        self.job.create(*['--user {}'.format(UID)])
+        self.created = True
+        self.job.start()
+    
 
-    def add(self, image, name=None, config=None,
+    def python_job(self, function, parameters=None):
+        """
+        Run python function
+
+        function    :   Python callable to execute
+        name        :   Name of function (if not given, will used function.__name__)
+        parameters  :   Parameters to parse to function
+        label       :   Function label; for logging purposes
+        """
+        
+        if not callable(function):
+            raise RuntimeError('Object given as function is not callable')
+        
+        if self.name is None:
+            self.name = function.__name__
+
+        self.job = {
+                        'function'  :   function,
+                        'parameters':   parameters,
+                   }
+
+
+    def docker_job(self, image, config=None,
             input=None, output=None, msdir=None,
-            label=None, shared_memory='1gb'):
+            shared_memory='1gb', build_label=None):
         """
         Add a task to a stimela recipe
 
@@ -128,41 +114,50 @@ class Recipe(object):
         """
 
         # check if name has any offending charecters
-        offenders = re.findall('\W', name)
+        offenders = re.findall('\W', self.name)
         if offenders:
             raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
                              ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(name))
         # Get location of template parameters file
         parameter_file = '{0}/{1}/parameters.json'.format(CAB_PATH, image.split('/')[-1].split(':')[0])
-        msdir = msdir or self.ms_dir
-        
-        if name is None:
-            name = '{0}_{1}-{2}{3}'.format(USER, image, id(image), str(time.time()).replace('.', ''))
-        else:
-            name = '{0}-{1}{2}'.format(name, id(image), str(time.time()).replace('.', ''))
+
+        ## Update I/O with values specified on command line
+        # TODO (sphe) I think this feature should be removed
+        script_context = self.recipe.stimela_context
+        input = input or script_context.get('_STIMELA_INPUT', None)
+        output = output or script_context.get('_STIMELA_OUTPUT', None)
+        msdir = msdir or script_context.get('_STIMELA_MSDIR', None)
+        build_label = build_label or script_context.get('_STIMELA_BUILD_LABEL', USER)
+
+        name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
 
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
-         
-        ## Volumes to be mounted into the container
-        input = input or self.stimela_context.get('STIMELA_INPUT', None)
-        output = output or self.stimela_context.get('STIMELA_OUTPUT', None)
 
         cont = docker.Container(image, name,
-                     label=label, logger=self.log,
+                     label=self.label, logger=self.log,
                      shared_memory=shared_memory, log_container=stimela.LOG_FILE)
-        
         
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
-        cont.parameter_file_name = '{0}/{1}.json'.format(self.parameter_file_dir, name)
+        cont.parameter_file_name = '{0}/{1}.json'.format(self.recipe.parameter_file_dir, name)
+
+        # Remove dismissable kw arguments:
+        ops_to_pop = []
+        for op in config:
+            if isinstance(config[op], dismissable):
+                ops_to_pop.append(op)
+        for op in ops_to_pop:
+            arg = config.pop(op)()
+            if arg is not None:
+                config[op] = arg
         cont.config = config
 
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container
-        cont.add_volume(self.stimela_path, '/utils', perm='ro')
-        cont.add_volume(self.parameter_file_dir, '/configs', perm='ro')
+        cont.add_volume(self.recipe.stimela_path, '/utils', perm='ro')
+        cont.add_volume(self.recipe.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 
         cont.add_volume('/etc/group', '/etc/group', 'ro')
@@ -203,20 +198,115 @@ class Recipe(object):
             os.mkdir(output)
 
         od = '/home/%s/output'%USER
-        cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
+        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
         cont.add_volume(output, od)
         cont.add_environ('OUTPUT', od)
         cont.add_environ('LOGFILE', '{0}/log-{1}.txt'.format(od, name.split('-')[0]))
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
-        cont.image = '{0}_{1}'.format(USER, image)
-        self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(cont.image, name))
-        self.containers.append(cont)
+        cont.image = '{0}_{1}'.format(build_label, image)
+        # Added and ready for execution
+        self.job = cont
+       
+
+class Recipe(object):
+    def __init__(self, name, data=None,
+                 parameter_file_dir=None, ms_dir=None,
+                 tag=None, build_label=None, loglevel='INFO'):
+        """
+        Deifine and manage a stimela recipe instance.        
+
+        name    :   Name of stimela recipe
+        data    :   Path of stimela data. The data is assumed to be at Stimela/stimela/cargo/data
+        msdir   :   Path of MSs to be used during the execution of the recipe
+        tag     :   Use cabs with a specific tag
+        parameter_file_dir :   Will store task specific parameter files here
+        """
+
+        self.log = logging.getLogger('STIMELA')
+        self.log.setLevel(getattr(logging, loglevel))
+        # create file handler which logs even debug
+        # messages
+        name_ = name.lower().replace(' ', '_')
+        self.logfile = 'log-{}.txt'.format(name_)
+        self.resume_file = '.last_{}.json'.format(name_)
+
+        fh = logging.FileHandler(self.logfile)
+        fh.setLevel(logging.DEBUG)
+        # create console handler with a higher log level
+        ch = logging.StreamHandler(sys.stdout)
+        ch.setLevel(getattr(logging, loglevel))
+        # create formatter and add it to the handlers
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        fh.setFormatter(formatter)
+        # add the handlers to logger
+        self.log.addHandler(ch)
+        self.log.addHandler(fh)
+
+        self.stimela_context = inspect.currentframe().f_back.f_globals
+
+        self.stimela_path = os.path.dirname(docker.__file__)
+
+        self.name = name
+        self.build_label = build_label
+        self.ms_dir = ms_dir
+        if not os.path.exists(self.ms_dir):
+            self.log.info('MS directory \'{}\' does not exist. Will create it'.format(self.ms_dir))
+            os.mkdir(self.ms_dir)
+        self.tag = tag
+        # create a folder to store config files
+        # if it doesn't exist. These config
+        # files can be resued to re-run the
+        # task
+        self.parameter_file_dir = parameter_file_dir or "stimela_parameter_files"
+        if not os.path.exists(self.parameter_file_dir):
+            self.log.info('Config directory not be found. Will create ./{}'.format(self.parameter_file_dir))
+            os.mkdir(self.parameter_file_dir)
+
+        self.jobs = []
+        self.completed = []
+        self.failed = None
+        self.remaining = []
+
+        self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
+        self.pid = os.getpid()
+        self.proc_logger.log_process(self.pid, self.name)
+        self.proc_logger.write()
+
+        self.log.info('---------------------------------')
+        self.log.info('Stimlela version {0}'.format(version.version))
+        self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
+        self.log.info('---------------------------------')
 
 
-    def log2recipe(self, cont, recipe, num, status):
+    def add(self, image, name, config=None,
+            input=None, output=None, msdir=None,
+            label=None, shared_memory='1gb', build_label=None):
 
-        step = {
+
+        job = StimelaJob(name, recipe=self, label=label)
+
+        if callable(image):
+            job.jtype = 'function'
+            job.python_job(image, parameters=config)
+            self.jobs.append(job)
+            self.log.info('Adding Python job \'{0}\' to recipe.'.format(name))
+        else:
+            job.jtype = 'docker'
+            job.docker_job(image=image, config=config,
+            input=input, output=output, msdir=msdir or self.ms_dir,
+            shared_memory=shared_memory, build_label=build_label or self.build_label)
+
+            self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(job.job.image, name))
+            self.jobs.append(job)
+
+
+    def log2recipe(self, job, recipe, num, status):
+
+        if job.jtype == 'docker':
+            cont = job.job
+            step = {
                 "name"          :   cont.name,
                 "number"        :   num,
                 "cab"           :   cont.image,
@@ -226,8 +316,21 @@ class Recipe(object):
                 "input_content" :   cont.input_content,
                 "msdir_content" :   cont.msdir_content,
                 "label"         :   cont.label,
+                "logfile"       :   cont.logfile,
                 "status"        :   status,
-        }
+                "jtype"         :   'docker',
+            }
+        else:
+            step = {
+                "name"          :   job.name,
+                "number"        :   num,
+                "label"         :   job.label,
+                "status"        :   status,
+                "function"      :   job.job['function'].__name__,
+                "jtype"         :   'function',
+                "parameters"    :   job.job['parameters'],
+            }
+        
         recipe['steps'].append(step)
 
 
@@ -246,30 +349,42 @@ class Recipe(object):
         }
         start_at = 0
 
-
         if redo:
             recipe = utils.readJson(redo)
             self.log.info('Rerunning recipe {0} from {1}'.format(recipe['name'], redo))
             self.log.info('Recreating recipe instance..')
-            self.containers = []
+            self.jobs = []
             for step in recipe['steps']:
                 
             #        add I/O folders to the json file
             #        add a string describing the contents of these folders
             #        The user has to ensure that these folders exist, and have the required content
-                
-                self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(step['cab'], step['name']))
-                cont = docker.Container(step['cab'], step['name'],
-                                      label=step['label'], logger=self.log,
-                                      shared_memory=step['shared_memory'])
-                self.log.debug('Adding volumes {0} and environmental variables {1}'.format(step['volumes'], step['environs']))
-                cont.volumes = step['volumes']
-                cont.environs = step['environs']
-                cont.shared_memory = step['shared_memory']
-                cont.input_content = step['input_content']
-                cont.msdir_content = step['msdir_content']
+                if step['jtype'] == 'docker':
+                    self.log.info('Adding job \'{0}\' to recipe. The container will be named \'{1}\''.format(step['cab'], step['name']))
+                    cont = docker.Container(step['cab'], step['name'],
+                                          label=step['label'], logger=self.log,
+                                          shared_memory=step['shared_memory'])
 
-                self.containers.append(cont)
+                    self.log.debug('Adding volumes {0} and environmental variables {1}'.format(step['volumes'], step['environs']))
+                    cont.volumes = step['volumes']
+                    cont.environs = step['environs']
+                    cont.shared_memory = step['shared_memory']
+                    cont.input_content = step['input_content']
+                    cont.msdir_content = step['msdir_content']
+                    cont.logfile = step['logfile']
+                    job = StimelaJob(step['name'], recipe=self, label=step['label'])
+                    job.job = cont
+                    job.jtype = 'docker'
+
+
+                elif step['jtype'] == 'function':
+                    name = step['name']
+                    func = inspect.currentframe().f_back.f_locals[step['function']]
+                    job = StimelaJob(name, recipe=self, label=step['label'])
+                    job.python_job(func, step['parameters'])
+                    job.jtype = 'function'
+
+                self.jobs.append(job)
 
         elif resume:
             self.log.info("Resuming recipe from last run.")
@@ -286,15 +401,15 @@ class Recipe(object):
                     recipe['steps'].append(step)
                     continue
 
-                _cab = step['cab']
+                label = step['label']
                 number = step['number']
                 
                 # Check if the recipe flow has changed
-                if _cab == self.containers[number-1].image:
-                    self.log.info('recipe step \'{0}\' is fit for re-execution. CAB = {1}'.format(number, _cab))
+                if label == self.jobs[number-1].label:
+                    self.log.info('recipe step \'{0}\' is fit for re-execution. Label = {1}'.format(number, label))
                     _steps.append(number)
                 else:
-                    raise RuntimeError('Recipe flow, or task scheduling has changed. Cannot resume recipe. CAB= {0}'.format(_cab))
+                    raise RuntimeError('Recipe flow, or task scheduling has changed. Cannot resume recipe. Label = {0}'.format(label))
 
             # Check whether there are steps to resume        
             if len(_steps)==0:
@@ -305,7 +420,7 @@ class Recipe(object):
         if getattr(steps, '__iter__', False):
             _steps = []
             if isinstance(steps[0], str):
-                labels = [ cont.label.split('::')[0] for cont in self.containers]
+                labels = [ job.label.split('::')[0] for job in self.jobs]
 
                 for step in steps:
                     try:
@@ -314,60 +429,54 @@ class Recipe(object):
                         raise ValueError('Recipe label ID [{0}] doesn\'t exist'.format(step))
                 steps = _steps
         else:
-            steps = range(1, len(self.containers)+1)
+            steps = range(1, len(self.jobs)+1)
 
-
-        containers = [(step, self.containers[step-1]) for step in steps]        
+        jobs = [(step, self.jobs[step-1]) for step in steps]
         
-        for i, (step, container) in enumerate(containers):
-            created = False
+        for i, (step, job) in enumerate(jobs):
+
+            self.log.info('Running job {}'.format(job.name))
+            self.log.info('STEP {0} :: {1}'.format(i+1, job.label))
+            self.active = job
             try:
-                # Update container parameter file if need be
-                if hasattr(container, '_cab'):
-                    container._cab.update(container.config, container.parameter_file_name)
+                if job.jtype == 'function':
+                    job.run_python_job()
+                elif job.jtype == 'docker':
+                    with open(job.job.logfile, 'a') as astd:
+                        astd.write('\n-----------------------------------\n')
+                        astd.write('Stimela version     : {}\n'.format(version.version))
+                        astd.write('Cab name            : {}\n'.format(job.job.image))
+                        astd.write('-------------------------------------\n')
 
-                self.log.info('Running Container {}'.format(container.name))
-                self.log.info('STEP {0} :: {1}'.format(i+1, container.label))
-                self.active = container
+                    job.run_docker_job()
 
-                container.create(*['--user {}'.format(UID)])
-                created = True
-                with open(container.logfile, 'a') as astd:
-                    astd.write('\n-----------------------------------\n')
-                    astd.write('Stimela version     : {}\n'.format(version.version))
-                    astd.write('Cab name            : {}\n'.format(container._cab.task))
-                    astd.write('Cab base            : {}\n'.format(container._cab.base))
-                    astd.write('Cab tag             : {}\n'.format(container._cab.tag))
-                    astd.write('-------------------------------------\n')
-
-                container.start()
-                self.log2recipe(container, recipe, step, 'completed')
+                self.log2recipe(job, recipe, step, 'completed')
 
             except BaseException as e:
-                self.completed = [cont[1] for cont in containers[:i]]
-                self.remaining = [cont[1] for cont in containers[i+1:]]
-                self.failed = container
+                self.completed = [jb[1] for jb in jobs[:i]]
+                self.remaining = [jb[1] for jb in jobs[i+1:]]
+                self.failed = job
 
-                self.log.info('Recipe execution failed while running container {}'.format(container.name))
-                self.log.info('Completed containers : {}'.format([c.name for c in self.completed]))
-                self.log.info('Remaining containers : {}'.format([c.name for c in self.remaining]))
+                self.log.info('Recipe execution failed while running job {}'.format(job.name))
+                self.log.info('Completed jobs : {}'.format([c.name for c in self.completed]))
+                self.log.info('Remaining jobs : {}'.format([c.name for c in self.remaining]))
 
-                self.log2recipe(container, recipe, step, 'failed')
-                for step, cont in containers[i+1:]:
-                    self.log.info('Logging remaining task: {}'.format(cont.label or cont.name))
-                    self.log2recipe(cont, recipe, step, 'remaining')
+                self.log2recipe(job, recipe, step, 'failed')
+                for step, jb in jobs[i+1:]:
+                    self.log.info('Logging remaining task: {}'.format(jb.label))
+                    self.log2recipe(jb, recipe, step, 'remaining')
 
                 self.log.info('Saving pipeline information in {}'.format(self.resume_file))
                 utils.writeJson(self.resume_file, recipe)
 
-                pe = PipelineException(e, self.completed, container, self.remaining)
+                pe = PipelineException(e, self.completed, job, self.remaining)
 
                 raise pe, None, sys.exc_info()[2]
 
             finally:
-                if created:
-                    container.stop()
-                    container.remove()
+                if job.jtype == 'docker' and job.created:
+                    job.job.stop()
+                    job.job.remove()
 
         self.proc_logger.remove('processes', self.pid)
         self.proc_logger.write()

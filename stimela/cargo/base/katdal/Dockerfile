@@ -1,4 +1,4 @@
-FROM stimela/base:0.2.8
+FROM stimela/base:0.2.9
 MAINTAINER <sphemakh@gmail.com>
 
 ENV PACKAGES \
@@ -25,17 +25,18 @@ ENV PACKAGES \
 RUN docker-apt-install $PACKAGES
 
 # Install custom branch of casacore
-RUN git clone --depth 1 https://github.com/sjperkins/casacore.git -b expose-record-to-tabledesc-static-members /src/casacore && \
+RUN git clone --depth 1 https://github.com/casacore/casacore.git -b v2.3.0 /src/casacore && \
     mkdir -p /src/casacore/build && \
     cd /src/casacore/build && \
     cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && \
-    make && \
+    make -j16 && \
     make install && \
     cd / && \
     rm -rf /src
 
 # Install custom branch of python-casacore
-RUN pip install git+https://github.com/sjperkins/python-casacore.git@create-default-ms#egg=python-casacore
+RUN pip install git+https://github.com/casacore/python-casacore.git@master#egg=python-casacore
 
 # Install custom branch of katdal
 RUN pip  install git+https://github.com/sjperkins/katdal.git@use-python-casacore-ms-creation#egg=katdal
+

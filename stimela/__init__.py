@@ -18,28 +18,37 @@ from stimela import docker
 
 from stimela.utils import logger
 
-LOG_HOME = os.path.expanduser("~/.stimela")
-LOG_FILE = LOG_HOME + "/stimela_logfile.json"
-
-
-BASE = os.listdir(cargo.BASE_PATH)
-CAB = []
-for item in os.listdir(cargo.CAB_PATH):
-    try:
-        dockerfile = 'Dockerfile' in os.listdir('{0}/{1}'.format(cargo.CAB_PATH, item))
-    except OSError:
-        continue
-    if dockerfile:
-        CAB.append(item)
-
-
-NOT_PUBLIC = ["ddfacet"]
-
+# Get to know user
 USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
 
-container_home = '/home/{}'.format(USER)
+# Set up logging infrastructure
+LOG_HOME = os.path.expanduser("~/.stimela")
+# This is is the default log file. It logs stimela images, containers and processes
+LOG_FILE = "{0:s}/stimela_logfile.json".format(LOG_HOME)
+#LOG_FILE = "{0:s}/{1:s}_stimela_logfile.json".format(LOG_HOME, USER)
+
+
+# Get base images
+# All base images must be on dockerhub
+BASE = os.listdir(cargo.BASE_PATH)
+
+# Get package cab images (user can add their own cab images)
+# All package cab images must be based on stimela base images.
+
+CAB = []
+for item in os.listdir(cargo.CAB_PATH):
+    try: 
+        # These files must exist for a cab image to be valid
+        ls_cabdir = os.listdir('{0}/{1}'.format(cargo.CAB_PATH, item))
+        dockerfile = 'Dockerfile' in ls_cabdir
+        paramfile = 'parameters.json' in ls_cabdir
+        srcdir = 'src' in ls_cabdir
+    except OSError:
+        continue
+    if dockerfile and paramfile and srcdir:
+        CAB.append(item)
 
 __version__ = version.version
 
@@ -58,6 +67,7 @@ class MultilineFormatter(argparse.HelpFormatter):
 def register_globals():
     frame = inspect.currentframe().f_back
     frame.f_globals.update(GLOBALS)
+
 
 def build(argv):
     for i, arg in enumerate(argv):
@@ -79,8 +89,11 @@ def build(argv):
     parser.add_argument("-nc", "--no-cache", action="store_true",
             help="Do not use cache when building the image")
 
+    parser.add_argument("-bl", "--build-label", default=USER,
+            help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
+
     args = parser.parse_args(argv)
-    log = logger.StimelaLogger(LOG_FILE)
+    log = logger.StimelaLogger('{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label))
 
     if args.base:
         for image in BASE:
@@ -89,7 +102,7 @@ def build(argv):
             docker.build(image,
                          dockerfile)
 
-        log.log_image(image, replace=True)
+        log.log_image(image, dockerfile, replace=True)
         log.write()
 
         return 0
@@ -110,40 +123,66 @@ def build(argv):
         else:
             raise ValueError("Not enough arguments for build command.")
 
-        image = "{:s}_cab/{:s}".format(USER, cab)
+        image = "{:s}_cab/{:s}".format(args.build_label, cab)
 
         docker.build(image,
                      path,
                      build_args=build_args, args=no_cache)
 
-        log.log_image(image, replace=True, cab=True)
+        log.log_image(image, path, replace=True, cab=True)
         log.write()
         return
 
-    for image in CAB:
-        IGNORE = args.ignore_cabs.split(",")
-        if image in NOT_PUBLIC+IGNORE:
-            continue
+   
+    cabs = []
+    dockerfiles = []
+    # Dont care about any outstanding images. The user should really run build
+    # base before building cabs if they have custom images
+    #logged_images = log.read().get('images', {})
+    #for key,val in logged_images.iteritems():
+    #    if val['CAB']:
+    #        cabs.append(key)
+    #        dockerfiles.append(val['DIR'])
 
-        dockerfile = "{:s}/{:s}".format(cargo.CAB_PATH, image)
-        image = "{:s}_cab/{:s}".format(USER, image)
-        docker.build(image,
-                     dockerfile,
-                     build_args=build_args, args=no_cache)
+ 
+    IGNORE = args.ignore_cabs.split(",")
+    USONLY = args.us_only.split(",") if args.us_only is not None else CAB
+    CABS = set(CAB).difference(set(IGNORE)).intersection(set(USONLY))
+    cabs += ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS]
+    dockerfiles += [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS]
+    built = []
+    for image, dockerfile in zip(cabs,dockerfiles):
+        if image not in built:
+            docker.build(image,
+                         dockerfile,
+                         build_args=build_args, args=no_cache)
 
-        log.log_image(image, replace=True, cab=True)
-        log.write()
+            log.log_image(image, dockerfile, replace=True, cab=True)
+            log.write()
+            built.append(image)
+
+
+def get_cabs(logfile):
+    log = logger.StimelaLogger(logfile)
+    cabs_ = log.read()['images']
+    
+    # Remove images that are not cabs
+    for key in cabs_.keys():
+        if not cabs_[key]['CAB']:
+            del cabs_[key]
+
+    return cabs_
 
 
 
-def info(cabname, header=False):
+def info(cabdir, header=False):
     """ prints out help information about a cab """
 
     # First check if cab exists
-    if cabname not in CAB:
-        raise RuntimeError("Cab '{}' could not be found. The available cabs are listed below \n {}".format(cabname, CAB))
-
-    pfile = "{0}/{1}/parameters.json".format(cargo.CAB_PATH, cabname)
+    pfile = "{}/parameters.json".format(cabdir)
+    if not os.path.exists(pfile):
+        raise RuntimeError("Cab could not be found at : {}".format(cabdir))
+    # Get cab info
     cab_definition = cab.CabDefinition(parameter_file=pfile)
     cab_definition.display(header)
 
@@ -157,17 +196,46 @@ def cabs(argv):
         help="Will display document about the specified cab. For example, \
 to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
 
-    parser.add_argument("-ls", "--list", action="store_true",
-            help="List cabs")
+    parser.add_argument("-l", "--list", action="store_true",
+            help="List cab names")
+
+    parser.add_argument("-ls", "--list-summary", action="store_true",
+            help="List cabs with a summary of the cab")
+
+    parser.add_argument("-bl", "--build-label", default=USER,
+            help="Label for build you want documentation for. See --build-label option in 'stimela help build'")
 
     args = parser.parse_args(argv)
+    logfile = '{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label)
+
+    cabs_ = get_cabs(logfile)
+    if cabs_:
+        pass
+    else:
+        print('No cab images found, did you run \'stimela build\'')
+        sys.exit(0)
 
     if args.cab_doc:
-        info(args.cab_doc)
-    else:
-        for cab in CAB:
+        name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
+        cabdir = cabs_[name]['DIR']
+        info(cabdir)
+
+    elif args.list:
+        _cabs = []
+        for cab in cabs_:
+            # strip away the label
+            name = cab.split('{}_'.format(args.build_label))[1]
+            _cabs.append(name)
+        # print them cabs
+        print( ',  '.join(_cabs) )
+
+    elif args.list_summary:
+        for key,val in cabs_.iteritems():
+            if not val['CAB']:
+                continue
+            cabdir = cabs_[key]['DIR']
             try:
-                info(cab, header=True)
+                info(cabdir, header=True)
             except IOError:
                 pass
 
@@ -199,12 +267,15 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
             help="Global variables to pass to script. The type is assumed to string unless specified")
 
+    add("-bl", "--build-label", default=USER,
+            help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
+
     args = parser.parse_args(argv)
     tag =  None
 
-    _globals = dict(STIMELA_INPUT=args.input, STIMELA_OUTPUT=args.output,
-                    STIMELA_MSDIR=args.msdir,
-                    CAB_TAG=tag)
+    _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
+                    _STIMELA_MSDIR=args.msdir,
+                    CAB_TAG=tag, _STIMELA_BUILD_LABEL=args.build_label)
 
     nargs = len(args.globals)
 
@@ -244,13 +315,14 @@ def pull(argv):
 
     args = parser.parse_args(argv)
     log = logger.StimelaLogger(LOG_FILE)
+    images = log.read()['images']
 
     if args.image:
         for image in args.image:
 
             if not img.find(image):
                 docker.pull(image)
-                log.log_image(image)
+                log.log_image(image, 'pulled')
     else:
 
         base = []
@@ -263,7 +335,7 @@ def pull(argv):
         for image in base:
             if image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
                 docker.pull(image)
-                log.log_image(image)
+                log.log_image(image, 'pulled')
 
     log.write()
 
@@ -379,17 +451,30 @@ def clean(argv):
 
     add("-aC", "--all-containers", action="store_true",
         help="Stop and/or Remove all stimela containers")
+    
+    add("-bl", "--build-label", default=USER,
+            help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
 
     log = logger.StimelaLogger(LOG_FILE)
+    log_cabs = logger.StimelaLogger('{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, 
+            args.build_label))
 
     if args.all_images:
         images = log.info['images'].keys()
+        images = log_cabs.info['images'].keys()
         for image in images:
             utils.xrun('docker', ['rmi', image])
             log.remove('images', image)
             log.write()
+        
+        images = log_cabs.info['images'].keys()
+        for image in images:
+            if log_cabs.info['images'][image]['CAB']:
+                utils.xrun('docker', ['rmi', image])
+                log_cabs.remove('images', image)
+                log_cabs.write()
 
     if args.all_base:
         images = log.info['images'].keys()
@@ -400,13 +485,12 @@ def clean(argv):
                 log.write()
 
     if args.all_cabs:
-        images = log.info['images'].keys()
+        images = log_cabs.info['images'].keys()
         for image in images:
-            if log.info['images'][image]['CAB']:
+            if log_cabs.info['images'][image]['CAB']:
                 utils.xrun('docker', ['rmi', image])
-                log.remove('images', image)
-                log.write()
-
+                log_cabs.remove('images', image)
+                log_cabs.write()
         
     if args.all_containers:
         containers = log.info['containers'].keys()

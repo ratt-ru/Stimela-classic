@@ -1,4 +1,4 @@
-FROM stimela/base:0.2.8
+FROM stimela/base:0.2.9
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install meqtrees-timba \
     python-casacore \

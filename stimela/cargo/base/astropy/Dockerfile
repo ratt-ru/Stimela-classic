@@ -1,4 +1,4 @@
-FROM stimela/base:0.2.8
+FROM stimela/base:0.2.9
 RUN pip install astropy \
         numpy \
         scipy \

@@ -1,0 +1,678 @@
+{
+    "task": "SoFiA", 
+    "base": "stimela/sofia", 
+    "tag": "0.2.9", 
+    "description": "SoFiA, the Source Finding Application, is a new HI source finding pipeline intended to detect and parameterise galaxies in HI data cubes. While the software is still under development, several stable versions of SoFiA have already been released. This wiki contains user documentation and technical information on SoFiA and its individual modules.", 
+    "prefix": "--", 
+    "binary": "sofia_pipeline.py", 
+    "msdir": false, 
+    "parameters": [
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "CNHI.maxScale"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "CNHI.medianTest"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 5, 
+            "name": "CNHI.minScale"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": "1e-05", 
+            "name": "CNHI.pReq"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 3.8, 
+            "name": "CNHI.qReq"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "CNHI.verbose"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "constant", 
+            "name": "SCfind.edgeMode"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "pixel", 
+            "name": "SCfind.kernelUnit"
+        }, 
+        {
+            "info": null, 
+            "dtype": "list", 
+            "default": [
+                [
+                    0, 
+                    0, 
+                    0, 
+                    "b"
+                ], 
+                [
+                    0, 
+                    0, 
+                    3, 
+                    "b"
+                ], 
+                [
+                    0, 
+                    0, 
+                    7, 
+                    "b"
+                ], 
+                [
+                    0, 
+                    0, 
+                    15, 
+                    "b"
+                ], 
+                [
+                    3, 
+                    3, 
+                    0, 
+                    "b"
+                ], 
+                [
+                    3, 
+                    3, 
+                    3, 
+                    "b"
+                ], 
+                [
+                    3, 
+                    3, 
+                    7, 
+                    "b"
+                ], 
+                [
+                    3, 
+                    3, 
+                    15, 
+                    "b"
+                ], 
+                [
+                    6, 
+                    6, 
+                    0, 
+                    "b"
+                ], 
+                [
+                    6, 
+                    6, 
+                    3, 
+                    "b"
+                ], 
+                [
+                    6, 
+                    6, 
+                    7, 
+                    "b"
+                ], 
+                [
+                    6, 
+                    6, 
+                    15, 
+                    "b"
+                ]
+            ], 
+            "name": "SCfind.kernels"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 2.0, 
+            "name": "SCfind.maskScaleXY"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 2.0, 
+            "name": "SCfind.maskScaleZ"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "negative", 
+            "name": "SCfind.rmsMode"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "SCfind.sizeFilter"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 3.5, 
+            "name": "SCfind.threshold"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "SCfind.verbose"
+        }, 
+        {
+            "info": null, 
+            "dtype": "list", 
+            "default": [], 
+            "name": "flag.regions"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file", 
+            "default": null, 
+            "name": "import.inFile", 
+            "io": "input"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file", 
+            "default": null, 
+            "name": "import.maskFile", 
+            "io": "input"
+        }, 
+        {
+            "info": null, 
+            "dtype": "list", 
+            "default": [], 
+            "name": "import.subcube"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "pixel", 
+            "name": "import.subcubeMode"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file", 
+            "default": null, 
+            "name": "import.weightsFile", 
+            "io": "input"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": null, 
+            "name": "import.weightsFunction"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "merge.minSizeX"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "merge.minSizeY"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "merge.minSizeZ"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "merge.radiusX"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "merge.radiusY"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "merge.radiusZ"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file", 
+            "default": null, 
+            "name": "optical.sourceCatalogue", 
+            "io": "input"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 0.01, 
+            "name": "optical.spatSize"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 100000.0, 
+            "name": "optical.specSize"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "optical.storeMultiCat"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "parameters.dilateChan"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "parameters.dilateMask"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 10, 
+            "name": "parameters.dilatePixMax"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 0.02, 
+            "name": "parameters.dilateThreshold"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "parameters.fitBusyFunction"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "parameters.optimiseMask"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "reliability.autoKernel"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "reliability.fMin"
+        }, 
+        {
+            "info": null, 
+            "dtype": "list", 
+            "default": [
+                0.15, 
+                0.05, 
+                0.1
+            ], 
+            "name": "reliability.kernel"
+        }, 
+        {
+            "info": null, 
+            "dtype": "list", 
+            "default": [
+                1, 
+                1, 
+                1
+            ], 
+            "name": "reliability.logPars"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "reliability.makePlot"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 1.0, 
+            "name": "reliability.negPerBin"
+        }, 
+        {
+            "info": null, 
+            "dtype": "list", 
+            "default": [
+                "n_pix", 
+                "snr_sum", 
+                "snr_max"
+            ], 
+            "name": "reliability.parSpace"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 0.55, 
+            "name": "reliability.scaleKernel"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": -0.5, 
+            "name": "reliability.skellamTol"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 0.95, 
+            "name": "reliability.threshold"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "reliability.usecov"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "scaleNoise.edgeX"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "scaleNoise.edgeY"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "scaleNoise.edgeZ"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "scaleNoise.scaleX"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "scaleNoise.scaleY"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "scaleNoise.scaleZ"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "negative", 
+            "name": "scaleNoise.statistic"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "constant", 
+            "name": "smooth.edgeMode"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "gaussian", 
+            "name": "smooth.kernel"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "smooth.kernelX"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "smooth.kernelY"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "smooth.kernelZ"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doCNHI"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doCubelets"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doDebug"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doFlag"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doMerge"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doMom0"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doMom1"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doOptical"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doParameterise"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doReliability"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "steps.doSCfind"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "steps.doScaleNoise"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doSmooth"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doSubcube"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doThreshold"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doWavelet"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doWriteCat"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "steps.doWriteFilteredCube"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "steps.doWriteMask"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "relative", 
+            "name": "threshold.clipMethod"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "std", 
+            "name": "threshold.rmsMode"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 4.0, 
+            "name": "threshold.threshold"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "threshold.verbose"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "wavelet.iterations"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "wavelet.positivity"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "wavelet.scaleXY"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "wavelet.scaleZ"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "default": 5.0, 
+            "name": "wavelet.threshold"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": null, 
+            "name": "writeCat.basename"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "writeCat.compress"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "writeCat.overwrite"
+        }, 
+        {
+            "info": null, 
+            "dtype": "list", 
+            "default": [
+                "*"
+            ], 
+            "name": "writeCat.parameters"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "writeCat.writeASCII"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "writeCat.writeSQL"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "writeCat.writeXML"
+        }
+    ]
+}

@@ -126,13 +126,13 @@ class CabDefinition(object):
             parameters0 = cab["parameters"]
             self.parameters = []
             
-
+            import sys
             for param in parameters0:
                 default = param.get("default", param.get("value", None))
                 addme = Parameter(name=param["name"],
                         dtype=param["dtype"],
                         io=param.get("io", None),
-                        info=param.get("info", "No documentation. Bad! Very bad..."),
+                        info=param.get("info", None) or "No documentation. Bad! Very bad...",
                         default=default,
                         mapping=param.get("mapping", None),
                         #delimiter=param.get("delimiter", None),
@@ -201,17 +201,10 @@ class CabDefinition(object):
         
         conf["parameters"] = []
         for param in self.parameters:
-            _value = None if param.value is None else param.value
         
-            if _value is None:
-                value = None
-            elif isinstance(param.dtype[0], tuple):
-                if not hasattr(_value, '__iter__'):
-                    value = [_value]
-                else:
-                    value = _value
-            else:
-                value = _value
+            if isinstance(param.dtype[0], tuple):
+                if not hasattr(param.value, '__iter__') and param.value is not None:
+                    param.value = [param.value]
 
             _types = ""
             for i,_type in enumerate(param.dtype):
@@ -228,7 +221,7 @@ class CabDefinition(object):
                     "info"      :   param.info,
                     "required"  :   param.required,
                     "check_io"  :   param.check_io,
-                    "value"     :   value,
+                    "value"     :   param.default if param.value is None else param.value
                 })
         return conf
 

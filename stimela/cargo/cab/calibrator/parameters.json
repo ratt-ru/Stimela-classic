@@ -1,7 +1,7 @@
 {
     "task": "calibrator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)", 
     "prefix": " ", 
     "binary": "/usr/bin/meqtree-pipeliner.py", 
@@ -72,10 +72,10 @@
             "choices": [
                 "CORR_DATA", 
                 "RES", 
-                "CORR_RES",
+                "CORR_RES", 
                 "CORR_DATA_SUB", 
-                "PREDICT",
-                "DATA+PREDICT",
+                "PREDICT", 
+                "DATA+PREDICT"
             ]
         }, 
         {
@@ -90,20 +90,20 @@
             "default": null, 
             "name": "tdlconf", 
             "io": "input"
-        },
+        }, 
         {
-            "name"      :   "save-config",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "save final configuration (after all command-line arguments have been applied)",
-            "default"   :   null,
-        },
+            "info": "save final configuration (after all command-line arguments have been applied)", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "save-config", 
+            "io": "output"
+        }, 
         {
             "info": "Section to execute in TDL config file. Only needed if using custom TDL config", 
             "dtype": "str", 
             "default": null, 
             "name": "section"
-        },
+        }, 
         {
             "name"      :   "correlations",
             "dtype"     :   "str",
@@ -267,12 +267,12 @@
             "name": "Gjones-apply-only"
         }, 
         {
-            "name"      :   "Gjones-gain-table",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "G Jones gain table file name",
-            "default"   :   "default will based on the MS basename",
-        },
+            "info": "G Jones gain table file name", 
+            "dtype": "file", 
+            "default": "default will based on the MS basename", 
+            "name": "Gjones-gain-table", 
+            "io": "output"
+        }, 
         {
             "info": "Enable direction dependent calibration", 
             "dtype": "bool", 
@@ -353,12 +353,12 @@
             "name": "DDjones-apply-only"
         }, 
         {
-            "name"      :   "DDjones-gain-table",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "DD Jones gain table file name",
-            "default"   :   "default will based on the MS basename",
-        },
+            "info": "DD Jones gain table file name", 
+            "dtype": "file", 
+            "default": "default will based on the MS basename", 
+            "name": "DDjones-gain-table", 
+            "io": "output"
+        }, 
         {
             "info": "Enable interferometer based gain solutions", 
             "dtype": "bool", 
@@ -370,24 +370,24 @@
             "dtype": "bool", 
             "default": false, 
             "name": "IFRjones-apply-only"
-        },
+        }, 
         {
-            "name"      :   "IFRjones-gain-table",
-            "dtype"     :   "file",
-            "io"        :   "output",
-            "info"      :   "IFR Jones gain table file name",
-            "default"   :   "default will based on the MS basename",
-        },
+            "info": "IFR Jones gain table file name", 
+            "dtype": "file", 
+            "default": "default will based on the MS basename", 
+            "name": "IFRjones-gain-table", 
+            "io": "output"
+        }, 
         {
-            "info": "Size of tile (time bins) to process. Can be used to reduce memory footprint",
-            "dtype": "int",
-            "default": 1,
+            "info": "Size of tile (time bins) to process. Can be used to reduce memory footprint", 
+            "dtype": "int", 
+            "default": 1, 
             "name": "tile-size"
-        },
+        }, 
         {
-            "info": "TaQL selction string",
-            "dtype": "str",
-            "default": null,
+            "info": "TaQL selction string", 
+            "dtype": "str", 
+            "default": null, 
             "name": "data-selection"
         }
     ]

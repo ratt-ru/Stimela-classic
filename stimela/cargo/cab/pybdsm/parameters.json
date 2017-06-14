@@ -1,7 +1,7 @@
 {
     "task": "pybdsm", 
     "base": "stimela/lofar", 
-    "tag": "0.2.8", 
+    "tag": "0.2.9", 
     "description": "Source finding in radio images", 
     "prefix": " ", 
     "binary": "python", 
@@ -466,17 +466,17 @@
             "dtype": "bool", 
             "default": true, 
             "name": "port2tigger"
-        },
+        }, 
         {
-            "info": "Calculate spectral indices (for multi-channel image)",
-            "dtype": "bool",
-            "default": false,
+            "info": "Calculate spectral indices (for multi-channel image)", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "spectralindex_do"
-        },
+        }, 
         {
-            "info": "Start frequency (unit => Hz)",
-            "dtype": "float",
-            "default": null,
+            "info": "Start frequency (unit => Hz)", 
+            "dtype": "float", 
+            "default": null, 
             "name": "freq0"
         }
     ]

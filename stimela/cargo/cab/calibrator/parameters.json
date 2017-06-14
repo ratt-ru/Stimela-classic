@@ -105,17 +105,12 @@
             "name": "section"
         }, 
         {
-            "info": "Correlations to use", 
-            "dtype": "str", 
-            "default": "2x2", 
-            "name": "correlations", 
-            "choices": [
-                "2x2", 
-                "2x2, diagonal terms only", 
-                "2", 
-                "1"
-            ]
-        }, 
+            "name"      :   "correlations",
+            "dtype"     :   "str",
+            "info"      :   "Correlations to use",
+            "choices"   :   ["2x2", "2x2, diagonal terms only", "2", "1", "1 corr to 2x2 diag"],
+            "default"   :   "2x2"
+        },
         {
             "info": "Field ID", 
             "dtype": "int", 

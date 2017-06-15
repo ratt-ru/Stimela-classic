@@ -41,7 +41,7 @@ params = {}
 writeflags = jdict.pop("write-flags-to-ms", None)
 if writeflags:
     params["ms_sel.ms_write_flags"] = 1
-    params["ms_sel.ms_fill_legacy_flags"] = 1 if jdict.pop("fill-legacy-flags", False) or 0
+    params["ms_sel.ms_fill_legacy_flags"] = 1 if jdict.pop("fill-legacy-flags", False) else 0
 
 write_flagset = jdict.pop("write-flagset", None)
 if write_flagset:

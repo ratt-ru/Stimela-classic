@@ -239,6 +239,8 @@ class CabDefinition(object):
                 if name in [param.name, param.mapping]:
                     found = True
                     if param.io:
+                        if value is None:
+                            continue
                         param.validate(value)
                         param.value = []
                         if not hasattr(value, "__iter__"):

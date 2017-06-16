@@ -503,17 +503,16 @@ def clean(argv):
             print container
             cont = docker.Container(log.info['containers'][container]['IMAGE'], container)
             try:
-                status = cont.info()['State']['Status']
+                status = cont.info()['State']['Status'].lower()
             except:
                 print('Could not inspect container {}. It probably doesn\'t exist, will remove it from log'.format(container))
-                status = False
-                continue
+                status = "no there"
 
             if status == 'running':
             # Kill the container instead of stopping it, so that effect can be felt py parent process
                 utils.xrun('docker', ['kill', container])
                 cont.remove()
-            elif status == 'exited':
+            elif status in ['exited', 'dead']:
                 cont.remove()
 
             log.remove('containers', container)

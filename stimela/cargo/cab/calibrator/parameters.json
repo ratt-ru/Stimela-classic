@@ -124,10 +124,16 @@
             "defaut": 0
         }, 
         {
+            "info": "Write flags to MS", 
+            "dtype": "bool", 
+            "defalt": true, 
+            "name": "write-flags-to-ms"
+        }, 
+        {
             "info": "name of flagset to write new flags to", 
             "dtype": "str", 
-            "defalt": "stefcal", 
-            "name": "write-flags"
+            "defalt": null, 
+            "name": "write-flagset"
         }, 
         {
             "info": "Add or replace flagset if it already exists.", 
@@ -138,7 +144,13 @@
                 "add", 
                 "replace"
             ]
-        }, 
+        },
+        {
+            "name": "read-flagsets",
+            "info": "Read flagsets",
+            "dtype": "str",
+            "default": null
+        },
         {
             "info": "Read legacy flags", 
             "dtype": "bool", 
@@ -269,7 +281,7 @@
         {
             "info": "G Jones gain table file name", 
             "dtype": "file", 
-            "default": "default will based on the MS basename", 
+            "default": null, 
             "name": "Gjones-gain-table", 
             "io": "output"
         }, 
@@ -355,7 +367,7 @@
         {
             "info": "DD Jones gain table file name", 
             "dtype": "file", 
-            "default": "default will based on the MS basename", 
+            "default": null, 
             "name": "DDjones-gain-table", 
             "io": "output"
         }, 
@@ -374,7 +386,7 @@
         {
             "info": "IFR Jones gain table file name", 
             "dtype": "file", 
-            "default": "default will based on the MS basename", 
+            "default": null, 
             "name": "IFRjones-gain-table", 
             "io": "output"
         }, 

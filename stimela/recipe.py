@@ -478,14 +478,14 @@ class Recipe(object):
                 pe = PipelineException(e, self.completed, job, self.remaining)
 
                 raise pe, None, sys.exc_info()[2]
+                self.proc_logger.remove('processes', self.pid)
+                self.proc_logger.write()
 
             finally:
                 if job.jtype == 'docker' and job.created:
                     job.job.stop()
                     job.job.remove()
 
-                self.proc_logger.remove('processes', self.pid)
-                self.proc_logger.write()
 
         self.proc_logger.remove('processes', self.pid)
         self.proc_logger.write()

@@ -29,7 +29,7 @@
             "default": "DATA",
             "dtype": "str",
             "required": false, 
-            "choises":["DATA",
+            "choices":["DATA",
                        "CORRECTED_DATA",
                        "MODEL_DATA"]
         },
@@ -53,7 +53,7 @@
             "default": null,
             "dtype": "str",
             "required": false,
-            "choises":["DATA",
+            "choices":["DATA",
                        "CORRECTED_DATA",
                        "MODEL_DATA"]
         },
@@ -199,7 +199,7 @@
             "default": "Clean",
             "dtype": "str",
             "required": false,
-            "choises": ["Dirty",
+            "choices": ["Dirty",
                         "Clean",
                         "Predict",
                         "PSF"]
@@ -288,7 +288,7 @@
             "default": "WEIGHT_SPECTRUM",
             "dtype": "str",
             "required": false,
-            "choises": ["WEIGHT_SPECTRUM", "WEIGHT", "IMAGING_WEIGHT"]
+            "choices": ["WEIGHT_SPECTRUM", "WEIGHT", "IMAGING_WEIGHT"]
         },
         {
             "info": "UV weighting mode",
@@ -296,7 +296,7 @@
             "default": "Briggs",
             "dtype": "str",
             "required": false,
-            "choises": ["Natural", "Uniform", "Robust", "Briggs"]
+            "choices": ["Natural", "Uniform", "Robust", "Briggs"]
         },
         {
             "name": "Weight-MFS",
@@ -325,7 +325,7 @@
             "default": "I",
             "dtype": "str",
             "required": false,
-            "choises": ["I","V","Q","U","IQ","QI","IU","UI","IV","VI","UQ","QU","QV","VQ","UV","VU","IQU","IUQ","UIQ","UQI","QUI","QIU","IQV","IVQ","VIQ","VQI","QVI","QIV","IUV","IVU","VIU","VUI","UVI","UIV","QUV","QVU","VQU","VUQ","UVQ","UQV","IQUV","IQVU","IUQV","IUVQ","IVQU","IVUQ","QIUV","QIVU","VIUQ","VIQU","UIVQ","UIQV","QUIV","UQIV","UVIQ","VUIQ","VQIU","QVIU","QUVI","UQVI","UVQI","VUQI","VQUI","QVUI"]
+            "choices": ["I","V","Q","U","IQ","QI","IU","UI","IV","VI","UQ","QU","QV","VQ","UV","VU","IQU","IUQ","UIQ","UQI","QUI","QIU","IQV","IVQ","VIQ","VQI","QVI","QIV","IUV","IVU","VIU","VUI","UVI","UIV","QUV","QVU","VQU","VUQ","UVQ","UQV","IQUV","IQVU","IUQV","IUVQ","IVQU","IVUQ","QIUV","QIVU","VIUQ","VIQU","UIVQ","UIQV","QUIV","UQIV","UVIQ","VUIQ","VQIU","QVIU","QUVI","UQVI","UVQI","VUQI","VQUI","QVUI"]
         },
         {
             "info": "FFTW engine",
@@ -333,7 +333,7 @@
             "default": "FFTW",
             "dtype": "str",
             "required": false,
-            "choises": ["FFTW"]
+            "choices": ["FFTW"]
         },
         {
             "info": "Forward predict engine",
@@ -341,7 +341,7 @@
             "default": "BDA-degrid",
             "dtype": "str",
             "required": false,
-            "choises": ["BDA-degrid", "Classic", "Montblanc"]
+            "choices": ["BDA-degrid", "Classic", "Montblanc"]
         },
         {
             "info": "Backward inversion engine",
@@ -349,7 +349,7 @@
             "default": "BDA-grid",
             "dtype": "str",
             "required": false,
-            "choises": ["BDA-grid"]
+            "choices": ["BDA-grid"]
         },
         {
             "info": "Decorrelation mode (undocumented ???)",
@@ -364,7 +364,7 @@
             "default": "Edge",
             "dtype": "str",
             "required": false,
-            "choises":["Center", "Edge"]
+            "choices":["Center", "Edge"]
         },
         {
             "info": "Convolution filter oversampling factor",
@@ -407,7 +407,7 @@
             "default": "Facet",
             "dtype": "str",
             "required": false,
-            "choises": ["Full", "Facet"]
+            "choices": ["Full", "Facet"]
         },
         {
             "info": "Maximum tolerated BDA decorrelation response factor for degridding",
@@ -422,7 +422,7 @@
             "default": "Facet",
             "dtype": "str",
             "required": false,
-            "choises": ["Full", "Facet"]
+            "choices": ["Full", "Facet"]
         },
         {
             "info": "Apply sparsification compression to initial major cycles. Sparsification refers to throwing away random visibilities. Supply a list of factors: e.g. 100,30,10 would mean only 1/100 of the data is used for the first major cycle, 1/30 for the second, 1/10 for the third, and full data for the fourth cycle onwards. This can substantially accelerate deconvolution of deep observations, since, in these regimes, very little sensitivity is required for model construction in the initial cycles.",
@@ -472,7 +472,7 @@
             "default": "auto",
             "dtype": "str",
             "required": false,
-            "choises": ["off", "reset", "auto", "force"]
+            "choices": ["off", "reset", "auto", "force"]
         },
         {
             "info": "Cache dirty image data",
@@ -480,7 +480,7 @@
             "default": "auto",
             "dtype": "str",
             "required": false,
-            "choises": ["off", "reset", "auto", "force", "forceresidual"]
+            "choices": ["off", "reset", "auto", "force", "forceresidual"]
         },
         {
             "info": "Cache visibility data and flags at runtime",
@@ -488,7 +488,7 @@
             "default": "auto",
             "dtype": "str",
             "required": false,
-            "choises": ["off", "auto", "force"]
+            "choices": ["off", "auto", "force"]
         },
         {
             "info": "Cache visibility data and flags at runtime",
@@ -496,7 +496,7 @@
             "default": "auto",
             "dtype": "str",
             "required": false,
-            "choises": ["off", "auto", "force"]
+            "choices": ["off", "auto", "force"]
         },
         {
             "info": "Cache last residual data (at end of last minor cycle)",
@@ -532,7 +532,7 @@
             "name": "Beam-Model",
             "default": null,
             "dtype": "str",
-            "choises": [null,"LOFAR","FITS"],
+            "choices": [null,"LOFAR","FITS"],
             "required": false
         },
         {
@@ -540,7 +540,7 @@
             "name": "Beam-LOFARBeamMode",
             "default": "AE",
             "dtype": "str",
-            "choises": ["A","AE"],
+            "choices": ["A","AE"],
             "required": false
         },
         {
@@ -555,7 +555,7 @@
             "name": "Beam-CenterNorm",
             "default": "False",
             "dtype": "str",
-            "choises": [0,1],
+            "choices": [0,1],
             "required": false
         },
         {
@@ -586,7 +586,7 @@
             "name": "Beam-FITSFeed",
             "default": null,
             "dtype": "str",
-            "choises": [null ,"xy","XY","rl","RL"],
+            "choices": [null ,"xy","XY","rl","RL"],
             "required": false
         },
         {
@@ -594,7 +594,7 @@
             "name": "Beam-FITSFeed",
             "default": null,
             "dtype": "str",
-            "choises": [null,"xy","XY","rl","RL"],
+            "choices": [null,"xy","XY","rl","RL"],
             "required": false
         },
         {
@@ -687,7 +687,7 @@
             "name": "DDESolutions-JonesMode",
             "default": "Full",
             "dtype": "str",
-            "choises": ["Scalar","Diag","Full"],
+            "choices": ["Scalar","Diag","Full"],
             "required": false
         },
         {
@@ -730,7 +730,7 @@
             "name": "DDESolutions-Type",
             "default": "Nearest",
             "dtype": "str",
-            "choises": ["Krigging","Nearest"],
+            "choices": ["Krigging","Nearest"],
             "required": false
         },
         {
@@ -766,7 +766,7 @@
             "name": "Deconv-Mode",
             "default": "HMP",
             "dtype": "str",
-            "choises": ["HMP","Hogbom","SSD","GAClean"],
+            "choices": ["HMP","Hogbom","SSD","GAClean"],
             "required": false
         },
         {
@@ -908,7 +908,7 @@
             "name": "HMP-SolverMode",
             "default": "PI",
             "dtype": "str",
-            "choises": ["PI","NNLS"],
+            "choices": ["PI","NNLS"],
             "required": false
         },
         {
@@ -958,7 +958,7 @@
             "name": "Hogbom-FreqMode",
             "default": "Poly",
             "dtype": "str",
-            "choises": ["Poly","GPR"],
+            "choices": ["Poly","GPR"],
             "required": false
         },
         {
@@ -988,7 +988,7 @@
             "default": "GA",
             "dtype": "str",
             "required": false,
-            "choises": ["GA"]
+            "choices": ["GA"]
         },
         {
             "info": "SSDCLEAN_SSDSOLVEPARS (???)",
@@ -1094,7 +1094,7 @@
             "default": "linear",
             "dtype": "str",
             "required": false,
-            "choises": ["linear","circular"]
+            "choices": ["linear","circular"]
         },
         {
             "info": "MORESANE_CORECOUNT (default=1): For multiprocessing, specifies the number of cores.",
@@ -1109,7 +1109,7 @@
             "default": "ser",
             "dtype": "str",
             "required": false,
-            "choises": ["ser","mp"]
+            "choices": ["ser","mp"]
         },
         {
             "info": "MORESANE_EDGEEXCL (default=0) : Width (in pixel) of the area to discard from border",
@@ -1145,7 +1145,7 @@
             "default": "cpu",
             "dtype": "str",
             "required": false,
-            "choises": ["cpu"]
+            "choices": ["cpu"]
         },
         {
             "info": "MORESANE_FLUXTHRESHOLD (default=0): Float value, assumed to be in Jy, which specifies an approximate convolution depth.",

@@ -218,7 +218,8 @@ class StimelaJob(object):
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
-                 tag=None, build_label=None, loglevel='INFO'):
+                 tag=None, build_label=None, loglevel='INFO',
+                 loggername='STIMELA'):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -228,25 +229,25 @@ class Recipe(object):
         tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
         """
-
-        self.log = logging.getLogger('STIMELA')
+        
+        self.log = logging.getLogger(loggername)
         self.log.setLevel(getattr(logging, loglevel))
-        # create file handler which logs even debug
+        # Create file handler which logs even debug
         # messages
         name_ = name.lower().replace(' ', '_')
         self.logfile = 'log-{}.txt'.format(name_)
         self.resume_file = '.last_{}.json'.format(name_)
 
-        fh = logging.FileHandler(self.logfile)
+        fh = logging.FileHandler(self.logfile, 'w')
         fh.setLevel(logging.DEBUG)
-        # create console handler with a higher log level
+        # Create console handler with a higher log level
         ch = logging.StreamHandler(sys.stdout)
         ch.setLevel(getattr(logging, loglevel))
-        # create formatter and add it to the handlers
+        # Create formatter and add it to the handlers
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
         fh.setFormatter(formatter)
-        # add the handlers to logger
+        # Add the handlers to logger
         self.log.addHandler(ch)
         self.log.addHandler(fh)
 
@@ -255,7 +256,7 @@ class Recipe(object):
         self.stimela_path = os.path.dirname(docker.__file__)
 
         self.name = name
-        self.build_label = USER or build_label
+        self.build_label = build_label or USER
         self.ms_dir = ms_dir
         if not os.path.exists(self.ms_dir):
             self.log.info('MS directory \'{}\' does not exist. Will create it'.format(self.ms_dir))
@@ -283,6 +284,7 @@ class Recipe(object):
         self.log.info('---------------------------------')
         self.log.info('Stimlela version {0}'.format(version.version))
         self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
+        self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
 
 

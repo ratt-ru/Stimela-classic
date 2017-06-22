@@ -550,8 +550,6 @@ recipe.add('cab/wsclean', 'image_target_field_r0', {
         "channelsout"   :   4,
         "datacolumn"    :   "DATA",
         "prefix"        :   '%s:output' %(imname0),
-
-     
 },
     input=INPUT,
     output=OUTPUT,
@@ -574,7 +572,7 @@ recipe.add("cab/ddfacet", "ddfacet_test",
                 "Data-Sort": True
             },
             input=INPUT, output=OUTPUT, shared_memory="14gb",
-            label="test_image:: Make a test image using ddfacet")
+            label="image_target_field_r0ddfacet:: Make a test image using ddfacet")
 
 lsm0=PREFIX+'-LSM0'
 #Source finding for initial model
@@ -829,6 +827,7 @@ recipe.run([
    "split_corr_data",
    'prepms',
    'image_target_field_r0',
+   'image_target_field_r0ddfacet',
    'extract_init_model',
    'calibrator_Gjones_subtract_lsm0',
    'image_target_field2',

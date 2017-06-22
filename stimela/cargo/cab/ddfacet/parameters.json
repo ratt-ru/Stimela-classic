@@ -151,6 +151,17 @@
             "required": false
         },
         {
+            "info": "Output mode",
+            "name": "Output-Mode",
+            "default": "Clean",
+            "dtype": "str",
+            "required": false,
+            "choices": ["Dirty",
+                        "Clean",
+                        "Predict",
+                        "PSF"]
+        },
+        {
             "info": "Clobber output",
             "name": "Output-Clobber",
             "default": false,
@@ -192,17 +203,6 @@
             "default": "DdPAMRIikz",
             "dtype": "str",
             "required": false,
-        },
-        {
-            "info": "Imager mode",
-            "name": "Image-Mode",
-            "default": "Clean",
-            "dtype": "str",
-            "required": false,
-            "choices": ["Dirty",
-                        "Clean",
-                        "Predict",
-                        "PSF"]
         },
         {
             "info": "Number of pixels in output Image",
@@ -461,9 +461,9 @@
         },
         {
             "info": "Reset cached smooth beam",
-            "name": "Cache-ResetSmoothBeam",
-            "default": true,
-            "dtype": "bool",
+            "name": "Cache-SmoothBeam",
+            "default": "reset",
+            "dtype": "str",
             "required": false
         },
         {
@@ -862,18 +862,19 @@
             "required": false
         },
         {
-            "info": "MASK_AUTOSTATS The parameters to compute the noise-map-based mask for step i+1 from the residual image at step i. Should be [box_size,box_step,Threshold_in_sigma]",
-            "name": "Mask-AutoStats",
-            "default": "'[60, 2, 20]'",
-            "dtype": "str",
+            "info": "set Threshold (in sigma) for automatic masking",
+            "name": "Mask-SigTh",
+            "default": 10,
+            "dtype": "float",
             "required": false
         },
         {
-            "info": "MASK_AUTOBRUTALHMP If noise map is computed, this option enabled, it first computes an image plane deconvolution with a high gain value, and compute the noise-map-based mask using the brutal-restored image",
-            "name": "Mask-AutoBrutalHMP",
-            "default": true,
-            "dtype": "bool",
-            "required": false
+            "info": "If Auto enabled, does the cut of SigTh either on the ModelConv or the Restored",
+            "name": "Mask-FluxImageType",
+            "default": "ModelConv",
+            "dtype": "str",
+            "required": false,
+            "choices": ["ModelConv", "Restored"]
         },
         {
             "info": "MIN,MAX,N String list of alphas to fit. e.g [-1.0, 1.0, 11]",
@@ -1268,7 +1269,7 @@
         },
         {
             "info": "grid worker processes upon launch (with SIGSTOP). Useful to attach gdb to workers.",
-            "name": "Debug-PauseGridWorkers",
+            "name": "Debug-PauseWorkers",
             "default": false,
             "dtype": "bool",
             "required": false

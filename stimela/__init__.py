@@ -524,8 +524,11 @@ def main(argv):
 
 
     parser = ArgumentParser(description='Stimela: Dockerized Radio Interferometric Scripting Framework. '
-                                        '|n version {:s} |n Sphesihle Makhathini <sphemakh@gmail.com>'.format(__version__),
-                            formatter_class=MultilineFormatter, add_help=False)
+                            '|n version {:s} |n install path {:s} |n '
+                            'Sphesihle Makhathini <sphemakh@gmail.com>'.format(__version__,
+                                                                               os.path.dirname(__file__)),
+                            formatter_class=MultilineFormatter,
+                            add_help=False)
 
     add = parser.add_argument
 

@@ -25,9 +25,10 @@ GAINCAL_TABLE2 = PREFIX + '.G1:output'
 
 
 LABEL = "ngc147_reduction"
-OUTPUT = "output_%s"%LABEL
 
 stimela.register_globals()
+
+OUTPUT = "output_%s"%LABEL
 
 recipe = stimela.Recipe('VLA NGC417 1GC reduction script', ms_dir=MSDIR)
 

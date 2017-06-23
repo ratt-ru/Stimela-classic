@@ -114,7 +114,7 @@ if beam and beam_files_pattern:
         "me.p_enable"   : 1,
         "me.e_module"   : "Siamese_OMS_pybeams_fits",
         "me.e_all_stations" : 1,
-        "pybeams_fits.sky_rotation"    :  params.pop('parallactic-angle-rotation', False),
+        "pybeams_fits.sky_rotation"    :  1 if params.pop('parallactic-angle-rotation', False) else 0,
         "pybeams_fits.l_axis"   : jdict.pop("beam-l-axis", "L"),
         "pybeams_fits.m_axis"   : jdict.pop("beam-m-axis", "M"),
         "pybeams_fits.filename_pattern" : "'{}'".format(beam_files_pattern),

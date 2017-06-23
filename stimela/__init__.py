@@ -257,7 +257,7 @@ def run(argv):
     add("-in", "--input",
             help="Input folder")
 
-    add("-out", "--output", default="output",
+    add("-out", "--output",
             help="Output folder")
 
     add("-ms", "--msdir",

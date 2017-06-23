@@ -509,6 +509,12 @@
             "dtype": "bool", 
             "default": false, 
             "name": "overwrite"
+        },
+        {
+            "info": "Show gui", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "showgui"
         }
     ]
 }

@@ -572,7 +572,7 @@ recipe.add("cab/ddfacet", "ddfacet_test",
                 "Data-ChunkHours": 0.5,
                 "Data-Sort": True
             },
-            input=INPUT, output=OUTPUT, shared_memory="14gb",
+            input=INPUT, output=OUTPUT, shared_memory="36gb",
             label="image_target_field_r0ddfacet:: Make a test image using ddfacet")
 
 lsm0=PREFIX+'-LSM0'

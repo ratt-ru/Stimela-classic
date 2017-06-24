@@ -119,13 +119,7 @@
             "info": "If the input is a multi-MS, make the output one, too. (experimental)", 
             "dtype": "bool", 
             "default": false, 
-            "name": "keepms"
-        }, 
-        {
-            "info": "If true the taskname must be started using split(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
+            "name": "keepmms"
         }
     ]
 }

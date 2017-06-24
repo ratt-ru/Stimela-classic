@@ -20,9 +20,13 @@ class StimelaLogger(object):
         self.info = self.read(lfile)
         # First make sure that all fields are
         # initialised. Initialise if not so
+        changed = False
         for item in ['images', 'containers', 'processes']:
             if self.info.get(item, None) is None:
                 self.info[item] = {}
+                changed = True
+        if changed:
+            self.write()
 
 
     def _inspect(self, name):

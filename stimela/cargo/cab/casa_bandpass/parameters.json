@@ -108,7 +108,7 @@
             "info": "Reject solutions below this SNR (only applies for bandtype = B)", 
             "dtype": "float", 
             "default": 3.0, 
-            "name": "misnr"
+            "name": "minsnr"
         }, 
         {
             "info": "Normalize average solution amplitudes to 1.0", 
@@ -226,12 +226,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "parang"
-        }, 
-        {
-            "info": "If true the taskname must be started using bandpass(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
         }
     ]
 }

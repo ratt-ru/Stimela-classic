@@ -1,0 +1,326 @@
+{
+    "task": "casa_mstransform", 
+    "base": "stimela/casa", 
+    "tag": "0.2.9", 
+    "description": "Split the MS, combine/separate/regrid spws and do channel and time averaging", 
+    "prefix": "-", 
+    "binary": "mstransform", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input visibility file", 
+            "name": "msname", 
+            "io": "msfile", 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Name of output measurement set", 
+            "check_io": false, 
+            "name": "output-msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "mapping": "outputvis"
+        }, 
+        {
+            "name": "createmms",
+            "info": "Create a multi-MS output from an input MS",
+            "dtype" : "bool",
+            "default": false
+        },
+        {
+            "name"  : "separationaxis",
+            "info"  : "Axis to do parallelization across.",
+            "dtype" : "str",
+            "choices" : ["auto", "spw", "scan", "baseline"],
+            "default" : "auto"
+        },
+        {
+            "name": "numsubms",
+            "info": "The number of Sub-MSs to create (auto or any number)",
+            "dtype": ["str","int"],
+            "default": "auto"
+        },
+        {
+            "name": "tileshape",
+            "info": "ist with 1 or 3 elements giving the tile shape of the disk data columns",
+            "dtype" : "list:int",
+            "default" : null
+        },
+        {
+            "info": "Which data column(s) to split out", 
+            "dtype": "str", 
+            "default": "corrected", 
+            "name": "datacolumn",
+            "choices" : [
+                    "corrected",
+                    "data",
+                    "model",
+                    "data,model,corrected",
+                    "float_data",
+                    "lag_data",
+                    "float_data,data",
+                    "lag_data,data",
+                    "all"
+                    ]
+        },
+        {
+            "name": "realmodelcol",
+            "info": "Make a real virtual MODEL column",
+            "dtype": "bool",
+            "default":false
+        },
+        {
+            "name": "keepflags",
+            "info": "Keep *completely flagged rows* or drop them from the output",
+            "dtype": "bool",
+            "default": true
+        },
+        {
+            "name": "usewtspectrum",
+            "info": "Create a WEIGHT_SPECTRUM column in the output MS",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "combinespws",
+            "info": "Combine the input spws into a new output spw",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "chanaverage",
+            "info": "Average data in channels",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "chanbin",
+            "info": "Width (bin) of input channels to average to form an output channel",
+            "dtype": "int",
+            "default": 1
+        },
+        {
+            "name": "hanning",
+            "info": "Hannig smooth data to remove Gibbs ringing",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "regridms",
+            "info": "Transform channel labels and visibilities to a different spectral reference frame. Notice that u,v,w data is not transformed.",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "mode",
+            "info": "Regridding mode (channel/velocity/frequency/channel_b)",
+            "dtype": "str",
+            "default": "channel",
+            "chhoices": [
+                "channel",
+                "velocity",
+                "frequency",
+                "channel_b"
+                ]
+        },
+        {
+            "name": "nchan",
+            "info": "Number of channels in the output spw (-1=all)",
+            "dtype": "int",
+            "default": -1
+        },
+        {
+            "name": "start",
+            "info": "First channel to use in the output spw (mode-dependant)",
+            "default": 0,
+            "dtype": "int"
+        },
+        {
+            "name": "width",
+            "info": "Number of input channels that are used to create an output channel.",
+            "dtype": "int",
+            "default": 1
+        },
+        {
+            "name": "nspw",
+            "info": "Number of output spws to create in output MS.",
+            "dtype": "int",
+            "default": 1
+        },
+        {
+            "name": "interpolation",
+            "info": "Spectral interpolation method",
+            "dtype" : "str",
+            "default": "linear",
+            "choices": [
+                "linear",
+                "nearest",
+                "cubic",
+                "spline",
+                "fftshift"
+                ]
+        },
+        {
+            "name": "phasecenter",
+            "info": "Phase center direction to be used for the spectral coordinate transformation: position or field index",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "restfreq",
+            "info": "Rest frequency to use for output",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "outframe",
+            "info": "Output reference frame (''=keep input frame).",
+            "dtype": "str",
+            "default": "",
+            "choices": [
+                "",
+                "topo",
+                "geo",
+                "lsrk",
+                "lsrd",
+                "galacto",
+                "lgroup",
+                "cmb",
+                "source"
+                ]
+        },
+        {
+            "name": "veltype",
+            "info": "Velocity definition",
+            "dtype": "str",
+            "default": "radio",
+            "choices": [
+                "optical",
+                "radio"
+                ]
+        },
+        {
+            "name" : "timeaverage",
+            "info": "Average data in time",
+            "default": false,
+            "dtype": "bool"
+        },
+        {
+            "name": "timebin",
+            "info": "Bin width for time averaging",
+            "dtype": "str",
+            "default": "0s"
+        },
+        {
+            "name": "timespan",
+            "info": "Span the timebin across scan, state or both",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "maxuvwdistance",
+            "info": "Maximum separation of start-to-end baselines that can be included in an average. (meters)",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "docallib",
+            "info": "Enable on-the-fly (OTF) calibration as in task applycal",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "douvcontsub",
+            "info": "Enable continuum subtraction as in task uvcontsub",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "name": "fitspw",
+            "info": "Spectral window:channel selection for fitting the continuum",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "fitorder",
+            "info": "Polynomial order for the fits",
+            "dtype": "int",
+            "default" : 0
+        },
+        {
+            "name": "want_cont",
+            "info": "Produce continuum estimate instead of continuum subtracted data",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "info": "Select field using ID(s) or name(s). Comma separated string", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
+        {
+            "info": "Select spectral window/channels", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
+        {
+            "info": "Select data by scan numbers", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
+        {
+            "info": "Select data by time range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
+        {
+            "info": "Select data by scan numbers", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
+        {
+            "info": "Select by observation ID(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
+        {
+            "info": "Select data by scan intents", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "intent"
+        }, 
+        {
+            "info": "Select (sub)array(s) by array ID number", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "array"
+        }, 
+        {
+            "info": "Select data by baseline length", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "uvrange"
+        }, 
+        {
+            "info": "Select data by baseline length", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "correlation"
+        }, 
+        {
+            "info": "If practical, keep *completely flagged rows* instead of dropping them.", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "keepflags"
+        }
+    ]
+}

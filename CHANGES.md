@@ -40,3 +40,6 @@
 - Improve logging system
 - Custom cabs can now don't need to be in stimela/cargo/cab
 - Various fixes to minor bugs. Especiallly in casa_flagdata cab
+- Add DDFacet cab!!
+- Fix --us-only option in 'stimela build'
+- Upgrade to kern-2 (wsclean is using kern-dev)

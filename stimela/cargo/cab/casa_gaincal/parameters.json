@@ -74,8 +74,8 @@
         }, 
         {
             "info": "Optional complex data selection (ignore for now)", 
-            "dtype": "bool", 
-            "default": true, 
+            "dtype": "str", 
+            "default": null, 
             "name": "msselect"
         }, 
         {
@@ -181,7 +181,7 @@
         {
             "info": "Use callib or traditional cal apply parameters", 
             "dtype": "bool", 
-            "default": true, 
+            "default": false, 
             "name": "docallib"
         }, 
         {
@@ -224,12 +224,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "parang"
-        }, 
-        {
-            "info": "If true the taskname must be started using gaincal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "async"
         }
     ]
 }

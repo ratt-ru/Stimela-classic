@@ -11,4 +11,4 @@ RUN chmod 777 /var/run
 ENV DISPLAY :99
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /bin/bash -c "/etc/init.d/xvfb start && python /code/run.py 2>&1 | tee -a $LOGFILE ; (exit ${PIPESTATUS}) && /etc/init.d/xvfb stop"
+CMD /code/run.sh

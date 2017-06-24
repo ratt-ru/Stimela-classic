@@ -1,4 +1,4 @@
-FROM stimela/base:0.2.5
+FROM stimela/base:0.2.9
 ADD . /Stimela
 WORKDIR /Stimela
 RUN pip install /Stimela

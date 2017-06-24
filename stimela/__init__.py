@@ -133,23 +133,27 @@ def build(argv):
         log.write()
         return
 
-   
+    # Cabs and their locations   
     cabs = []
     dockerfiles = []
-    # Dont care about any outstanding images. The user should really run build
-    # base before building cabs if they have custom images
-    #logged_images = log.read().get('images', {})
-    #for key,val in logged_images.iteritems():
-    #    if val['CAB']:
-    #        cabs.append(key)
-    #        dockerfiles.append(val['DIR'])
 
- 
-    IGNORE = args.ignore_cabs.split(",")
-    USONLY = args.us_only.split(",") if args.us_only is not None else CAB
-    CABS = set(CAB).difference(set(IGNORE)).intersection(set(USONLY))
-    cabs += ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS]
-    dockerfiles += [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS]
+    if args.us_only:
+        CABS = args.us_only.split(',')
+    else:
+        # Images that have been logged
+        # This is crucial for making custom cabs
+        logged_images = log.read().get('images', {})
+        for key,val in logged_images.iteritems():
+            if val['CAB']:
+                cabs.append(key)
+                dockerfiles.append(val['DIR'])
+        # If user wants to ignore some cabs
+        IGNORE = args.ignore_cabs.split(",")
+        CABS = set(CAB).difference(set(IGNORE))
+
+    # Prioritise package images over logged images
+    cabs = ["{:s}_cab/{:s}".format(args.build_label, cab) for cab in CABS] + cabs
+    dockerfiles = [ "{:s}/{:s}".format(cargo.CAB_PATH, cab) for cab in CABS] + dockerfiles
     built = []
     for image, dockerfile in zip(cabs,dockerfiles):
         if image not in built:
@@ -172,7 +176,6 @@ def get_cabs(logfile):
             del cabs_[key]
 
     return cabs_
-
 
 
 def info(cabdir, header=False):
@@ -217,17 +220,11 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
 
     if args.cab_doc:
         name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
-        cabdir = cabs_[name]['DIR']
+        try:
+            cabdir = cabs_[name]['DIR']
+        except KeyError:
+            raise RuntimeError('The cab you requested is not known to stimela, or has not been built. Run \'stimela cabs -l\' to see which cabs have been built')
         info(cabdir)
-
-    elif args.list:
-        _cabs = []
-        for cab in cabs_:
-            # strip away the label
-            name = cab.split('{}_'.format(args.build_label))[1]
-            _cabs.append(name)
-        # print them cabs
-        print( ',  '.join(_cabs) )
 
     elif args.list_summary:
         for key,val in cabs_.iteritems():
@@ -238,6 +235,14 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
                 info(cabdir, header=True)
             except IOError:
                 pass
+    else:
+        _cabs = []
+        for cab in cabs_:
+            # strip away the label
+            name = cab.split('{}_'.format(args.build_label))[1].split('/')[1]
+            _cabs.append(name)
+        # print them cabs
+        print( ', '.join(_cabs) )
 
 
 def run(argv):
@@ -252,7 +257,7 @@ def run(argv):
     add("-in", "--input",
             help="Input folder")
 
-    add("-out", "--output", default="output",
+    add("-out", "--output",
             help="Output folder")
 
     add("-ms", "--msdir",
@@ -495,27 +500,23 @@ def clean(argv):
     if args.all_containers:
         containers = log.info['containers'].keys()
         for container in containers:
+            print container
             cont = docker.Container(log.info['containers'][container]['IMAGE'], container)
             try:
-                status = cont.info()['State']['Status']
-            except OSError:
+                status = cont.info()['State']['Status'].lower()
+            except:
                 print('Could not inspect container {}. It probably doesn\'t exist, will remove it from log'.format(container))
-                status = False
-                log.remove('containers', container)
-                log.write()
-                continue
+                status = "no there"
 
             if status == 'running':
             # Kill the container instead of stopping it, so that effect can be felt py parent process
                 utils.xrun('docker', ['kill', container])
                 cont.remove()
-                log.remove('containers', container)
-                log.write()
-            elif status == 'exited':
+            elif status in ['exited', 'dead']:
                 cont.remove()
-                log.remove('containers', container)
-                log.write()
 
+            log.remove('containers', container)
+            log.write()
 
 def main(argv):
     for i, arg in enumerate(argv):
@@ -523,8 +524,11 @@ def main(argv):
 
 
     parser = ArgumentParser(description='Stimela: Dockerized Radio Interferometric Scripting Framework. '
-                                        '|n version {:s} |n Sphesihle Makhathini <sphemakh@gmail.com>'.format(__version__),
-                            formatter_class=MultilineFormatter, add_help=False)
+                            '|n version {:s} |n install path {:s} |n '
+                            'Sphesihle Makhathini <sphemakh@gmail.com>'.format(__version__,
+                                                                               os.path.dirname(__file__)),
+                            formatter_class=MultilineFormatter,
+                            add_help=False)
 
     add = parser.add_argument
 
@@ -572,7 +576,7 @@ build   : Build a set of stimela images
 pull    : pull a stimela base images
 run     : Run a stimela script
 images  : List stimela images
-cabs    : List active stimela containers
+cabs    : Manage cab images
 ps      : List running stimela scripts
 kill    : Gracefully kill runing stimela process
 clean   : Clean up tools for stimela

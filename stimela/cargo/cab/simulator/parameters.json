@@ -204,10 +204,10 @@
             "name": "beam-m-axis"
         }, 
         {
-            "info": "Enable paralactic angle rotation. Enable if telescope mount is ALT-AZ", 
+            "info": "Enable parallactic angle rotation. Enable if telescope mount is ALT-AZ", 
             "dtype": "bool", 
             "default": false, 
-            "name": "paralactic-angle-rotation"
+            "name": "parallactic-angle-rotation"
         }, 
         {
             "info": "Pointing accuracy in arcsec. If set to non-zero value, will introduce pointing errors into simulation", 

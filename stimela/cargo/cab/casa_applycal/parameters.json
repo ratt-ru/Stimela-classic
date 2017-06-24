@@ -71,14 +71,14 @@
         }, 
         {
             "info": "Optional complex data selection (ignore for now)", 
-            "dtype": "bool", 
-            "default": true, 
+            "dtype": "str", 
+            "default": null,
             "name": "msselect"
         }, 
         {
             "info": "Use callib or traditional cal apply parameters", 
             "dtype": "bool", 
-            "default": true, 
+            "default": false, 
             "name": "docallib"
         }, 
         {
@@ -148,12 +148,6 @@
             "dtype": "bool", 
             "default": true, 
             "name": "flagbackup"
-        }, 
-        {
-            "info": "If true the taskname must be started using applycal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "async"
         }
     ]
 }

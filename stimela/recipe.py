@@ -118,26 +118,32 @@ class StimelaJob(object):
         if offenders:
             raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
                              ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(name))
-        # Get location of template parameters file
-        parameter_file = '{0}/{1}/parameters.json'.format(CAB_PATH, image.split('/')[-1].split(':')[0])
 
         ## Update I/O with values specified on command line
         # TODO (sphe) I think this feature should be removed
         script_context = self.recipe.stimela_context
-        input = input or script_context.get('_STIMELA_INPUT', None)
-        output = output or script_context.get('_STIMELA_OUTPUT', None)
-        msdir = msdir or script_context.get('_STIMELA_MSDIR', None)
-        build_label = build_label or script_context.get('_STIMELA_BUILD_LABEL', USER)
+        input = script_context.get('_STIMELA_INPUT', None) or input
+        output = script_context.get('_STIMELA_OUTPUT', None) or output
+        msdir = script_context.get('_STIMELA_MSDIR', None) or msdir
+        build_label = script_context.get('_STIMELA_BUILD_LABEL', None) or build_label
+
+        # Get location of template parameters file
+        cabs_logger = stimela.get_cabs('{0:s}/{1:s}_stimela_logfile.json'.format(stimela.LOG_HOME, build_label))
+        try:
+            cabpath = cabs_logger['{0:s}_{1:s}'.format(build_label, image)]['DIR']
+        except KeyError:
+            raise RuntimeError('Cab {} has is uknown to stimela. Was it built?'.format(image))
+        parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
 
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
-
+        
         cont = docker.Container(image, name,
                      label=self.label, logger=self.log,
                      shared_memory=shared_memory, log_container=stimela.LOG_FILE)
-        
+
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
         cont.parameter_file_name = '{0}/{1}.json'.format(self.recipe.parameter_file_dir, name)
@@ -212,7 +218,8 @@ class StimelaJob(object):
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
-                 tag=None, build_label=None, loglevel='INFO'):
+                 tag=None, build_label=None, loglevel='INFO',
+                 loggername='STIMELA'):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -222,25 +229,25 @@ class Recipe(object):
         tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
         """
-
-        self.log = logging.getLogger('STIMELA')
+        
+        self.log = logging.getLogger(loggername)
         self.log.setLevel(getattr(logging, loglevel))
-        # create file handler which logs even debug
+        # Create file handler which logs even debug
         # messages
         name_ = name.lower().replace(' ', '_')
         self.logfile = 'log-{}.txt'.format(name_)
         self.resume_file = '.last_{}.json'.format(name_)
 
-        fh = logging.FileHandler(self.logfile)
+        fh = logging.FileHandler(self.logfile, 'w')
         fh.setLevel(logging.DEBUG)
-        # create console handler with a higher log level
+        # Create console handler with a higher log level
         ch = logging.StreamHandler(sys.stdout)
         ch.setLevel(getattr(logging, loglevel))
-        # create formatter and add it to the handlers
+        # Create formatter and add it to the handlers
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
         fh.setFormatter(formatter)
-        # add the handlers to logger
+        # Add the handlers to logger
         self.log.addHandler(ch)
         self.log.addHandler(fh)
 
@@ -249,7 +256,7 @@ class Recipe(object):
         self.stimela_path = os.path.dirname(docker.__file__)
 
         self.name = name
-        self.build_label = build_label
+        self.build_label = build_label or USER
         self.ms_dir = ms_dir
         if not os.path.exists(self.ms_dir):
             self.log.info('MS directory \'{}\' does not exist. Will create it'.format(self.ms_dir))
@@ -277,6 +284,7 @@ class Recipe(object):
         self.log.info('---------------------------------')
         self.log.info('Stimlela version {0}'.format(version.version))
         self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
+        self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
 
 
@@ -472,11 +480,14 @@ class Recipe(object):
                 pe = PipelineException(e, self.completed, job, self.remaining)
 
                 raise pe, None, sys.exc_info()[2]
+                self.proc_logger.remove('processes', self.pid)
+                self.proc_logger.write()
 
             finally:
                 if job.jtype == 'docker' and job.created:
                     job.job.stop()
                     job.job.remove()
+
 
         self.proc_logger.remove('processes', self.pid)
         self.proc_logger.write()

@@ -90,6 +90,7 @@ if beam and beam_files_pattern:
         "me.e_enable"   : 1,
         "me.p_enable"   : 1,
         "me.e_module"   : "Siamese_OMS_pybeams_fits",
+        "pybeams_fits.sky_rotation"    :  1 if params.pop('parallactic-angle-rotation', False) else 0,
         "me.e_all_stations" : 1,
         "pybeams_fits.l_axis"   : params.pop("beam-l-axis", "L"),
         "pybeams_fits.m_axis"   : params.pop("beam-m-axis", "M"),

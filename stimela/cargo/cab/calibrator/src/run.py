@@ -38,16 +38,23 @@ prefix = jdict.pop('prefix', None) or '{0}/{1}'.format(OUTPUT, msbase)
 params = {}
 
 # options for writing flags
-flagset = jdict.pop("write-flags", None)
-if flagset:
+writeflags = jdict.pop("write-flags-to-ms", None)
+if writeflags:
     params["ms_sel.ms_write_flags"] = 1
-    params["ms_wfl.write_bitflag"]  = flagset
-    params["ms_sel.ms_fill_legacy_flags"] = jdict.pop("fill-legacy-flags", 1)
+    params["ms_sel.ms_fill_legacy_flags"] = 1 if jdict.pop("fill-legacy-flags", False) else 0
+
+write_flagset = jdict.pop("write-flagset", None)
+if write_flagset:
+    params["ms_wfl.write_bitflag"]  = write_flagset
     params["ms_sel.ms_write_flag_policy"] = "add to set" if jdict.pop("write-flag-policy", "add") else "replace set"
 
 # Read flags options
-params["ms_rfl.read_flagsets"] = jdict.pop("read-flagsets", "-stefcal")
-params["ms_rfl.read_legacy_flags"] = jdict.pop("read-legacy-flags", 1)
+readflagsets = jdict.pop("read-flagsets", False)
+if readflagsets:
+    params["ms_rfl.read_flagsets"] = readflagsets
+
+params['ms_sel.ms_read_flags'] = 1 if jdict.pop("read-flags", False) else 0
+params["ms_rfl.read_legacy_flags"] = 1 if jdict.pop("read-legacy-flags", False) else 0
 
 params["ms_sel.msname"] = msname
 field_id = jdict.pop("field-id", 0)
@@ -107,6 +114,7 @@ if beam and beam_files_pattern:
         "me.p_enable"   : 1,
         "me.e_module"   : "Siamese_OMS_pybeams_fits",
         "me.e_all_stations" : 1,
+        "pybeams_fits.sky_rotation"    :  1 if params.pop('parallactic-angle-rotation', False) else 0,
         "pybeams_fits.l_axis"   : jdict.pop("beam-l-axis", "L"),
         "pybeams_fits.m_axis"   : jdict.pop("beam-m-axis", "M"),
         "pybeams_fits.filename_pattern" : "'{}'".format(beam_files_pattern),

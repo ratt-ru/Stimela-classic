@@ -55,5 +55,7 @@ if stack and axis:
     outimage = None
 elif unstack and axis:
     args.append( '{0}unstack {1}:{2}:{3}'.format(cab['prefix'], outimage, axis, chunk))
-    
+    outimage = None
+else:
+    outimage = '{0}output {1}'.format(cab['prefix'], outimage)
 utils.xrun(cab['binary'], args+[inimage, outimage or ""])

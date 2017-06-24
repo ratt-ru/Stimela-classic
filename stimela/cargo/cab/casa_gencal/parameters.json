@@ -65,12 +65,6 @@
             "dtype": "list:float", 
             "default": null, 
             "name": "parameter"
-        }, 
-        {
-            "info": "If true the taskname must be started using gencal(...)", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "asynch"
         }
     ]
 }

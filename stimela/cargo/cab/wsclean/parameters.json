@@ -377,13 +377,13 @@
             "info": "Set maximum uv distance", 
             "dtype": "float", 
             "default": null, 
-            "name": "maxuvw-l"
+            "name": "maxuv-l"
         }, 
         {
-            "info": "Set maximum uv distance", 
+            "info": "Set minimum uv distance", 
             "dtype": "float", 
             "default": null, 
-            "name": "maxuvw-l"
+            "name": "minuv-l"
         }, 
         {
             "info": "Maximum number of clean iterations to perform", 
@@ -406,8 +406,8 @@
         }, 
         {
             "info": "Construct a mask from found components and when a threshold of sigma is reached, continue cleaning with the mask down to the normal threshold.", 
-            "dtype": "bool", 
-            "default": false, 
+            "dtype": "float", 
+            "default": null, 
             "name": "auto-mask"
         }, 
         {
@@ -495,7 +495,7 @@
         {
             "info": "Set the border size in which no cleaning is performed, in percentage of the width/height of the image. With an image size of 1000 and clean border of 1%, each border is 10 pixels.", 
             "dtype": "float", 
-            "default": 5, 
+            "default": null, 
             "name": "cleanborder"
         }, 
         {

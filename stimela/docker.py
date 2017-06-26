@@ -13,19 +13,23 @@ class DockerError(Exception):
     pass
 
 
-def build(image, build_path, tag=None, build_args=None, args=[]):
+def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
     """ build a docker image"""
 
     if tag:
         image = ":".join([image, tag])
 
+    bdir = tempfile.mkdtemp()
+    os.system('cp -r {0:s}/* {1:s}'.format(build_path, bdir))
     if build_args:
-        stdw = tempfile.NamedTemporaryFile(dir=build_path)
-        with open("{}/Dockerfile".format(build_path)) as std:
+        stdw = tempfile.NamedTemporaryFile(dir=bdir)
+        with open("{}/Dockerfile".format(bdir)) as std:
             dfile = std.readlines()
 
         for line in dfile:
-            if line.lower().startswith("cmd"):
+            if fromline and line.lower().startswith('from'):
+                stdw.write('FROM {:s}\n'.format(fromline))
+            elif line.lower().startswith("cmd"):
                 for arg in build_args:
                     stdw.write(arg+"\n")
                 stdw.write(line)
@@ -34,13 +38,15 @@ def build(image, build_path, tag=None, build_args=None, args=[]):
         stdw.flush()
         utils.xrun("docker build", args+["--force-rm","-f", stdw.name, 
                    "-t", image, 
-                    build_path])
+                    bdir])
 
         stdw.close()
     else:
         utils.xrun("docker build", args+["--force-rm", "-t", image, 
-                    build_path])
+                    bdir])
 
+    os.system('rm -rf {:s}'.format(bdir))
+    
 def pull(image, tag=None):
     """ pull a docker image """
     if tag:

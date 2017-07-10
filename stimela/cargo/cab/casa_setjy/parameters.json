@@ -107,12 +107,7 @@
         {
             "info": "Specified flux density [I,Q,U,V]; (-1 will lookup values)", 
             "dtype": "list:float", 
-            "default": [
-                1.0, 
-                0.0, 
-                0.0, 
-                0.0
-            ], 
+            "default": null,
             "name": "fluxdensity"
         }, 
         {

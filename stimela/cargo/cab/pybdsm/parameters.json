@@ -104,6 +104,12 @@
             "name": "beam_sp_derive"
         }, 
         {
+            "info": "Get beams for each channel in FITS header. Eg. BMAJ1, BMAJ1, BPA1; BMAJ2, BMIN2, BPA2", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "multi_chan_beam"
+        }, 
+        {
             "info": "FWHM of synthesized beam per channel. Specify as [(bmaj_ch1, bmin_ch1, bpa_ch1), (bmaj_ch2, bmin_ch2, bpa_ch2), etc.] in degrees. E.g., beam_spectrum = [(0.01, 0.01, 45.0), (0.02,0.01, 34.0)] for two channels. None => all equal to beam", 
             "dtype": "list:list", 
             "default": null, 

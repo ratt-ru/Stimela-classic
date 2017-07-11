@@ -570,7 +570,10 @@ recipe.add("cab/ddfacet", "ddfacet_test",
                 "Beam-Model": "FITS",
                 "Beam-FITSFile": "'beams/JVLA-L-centred-$(xy)_$(reim).fits'",
                 "Data-ChunkHours": 0.5,
-                "Data-Sort": True
+                "Data-Sort": True,
+		"Log-Boring": True,
+		"Deconv-MaxMajorIter": 2,
+		"Deconv-MaxMinorIter": 500,
             },
             input=INPUT, output=OUTPUT, shared_memory="36gb",
             label="image_target_field_r0ddfacet:: Make a test image using ddfacet")

@@ -102,6 +102,12 @@
             "name": "stack"
         }, 
         {
+            "info": "Delete original file(s) after stacking/unstacking using --stack/--unstack",
+            "name": "delete-files",
+            "default" : false,
+            "dtype": "bool"
+        },
+        {
             "info": "Unstack a FITS image into smaller chunks each having [each_chunk] planes along a given axis. This axis may given as an integer (as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)", 
             "dtype": "bool", 
             "default": false, 

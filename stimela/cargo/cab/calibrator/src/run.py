@@ -23,7 +23,6 @@ for param in parameters:
     value = param['value']
     if value is None:
         continue
-
     if value is False:
         value = 0
     elif value is True:
@@ -46,7 +45,7 @@ if writeflags:
 write_flagset = jdict.pop("write-flagset", None)
 if write_flagset:
     params["ms_wfl.write_bitflag"]  = write_flagset
-    params["ms_sel.ms_write_flag_policy"] = "add to set" if jdict.pop("write-flag-policy", "add") else "replace set"
+    params["ms_sel.ms_write_flag_policy"] = "'add to set'" if jdict.pop("write-flag-policy", False) else "'replace set'"
 
 # Read flags options
 readflagsets = jdict.pop("read-flagsets", False)
@@ -176,15 +175,21 @@ def run_meqtrees(msname):
     suffix = ["%s/Calico/calico-stefcal.py =stefcal"%os.environ["MEQTREES_CATTERY_PATH"]]
     options = {}
     options.update(params)
-    if options.pop("add-vis-model", 0):
+    if jdict.pop("add-vis-model", 0):
         options["read_ms_model"] = 1
         options["ms_sel.model_column"] = "MODEL_DATA"
 
     taql = jdict.get('data-selection', None)
     if taql:
         options["ms_sel.ms_taql_str"] = taql
+    
+    args = []
+    for key,value in options.iteritems():
+        if isinstance(value, str) and value.find(' ')>0:
+            value = '"{:s}"'.format(value)
+        args.append('{0}={1}'.format(key,value))
 
-    args = prefix + ["%s=%s"%(key, val) for key,val in options.iteritems()] + suffix
+    args = prefix + args + suffix
     
     utils.xrun(cab['binary'], args + ['-s {}'.format(saveconf) if saveconf else ''])
     

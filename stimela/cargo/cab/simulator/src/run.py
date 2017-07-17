@@ -19,9 +19,13 @@ _params = cab['parameters']
 params = {}
 options = {}
 for param in _params:
-    if param['value'] is None:
+    value = param['value']
+    name = param['name']
+
+    if value is None:
         continue
-    params[param['name']] = param['value']
+
+    params[name] = value
 
 options["ms_sel.ddid_index"] = params.get('spw-id', 0)
 options["ms_sel.field_index"] = params.get('field-id', 0)
@@ -41,9 +45,9 @@ if isinstance(skymodel, str):
         raise RuntimeError("ABORT: Could not find the skymodel")
 
 modes = {
-    "simulate"  :   '"sim only"',
-    "add"       :   "'add to MS'",
-    "subtract"  :   "'subtract from MS'",
+    "simulate"  :   'sim only',
+    "add"       :   "add to MS",
+    "subtract"  :   'subtract from MS',
 }
 
 column = params.pop("column", "CORRECTED_DATA")
@@ -124,5 +128,10 @@ if field_center and skymodel:
 prefix = ['-s {}'.format(saveconf) if saveconf else ''] + ["--mt {0} -c {1} [{2}]".format(threads, tdlconf, section)]
 suffix = ["%s/Siamese/turbo-sim.py =_simulate_MS"%os.environ["MEQTREES_CATTERY_PATH"]]
 
-args = ["%s=%s"%(key, val) for key,val in options.iteritems()]
+args = []
+for key,value in options.iteritems():
+    if isinstance(value, str) and value.find(' ')>0:
+        value = '"{:s}"'.format(value)
+    args.append('{0}={1}'.format(key,value))
+
 utils.xrun(cab['binary'], prefix + args + suffix)

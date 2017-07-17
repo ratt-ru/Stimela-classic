@@ -37,15 +37,40 @@ for param in cab['parameters']:
 
     if value is None:
         continue
-
+    if name in ['multi_chan_beam']:
+        multi_chan_beam = value
+        continue
     if name in write_catalog:
         write_opts[name] = value
-    elif name == 'freq0':
+    elif name in ['freq0', 'frequency']:
         freq0 = value
     else:
         img_opts[name] = value
         if name == 'spectralindex_do':
             spi_do = value
+
+img_opts.pop('freq0', None)
+if freq0 is None:
+    with pyfits.open(img_opts['filename']) as hdu:
+        hdr = hdu[0].header
+        for i in xrange(1, hdr['NAXIS']+1):
+            if hdr['CTYPE{0:d}'.format(i)].startswith('FREQ'):
+                freq0 = hdr['CRVAL{0:d}'.format(i)]
+
+if spi_do and multi_chan_beam:
+    with pyfits.open(img_opts['filename']) as hdu:
+        hdr = hdu[0].header
+    beams = []
+    count = 1
+    while 1:
+        try:
+            beam = [hdr['{0:s}{1:d}'.format(b, count)] for b in 'BMAJ BMIN BPA'.split()]
+        except KeyError:
+            break
+        beams.append(tuple(beam))
+        count +=1
+    # parse beam info to pybdsm
+    img_opts['beam_spectrum'] = beams
 
 image = img_opts.pop('filename')
 outfile = write_opts.pop('outfile')
@@ -54,7 +79,7 @@ img = bdsm.process_image(image, **img_opts)
 
 port2tigger = write_opts.pop('port2tigger', True)
 
-if write_opts.get('format', None) !='fits':
+if port2tigger:
     write_opts['format'] = 'fits'
 
 img.write_catalog(outfile=outfile, **write_opts)
@@ -100,7 +125,7 @@ def tigger_src(src, idx):
             source.spectrum = ModelClasses.SpectralIndex(spi, freq0)
             source.setAttribute('spi_error', spi_err)
         else:
-            raise RunTimeError("No start frequency (freq0) provided.")
+            raise RuntimeError("No start frequency (freq0) provided.")
     return source
 
 

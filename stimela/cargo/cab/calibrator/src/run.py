@@ -52,7 +52,7 @@ readflagsets = jdict.pop("read-flagsets", False)
 if readflagsets:
     params["ms_rfl.read_flagsets"] = readflagsets
 
-params['ms_sel.ms_read_flags'] = 1 if jdict.pop("read-flags", False) else 0
+params['ms_sel.ms_read_flags'] = 1 if jdict.pop("read-flags-from-ms", False) else 0
 params["ms_rfl.read_legacy_flags"] = 1 if jdict.pop("read-legacy-flags", False) else 0
 
 params["ms_sel.msname"] = msname

@@ -72,6 +72,12 @@
             "name": "recenter"
         }, 
         {
+            "info": "Enable time and bandwidth smearing in simulation",
+            "dtype": "bool",
+            "default": false,
+            "name": "smearing"
+        },
+        {
             "info": "Add noise to simulated data", 
             "dtype": "bool", 
             "default": false, 

@@ -1,7 +1,7 @@
 {
     "task": "casa_plotms", 
     "base": "stimela/casa", 
-    "tag": "0.2.9", 
+    "tag": "0.3.0", 
     "description": "CASA plotms task", 
     "prefix": " ", 
     "binary": "plotms", 
@@ -509,7 +509,7 @@
             "dtype": "bool", 
             "default": false, 
             "name": "overwrite"
-        },
+        }, 
         {
             "info": "Show gui", 
             "dtype": "bool", 

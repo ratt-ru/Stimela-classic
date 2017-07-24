@@ -1,7 +1,7 @@
 {
     "task": "simulator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.9", 
+    "tag": "0.3.0", 
     "description": "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)", 
     "prefix": " ", 
     "binary": "meqtree-pipeliner.py", 
@@ -72,11 +72,11 @@
             "name": "recenter"
         }, 
         {
-            "info": "Enable time and bandwidth smearing in simulation",
-            "dtype": "bool",
-            "default": false,
+            "info": "Enable time and bandwidth smearing in simulation", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "smearing"
-        },
+        }, 
         {
             "info": "Add noise to simulated data", 
             "dtype": "bool", 

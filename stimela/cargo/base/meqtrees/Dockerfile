@@ -1,4 +1,4 @@
-FROM stimela/base:0.2.9
+FROM stimela/base:0.3.0
 RUN docker-apt-install meqtrees time
 RUN pip install --upgrade --force-reinstall git+https://github.com/SpheMakh/owlcat
 RUN pip install --upgrade git+https://github.com/ska-sa/tigger

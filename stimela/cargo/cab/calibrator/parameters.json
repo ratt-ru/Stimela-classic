@@ -1,7 +1,7 @@
 {
     "task": "calibrator", 
     "base": "stimela/meqtrees", 
-    "tag": "0.2.9", 
+    "tag": "0.3.0", 
     "description": "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)", 
     "prefix": " ", 
     "binary": "/usr/bin/meqtree-pipeliner.py", 
@@ -105,12 +105,18 @@
             "name": "section"
         }, 
         {
-            "name"      :   "correlations",
-            "dtype"     :   "str",
-            "info"      :   "Correlations to use",
-            "choices"   :   ["2x2", "2x2, diagonal terms only", "2", "1", "1 corr to 2x2 diag"],
-            "default"   :   "2x2"
-        },
+            "info": "Correlations to use", 
+            "dtype": "str", 
+            "default": "2x2", 
+            "name": "correlations", 
+            "choices": [
+                "2x2", 
+                "2x2, diagonal terms only", 
+                "2", 
+                "1", 
+                "1 corr to 2x2 diag"
+            ]
+        }, 
         {
             "info": "Field ID", 
             "dtype": "int", 
@@ -144,13 +150,13 @@
                 "add", 
                 "replace"
             ]
-        },
+        }, 
         {
-            "name": "read-flagsets",
-            "info": "Read flagsets",
-            "dtype": "str",
-            "default": null
-        },
+            "info": "Read flagsets", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "read-flagsets"
+        }, 
         {
             "info": "Read legacy flags", 
             "dtype": "bool", 

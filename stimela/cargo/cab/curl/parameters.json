@@ -1,0 +1,66 @@
+{
+    "task"          : "curl",
+    "description"   : "Download data from a remote path",
+    "base"          : "stimela/curl",
+    "tag"           : "0.3.0",
+    "binary"        : "curl",
+    "prefix"        : "--",
+    "msdir"         : false,
+    "parameters"   : [
+        {
+            "name"      : "url",
+            "dtype"     : "str",
+            "info"      : "url name",
+            "required"  : true,
+            "default"   : null
+        },
+        {
+            "name"      : "output",
+            "dtype"     : "file",
+            "io"        : "output",
+            "default"   : null,
+            "default"   : true
+
+        },
+        {
+            "name"      : "cert",
+            "info"      : " Client certificate file and password (SSL)",
+            "dtype"     : "file",
+            "io"        : "input",
+            "default"   : null
+        },
+        {
+            "name"      : "cert-status",
+            "info"      : "Verify the status of the server certificate",
+            "dtype"     : "bool",
+            "default"   : null
+        },
+        {
+            "name"      : "cert-type",
+            "info"      : "Verify the status of the server certificate",
+            "dtype"     : "str",
+            "choices"   : ["DER", "PEM", "ENG"],
+            "default"   : null
+        },
+        {
+            "name"      : "ciphers",
+            "info"      : "SSL ciphers to use",
+            "dtype"     : "list",
+            "default"   : null
+        },
+        {
+            "name"      : "location",
+            "info"      : "Follow redirects",
+            "dtype"     : "bool",
+            "default"   : true
+        },
+        {
+            "name"      : "config",
+            "info"      : "Read config from FILE",
+            "dtype"     : "file",
+            "io"        : "input",
+            "default"   : null
+        }
+    ]
+}
+

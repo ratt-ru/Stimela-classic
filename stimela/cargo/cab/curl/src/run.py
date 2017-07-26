@@ -22,10 +22,6 @@ for param in cab['parameters']:
         continue
     elif value is True:
         value = ''
-    if name == 'url':
-        url = value
-        continue
-
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-utils.xrun(cab['binary'], args+[url])
+utils.xrun(cab['binary'], args)

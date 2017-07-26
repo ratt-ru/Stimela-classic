@@ -1,8 +1,8 @@
 {
     "task": "casa_ft", 
     "base": "stimela/casa", 
-    "tag": "0.2.9", 
-    "description": "Insert a source model  a visibility set",
+    "tag": "0.3.0", 
+    "description": "Insert a source model  a visibility set", 
     "prefix": "", 
     "binary": "ft", 
     "msdir": true, 
@@ -27,44 +27,44 @@
             "dtype": "str", 
             "default": null, 
             "name": "spw"
-        },
+        }, 
         {
-            "name": "model",
-            "info": "Name of input model image(s)",
-            "dtype": "list:file",
-            "io": "input",
-            "default": null
-        },
+            "info": "Name of input model image(s)", 
+            "dtype": "list:file", 
+            "default": null, 
+            "name": "model", 
+            "io": "input"
+        }, 
         {
-            "name": "nterms",
-            "info": "Number of terms used to model the sky frequency dependence",
-            "dtype": "int",
-            "default": 1
-        },
+            "info": "Number of terms used to model the sky frequency dependence", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "nterms"
+        }, 
         {
-            "name": "reffreq",
-            "info": " Reference frequency (e.g. '1.5e+9' or '1.5GHz')",
-            "dtype": "str",
-            "default": null
-        },
+            "info": " Reference frequency (e.g. '1.5e+9' or '1.5GHz')", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "reffreq"
+        }, 
         {
-            "name": "complist",
-            "info": "Name of component list",
-            "dtype": "file",
-            "io": "input",
-            "default": null
-        },
+            "info": "Name of component list", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "complist", 
+            "io": "input"
+        }, 
         {
-            "name": "incremental",
-            "info": "Add to the existing model visibility",
-            "dtype": "bool",
-            "default": null
-        },
+            "info": "Add to the existing model visibility", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "incremental"
+        }, 
         {
-            "name": "usescratch",
-            "info": "If True predicted  visibility  is stored in MODEL_DATA column",
-            "dtype": "bool",
-            "default": false
+            "info": "If True predicted  visibility  is stored in MODEL_DATA column", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "usescratch"
         }
     ]
 }

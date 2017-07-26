@@ -28,6 +28,9 @@ for param in cab['parameters']:
 
     args[name] = value
 
+if function == 'sumcols':
+    args['outcol'] = args.pop('colname')
+
 run_func = getattr(msutils, function, None)
 if run_func is None:
     raise RuntimeError("Function '{}' is not part of MSUtils".format(function))

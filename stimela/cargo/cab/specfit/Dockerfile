@@ -1,4 +1,4 @@
-FROM stimela/tigger:0.2.9
+FROM stimela/tigger:0.3.0
 MAINTAINER <sphemakh@gmail.com>
 ENV MEQTREES_CATTERY_PATH /usr/lib/python2.7/dist-packages/Cattery
 ADD src /code

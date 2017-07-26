@@ -1,2 +1,2 @@
-FROM stimela/base:0.2.9
+FROM stimela/base:0.3.0
 RUN docker-apt-install sagecal

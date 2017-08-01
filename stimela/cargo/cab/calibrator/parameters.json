@@ -246,7 +246,7 @@
             "info": "Solution intervals in time and frequency in time/frequency bins. Should be given as a list of two integers", 
             "dtype": "list:int", 
             "default": null, 
-            "name": "Gjones-smooothing-intervals"
+            "name": "Gjones-smoothing-intervals"
         }, 
         {
             "info": "Gjones amplitude clipping", 

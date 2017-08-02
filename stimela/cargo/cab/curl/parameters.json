@@ -60,6 +60,12 @@
             "dtype"     : "file",
             "io"        : "input",
             "default"   : null
+        },
+        {
+            "name"      : "continue-at",
+            "info"      : "Specify number of bytes to resume download from, alternatively specify '-' to tell curl to automatically detect",
+            "dtype"     : "str",
+            "default"   : "-"
         }
     ]
 }

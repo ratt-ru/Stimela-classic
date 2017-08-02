@@ -100,7 +100,7 @@
          {
            "name": "output_opts",
            "info": "Show output options",
-           "dtype": "boolean",
+           "dtype": "bool",
            "default" : false
        },
       {

@@ -64,6 +64,12 @@
             "name": "robust"
         }, 
         {
+            "info": "Make hdf5 file", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "hdf5"
+        }, 
+        {
             "info": "Name of prior image file", 
             "dtype": "file", 
             "default": null, 

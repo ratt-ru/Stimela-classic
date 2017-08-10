@@ -16,7 +16,7 @@
             "mapping": "ms"
         }, 
         {
-            "info": "A numpy array of shape [channels] containing a boolean", 
+            "info": "A numpy array of chan x (boolean, channel_centre[float64])", 
             "dtype": "file", 
             "default": null, 
             "name": "mask", 
@@ -41,8 +41,27 @@
         {
             "info": "Maximum memory to consume in MB for the flag buffer", 
             "dtype": "int", 
-            "default": 5, 
+            "default": 50, 
             "name": "memory"
+        },
+        {
+            "info": "SPW id (or ids if multiple MSs have been specified)",
+            "name": "spwid",
+            "default": 0,
+            "dtype": "list:int"
+        },
+        {
+            "info": "UV range to select (CASA style range: lower~upper) for flagging. Leave blank for entire array",
+            "name": "uvrange",
+            "default": "",
+            "dtype": "str"
+        },
+        {
+            "info": "Simulate only. Do not apply flags - useful for statistics", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "simulate"
         }
+
     ]
 }

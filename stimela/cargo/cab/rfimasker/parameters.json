@@ -53,7 +53,7 @@
         {
             "info": "UV range to select (CASA style range: lower~upper) for flagging. Leave blank for entire array",
             "name": "uvrange",
-            "default": "",
+            "default": null,
             "dtype": "str"
         },
         {

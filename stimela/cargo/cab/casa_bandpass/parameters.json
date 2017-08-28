@@ -60,7 +60,7 @@
         }, 
         {
             "info": "Scan number range", 
-            "dtype": "list:str", 
+            "dtype": "str", 
             "default": null, 
             "name": "scan"
         }, 

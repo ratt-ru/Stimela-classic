@@ -96,7 +96,31 @@
                 "const", 
                 "map"
             ]
-        }, 
+        },
+         {
+           "name": "output_opts",
+           "info": "Show output options",
+           "dtype": "bool",
+           "default" : false
+       },
+      {
+           "name": "savefits_residim",
+           "info": "Save residual image as fits file",
+           "dtype": "bool",
+           "default" : false
+       },
+        {
+           "name": "savefits_rmsim",
+           "info": "Save background rms image as fits file",
+           "dtype": "bool",
+           "default" : false
+       },
+        {
+           "name": "savefits_meanim",
+           "info": "Save background mean image as fits file",
+           "dtype": "bool",
+           "default" : false
+       },
         {
             "info": "If True and beam_spectrum is None, then assume header beam is for median frequency and scales with frequency for channels", 
             "dtype": "bool", 

@@ -50,7 +50,7 @@ RUN docker-apt-install $PACKAGES && \
     make install && \
     # WSClean
     cd ../../../wsclean-2.4/build && \
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE=Release .. && \ 
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE=Release -DPORTABLE=Yes .. && \ 
     make -j 16 && \
     make install && \
     docker-apt-install python-yaml && \

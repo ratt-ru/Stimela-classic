@@ -414,13 +414,13 @@
             "info": "Instead of using a single RMS for auto thresholding/masking, use a spatially varying RMS image", 
             "dtype": "bool", 
             "default": false, 
-            "name": "rms-background"
+            "name": "local-rms"
         }, 
         {
             "info": "Size of window for creating the RMS background map, in number of PSFs.", 
             "dtype": "int", 
             "default": null, 
-            "name": "rms-background-window"
+            "name": "local-rms-window"
         }, 
         {
             "info": "Either 'rms' (default, uses sliding window RMS) or 'rms-with-min' (use max(window rms,1.5/5window min))", 

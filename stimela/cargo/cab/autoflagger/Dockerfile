@@ -1,4 +1,4 @@
-FROM stimela/aoflagger:0.3.0
+FROM stimela/aoflagger:0.2.8
 MAINTAINER <sphemakh@gmial.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

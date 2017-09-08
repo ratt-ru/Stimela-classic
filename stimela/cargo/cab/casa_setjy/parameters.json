@@ -120,6 +120,28 @@
             ], 
             "default": 0.0, 
             "name": "spix"
+        },
+        {
+            "info": "Polarization index of calibrator (taylor expansion modelling frequency dependence, first of which is ratio of sqrt(Q^2+U^2)/I). Auto determined if Q and U are non-zero in fluxdensity option. See NRAO docs.", 
+            "dtype": [
+                "float", 
+                "list:float", 
+                "int", 
+                "list:int"
+            ], 
+            "default": [], 
+            "name": "polindex"
+        }, 
+        {
+            "info": "Polarization angle (rads) of calibrator (taylor expansion modelling frequency dependence, first of which is 0.5*arctan(U/Q). Should be specified in combination with polindex option. Ignored if fluxdensity specified non-zero coefficients for Q and U. See NRAO docs.", 
+            "dtype": [
+                "float", 
+                "list:float", 
+                "int", 
+                "list:int"
+            ], 
+            "default": [],
+            "name": "polangle"
         }, 
         {
             "info": "Reference frequency for spix", 

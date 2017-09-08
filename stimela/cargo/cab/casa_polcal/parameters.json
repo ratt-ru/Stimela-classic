@@ -4,7 +4,7 @@
     "tag": "0.3.0", 
     "description": "Specify Calibration Values of Various Types", 
     "prefix": "-", 
-    "binary": "casa_gaincal", 
+    "binary": "polcal", 
     "msdir": true, 
     "parameters": [
         {
@@ -71,8 +71,8 @@
         }, 
         {
             "info": "Optional complex data selection (ignore for now)", 
-            "dtype": "bool", 
-            "default": true, 
+            "dtype": "str", 
+            "default": null, 
             "name": "msselect"
         }, 
         {
@@ -149,9 +149,10 @@
         }, 
         {
             "info": "Gain calibration table(s) to apply on the fly", 
-            "dtype": "list:str", 
+            "dtype": "list:file", 
             "default": null, 
-            "name": "gaintable", 
+            "name": "gaintable",
+            "io": "input", 
             "delimeter": ","
         }, 
         {

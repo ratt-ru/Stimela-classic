@@ -647,7 +647,7 @@ recipe.add('cab/wsclean', 'image_target_field_r2', {
         "cellsize"      :   1,                      # Size of each square pixel
         "clean_iterations"  :   5000000,
         "auto-mask"         :   3,
-        "rms-background"    :   True,
+        "local-rms"         :   True,
         "auto-threshold"    :   0.5,                      #Since it is not masked
         "stokes"            :   "I",
         "channelrange"      :   chans,
@@ -705,7 +705,7 @@ recipe.add('cab/wsclean', 'image_target_field_r3', {
         "cellsize"          :   1,                      # Size of each square pixel
         "clean_iterations"  :   5000000,
         "auto-mask"         :   3,
-#        "rms-background"    :   True,
+#        "local-rms"        :   True,
         "nomfsweighting"    :   True,
         "auto-threshold"    :   0.5,
         "mgain"             :   0.9,

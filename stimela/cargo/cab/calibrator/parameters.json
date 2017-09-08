@@ -292,6 +292,67 @@
             "io": "output"
         }, 
         {
+            "info": "Enable Bjones direction dependent calibration ", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "Bjones"
+        }, 
+        {
+            "info": "Solution intervals in time and frequency in time/frequency bins for Bjones. Should be given as a list of two integers", 
+            "dtype": "list:int", 
+            "default": null, 
+            "name": "Bjones-solution-intervals"
+        }, 
+        {
+            "info": "Solution intervals in time and frequency in time/frequency bins for Bjones. Should be given as a list of two integers", 
+            "dtype": "list:int", 
+            "default": null, 
+            "name": "Bjones-smoothing-intervals"
+        }, 
+        {
+            "info": "Bjones amplitude clipping", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "Bjones-ampl-clipping"
+        }, 
+        {
+            "info": "Bjones chi square clipping", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "Bjones-chisq-clipping"
+        }, 
+        {
+            "info": "Bjones threshold level", 
+            "dtype": "float", 
+            "default": 10, 
+            "name": "Bjones-thresh-sigma"
+        }, 
+        {
+            "info": "Bjones flagging amplitude", 
+            "dtype": "float", 
+            "default": 0.2, 
+            "name": "Bjones-ampl-clipping-low"
+        }, 
+        {
+            "info": "Bjones flagging amplitude", 
+            "dtype": "float", 
+            "default": 1.8, 
+            "name": "Bjones-ampl-clipping-high"
+        }, 
+        {
+            "info": "Apply existing gains", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "Bjones-apply-only"
+        }, 
+        {
+            "info": "B Jones gain table file name", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "Bjones-gain-table", 
+            "io": "output"
+        }, 
+        {
             "info": "Enable direction dependent calibration", 
             "dtype": "bool", 
             "default": false, 

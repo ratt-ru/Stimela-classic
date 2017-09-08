@@ -546,7 +546,7 @@ recipe.add('cab/wsclean', 'image_target_field_r0', {
         "clean_iterations"  :   50000000,
         "auto-mask"     :   5,
         "mgain"         :   0.9,
-        "rms-background":   True,
+        "local-rms"     :   True,
         "auto-threshold":   1,
         "channelsout"   :   4,
         "datacolumn"    :   "DATA",

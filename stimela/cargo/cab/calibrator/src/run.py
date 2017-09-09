@@ -105,6 +105,29 @@ if gjones:
         "stefcal_gain.implementation"   :   jdict.get("Gjones-matrix-type", "Gain2x2"),
         "stefcal_gain.table" : gjones_gains,
     })
+
+bjones = jdict.pop("Bjones", False)
+if bjones:
+
+    time_smooth, freq_smooth = jdict.get("Bjones-smoothing-intervals", (1,0))
+    time_int, freq_int = jdict.get("Bjones-solution-intervals", (1,0))
+    mode = 'apply' if jdict.get('Bjones-apply-only', False) else 'solve-save'
+
+    bjones_gains = jdict.pop('Bjones-gain-table', None) or "{0}/{1}{2}.gain1.cp".format(OUTPUT, msbase, "-%s"%label if label else "")
+    params.update( {
+        "stefcal_gain1.mode" : mode, 
+        "stefcal_gain1.reset" : 0 if mode=="apply" else 1,
+        "stefcal_gain1.implementation" : jones_type,
+        "stefcal_gain1.timeint"  : time_int,
+        "stefcal_gain1.freqint"  : freq_int,
+        "stefcal_gain1.flag_ampl"    :   jdict.get("Bjones-ampl-clipping", 0),
+        "stefcal_gain1.flag_chisq"   :   jdict.get("Bjones-chisq-clipping", 0),
+        "stefcal_gain1.flag_chisq_threshold" :   jdict.get("Bjones-thresh-sigma", 10),
+        "stefcal_gain1.flag_ampl_low"    :   jdict.get("Bjones-ampl-clipping-low", 0.3),
+        "stefcal_gain1.flag_ampl_high"   :   jdict.get("Bjones-ampl-clipping-high", 2),
+        "stefcal_gain1.implementation"   :   jdict.get("Bjones-matrix-type", "Gain2x2"),
+        "stefcal_gain1.table" : bjones_gains,
+    })
     
 beam = jdict.pop("Ejones", False)
 if beam and beam_files_pattern:
@@ -167,7 +190,6 @@ makeplots = jdict.pop("make-plots", False)
 gjones_plotprefix = prefix+"-gjones_plots"
 ddjones_plotprefix = prefix+"-ddjones_plots"
 ifrjones_plotprefix = prefix+"-ifrjones_plots"
-
 
 def run_meqtrees(msname):
 

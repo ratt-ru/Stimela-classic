@@ -116,9 +116,6 @@ def tigger_src(src, idx):
         shape = None
     source = SkyModel.Source(name, pos, flux, shape=shape)
     # Adding source peak flux (error) as extra flux attributes
-    #source.flux.allow_extra_attrs = True
-    #source.flux.setAttribute("I_peak", src["Peak_flux"])
-    #source.flux.setAttribute("I_peak_err", src["E_peak_flux"])
     source.setAttribute("I_peak", src["Peak_flux"])
     source.setAttribute("I_peak_err", src["E_peak_flux"])
     if spi_do:

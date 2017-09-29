@@ -22,7 +22,7 @@ MSDIR = os.environ['MSDIR']
 cab = utils.readJson(CONFIG)
 
 write_catalog = ['bbs_patches', 'bbs_patches_mask',
-            'catalog_type', 'clobber', 'correct_proj', 'format', 
+            'catalog_type', 'clobber', 'correct_proj', 'format',
             'incl_chan', 'incl_empty', 'srcroot', 'port2tigger', 'outfile']
 
 img_opts = {}
@@ -115,6 +115,12 @@ def tigger_src(src, idx):
     else:
         shape = None
     source = SkyModel.Source(name, pos, flux, shape=shape)
+    # Adding source peak flux (error) as extra flux attributes
+    #source.flux.allow_extra_attrs = True
+    #source.flux.setAttribute("I_peak", src["Peak_flux"])
+    #source.flux.setAttribute("I_peak_err", src["E_peak_flux"])
+    source.setAttribute("I_peak", src["Peak_flux"])
+    source.setAttribute("I_peak_err", src["E_peak_flux"])
     if spi_do:
         # Check if start frequency is provided if not provided raise error.
         # It is used to define tigger source spectrum index frequency

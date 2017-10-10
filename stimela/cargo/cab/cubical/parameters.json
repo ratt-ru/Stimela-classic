@@ -1,0 +1,511 @@
+{
+    "task": "CubiCal", 
+    "base": "stimela/cubical", 
+    "tag": "0.3.1", 
+    "description": "A fast radio interferometric calibration suite.", 
+    "prefix": "--", 
+    "binary": "gocubical", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": null, 
+            "dtype": "file",
+            "io"   : "input",
+            "default": null, 
+            "name": "parset"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file",
+            "io"   : "input",
+            "default": null, 
+            "name": "model-beam-pattern"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "default": 200, 
+            "name": "j1-max-iter"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "legacy", 
+            "name": "flags-apply"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j1-clip-low"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "data-time-chunk"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j2-clip-after"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "log-append"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j3-freq-int"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j1-clip-after"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "data-chunk-on-scans"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "model-column",
+            "default": ' "" '
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j1-dd-term"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "data-column"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "sol-last-rites"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j3-clip-after"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "flags-save"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "dist-ncpu"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "data-single-chunk"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "out-column"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j1-time-int"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j1-load-from"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j3-conv-quorum"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j1-conv-quorum"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "dist-min-chunks"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file",
+            "io"   : "input",
+            "name": "model-lsm"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j1-clip-high"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j2-time-int"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "flags-tf-chisq-median"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j3-dd-term"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j2-freq-int"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j3-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j2-term-iters"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j2-label"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j2-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "sel-ddid"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j3-update-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "flags-reinit-bitflags"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "debug-verbose"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j2-clip-low"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j2-dd-term"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j2-conv-quorum"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j1-label"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j3-time-int"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "sol-precision"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file",
+            "io"   : "msfile",
+            "required" : true,
+            "name": "data-ms"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file",
+            "io"   : "output",
+            "name": "j1-save-to"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "flags-chan-density"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "flags-ddid-density"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "name": "j3-solvable",
+            "default": false
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "sol-delta-chi"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "log-memory"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "out-plots"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "sol-stall-quorum"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "sol-jones"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j3-term-iters"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j1-freq-int"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j2-clip-high"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "model-ddes"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file",
+            "io": "input",
+            "name": "j3-load-from"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "weight-column"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "debug-pdb"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "name": "j1-solvable",
+            "default": true,
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "data-freq-chunk"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j3-max-iter"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "sol-delta-g"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "model-beam-l-axis"
+        }, 
+        {
+            "info": null, 
+            "dtype": "bool", 
+            "name": "j2-solvable",
+            "default": false
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "flags-time-density"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file",
+            "io"   : "output",
+            "name": "j3-save-to"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "montblanc-device-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "model-beam-m-axis"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file",
+            "io"   : "output",
+            "name": "j2-save-to"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "sol-chi-int"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j3-clip-high"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "j3-clip-low"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "montblanc-dtype"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "montblanc-mem-budget"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "sel-field"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j2-load-from"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "montblanc-feed-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j1-update-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j3-label"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j1-term-iters"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j2-update-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "misc-random-seed"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "sel-taql"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "log-boring"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "j2-max-iter"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "j1-type"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "name": "out-mode",
+            "choices": [
+               "sc",
+               "sr",
+               "ss",
+            ],
+            "default": "sc"
+        }, 
+        {
+            "info": null, 
+            "dtype": "float", 
+            "name": "flags-tf-np-median"
+        }, 
+        {
+            "info": null, 
+            "dtype": "str", 
+            "default": "legacy", 
+            "name": "flags-auto-init"
+        }, 
+        {
+            "info": null, 
+            "dtype": "file", 
+            "io" : "output",
+            "name": "out-name"
+        }, 
+        {
+            "info": null, 
+            "dtype": "int", 
+            "name": "out-plots-show"
+        }
+    ]
+}

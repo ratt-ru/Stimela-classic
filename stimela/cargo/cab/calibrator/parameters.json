@@ -33,6 +33,12 @@
             "dtype": "bool", 
             "default": false, 
             "name": "add-vis-model"
+        },
+        {
+            "info": "Visbility model column", 
+            "dtype": "str", 
+            "default": "MODEL_DATA", 
+            "name": "model-column"
         }, 
         {
             "info": "Label for gain and diagnostic plots from the caibration. May not be needed if 'prefix' is provided.", 

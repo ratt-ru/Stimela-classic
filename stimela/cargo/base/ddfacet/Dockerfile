@@ -1,4 +1,4 @@
-FROM stimela/base:0.3.0
+FROM stimela/base:0.3.1
 
 ENV DEB_DEPENCENDIES \
     virtualenv \

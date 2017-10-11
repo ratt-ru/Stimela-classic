@@ -1,4 +1,4 @@
-FROM stimela/curl:dev
+FROM stimela/curl:0.3.1
 MAINTAINER <sphemakh@gmail.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

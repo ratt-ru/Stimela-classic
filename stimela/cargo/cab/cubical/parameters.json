@@ -9,17 +9,17 @@
     "parameters": [
         {
             "info": null, 
-            "dtype": "file",
-            "io"   : "input",
+            "dtype": "file", 
             "default": null, 
-            "name": "parset"
+            "name": "parset", 
+            "io": "input"
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io"   : "input",
+            "dtype": "file", 
             "default": null, 
-            "name": "model-beam-pattern"
+            "name": "model-beam-pattern", 
+            "io": "input"
         }, 
         {
             "info": null, 
@@ -71,8 +71,8 @@
         {
             "info": null, 
             "dtype": "str", 
-            "name": "model-column",
-            "default": ' "" '
+            "default": " \"\" ", 
+            "name": "model-column"
         }, 
         {
             "info": null, 
@@ -141,9 +141,9 @@
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io"   : "input",
-            "name": "model-lsm"
+            "dtype": "file", 
+            "name": "model-lsm", 
+            "io": "input"
         }, 
         {
             "info": null, 
@@ -242,16 +242,16 @@
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io"   : "msfile",
-            "required" : true,
-            "name": "data-ms"
+            "dtype": "file", 
+            "required": true, 
+            "name": "data-ms", 
+            "io": "msfile"
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io"   : "output",
-            "name": "j1-save-to"
+            "dtype": "file", 
+            "name": "j1-save-to", 
+            "io": "output"
         }, 
         {
             "info": null, 
@@ -266,8 +266,8 @@
         {
             "info": null, 
             "dtype": "bool", 
-            "name": "j3-solvable",
-            "default": false
+            "default": false, 
+            "name": "j3-solvable"
         }, 
         {
             "info": null, 
@@ -316,9 +316,9 @@
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io": "input",
-            "name": "j3-load-from"
+            "dtype": "file", 
+            "name": "j3-load-from", 
+            "io": "input"
         }, 
         {
             "info": null, 
@@ -333,8 +333,8 @@
         {
             "info": null, 
             "dtype": "bool", 
-            "name": "j1-solvable",
-            "default": true,
+            "default": true, 
+            "name": "j1-solvable"
         }, 
         {
             "info": null, 
@@ -359,8 +359,8 @@
         {
             "info": null, 
             "dtype": "bool", 
-            "name": "j2-solvable",
-            "default": false
+            "default": false, 
+            "name": "j2-solvable"
         }, 
         {
             "info": null, 
@@ -369,9 +369,9 @@
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io"   : "output",
-            "name": "j3-save-to"
+            "dtype": "file", 
+            "name": "j3-save-to", 
+            "io": "output"
         }, 
         {
             "info": null, 
@@ -385,9 +385,9 @@
         }, 
         {
             "info": null, 
-            "dtype": "file",
-            "io"   : "output",
-            "name": "j2-save-to"
+            "dtype": "file", 
+            "name": "j2-save-to", 
+            "io": "output"
         }, 
         {
             "info": null, 
@@ -477,13 +477,13 @@
         {
             "info": null, 
             "dtype": "str", 
-            "name": "out-mode",
+            "default": "sc", 
+            "name": "out-mode", 
             "choices": [
-               "sc",
-               "sr",
-               "ss",
-            ],
-            "default": "sc"
+                "sc", 
+                "sr", 
+                "ss"
+            ]
         }, 
         {
             "info": null, 
@@ -499,8 +499,8 @@
         {
             "info": null, 
             "dtype": "file", 
-            "io" : "output",
-            "name": "out-name"
+            "name": "out-name", 
+            "io": "output"
         }, 
         {
             "info": null, 

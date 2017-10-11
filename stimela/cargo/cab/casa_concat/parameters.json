@@ -1,7 +1,7 @@
 {
     "task": "casa_concat", 
     "base": "stimela/casa", 
-    "tag": "0.3.0", 
+    "tag": "0.3.1", 
     "description": "Concatenate several visibility data sets", 
     "prefix": "", 
     "binary": "concat", 
@@ -23,42 +23,42 @@
             "default": null, 
             "dtype": "file", 
             "mapping": "concatvis"
-        },
+        }, 
         {
-            "info": "Frequency shift tolerance for considering data as the same spwid",
-            "name": "freqtol",
-            "default" : null,
+            "info": "Frequency shift tolerance for considering data as the same spwid", 
+            "default": null, 
+            "name": "freqtol", 
             "dtype": "str"
-        },
+        }, 
         {
-            "info": "Direction shift tolerance for considering data as the same field",
-            "dtype": "str",
-            "name" : "dirtol",
-            "default" : null
-        },
+            "info": "Direction shift tolerance for considering data as the same field", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dirtol"
+        }, 
         {
-            "info": "If true, fields with a different name are not merged even if their direction agrees",
-            "name": "respectname",
-            "dtype": "bool",
-            "default": false
-        },
+            "info": "If true, fields with a different name are not merged even if their direction agrees", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "respectname"
+        }, 
         {
-            "info": "If true, sort by TIME in ascending",
-            "name": "timesort",
-            "default": false,
-            "dtype" : "bool"
-        },
-        {
-            "info": "Copy all rows of the POINTING table",
-            "name": "copypointing",
-            "default" : true,
+            "info": "If true, sort by TIME in ascending", 
+            "default": false, 
+            "name": "timesort", 
             "dtype": "bool"
-        },
+        }, 
         {
-            "info": "List of the weight scaling factors to be applied to the individual MSs",
-            "name" : "visweightscale",
-            "default": null,
-            "dtype" : "list"
+            "info": "Copy all rows of the POINTING table", 
+            "default": true, 
+            "name": "copypointing", 
+            "dtype": "bool"
+        }, 
+        {
+            "info": "List of the weight scaling factors to be applied to the individual MSs", 
+            "default": null, 
+            "name": "visweightscale", 
+            "dtype": "list"
         }
     ]
 }

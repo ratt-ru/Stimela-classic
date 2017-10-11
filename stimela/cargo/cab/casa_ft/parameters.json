@@ -1,7 +1,7 @@
 {
     "task": "casa_ft", 
     "base": "stimela/casa", 
-    "tag": "0.3.0", 
+    "tag": "0.3.1", 
     "description": "Insert a source model  a visibility set", 
     "prefix": "", 
     "binary": "ft", 

@@ -1,7 +1,7 @@
 {
     "task": "msutils", 
     "base": "stimela/msutils", 
-    "tag": "dev", 
+    "tag": "0.3.1", 
     "description": "Tools for manipulating measurement sets (MSs)", 
     "prefix": " ", 
     "binary": "msutils", 
@@ -20,7 +20,7 @@
                 "compute_vis_noise", 
                 "verify_antpos", 
                 "prep", 
-                "addnoise",
+                "addnoise", 
                 "summary"
             ]
         }, 
@@ -37,20 +37,20 @@
             "default": null, 
             "name": "column", 
             "mapping": "colname"
-        },
+        }, 
         {
-            "name":"outfile",
-            "info": "Output file for MS summary (json format)",
-            "default":null,
-            "dtype": "file",
-            "io": "output"
-        },
+            "info": "Output file for MS summary (json format)", 
+            "default": null, 
+            "name": "outfile", 
+            "io": "output", 
+            "dtype": "file"
+        }, 
         {
-            "name" : "display",
-            "info" : "Display MS summary to stdout",
-            "dtype": "bool",
-            "default": true
-        },
+            "info": "Display MS summary to stdout", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "display"
+        }, 
         {
             "info": "Shape of column to add to MS", 
             "dtype": "str", 

@@ -28,7 +28,7 @@
             "dtype": "int", 
             "default": null, 
             "name": "threads",
-            "mapping": 'j'
+            "mapping": "j"
         }, 
         {
             "info": "Limit memory usage to the given fraction of the total system memory. This is an approximate value.", 

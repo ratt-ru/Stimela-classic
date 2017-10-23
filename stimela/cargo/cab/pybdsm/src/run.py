@@ -115,9 +115,10 @@ def tigger_src(src, idx):
     else:
         shape = None
     source = SkyModel.Source(name, pos, flux, shape=shape)
-    # Adding source peak flux (error) as extra flux attributes
-    source.setAttribute("I_peak", src["Peak_flux"])
-    source.setAttribute("I_peak_err", src["E_peak_flux"])
+    # Adding source peak flux (error) as extra flux attributes for extended sources
+    if shape:
+        source.setAttribute("I_peak", src["Peak_flux"])
+        source.setAttribute("I_peak_err", src["E_peak_flux"])
     if spi_do:
         # Check if start frequency is provided if not provided raise error.
         # It is used to define tigger source spectrum index frequency

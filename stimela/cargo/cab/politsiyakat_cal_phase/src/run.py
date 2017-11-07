@@ -20,18 +20,13 @@ for param in cab['parameters']:
 
     if value is None:
         continue
-    elif name == "task":
-        task = value
-        continue
-    elif name=='tasksuite':
-        tasksuite = tasksuite
 
     args[name] = value
 
 kwargs = "'{}'".format(json.dumps(args))
 
-ARGS = [task, 
-    ("-s " + tasksuite) if tasksuite is not None else (""), 
+ARGS = ["flag_phase_drifts",
+        "-s antenna_mod",
         kwargs]
 
 utils.xrun(cab['binary'], ARGS)

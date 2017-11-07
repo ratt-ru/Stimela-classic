@@ -1,0 +1,94 @@
+{
+    "task": "politsiyakat", 
+    "base": "stimela/politsiyakat", 
+    "tag": "0.3.1", 
+    "description": "Routines for automated post-1GC error detection and mitigation", 
+    "prefix": "--", 
+    "binary": "python -m politsiyakat", 
+    "msdir": "true", 
+    "parameters": [
+        {
+            "info": "Measurement set", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "msname", 
+            "io": "msfile"
+        }, 
+        {
+            "info": "Data column in MS", 
+            "dtype": "str", 
+            "default": "DATA", 
+            "name": "data_column", 
+            "mapping": "data_column"
+        }, 
+        {
+            "info": "Field(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field", 
+            "mapping": "field"
+        }, 
+        {
+            "info": "Calibrator Field(s), subset of 'field'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "cal_field", 
+            "mapping": "cal_field"
+        }, 
+        {
+            "info": "Output directory", 
+            "dtype": "file",
+            "default": "./",
+            "name": "output_dir", 
+            "io": "output"
+        }, 
+        {
+            "info": "Number of ms rows to process on each run", 
+            "dtype": "int", 
+            "default": 5000, 
+            "name": "nrows_chunk"
+        },
+        {
+            "info": "Scan to scan variation threshold", 
+            "dtype": "float", 
+            "default": 2.5, 
+            "name": "scan_to_scan_threshold"
+        },
+        {
+            "info": "antenna to group variation threshold", 
+            "dtype": "float", 
+            "default": 6, 
+            "name": "antenna_to_group_threshold"
+        },
+        {
+            "info": "plot dpi", 
+            "dtype": "float", 
+            "default": 300, 
+            "name": "dpi"
+        },
+        {
+            "info": "subplot size", 
+            "dtype": "float", 
+            "default": 6.0, 
+            "name": "plot_size"
+        },
+        {
+            "info": "Maximum number of io threads to use", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "nio_threads"
+        },
+        {
+            "info": "Maximum number of process threads to use", 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "nproc_threads"
+        }, 
+        {
+            "info": "simulate, output diagnostics don't flag", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "simulate"
+        }
+    ]
+}

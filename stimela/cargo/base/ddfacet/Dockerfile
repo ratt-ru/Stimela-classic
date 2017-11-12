@@ -44,9 +44,10 @@ RUN apt-get update && \
     rm -rf /root/.cache/ && \
     rm -rf /var/cache/
 
-ENV MEQTREES_CATTERY_PATH /ddfvenv/lib/python2.7/site-packages/Cattery/
+ENV MEQTREES_CATTERY_PATH /usr/lib/python2.7/dist-packages/Cattery
 ENV PATH /ddfvenv/bin:$PATH
 ENV LD_LIBRARY_PATH /ddfvenv/lib:$LD_LIBRARY_PATH
+ENV PYTHONPATH /usr/lib/python2.7/dist-packages/Cattery:$PYTHONPATH
 
 # Execute virtual environment version of DDFacet
 ENTRYPOINT ["DDF.py"]

@@ -1,7 +1,7 @@
 {
     "task": "rfimasker", 
     "base": "stimela/rfimasker", 
-    "tag": "dev", 
+    "tag": "0.3.1", 
     "description": "Tiny tool to apply a numpy boolean array to the spectral flags column of a measurement set to mask out known RFI sources like GSM and satelite in L-band. Typically flagging known RFI sources produces much better backgrounds and tools like the mighty AOFlagger RFI hammer needs fewer iterations to converge to good solutions.", 
     "prefix": "--", 
     "binary": "rfimasker", 
@@ -43,25 +43,24 @@
             "dtype": "int", 
             "default": 50, 
             "name": "memory"
-        },
+        }, 
         {
-            "info": "SPW id (or ids if multiple MSs have been specified)",
-            "name": "spwid",
-            "default": 0,
+            "info": "SPW id (or ids if multiple MSs have been specified)", 
+            "default": 0, 
+            "name": "spwid", 
             "dtype": "list:int"
-        },
+        }, 
         {
-            "info": "UV range to select (CASA style range: lower~upper) for flagging. Leave blank for entire array",
-            "name": "uvrange",
-            "default": null,
+            "info": "UV range to select (CASA style range: lower~upper) for flagging. Leave blank for entire array", 
+            "default": null, 
+            "name": "uvrange", 
             "dtype": "str"
-        },
+        }, 
         {
             "info": "Simulate only. Do not apply flags - useful for statistics", 
             "dtype": "bool", 
             "default": false, 
             "name": "simulate"
         }
-
     ]
 }

@@ -1,4 +1,4 @@
-FROM stimela/base:0.3.0
+FROM stimela/base:0.3.1
 RUN docker-apt-install lofar python-tigger
 RUN pip install --upgrade git+https://github.com/ska-sa/tigger
 RUN pip uninstall -y numpy

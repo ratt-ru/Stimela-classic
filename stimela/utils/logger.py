@@ -28,7 +28,6 @@ class StimelaLogger(object):
         if changed:
             self.write()
 
-
     def _inspect(self, name):
         output = subprocess.check_output("docker inspect {}".format(name), shell=True)
         output_file = io(output[3:-3])
@@ -36,7 +35,6 @@ class StimelaLogger(object):
         output_file.close()
 
         return jdict
-
 
     def log_image(self, name, image_dir, replace=False, cab=False):
         info = self._inspect(name)
@@ -50,7 +48,6 @@ class StimelaLogger(object):
             }
         else:
             print('Image {0} has already been logged.'.format(name))
-    
 
     def log_container(self, name):
         info = self._inspect(name)
@@ -63,7 +60,6 @@ class StimelaLogger(object):
             }
         else:
             print('contaier {0} has already been logged.'.format(name))
-
 
     def log_process(self, pid, name):
         pid = str(pid)

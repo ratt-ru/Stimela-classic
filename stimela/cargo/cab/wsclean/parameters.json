@@ -1,7 +1,7 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": "0.3.0", 
+    "tag": "0.3.1", 
     "description": "WSClean imaging software", 
     "prefix": "-", 
     "binary": "/usr/bin/wsclean", 
@@ -27,7 +27,8 @@
             "info": "Specify number of computing threads to use, i.e., number of cpu cores that will be used. None means use all  cores", 
             "dtype": "int", 
             "default": null, 
-            "name": "threads"
+            "name": "threads",
+            "mapping": "j"
         }, 
         {
             "info": "Limit memory usage to the given fraction of the total system memory. This is an approximate value.", 

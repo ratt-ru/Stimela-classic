@@ -81,6 +81,7 @@ params['ms_sel.ms_corr_sel'] = "'{}'".format(jdict.pop('correlations', '2x2'))
 label = jdict.pop("label", None)
 
 gjones = jdict.pop("Gjones", False)
+model_column = jdict.pop("model-column", 'MODEL_DATA')
 if gjones:
 
     time_smooth, freq_smooth = jdict.get("Gjones-smoothing-intervals", (1,1))
@@ -89,6 +90,7 @@ if gjones:
 
     gjones_gains = jdict.pop('Gjones-gain-table', None) or "{0}/{1}{2}.gain.cp".format(OUTPUT, msbase, "-%s"%label if label else "")
     params.update( {
+        "stefcal_gain.enabled" : 1,
         "stefcal_gain.mode" : mode, 
         "stefcal_gain.reset" : 0 if mode=="apply" else 1,
         "stefcal_gain.implementation" : jones_type,
@@ -108,13 +110,15 @@ if gjones:
 
 bjones = jdict.pop("Bjones", False)
 if bjones:
-
+    
     time_smooth, freq_smooth = jdict.get("Bjones-smoothing-intervals", (1,0))
     time_int, freq_int = jdict.get("Bjones-solution-intervals", (1,0))
     mode = 'apply' if jdict.get('Bjones-apply-only', False) else 'solve-save'
 
     bjones_gains = jdict.pop('Bjones-gain-table', None) or "{0}/{1}{2}.gain1.cp".format(OUTPUT, msbase, "-%s"%label if label else "")
     params.update( {
+        "stefcal_gain.enabled" : 1,
+        "stefcal_diffgain.label" : 'B',
         "stefcal_gain1.mode" : mode, 
         "stefcal_gain1.reset" : 0 if mode=="apply" else 1,
         "stefcal_gain1.implementation" : jones_type,
@@ -145,8 +149,8 @@ if beam and beam_files_pattern:
 
 ddjones = jdict.pop("DDjones", False)
 if ddjones:
-    freq_int, freq_smooth = jdict.pop("DDjones-solution-intervals", (0,0))
-    time_smooth, freq_smooth = jdict.pop("DDjones-smoothing-intervals", (0,0))
+    time_int, freq_int = jdict.pop("DDjones-solution-intervals", (1,1))
+    time_smooth, freq_smooth = jdict.pop("DDjones-smoothing-intervals", (1,1))
 
     mode = 'apply' if jdict.get('DDjones-apply-only', False) else 'solve-save'
 
@@ -188,6 +192,7 @@ if ifrjones:
 makeplots = jdict.pop("make-plots", False)
 
 gjones_plotprefix = prefix+"-gjones_plots"
+gjones_plotprefix = prefix+"-bjones_plots"
 ddjones_plotprefix = prefix+"-ddjones_plots"
 ifrjones_plotprefix = prefix+"-ifrjones_plots"
 
@@ -199,7 +204,7 @@ def run_meqtrees(msname):
     options.update(params)
     if jdict.pop("add-vis-model", 0):
         options["read_ms_model"] = 1
-        options["ms_sel.model_column"] = "MODEL_DATA"
+        options["ms_sel.model_column"] = model_column
 
     taql = jdict.get('data-selection', None)
     if taql:
@@ -232,8 +237,12 @@ def run_meqtrees(msname):
             feed_type = "RL"
     
         if gjones:
-            print("Making Gain plots...")
+            print("Making Gain plots (G)...")
             plotgains.make_gain_plots(gjones_gains, prefix=gjones_plotprefix, feed_type=feed_type)
+
+        if bjones:
+            print("Making Gain plots (B)...")
+            plotgains.make_gain_plots(bjones_gains, gain_label='B', prefix=bjones_plotprefix, feed_type=feed_type)
     
         if ddjones:
             print("Making differential gain plots...")

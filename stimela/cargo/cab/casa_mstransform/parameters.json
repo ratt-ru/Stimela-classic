@@ -1,7 +1,7 @@
 {
     "task": "casa_mstransform", 
     "base": "stimela/casa", 
-    "tag": "0.3.0", 
+    "tag": "0.3.1", 
     "description": "Split the MS, combine/separate/regrid spws and do channel and time averaging", 
     "prefix": "-", 
     "binary": "mstransform", 

@@ -1,4 +1,4 @@
-#Stimela
+# Stimela
 
 ### [Documentation](https://github.com/SpheMakh/Stimela/wiki)  
 ### [Installation](https://github.com/SpheMakh/Stimela/wiki/Installation)

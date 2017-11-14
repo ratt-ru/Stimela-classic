@@ -1,0 +1,64 @@
+{
+    "task": "casa_concat", 
+    "base": "stimela/casa", 
+    "tag": "0.3.1", 
+    "description": "Concatenate several visibility data sets", 
+    "prefix": "", 
+    "binary": "concat", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input visibility files", 
+            "name": "msname", 
+            "io": "msfile", 
+            "dtype": "list:file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Name of output measurement set", 
+            "check_io": false, 
+            "name": "output-msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "mapping": "concatvis"
+        }, 
+        {
+            "info": "Frequency shift tolerance for considering data as the same spwid", 
+            "default": null, 
+            "name": "freqtol", 
+            "dtype": "str"
+        }, 
+        {
+            "info": "Direction shift tolerance for considering data as the same field", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dirtol"
+        }, 
+        {
+            "info": "If true, fields with a different name are not merged even if their direction agrees", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "respectname"
+        }, 
+        {
+            "info": "If true, sort by TIME in ascending", 
+            "default": false, 
+            "name": "timesort", 
+            "dtype": "bool"
+        }, 
+        {
+            "info": "Copy all rows of the POINTING table", 
+            "default": true, 
+            "name": "copypointing", 
+            "dtype": "bool"
+        }, 
+        {
+            "info": "List of the weight scaling factors to be applied to the individual MSs", 
+            "default": null, 
+            "name": "visweightscale", 
+            "dtype": "list"
+        }
+    ]
+}

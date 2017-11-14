@@ -1,4 +1,4 @@
-FROM stimela/base:0.3.0
+FROM stimela/base:0.3.1
 RUN docker-apt-install lofar
 RUN docker-apt-install python-tigger
 RUN pip install git+git://github.com/SpheMakh/tigger --upgrade

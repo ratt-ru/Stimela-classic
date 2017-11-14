@@ -1,72 +1,73 @@
 {
-    "task"          : "curl",
-    "description"   : "Download data from a remote path",
-    "base"          : "stimela/curl",
-    "tag"           : "0.3.0",
-    "binary"        : "curl",
-    "prefix"        : "--",
-    "msdir"         : false,
-    "parameters"   : [
+    "task": "curl", 
+    "base": "stimela/curl", 
+    "tag": "0.3.1", 
+    "description": "Download data from a remote path", 
+    "prefix": "--", 
+    "binary": "curl", 
+    "msdir": false, 
+    "parameters": [
         {
-            "name"      : "url",
-            "dtype"     : "str",
-            "info"      : "url name",
-            "required"  : true,
-            "default"   : null
-        },
+            "info": "url name", 
+            "dtype": "str", 
+            "default": null, 
+            "required": true, 
+            "name": "url"
+        }, 
         {
-            "name"      : "output",
-            "dtype"     : "file",
-            "io"        : "output",
-            "default"   : null,
-            "default"   : true
-
-        },
+            "default": true, 
+            "dtype": "file", 
+            "name": "output", 
+            "io": "output"
+        }, 
         {
-            "name"      : "cert",
-            "info"      : " Client certificate file and password (SSL)",
-            "dtype"     : "file",
-            "io"        : "input",
-            "default"   : null
-        },
+            "info": " Client certificate file and password (SSL)", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "cert", 
+            "io": "input"
+        }, 
         {
-            "name"      : "cert-status",
-            "info"      : "Verify the status of the server certificate",
-            "dtype"     : "bool",
-            "default"   : null
-        },
+            "info": "Verify the status of the server certificate", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "cert-status"
+        }, 
         {
-            "name"      : "cert-type",
-            "info"      : "Verify the status of the server certificate",
-            "dtype"     : "str",
-            "choices"   : ["DER", "PEM", "ENG"],
-            "default"   : null
-        },
+            "info": "Verify the status of the server certificate", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "cert-type", 
+            "choices": [
+                "DER", 
+                "PEM", 
+                "ENG"
+            ]
+        }, 
         {
-            "name"      : "ciphers",
-            "info"      : "SSL ciphers to use",
-            "dtype"     : "list",
-            "default"   : null
-        },
+            "info": "SSL ciphers to use", 
+            "dtype": "list", 
+            "default": null, 
+            "name": "ciphers"
+        }, 
         {
-            "name"      : "location",
-            "info"      : "Follow redirects",
-            "dtype"     : "bool",
-            "default"   : true
-        },
+            "info": "Follow redirects", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "location"
+        }, 
         {
-            "name"      : "config",
-            "info"      : "Read config from FILE",
-            "dtype"     : "file",
-            "io"        : "input",
-            "default"   : null
-        },
+            "info": "Read config from FILE", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "config", 
+            "io": "input"
+        }, 
         {
-            "name"      : "continue-at",
-            "info"      : "Specify number of bytes to resume download from, alternatively specify '-' to tell curl to automatically detect",
-            "dtype"     : "str",
-            "default"   : "-"
+            "info": "Specify number of bytes to resume download from, alternatively specify '-' to tell curl to automatically detect", 
+            "dtype": "str", 
+            "default": "-", 
+            "name": "continue-at"
         }
     ]
 }
-

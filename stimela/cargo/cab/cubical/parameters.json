@@ -19,6 +19,7 @@
             "dtype": "file", 
             "default": null, 
             "name": "model-beam-pattern", 
+            "check_io": false,
             "io": "input"
         }, 
         {

@@ -1,9 +1,8 @@
-FROM stimela/base:0.3.1
+FROM stimela/cubical:dev
 MAINTAINER <sphemakh@gmail.com>
+#RUN docker-apt-install python-pip git python-casacore python-tigger
+#RUN pip install -U pip setuptools wheel cython>=0.25.2
+#RUN pip install -I git+git://github.com/ska-sa/montblanc.git@master
 
-RUN docker-apt-install python-casacore python-tigger
-RUN git clone https://github.com/ratt-ru/CubiCal.git /builds/CubiCal
-RUN pip install -r /builds/CubiCal/requirements.txt
-RUN pip install /builds/CubiCal
-RUN rm -fr /builds/CubiCal
-RUN pip install git+git://github.com/ska-sa/montblanc.git@master
+RUN git clone -b only-dd-fixes https://github.com/ratt-ru/CubiCal.git /cubical
+RUN pip install --no-deps -U /cubical

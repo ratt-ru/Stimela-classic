@@ -81,6 +81,7 @@ params['ms_sel.ms_corr_sel'] = "'{}'".format(jdict.pop('correlations', '2x2'))
 label = jdict.pop("label", None)
 
 gjones = jdict.pop("Gjones", False)
+model_column = jdict.pop("model-column", 'MODEL_DATA')
 if gjones:
 
     time_smooth, freq_smooth = jdict.get("Gjones-smoothing-intervals", (1,1))
@@ -203,7 +204,7 @@ def run_meqtrees(msname):
     options.update(params)
     if jdict.pop("add-vis-model", 0):
         options["read_ms_model"] = 1
-        options["ms_sel.model_column"] = "MODEL_DATA"
+        options["ms_sel.model_column"] = model_column
 
     taql = jdict.get('data-selection', None)
     if taql:

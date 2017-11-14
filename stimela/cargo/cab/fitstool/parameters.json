@@ -36,6 +36,12 @@
             "name": "sanitize"
         }, 
         {
+            "info": "Replace zeros with NaN",
+            "dtype": "bool",
+            "default": false, 
+            "name": "zero-to-nan"
+        }, 
+        {
             "info": "replace negative values by 0", 
             "dtype": "bool", 
             "default": false, 

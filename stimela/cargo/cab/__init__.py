@@ -82,8 +82,6 @@ class Parameter(object):
 
         if dtype.startswith("list:"):
             val = dtype.split(":")
-#            if self.delimiter is None:
-#                raise RuntimeError("The parameter {0} is to be supplied as list but no delimter has been provided. Please add a 'delimiter' field to the cab parameter file.".format(self.name))
             if len(val) != 2:
                 raise TypeError("The type of '{0}' could not validate. Specify list types as \"list:dtype\" where dtype is normal type")
             ttype = val[1]

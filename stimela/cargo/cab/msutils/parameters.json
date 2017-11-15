@@ -21,7 +21,8 @@
                 "verify_antpos", 
                 "prep", 
                 "addnoise", 
-                "summary"
+                "summary",
+                "estimate_weights"
             ]
         }, 
         {
@@ -153,6 +154,59 @@
             "default": true, 
             "name": "verify-antpos", 
             "mapping": "verify"
+        },
+        {
+            "info": "Mode when estimating spectral weights. If mode=specs, then the weights will be based on the instrument spec sensitivity that is provided via the stats_data option",
+            "name": "mode",
+            "dtype": "str",
+            "choices": ["specs"],
+            "default": "specs"
+        },
+        {
+            "info": "Fit order for function used to smooth noise/weights",
+            "name": "fit_order",
+            "dtype": "int",
+            "default": 9
+        },
+        {
+            "info": "Function to use for smoothing the noise/weights",
+            "name": "smooth",
+            "dtype": "str",
+            "choices": ["polyn", "spline"],
+            "default": "polyn"
+        },
+        {
+            "info": "File or array containing information about sensitivity as a function of frequency (in Hz). For MeerKAT use the string 'use_package_meerkat_spec' unless you have your own (updated) specs",
+            "name": "stats_data",
+            "dtype": ["list","file", "str"],
+            "io": "input",
+            "check_io": false,
+            "default": "use_package_meekat_spec"
+        },
+        {
+            "info" : "Plot of estimated spectral noise/weights",
+            "name": "plot_stats",
+            "dtype": "file",
+            "io"   : "output",
+            "default": null
+        },
+        {
+            "info": "Save estimated noise/weights in MS",
+            "name": "write_to_ms",
+            "dtype": "bool",
+            "default": true
+        },
+        {
+            "info": "columns to save noise and corresponding noise spectrum",
+            "name": "noise_columns",
+            "dtype": "list:str",
+            "default": ["SIGMA", "SIGMA_SPECTRUM"]
+        },
+        {
+            "info": "columns to save noise and corresponding noise spectrum",
+            "name": "weight_columns",
+            "dtype": "list:str",
+            "default": ["WEIGHT", "WEIGHT_SPECTRUM"]
         }
     ]
 }

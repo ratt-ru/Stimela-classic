@@ -39,6 +39,12 @@
             "name": "circular"
         }, 
         {
+            "info": "Overwrite MS file if it already exists", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "overwrite"
+        }, 
+        {
             "info": "Reference antenna (default is first one used by script)", 
             "dtype": "str", 
             "default": null, 

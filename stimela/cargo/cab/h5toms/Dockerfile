@@ -1,4 +1,4 @@
-FROM stimela/katdal:0.3.1
+FROM stimela/katdal:dev
 MAINTAINER <sphemakh@gmail.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

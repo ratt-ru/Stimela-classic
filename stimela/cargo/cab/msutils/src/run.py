@@ -3,6 +3,7 @@ import os
 from MSUtils import msutils
 import MSUtils.ClassESW as esw
 import inspect
+from MSUtils.imp_plotter import gain_plotter
 
 sys.path.append("/utils")
 import utils
@@ -44,6 +45,15 @@ if function == "estimate_weights":
         msnoise.write_toms(weights, columns=args['weight_columns'])
     sys.exit(0)
 
+if function == "plot_gains":
+   tab = args['ctable']
+   tabtype = args['tabtype']
+   dpi = args['plot_dpi']
+   scale = args['subplot_scale']
+   outfile = args['plot_file']
+   gain_plotter(tab,tabtype,outfile,scale,dpi)
+   
+   
 run_func = getattr(msutils, function, None)
 if run_func is None:
     raise RuntimeError("Function '{}' is not part of MSUtils".format(function))

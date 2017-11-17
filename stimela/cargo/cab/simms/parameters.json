@@ -41,7 +41,7 @@
                 "casa", 
                 "ascii"
             ]
-        }, 
+        },
         {
             "info": "Coordinate system of antenna coordinates in 'antenna-file'. Only needed if 'type' is 'ascii'; CASA tables are assumed to be in ITRF coords", 
             "dtype": "str", 
@@ -169,6 +169,12 @@
             "dtype": "bool", 
             "default": false, 
             "name": "auto-correlations"
+        },
+        {
+            "info": "Date of observation. Example UTC,2014/05/26 or UTC,2014/05/26/12:12:12 : default is today (format: EPOCH,yyyy/mm/dd[/h:m:s]",
+            "dtype": "str",
+            "default": null,
+            "name": "date"
         }
     ]
 }

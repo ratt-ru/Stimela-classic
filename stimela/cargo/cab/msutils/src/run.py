@@ -52,6 +52,7 @@ if function == "plot_gains":
    scale = args['subplot_scale']
    outfile = args['plot_file']
    gain_plotter(tab,tabtype,outfile,scale,dpi)
+   sys.exit(0)
    
    
 run_func = getattr(msutils, function, None)

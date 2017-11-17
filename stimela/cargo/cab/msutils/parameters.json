@@ -29,7 +29,7 @@
         {
             "info": "MS name", 
             "dtype": "file", 
-            "required": true, 
+            "required": false, 
             "name": "msname", 
             "io": "msfile"
         }, 
@@ -212,16 +212,16 @@
         {
             "info": "Calibration table to plot",
             "name": "ctable",
-            "dtype": "str",
-            "default": "None"
+            "dtype": "file",
+            "io"   : "input",
+            "default": null
         },
         {
             "info": "Type of the calibration table",
             "name": "tabtype",
             "dtype": "str",
-            "io": "output", 
             "choices": ["bandpass","gain","delay"],
-            "default": "None"
+            "default": null
         },
         {
             "info": "DPI for the gain plot",

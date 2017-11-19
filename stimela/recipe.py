@@ -282,7 +282,7 @@ class Recipe(object):
         self.proc_logger.write()
 
         self.log.info('---------------------------------')
-        self.log.info('Stimlela version {0}'.format(version.version))
+        self.log.info('Stimela version {0}'.format(version.version))
         self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')

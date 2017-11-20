@@ -74,14 +74,16 @@ outcol = jdict.pop("output", "CORRECTED_DATA")
 params["ms_sel.input_column"] = column
 params["ms_sel.output_column"] = outcol
 params["tiggerlsm.filename"] = skymodel
+params["tiggerlsm.lsm_subset"] = jdict.get("subset", "all")
 params["do_output"] = jdict.pop("output-data", "CORR_RES")
 saveconf = jdict.pop('save-config', None)
 params['ms_sel.ms_corr_sel'] = "'{}'".format(jdict.pop('correlations', '2x2'))
 
 label = jdict.pop("label", None)
 
-gjones = jdict.pop("Gjones", False)
 model_column = jdict.pop("model-column", 'MODEL_DATA')
+
+gjones = jdict.pop("Gjones", False)
 if gjones:
 
     time_smooth, freq_smooth = jdict.get("Gjones-smoothing-intervals", (1,1))
@@ -94,11 +96,8 @@ if gjones:
         "stefcal_gain.mode" : mode, 
         "stefcal_gain.reset" : 0 if mode=="apply" else 1,
         "stefcal_gain.implementation" : jones_type,
-        "tiggerlsm.lsm_subset"  : jdict.get("subset", "all"),
         "stefcal_gain.timeint"  : time_int,
         "stefcal_gain.freqint"  : freq_int,
-        "stefcal_diffgain.freqsmooth" : freq_smooth,
-        "stefcal_diffgain.timesmooth" : time_smooth,
         "stefcal_gain.flag_ampl"    :   jdict.get("Gjones-ampl-clipping", 0),
         "stefcal_gain.flag_chisq"   :   jdict.get("Gjones-chisq-clipping", 0),
         "stefcal_gain.flag_chisq_threshold" :   jdict.get("Gjones-thresh-sigma", 10),
@@ -117,8 +116,8 @@ if bjones:
 
     bjones_gains = jdict.pop('Bjones-gain-table', None) or "{0}/{1}{2}.gain1.cp".format(OUTPUT, msbase, "-%s"%label if label else "")
     params.update( {
-        "stefcal_gain.enabled" : 1,
-        "stefcal_diffgain.label" : 'B',
+        "stefcal_gain1.enabled" : 1,
+        "stefcal_gain1.label" : 'B',
         "stefcal_gain1.mode" : mode, 
         "stefcal_gain1.reset" : 0 if mode=="apply" else 1,
         "stefcal_gain1.implementation" : jones_type,

@@ -22,13 +22,14 @@
                 "prep", 
                 "addnoise", 
                 "summary",
-                "estimate_weights"
+                "estimate_weights",
+                "plot_gains"
             ]
         }, 
         {
             "info": "MS name", 
             "dtype": "file", 
-            "required": true, 
+            "required": false, 
             "name": "msname", 
             "io": "msfile"
         }, 
@@ -207,6 +208,39 @@
             "name": "weight_columns",
             "dtype": "list:str",
             "default": ["WEIGHT", "WEIGHT_SPECTRUM"]
-        }
+        },
+        {
+            "info": "Calibration table to plot",
+            "name": "ctable",
+            "dtype": "file",
+            "io"   : "input",
+            "default": null
+        },
+        {
+            "info": "Type of the calibration table",
+            "name": "tabtype",
+            "dtype": "str",
+            "choices": ["bandpass","gain","delay"],
+            "default": null
+        },
+        {
+            "info": "DPI for the gain plot",
+            "name": "plot_dpi",
+            "dtype": "int",
+            "default": 600
+        }, 
+        {   
+            "info": "Scale for the subplots in the gain plot",
+            "name": "subplot_scale",
+            "dtype": "int",
+            "default": 6
+        },
+        {   "info": "Filename for gain plot",
+            "name": "plot_file",
+            "io": "output",
+            "dtype": "str",
+            "default": "meerkathi-gai-plot"
+        }  
+   
     ]
 }

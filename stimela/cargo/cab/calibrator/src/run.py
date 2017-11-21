@@ -191,7 +191,7 @@ if ifrjones:
 makeplots = jdict.pop("make-plots", False)
 
 gjones_plotprefix = prefix+"-gjones_plots"
-gjones_plotprefix = prefix+"-bjones_plots"
+bjones_plotprefix = prefix+"-bjones_plots"
 ddjones_plotprefix = prefix+"-ddjones_plots"
 ifrjones_plotprefix = prefix+"-ifrjones_plots"
 

@@ -107,8 +107,7 @@
         {
             "info": "Show histogram and cutoff line in a viewgraph",
             "name": "show",
-            "dtype": "file",
-            "io": "output"
+            "dtype": "str",
         },
         {
             "info": "Do not apply flags, but (e.g. produce viewgraphs only)",

@@ -1,5 +1,4 @@
-FROM stimela/base:0.3.1
+FROM kernsuite/base:3
 MAINTAINER <sphemakh@gmail.com>
-ADD sunblocker-src /sunblocker
-RUN docker-apt-install python-casacore python-tk
-RUN pip install -I /sunblocker
+RUN docker-apt-install python-casacore python-tk python-pip git
+RUN pip install git+https://github.com/gigjozsa/sunblocker@supress-x11

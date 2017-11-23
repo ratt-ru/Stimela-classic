@@ -53,7 +53,9 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     if log:
         log.info("Running: %s"%cmd)
     else:
-        print('running: %s'%cmd)
+        sys.stdout.write('running: %s\n'%cmd)
+
+    sys.stdout.flush()
 
     process = subprocess.Popen(cmd,
                   stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,

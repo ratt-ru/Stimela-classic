@@ -41,7 +41,7 @@
                 "casa", 
                 "ascii"
             ]
-        }, 
+        },
         {
             "info": "Coordinate system of antenna coordinates in 'antenna-file'. Only needed if 'type' is 'ascii'; CASA tables are assumed to be in ITRF coords", 
             "dtype": "str", 
@@ -81,7 +81,7 @@
             "name": "synthesis"
         }, 
         {
-            "info": "Durration of a single scan. Default is the entire observation (synthesis)", 
+            "info": "Duration of a single scan in hours. Default is the entire observation (synthesis)",
             "dtype": "float", 
             "default": null, 
             "name": "scan-length"
@@ -117,7 +117,7 @@
             "name": "nband"
         }, 
         {
-            "info": "Number of channels. Can be used in tandemn with 'freq0, dfreq, nband' to customise the partitioning of the subands", 
+            "info": "Number of channels. Can be used in tandemn with 'freq0, dfreq, nband' to customise the partitioning of the subbands",
             "dtype": "list:int", 
             "default": 1, 
             "name": "nchan"
@@ -141,7 +141,7 @@
             "name": "feed"
         }, 
         {
-            "info": "Lag time between scans", 
+            "info": "Lag time between scans in hours",
             "dtype": "float", 
             "default": 0, 
             "name": "scan-lag"
@@ -169,6 +169,12 @@
             "dtype": "bool", 
             "default": false, 
             "name": "auto-correlations"
+        },
+        {
+            "info": "Date of observation. Example UTC,2014/05/26 or UTC,2014/05/26/12:12:12 : default is today (format: EPOCH,yyyy/mm/dd/[h:m:s]",
+            "dtype": "str",
+            "default": null,
+            "name": "date"
         }
     ]
 }

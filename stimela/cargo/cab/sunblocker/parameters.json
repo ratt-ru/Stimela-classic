@@ -1,0 +1,185 @@
+{
+    "task": "msutils", 
+    "base": "stimela/msutils", 
+    "tag": "0.3.1", 
+    "description": "Tools for manipulating measurement sets (MSs)", 
+    "prefix": " ", 
+    "binary": "msutils", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "MSUtils command to execute", 
+            "name": "command", 
+            "default": null, 
+            "dtype": "str", 
+            "required": true, 
+            "choices": [
+                "phazer",
+                "vampirisms"
+            ]
+        }, 
+        {
+            "info": "Input MS name", 
+            "dtype": "file", 
+            "required": true, 
+            "name": "inset", 
+            "io": "msfile"
+        }, 
+        {
+            "info": "Output MS name", 
+            "dtype": "file", 
+            "required": false, 
+            "name": "outset", 
+            "io": "msfile"
+        }, 
+        {
+            "info": "Column name", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "col", 
+        },
+        {
+            "info": "bool array with True for channels to base the analysis on 'False' channels will be ignored",
+            "name": "channels",
+            "dtype": "list",
+            "default": null
+        },
+        {
+            "info": "nx2 array with antenna pairs for baselines to base the analysis on",
+            "name": "baselines",
+            "dtype": "list",
+            "default": null
+        },
+        {
+            "info": "Fields to select or None if all fields should be used",
+            "name": "fields",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "info": "Size of image in pixels",
+            "name": "imsize",
+            "dtype": "int",
+            "default": 512
+        },
+        {
+            "info": "Size of cell in arcsec",
+            "name": "cell",
+            "dtype": "float",
+            "default": 2
+        },
+        {
+            "info": "Flagging based on 'all' data, repeated per 'antenna', or repeated per 'baseline'",
+            "name": "mode",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "info": "Polarization selection, Stokes 'i', or Stokes 'q'",
+            "name": "pol",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "info": "Method to determine sigma, 'fit': fit Gaussian at the max to determine sigma, standard deviation otherwise",
+            "name": "threshmode",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "info": "Distance from average beyond which data are flagged in units of sigma",
+            "name": "threshold",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "info": "Each selected point is expanded in a wedge with this radial range",
+            "name": "radrange",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "info": "Each selected point is expanded in a wedge with this angular",
+            "name": "angle",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "info": "Show histogram and cutoff line in a viewgraph",
+            "name": "show",
+            "dtype": "str",
+        },
+        {
+            "info": "Do not apply flags, but (e.g. produce viewgraphs only)",
+            "name": "dryrun",
+            "dtype": "bool",
+            "default": false
+        },
+        {
+            "info": "Switch commenting on and off",
+            "name": "verb",
+            "dtype": "bool",
+            "default": false
+         },
+        {
+            "info": "Longitude of observatory in astropy units (defaults to what is found in the data set)",
+            "name": "lon",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "info": "Latitude of observatory in astropy units (defaults to what is found in the data set)",
+            "name": "lat",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "info": "Elevation of observatory in astropy units (defaults to what is found in the data set)",
+            "name": "hei",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "info": "Time to be flagged before sunrise in astropy units (defaults to 0)",
+            "name": "avantsoleil",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "info": "Time to be flagged after sunrise in astropy units (defaults to 0)",
+            "name": "apresnuit",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "info": "Time to be flagged before sunset in astropy units (defaults to 0)",
+            "name": "avantnuit",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "info": "Time to be flagged after sunset in astropy units (defaults to 0)",
+            "name": "apresoleil",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "info": "Flag all day time (defaults to True)",
+            "name": "nononsoleil",
+            "dtype": "bool",
+            "default": null
+        },
+        {
+            "info": "Height above horizon of the sun to define sunset in astropy units (defaults to -34 arcmin)",
+            "name": "horizon",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "info": "Invert flags before applying/returning them (defaults to False)", 
+            "name": "flinvert",
+            "dtype": "bool",
+            "default": null
+        }
+    ]
+}

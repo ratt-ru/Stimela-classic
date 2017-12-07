@@ -37,7 +37,6 @@ for param in params:
         if isinstance(value, str):
             value = '"{}"'.format(value)
         arg = '{0}{1} {2}'.format(cab['prefix'], key, value)
-
     args.append(arg)
 
 utils.xrun(cab['binary'], args+['--nolog']+positional)

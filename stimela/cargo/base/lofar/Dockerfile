@@ -3,3 +3,5 @@ RUN docker-apt-install lofar python-tigger
 RUN pip install --upgrade git+https://github.com/ska-sa/tigger
 RUN pip uninstall -y numpy
 RUN pip install --upgrade pyfits numpy==1.11.3
+RUN docker-apt-install gfortran build-essential libboost-python-dev
+RUN pip install git+https://github.com/lofar-astron/PyBDSF.git@v1.8.13

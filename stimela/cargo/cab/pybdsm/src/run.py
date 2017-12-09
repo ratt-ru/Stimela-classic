@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-from lofar import bdsf
+import bdsf
 import numpy
 import Tigger
 import tempfile

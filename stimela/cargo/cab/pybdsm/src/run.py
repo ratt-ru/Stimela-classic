@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-import bdsf
+import bdsf as bdsm #bdsm it is and bdsm it shall remain
 import numpy
 import Tigger
 import tempfile

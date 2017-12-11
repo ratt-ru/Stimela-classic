@@ -127,7 +127,7 @@
             "dtype": "bool", 
             "default": false, 
             "name": "nomfsweighting",
-            "mapping": "no-mfsweighting"
+            "mapping": "no-mfs-weighting"
         }, 
         {
             "info": "Filter the weights and set high weights to the local mean. The level parameter specifies the filter level; any value larger than level*localmean will be set to level*localmean.", 

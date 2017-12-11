@@ -370,7 +370,7 @@
             "dtype": "str", 
             "default": null, 
             "name": "column",
-            "mapping": "data-column"
+            "mapping": "datacolumn"
         }, 
         {
             "info": "Set maximum baseline distance", 

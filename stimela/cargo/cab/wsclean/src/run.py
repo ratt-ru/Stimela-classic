@@ -65,6 +65,9 @@ for param in params:
         if isinstance(value, (int, float)):
             value = '{0}asec'.format(value)
 
+    if name == 'datacolumn':
+        name = 'data-column' # new interface as of WSCLEAN 2.5 - here for compat
+
     if name in 'size trim nwlayers-for-size beam-shape channel-range interval'.split():
         if isinstance(value, int):
             value = '{0} {0}'.format(value)

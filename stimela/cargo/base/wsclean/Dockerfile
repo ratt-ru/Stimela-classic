@@ -30,16 +30,16 @@ ENV PACKAGES \
 RUN docker-apt-install $PACKAGES && \
     mkdir -p /opt/src && \
     cd /opt/src && \
-    wget https://github.com/casacore/casacore/archive/v2.3.0.tar.gz && \
-    wget https://ufpr.dl.sourceforge.net/project/wsclean/wsclean-2.4/wsclean-2.4.tar.bz2 && \
+    wget https://github.com/casacore/casacore/archive/v2.4.0.tar.gz && \
+    wget https://ufpr.dl.sourceforge.net/project/wsclean/wsclean-2.5/wsclean-2.5.tar.bz2 && \
     svn co --non-interactive --no-auth-cache --username lofar-guest --password lofar-guest https://svn.astron.nl/LOFAR/tags/LOFAR-Release-2_21_9 && \
-    tar -xvf v2.3.0.tar.gz && \
-    tar -xvf wsclean-2.4.tar.bz2 && \
-    mkdir casacore-2.3.0/build && \
-    mkdir wsclean-2.4/build && \
+    tar -xvf v2.4.0.tar.gz && \
+    tar -xvf wsclean-2.5.tar.bz2 && \
+    mkdir casacore-2.4.0/build && \
+    mkdir wsclean-2.5/build && \
     mkdir -p LOFAR-Release-2_21_9/build/gnucxx11_opt && \
     # CASACORE
-    cd casacore-2.3.0/build && \
+    cd casacore-2.4.0/build && \
     cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DUSE_OPENMP=YES -DUSE_FFTW3=YES -DUSE_HDF5=YES -DCMAKE_BUILD_TYPE=Release .. && \ 
     make -j 16 && \
     make install && \
@@ -49,7 +49,7 @@ RUN docker-apt-install $PACKAGES && \
     make -j16 && \
     make install && \
     # WSClean
-    cd ../../../wsclean-2.4/build && \
+    cd ../../../wsclean-2.5/build && \
     cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE=Release -DPORTABLE=Yes .. && \ 
     make -j 16 && \
     make install && \

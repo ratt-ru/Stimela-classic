@@ -3,7 +3,7 @@
     "base": "stimela/meqtrees", 
     "tag": "0.3.1", 
     "description": "An Astronomical Image Fedility Assessment Tool", 
-    "prefix": "--", 
+    "prefix": "--",
     "binary": "aimfast", 
     "msdir": false, 
     "parameters": [

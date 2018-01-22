@@ -25,8 +25,8 @@
         },
         {
            "info": "Source area multiplying factor i.e tot_area = psf-size*af",
-           "name": "restored-image",
-           "default": null,
+           "name": "area-factor",
+           "default": 6,
            "dtype": "int",
            "required": true
         }

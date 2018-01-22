@@ -28,7 +28,7 @@
            "name": "area-factor",
            "default": 6,
            "dtype": "int",
-           "required": true
+           "required": false
         }
     ]
 }

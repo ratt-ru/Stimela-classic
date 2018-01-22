@@ -1,0 +1,34 @@
+{
+    "task": "aimfast", 
+    "base": "stimela/meqtrees", 
+    "tag": "0.3.1", 
+    "description": "An Astronomical Image Fedility Assessment Tool", 
+    "prefix": "--", 
+    "binary": "aimfast", 
+    "msdir": false, 
+    "parameters": [
+        {
+           "info": "Residual image to extract the four (4) statistical moments of distribution",
+           "name": "residual-image",
+           "io": "input",
+           "default": null,
+           "dtype": "file",
+           "required": false
+        },
+        {
+           "info": "Restored image to extract the dynamic range",
+           "name": "restored-image",
+           "io": "input",
+           "default": null,
+           "dtype": "file",
+           "required": true
+        },
+        {
+           "info": "Source area multiplying factor i.e tot_area = psf-size*af",
+           "name": "restored-image",
+           "default": null,
+           "dtype": "int",
+           "required": true
+        }
+    ]
+}

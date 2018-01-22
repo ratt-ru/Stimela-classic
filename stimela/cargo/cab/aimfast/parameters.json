@@ -4,7 +4,7 @@
     "tag": "0.3.1", 
     "description": "An Astronomical Image Fedility Assessment Tool", 
     "prefix": "--",
-    "binary": "/usr/bin/aimfast",
+    "binary": "aimfast",
     "msdir": false, 
     "parameters": [
         {

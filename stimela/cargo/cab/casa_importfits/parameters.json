@@ -1,0 +1,55 @@
+{
+    "task": "casa_importfits", 
+    "base": "stimela/casa", 
+    "tag": "0.3.1", 
+    "description": "Convert aFITS image to a CASA file", 
+    "prefix": " ", 
+    "binary": "importfits", 
+    "msdir": false, 
+    "parameters": [
+        {
+            "name" : "fitsimage",
+            "info": "Name of input image FITS file",
+            "dtype": "file",
+            "io": "input",
+            "required": true
+        },
+        {
+            "name": "imagename",
+            "info": "Name of output CASA image",
+            "dtype": "file",
+            "io": "output",
+            "required": true
+        },
+        {
+            "name":"whichrep",
+            "info":"If fits image has multiple coordinate reps, choose one",
+            "dtype":"int"
+        },
+        {
+            "name":"whichhdu",
+            "info":"If its file contains multiple images, choose one (0 = first HDU, -1 = first valid image).",
+            "dtype": "int"
+        },
+        {
+            "name":"zeroblanks",
+            "info":"Set blanked pixels to zero (not NaN)",
+            "dtype":"bool"
+        },
+        {
+            "name":"overwrite",
+            "info":"Overwrite pre-existing imagename",
+            "dtype":"bool"
+        },
+        {
+            "name":"defaultaxesvalues",
+            "info":"List of values to assign to added degenerate axes defaultaxes==True (ra,dec,freq,stokes)",
+            "dtype": ["list:str","list:float", "list:int"]
+        },
+        {
+            "name": "beam",
+            "info":"List of values to be used to define the synthesized beam [BMAJ,BMIN,BPA] (as in the FITS keywords)",
+            "dtype": ["list:str","list:float", "list:int"]
+        }
+    ]
+}

@@ -102,6 +102,12 @@
             "name": "edit-header"
         }, 
         {
+            "info": "KEY=VALUE", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "delete-header"
+        }, 
+        {
             "info": "Stack a list of FITS images along a given axis. This axis may given as an integer(as it appears in the NAXIS keyword), or as a string (as it appears in the CTYPE keyword)", 
             "dtype": "bool", 
             "default": null, 

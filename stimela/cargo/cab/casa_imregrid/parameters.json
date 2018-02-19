@@ -8,7 +8,7 @@
     "msdir": false, 
     "parameters": [
         {
-            "name": "image",
+            "name": "imagename",
             "info": "Name of the source image",
             "dtype": "file",
             "io"   : "input",

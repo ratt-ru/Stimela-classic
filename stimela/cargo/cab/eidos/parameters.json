@@ -1,0 +1,49 @@
+{
+    "task": "eidos", 
+    "base": "stimela/eidos", 
+    "tag": "0.3.1", 
+    "description": "Create primary beam model of MeerKAT", 
+    "prefix": "--", 
+    "binary": "eidos", 
+    "msdir": false, 
+    "parameters": [
+        {
+            "info": "Number of pixels on one side", 
+            "name": "pixels", 
+            "default": 256, 
+            "dtype": "int", 
+            "required": true
+        }, 
+        {
+            "info": "A single freq, or the start, end freqs, and channel width in MHz",
+            "name": "freq",
+            "dtype": "str",
+            "required": true
+        },
+        {
+            "info": "Diameter of the required beam",
+            "name" : "diameter",
+            "dtype": "float",
+            "default": 6.0
+        },
+        {
+            "info": "Coefficients file name",
+            "name": "coefficients-file",
+            "dtype": "file",
+            "io": "input",
+            "required": true
+        },
+        {
+            "name":"prefix",
+            "info":"Prefix for output beam file(s)",
+            "dtype": "file",
+            "io":"output"
+        },
+        {
+            "name": "output-eight",
+            "info": "Output complex volatge beams (8 files)",
+            "dtype": "bool",
+            "default": true
+        }
+    ]
+}

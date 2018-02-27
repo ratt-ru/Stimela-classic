@@ -1,0 +1,66 @@
+{
+    "task": "casa_imregrid", 
+    "base": "stimela/casa", 
+    "tag": "0.3.1", 
+    "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.", 
+    "prefix": " ", 
+    "binary": "imregrid", 
+    "msdir": false, 
+    "parameters": [
+        {
+            "name": "imagename",
+            "info": "Name of the source image",
+            "dtype": "file",
+            "io"   : "input",
+            "required": true
+        },
+        {
+            "name": "template",
+            "info": "A dictionary, refcode, or name of an image that provides the output shape and coordinate system",
+            "dtype": "file",
+            "io": "input",
+            "required": true
+        },
+        {
+            "name": "output",
+            "info": "Name for the regridded image",
+            "dtype": "file",
+            "io": "output"
+        },
+        {
+            "name":"asvelocity",
+            "info":"Regrid spectral axis in velocity space rather than frequency space?",
+            "dtype": "bool",
+            "default": true
+        },
+        {
+            "name":"axes",
+            "info":"The pixel axes to regrid",
+            "dtype": "list:int",
+            "default": [-1]
+        },
+        {
+            "name":"interpolation",
+            "info":"The interpolation method",
+            "dtype": "str",
+            "choices": [ "nearest", "linear", "cubic"],
+            "default": "linear"
+        },
+        {
+            "name": "decimate",
+            "info":"Decimation factor for coordinate grid computation",
+            "dtype":"int"
+        },
+        {
+            "name":"replicate",
+            "info":"Replicate image rather than regrid",
+            "dtype":"bool"
+        },
+        {
+            "name":"overwrite",
+            "info":"verwrite (unprompted) pre-existing output file",
+            "dtype":"bool"
+        }
+
+    ]
+}

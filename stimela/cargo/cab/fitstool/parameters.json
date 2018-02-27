@@ -102,7 +102,7 @@
             "name": "edit-header"
         }, 
         {
-            "info": "header keyb you wish to delete", 
+            "info": "header key you wish to delete", 
             "dtype": "str", 
             "default": null, 
             "name": "delete-header"

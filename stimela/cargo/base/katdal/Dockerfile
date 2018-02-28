@@ -1,7 +1,6 @@
-FROM stimela/base:0.3.1
+FROM kernsuite/base:3
 MAINTAINER <sphemakh@gmail.com>
 
-RUN docker-apt-install casacore-dev git python-pip
-RUN docker-apt-install python-casacore
-RUN pip install -U pip pkginfo
-RUN pip install -I git+https://github.com/sjperkins/katdal@use-python-casacore-ms-creation#egg=katdal
+RUN docker-apt-install casacore-dev python-casacore git python-pip
+RUN pip install -U pip pkginfo pyyaml
+RUN pip install -I git+https://github.com/ska-sa/katdal

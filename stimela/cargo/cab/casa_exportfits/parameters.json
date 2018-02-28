@@ -1,0 +1,75 @@
+{
+    "task": "casa_exportfits", 
+    "base": "stimela/casa", 
+    "tag": "0.3.1", 
+    "description": "Convert a CASA image to a FITS file", 
+    "prefix": " ", 
+    "binary": "exportfits", 
+    "msdir": false, 
+    "parameters": [
+        {
+            "name" : "fitsimage",
+            "info": "Name of input image FITS file",
+            "dtype": "file",
+            "io": "input",
+            "required": true
+        },
+        {
+            "name": "imagename",
+            "info": "Name of output CASA image",
+            "dtype": "file",
+            "io": "output",
+            "required": true
+        },
+        {
+            "name":"velocity",
+            "info":"Use velocity (rather than frequency) as spectral axis",
+            "dtype":"bool"
+        },
+        {
+            "name":"optical",
+            "info": "Use the optical (rather than radio) velocity convention",
+            "dtype":"bool"
+        },
+        {
+            "name":"bitpix",
+            "info":"Bits per pixel",
+            "dtype": "int",
+        },
+        {
+            "name":"minpix",
+            "info":"Minimum pixel value (if minpix > maxpix, value is automatically dertermined)",
+            "dtype": "float"
+        },
+        {
+            "name":"maxpix",
+            "info":"dropstokes",
+            "dtype":"bool"
+        },
+        {
+            "name":"dropstokes",
+            "info":"Drop stokes axis?",
+            "dtype":"bool"
+        },
+        {
+            "name":"stokeslast",
+            "info":"Put Stokes axis last in header?",
+            "dtype":"bool"
+        },
+        {
+            "name":"history",
+            "info":"Write history to the FITS image?",
+            "dtype":"bool"
+        },
+        {
+            "name":"dropdeg",
+            "info":"Drop all degenerate axes (e.g. stokes and/or frequency)",
+            "dtype":"bool"
+        },
+        {
+            "name":"overwrite",
+            "info":"Overwrite pre-existing imagename",
+            "dtype":"bool"
+        },
+    ]
+}

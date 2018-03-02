@@ -13,6 +13,14 @@
            "io": "input",
            "default": null,
            "dtype": "file",
+           "required": true
+        },
+        {
+           "info": "Model lsm.html/text file to extract peak source flux",
+           "name": "tigger-model",
+           "io": "input",
+           "default": null,
+           "dtype": "file",
            "required": false
         },
         {
@@ -21,7 +29,7 @@
            "io": "input",
            "default": null,
            "dtype": "file",
-           "required": true
+           "required": false
         },
         {
            "info": "Source area multiplying factor i.e tot_area = psf-size*af",

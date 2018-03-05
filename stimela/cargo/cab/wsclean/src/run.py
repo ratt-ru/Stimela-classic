@@ -41,12 +41,11 @@ elif not (isinstance(trim, list) and
           all([isinstance(t, int) for t in trim]) and
           len(npix) == 2) :
     raise ValueError("trim only accepts single int or list[2] of int")
-
+pad = max(npix[0], npix[1]) / float(min(trim[0], trim[1]))
+trindex = filter(lambda x: x['name'] == 'trim', params)[0]
+params.remove(trindex)
 padding = filter(lambda x: x['name'] == 'padding', params)
 if not padding:
-    trindex = filter(lambda x: x['name'] == 'trim', params)[0]
-    params.remove(trindex)
-    pad = max(npix[0], npix[1]) / float(min(trim[0], trim[1]))
     filter(lambda x: x['name'] == 'size', params)[0]["value"] = trim  # npix is now the unpadded size
     params.append({'name': 'padding', 'value': pad})  # replace with 'padding' argument
 

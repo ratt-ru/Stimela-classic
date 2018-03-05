@@ -1,0 +1,44 @@
+{
+    "task": "casa_clearcal", 
+    "base": "stimela/casa", 
+    "tag": "0.3.1", 
+    "description": "Clears out calibrated data and resets previous predicted model", 
+    "prefix": "-", 
+    "binary": "clearcal", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input visibility file", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Field names or field index numbers. ''==>all, field='0~2,3C286'", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
+        {
+            "info": "spectral-window/frequency/channel", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
+        {
+            "info": "Select based on observing intent", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "intent"
+        }, 
+        {
+            "info": "Add MODEL_DATA scratch column", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "addmodel"
+        }, 
+    ]
+}

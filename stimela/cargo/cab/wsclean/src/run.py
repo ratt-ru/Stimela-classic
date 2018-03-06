@@ -44,8 +44,10 @@ elif not (isinstance(trim, list) and
 pad = max(npix[0], npix[1]) / float(min(trim[0], trim[1]))
 trindex = filter(lambda x: x['name'] == 'trim', params)[0]
 params.remove(trindex)
-filter(lambda x: x['name'] == 'size', params)[0]["value"] = trim #npix is now the unpadded size
-params.append({ 'name': 'padding', 'value': pad }) #replace with 'padding' argument
+padding = filter(lambda x: x['name'] == 'padding', params)
+if not padding:
+    filter(lambda x: x['name'] == 'size', params)[0]["value"] = trim  # npix is now the unpadded size
+    params.append({'name': 'padding', 'value': pad})  # replace with 'padding' argument
 
 for param in params:
     name = param['name']

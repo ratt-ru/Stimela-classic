@@ -614,6 +614,12 @@
             "default": true, 
             "name": "ellipticalbeam",
             "mapping": "elliptical-beam"
+        },
+        {
+            "info": "Factor to increase the image size",
+            "dtype": "float",
+            "default": null,
+            "name": "padding"
         }
     ]
 }

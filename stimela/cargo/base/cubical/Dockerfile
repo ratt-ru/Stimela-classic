@@ -1,4 +1,4 @@
-FROM stimela/cubical:dev
+FROM stimela/cubical:0.3.2
 MAINTAINER <sphemakh@gmail.com>
 #RUN docker-apt-install python-pip git python-casacore python-tigger
 #RUN pip install -U pip setuptools wheel cython>=0.25.2

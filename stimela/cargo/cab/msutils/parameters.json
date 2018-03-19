@@ -1,7 +1,7 @@
 {
     "task": "msutils", 
     "base": "stimela/msutils", 
-    "tag": "0.3.1", 
+    "tag": "0.3.2", 
     "description": "Tools for manipulating measurement sets (MSs)", 
     "prefix": " ", 
     "binary": "msutils", 
@@ -21,8 +21,8 @@
                 "verify_antpos", 
                 "prep", 
                 "addnoise", 
-                "summary",
-                "estimate_weights",
+                "summary", 
+                "estimate_weights", 
                 "plot_gains"
             ]
         }, 
@@ -155,92 +155,111 @@
             "default": true, 
             "name": "verify-antpos", 
             "mapping": "verify"
-        },
-        {
-            "info": "Mode when estimating spectral weights. If mode=specs, then the weights will be based on the instrument spec sensitivity that is provided via the stats_data option",
-            "name": "mode",
-            "dtype": "str",
-            "choices": ["specs"],
-            "default": "specs"
-        },
-        {
-            "info": "Fit order for function used to smooth noise/weights",
-            "name": "fit_order",
-            "dtype": "int",
-            "default": 9
-        },
-        {
-            "info": "Function to use for smoothing the noise/weights",
-            "name": "smooth",
-            "dtype": "str",
-            "choices": ["polyn", "spline"],
-            "default": "polyn"
-        },
-        {
-            "info": "File or array containing information about sensitivity as a function of frequency (in Hz). For MeerKAT use the string 'use_package_meerkat_spec' unless you have your own (updated) specs",
-            "name": "stats_data",
-            "dtype": ["list","file", "str"],
-            "io": "input",
-            "check_io": false,
-            "default": "use_package_meekat_spec"
-        },
-        {
-            "info" : "Plot of estimated spectral noise/weights",
-            "name": "plot_stats",
-            "dtype": "file",
-            "io"   : "output",
-            "default": null
-        },
-        {
-            "info": "Save estimated noise/weights in MS",
-            "name": "write_to_ms",
-            "dtype": "bool",
-            "default": true
-        },
-        {
-            "info": "columns to save noise and corresponding noise spectrum",
-            "name": "noise_columns",
-            "dtype": "list:str",
-            "default": ["SIGMA", "SIGMA_SPECTRUM"]
-        },
-        {
-            "info": "columns to save noise and corresponding noise spectrum",
-            "name": "weight_columns",
-            "dtype": "list:str",
-            "default": ["WEIGHT", "WEIGHT_SPECTRUM"]
-        },
-        {
-            "info": "Calibration table to plot",
-            "name": "ctable",
-            "dtype": "file",
-            "io"   : "input",
-            "default": null
-        },
-        {
-            "info": "Type of the calibration table",
-            "name": "tabtype",
-            "dtype": "str",
-            "choices": ["bandpass","gain","delay"],
-            "default": null
-        },
-        {
-            "info": "DPI for the gain plot",
-            "name": "plot_dpi",
-            "dtype": "int",
-            "default": 600
         }, 
-        {   
-            "info": "Scale for the subplots in the gain plot",
-            "name": "subplot_scale",
-            "dtype": "int",
-            "default": 6
-        },
-        {   "info": "Filename for gain plot",
-            "name": "plot_file",
-            "io": "output",
-            "dtype": "str",
-            "default": "meerkathi-gai-plot"
-        }  
-   
+        {
+            "info": "Mode when estimating spectral weights. If mode=specs, then the weights will be based on the instrument spec sensitivity that is provided via the stats_data option", 
+            "dtype": "str", 
+            "default": "specs", 
+            "name": "mode", 
+            "choices": [
+                "specs"
+            ]
+        }, 
+        {
+            "info": "Fit order for function used to smooth noise/weights", 
+            "dtype": "int", 
+            "default": 9, 
+            "name": "fit_order"
+        }, 
+        {
+            "info": "Function to use for smoothing the noise/weights", 
+            "dtype": "str", 
+            "default": "polyn", 
+            "name": "smooth", 
+            "choices": [
+                "polyn", 
+                "spline"
+            ]
+        }, 
+        {
+            "info": "File or array containing information about sensitivity as a function of frequency (in Hz). For MeerKAT use the string 'use_package_meerkat_spec' unless you have your own (updated) specs", 
+            "check_io": false, 
+            "name": "stats_data", 
+            "io": "input", 
+            "default": "use_package_meekat_spec", 
+            "dtype": [
+                "list", 
+                "file", 
+                "str"
+            ]
+        }, 
+        {
+            "info": "Plot of estimated spectral noise/weights", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "plot_stats", 
+            "io": "output"
+        }, 
+        {
+            "info": "Save estimated noise/weights in MS", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "write_to_ms"
+        }, 
+        {
+            "info": "columns to save noise and corresponding noise spectrum", 
+            "dtype": "list:str", 
+            "default": [
+                "SIGMA", 
+                "SIGMA_SPECTRUM"
+            ], 
+            "name": "noise_columns"
+        }, 
+        {
+            "info": "columns to save noise and corresponding noise spectrum", 
+            "dtype": "list:str", 
+            "default": [
+                "WEIGHT", 
+                "WEIGHT_SPECTRUM"
+            ], 
+            "name": "weight_columns"
+        }, 
+        {
+            "info": "Calibration table to plot", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "ctable", 
+            "io": "input"
+        }, 
+        {
+            "info": "Type of the calibration table", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "tabtype", 
+            "choices": [
+                "bandpass", 
+                "gain", 
+                "delay"
+            ]
+        }, 
+        {
+            "info": "DPI for the gain plot", 
+            "dtype": "int", 
+            "default": 600, 
+            "name": "plot_dpi"
+        }, 
+        {
+            "info": "Scale for the subplots in the gain plot", 
+            "dtype": "int", 
+            "default": 6, 
+            "name": "subplot_scale"
+        }, 
+        {
+            "info": "Filename for gain plot", 
+            "dtype": "str", 
+            "default": "meerkathi-gai-plot", 
+            "name": "plot_file", 
+            "io": "output"
+        }
     ]
 }

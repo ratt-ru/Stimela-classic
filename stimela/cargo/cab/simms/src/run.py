@@ -1,6 +1,5 @@
 import os
 import sys
-import pyfits
 
 sys.path.append("/utils")
 import utils

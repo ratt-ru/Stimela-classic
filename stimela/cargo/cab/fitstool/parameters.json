@@ -1,7 +1,7 @@
 {
     "task": "fitstool", 
     "base": "stimela/meqtrees", 
-    "tag": "0.3.1", 
+    "tag": "0.3.2", 
     "description": "Convinience tools for manipulating FITS images", 
     "prefix": "--", 
     "binary": "fitstool.py", 
@@ -36,8 +36,8 @@
             "name": "sanitize"
         }, 
         {
-            "info": "Replace zeros with NaN",
-            "dtype": "bool",
+            "info": "Replace zeros with NaN", 
+            "dtype": "bool", 
             "default": false, 
             "name": "zero-to-nan"
         }, 

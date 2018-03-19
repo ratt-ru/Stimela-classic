@@ -1,7 +1,7 @@
 {
     "task": "casa_virtualconcat", 
     "base": "stimela/casa", 
-    "tag": "0.3.1", 
+    "tag": "0.3.2", 
     "description": "Concatenate several visibility data sets", 
     "prefix": "", 
     "binary": "virtualconcat", 
@@ -53,13 +53,12 @@
             "default": null, 
             "name": "visweightscale", 
             "dtype": "list:float"
-        },
+        }, 
         {
             "info": "If true, a copy of the input MSs is kept in their original place", 
             "default": null, 
             "name": "keepcopy", 
             "dtype": "bool"
         }
-
     ]
 }

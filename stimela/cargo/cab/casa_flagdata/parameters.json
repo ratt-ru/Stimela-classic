@@ -1,7 +1,7 @@
 {
     "task": "casa_flagdata", 
     "base": "stimela/casa", 
-    "tag": "0.3.1", 
+    "tag": "0.3.2", 
     "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.", 
     "prefix": " ", 
     "binary": "flagdata", 

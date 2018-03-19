@@ -1,8 +1,7 @@
 FROM stimela/base:0.3.2
-RUN docker-apt-install libfreetype6-dev
-RUN docker-apt-install wcslib-dev libcfitsio-dev
-RUN docker-apt-install python-casacore
-RUN pip install pip setuptools wheel virtualenv -U
-RUN ln -s /usr/include/freetype2/ft2build.h /usr/include/
-#RUN pip install git+http://github.com/bennahugo/politsiyakat.git
-RUN pip install politsiyakat==0.3.7
+RUN docker-apt-install libfreetype6-dev \
+        wcslib-dev libcfitsio-dev \ 
+        python-casacore
+RUN pip install -U pip setuptools wheel virtualenv
+RUN pip install numpy matplotlib futures scipy scipy progress
+RUN pip install -I politsiyakat>=0.3.7

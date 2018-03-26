@@ -498,11 +498,7 @@ recipe.add('cab/casa_plotms', 'plot_amp_phase', {
     label='plot_amp_phase:: Plot amplitude vs phase')
 
 
-# Remove split target data if it already exists
 corr_ms = '12A-405.sb7601493.eb10633016.56086.127048738424-corr.ms'
-if os.path.exists(os.path.join(MSDIR,corr_ms)):
-    os.system("rm -rf {0:s}".format(os.path.join(MSDIR,corr_ms)))
-
 recipe.add('cab/casa_split', 'split_corr_data',
     {
         "vis"       :   MS,
@@ -833,7 +829,6 @@ recipe.run([
    "applycal_g",
    "applycal_tar",
    "plot_amp_phase",
-   "split_corr_data",
    "split_corr_data",
    'prepms',
    'image_target_field_r0',

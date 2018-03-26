@@ -1,4 +1,5 @@
 import stimela
+import os
 
 #I/O
 INPUT = 'input'
@@ -497,10 +498,11 @@ recipe.add('cab/casa_plotms', 'plot_amp_phase', {
     label='plot_amp_phase:: Plot amplitude vs phase')
 
 
+corr_ms = '12A-405.sb7601493.eb10633016.56086.127048738424-corr.ms'
 recipe.add('cab/casa_split', 'split_corr_data',
     {
         "vis"       :   MS,
-        "outputvis" :   MS[:-3]+'-corr.ms',
+        "outputvis" :   corr_ms,
         "field"     :   str(TARGET),
         "datacolumn":   'corrected',
     },
@@ -511,7 +513,7 @@ recipe.add('cab/casa_split', 'split_corr_data',
 
 
 MSCONTSUB = '12A-405.sb7601493.eb10633016.56086.127048738424.ms.contsub'
-MS = '12A-405.sb7601493.eb10633016.56086.127048738424-corr.ms'
+MS = corr_ms
 # Fields
 GCAL = '0'
 TARGET = '1'
@@ -827,7 +829,6 @@ recipe.run([
    "applycal_g",
    "applycal_tar",
    "plot_amp_phase",
-   "split_corr_data",
    "split_corr_data",
    'prepms',
    'image_target_field_r0',

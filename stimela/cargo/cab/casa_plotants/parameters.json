@@ -1,0 +1,26 @@
+{
+    "task": "casa_plotants", 
+    "base": "stimela/casa", 
+    "tag": "0.3.2", 
+    "description": "Plot the antenna distribution in the local reference frame", 
+    "prefix": "", 
+    "binary": "plotants", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of measurement set", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Save the plotted figure to this file", 
+            "default": null, 
+            "name": "figfile", 
+            "io": "output", 
+            "dtype": "file"
+        }
+    ]
+}

@@ -6,4 +6,6 @@ RUN docker-apt-install casacore-dev \
         wcslib-dev
 RUN pip install -U pip setuptools wheel
 RUN pip install -U numpy
-RUN pip install -I git+git://github.com/ska-sa/montblanc.git@master
+RUN pip install -I git+https://github.com/ska-sa/montblanc
+RUN pip install -I git+https://github.com/ratt-ru/CubiCal
+ENV NUMBA_CACHE_DIR /tmp

@@ -165,6 +165,7 @@ class StimelaJob(object):
         cont.add_volume(self.recipe.stimela_path, '/utils', perm='ro')
         cont.add_volume(self.recipe.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
+        #cont.add_environ('USER', USER)
 
         cont.add_volume('/etc/group', '/etc/group', 'ro')
         cont.add_volume('/etc/passwd', '/etc/passwd', 'ro')
@@ -204,6 +205,7 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = '/home/%s/output'%USER
+        cont.add_environ('HOME', od)
         self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
         cont.add_volume(output, od)
         cont.add_environ('OUTPUT', od)

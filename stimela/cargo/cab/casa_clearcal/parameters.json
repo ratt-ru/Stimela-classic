@@ -1,7 +1,7 @@
 {
     "task": "casa_clearcal", 
     "base": "stimela/casa", 
-    "tag": "0.3.1", 
+    "tag": "0.3.2", 
     "description": "Clears out calibrated data and resets previous predicted model", 
     "prefix": "-", 
     "binary": "clearcal", 
@@ -39,6 +39,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "addmodel"
-        }, 
+        }
     ]
 }

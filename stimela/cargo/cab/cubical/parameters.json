@@ -1,512 +1,805 @@
 {
-    "task": "CubiCal", 
+    "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "0.3.1", 
-    "description": "A fast radio interferometric calibration suite.", 
+    "tag": "0.3.2", 
+    "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--", 
     "binary": "gocubical", 
     "msdir": true, 
     "parameters": [
         {
-            "info": null, 
-            "dtype": "file", 
+            "info": "Name of measurement set (MS)", 
+            "dtype": "file",
+            "io": "msfile",
             "default": null, 
-            "name": "parset", 
-            "io": "input"
+            "name": "data-ms"
         }, 
         {
-            "info": null, 
-            "dtype": "file", 
+            "info": "Name of MS column to read for data.", 
+            "dtype": "str", 
             "default": null, 
-            "name": "model-beam-pattern", 
-            "check_io": false,
-            "io": "input"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "default": 200, 
-            "name": "j1-max-iter"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "default": "legacy", 
-            "name": "flags-apply"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j1-clip-low"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "data-time-chunk"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j2-clip-after"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "log-append"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j3-freq-int"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j1-clip-after"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "data-chunk-on-scans"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "default": " \"\" ", 
-            "name": "model-column"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j1-dd-term"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
             "name": "data-column"
         }, 
         {
-            "info": null, 
+            "info": "Chunk data up by this number of timeslots. This limits the amount of data\nprocessed at once. Smaller chunks allow for a smaller RAM footprint and\ngreater parallelism, but this sets an upper limit on the solution intervals\nthat may be employed. 0 means use full time axis.", 
             "dtype": "int", 
-            "name": "sol-last-rites"
+            "default": null, 
+            "name": "data-time-chunk"
         }, 
         {
-            "info": null, 
+            "info": "Chunk data by this number of channels. See time-chunk for info.\n0 means full frequency axis.", 
             "dtype": "int", 
-            "name": "j3-clip-after"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "flags-save"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "dist-ncpu"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "data-single-chunk"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "out-column"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j1-time-int"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j1-load-from"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j3-conv-quorum"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j1-conv-quorum"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "dist-min-chunks"
-        }, 
-        {
-            "info": null, 
-            "dtype": "file", 
-            "name": "model-lsm", 
-            "io": "input"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j1-clip-high"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j2-time-int"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "flags-tf-chisq-median"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j3-dd-term"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j2-freq-int"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j3-type"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j2-term-iters"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j2-label"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j2-type"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "sel-ddid"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j3-update-type"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "flags-reinit-bitflags"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "debug-verbose"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j2-clip-low"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j2-dd-term"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j2-conv-quorum"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j1-label"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j3-time-int"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "sol-precision"
-        }, 
-        {
-            "info": null, 
-            "dtype": "file", 
-            "required": true, 
-            "name": "data-ms", 
-            "io": "msfile"
-        }, 
-        {
-            "info": null, 
-            "dtype": "file", 
-            "name": "j1-save-to", 
-            "io": "output"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "flags-chan-density"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "flags-ddid-density"
-        }, 
-        {
-            "info": null, 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "j3-solvable"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "sol-delta-chi"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "log-memory"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "out-plots"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "sol-stall-quorum"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "sol-jones"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j3-term-iters"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j1-freq-int"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j2-clip-high"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "model-ddes"
-        }, 
-        {
-            "info": null, 
-            "dtype": "file", 
-            "name": "j3-load-from", 
-            "io": "input"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "weight-column"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "debug-pdb"
-        }, 
-        {
-            "info": null, 
-            "dtype": "bool", 
-            "default": true, 
-            "name": "j1-solvable"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
+            "default": null, 
             "name": "data-freq-chunk"
         }, 
         {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j3-max-iter"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "sol-delta-g"
-        }, 
-        {
-            "info": null, 
+            "info": "If set, then time chunks will be broken up whenever the value in the named\ncolumn(s) jumps by >JUMPSIZE. Multiple column names may be given, separated\nby commas. Use None to disable.", 
             "dtype": "str", 
-            "name": "model-beam-l-axis"
+            "default": null, 
+            "name": "data-chunk-by"
         }, 
         {
-            "info": null, 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "j2-solvable"
-        }, 
-        {
-            "info": null, 
+            "info": "The jump size used in conjunction with chunk-by. If 0, then any change in\nvalue is a jump. If n, then the change must be >n.", 
             "dtype": "float", 
-            "name": "flags-time-density"
+            "default": null, 
+            "name": "data-chunk-by-jump"
         }, 
         {
-            "info": null, 
-            "dtype": "file", 
-            "name": "j3-save-to", 
-            "io": "output"
-        }, 
-        {
-            "info": null, 
+            "info": "If set, processes just one chunk of data matching the chunk ID. Useful for\ndebugging.", 
             "dtype": "str", 
-            "name": "montblanc-device-type"
+            "default": null, 
+            "name": "data-single-chunk"
         }, 
         {
-            "info": null, 
-            "dtype": "str", 
-            "name": "model-beam-m-axis"
-        }, 
-        {
-            "info": null, 
-            "dtype": "file", 
-            "name": "j2-save-to", 
-            "io": "output"
-        }, 
-        {
-            "info": null, 
+            "info": "FIELD_ID to read from the MS.", 
             "dtype": "int", 
-            "name": "sol-chi-int"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j3-clip-high"
-        }, 
-        {
-            "info": null, 
-            "dtype": "float", 
-            "name": "j3-clip-low"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "montblanc-dtype"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "montblanc-mem-budget"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
+            "default": null, 
             "name": "sel-field"
         }, 
         {
-            "info": null, 
+            "info": "DATA_DESC_IDs to read from the MS. Default reads all. Can be specified as\ne.g. \"5\", \"5,6,7\", \"5~7\" (inclusive range), \"5:8\" (exclusive range),\n\"5:\" (from 5 to last).", 
             "dtype": "str", 
-            "name": "j2-load-from"
+            "default": null, 
+            "name": "sel-ddid"
         }, 
         {
-            "info": null, 
+            "info": "Additional TaQL selection string. Combined with other selection options.", 
             "dtype": "str", 
-            "name": "montblanc-feed-type"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j1-update-type"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j3-label"
-        }, 
-        {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j1-term-iters"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "j2-update-type"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
-            "name": "misc-random-seed"
-        }, 
-        {
-            "info": null, 
-            "dtype": "str", 
+            "default": null, 
             "name": "sel-taql"
         }, 
         {
-            "info": null, 
+            "info": "Channels to read (within each DDID). Default reads all. Can be specified as\ne.g. \"5\", \"10~20\" (10 to 20 inclusive), \"10:21\" (same), \"10:\" (from 10 to\nend), \":10\" (0 to 9 inclusive), \"~9\" (same).", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sel-chan"
+        }, 
+        {
+            "info": "Predict model visibilities from given LSM (using Montblanc).", 
+            "dtype": "list:file",
+            "io":"output",
+            "default": null, 
+            "name": "model-list"
+        }, 
+        {
+            "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
+            "dtype": ["str","bool"], 
+            "default": null, 
+            "name": "model-ddes"
+        }, 
+        {
+            "info": "Apply beams if specified eg. 'beam_$(corr)_$(reim).fits' or\n'beam_$(CORR)_$(REIM).fits'", 
+            "dtype": "file",
+            "io": "input",
+            "default": null, 
+            "name": "model-beam-pattern"
+        }, 
+        {
+            "info": "Beam l axis", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "model-beam-l-axis"
+        }, 
+        {
+            "info": "Beam m axis", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "model-beam-m-axis"
+        }, 
+        {
+            "info": "Use CPU or GPU for simulation.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "montblanc-device-type"
+        }, 
+        {
+            "info": "Precision for simulation.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "montblanc-dtype"
+        }, 
+        {
+            "info": "Simulate using linear or circular feeds.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "montblanc-feed-type"
+        }, 
+        {
+            "info": "Memory budget in MB for simulation.", 
             "dtype": "int", 
-            "name": "log-boring"
+            "default": null, 
+            "name": "montblanc-mem-budget"
         }, 
         {
-            "info": null, 
-            "dtype": "int", 
-            "name": "j2-max-iter"
-        }, 
-        {
-            "info": null, 
+            "info": "verbosity level of Montblanc's console output", 
             "dtype": "str", 
-            "name": "j1-type"
+            "default": null, 
+            "name": "montblanc-verbosity"
         }, 
         {
-            "info": null, 
+            "info": "Column to read weights from. Weights are applied by default. Specify an\nempty string to disable.", 
             "dtype": "str", 
-            "default": "sc", 
-            "name": "out-mode", 
-            "choices": [
-                "sc", 
-                "sr", 
-                "ss"
-            ]
+            "default": null, 
+            "name": "weight-column"
         }, 
         {
-            "info": null, 
-            "dtype": "float", 
-            "name": "flags-tf-np-median"
-        }, 
-        {
-            "info": null, 
+            "info": "Which flagsets will be applied prior to calibration. \nUse \"-FLAGSET\" to apply everything except the named flagset (\"-cubical\" is\nuseful, to ignore the flags of a previous CubiCal run).", 
             "dtype": "str", 
-            "default": "legacy", 
+            "default": null, 
+            "name": "flags-apply"
+        }, 
+        {
+            "info": "Insert BITFLAG column if it is missing, and initialize a named flagset\nfrom FLAG/FLAG_ROW.", 
+            "dtype": "str", 
+            "default": null, 
             "name": "flags-auto-init"
         }, 
         {
-            "info": null, 
-            "dtype": "file", 
-            "name": "out-name", 
-            "io": "output"
+            "info": "Save flags to named flagset in BITFLAG. If none or 0, will not save.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "flags-save"
         }, 
         {
-            "info": null, 
+            "info": "If true, reninitializes BITFLAG column from scratch. Useful if you ended up\nwith a dead one.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "flags-reinit-bitflags"
+        }, 
+        {
+            "info": "If True, will do an extra round of flagging at the end  (post-solution)\nbased on solutions statistics, as per the following options.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "flags-post-sol"
+        }, 
+        {
+            "info": "Intervals with chi-squared values larger than this value times the median\nwill be flagged.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "flags-tf-chisq-median"
+        }, 
+        {
+            "info": "Minimum percentage of unflagged visibilities per time/frequncy slot\nrequired to prevent flagging.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "flags-tf-np-median"
+        }, 
+        {
+            "info": "Minimum percentage of unflagged visibilities along the time axis required\nto prevent flagging.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "flags-time-density"
+        }, 
+        {
+            "info": "Minimum percentage of unflagged visibilities along the frequency axis\nrequired to prevent flagging.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "flags-chan-density"
+        }, 
+        {
+            "info": "Minimum percentage of unflagged visibilities along the DDID axis\nrequired to prevent flagging.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "flags-ddid-density"
+        }, 
+        {
+            "info": "Comma-separated list of Jones terms to enable, e.g. \"G,B,dE\"\n(default: G)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-jones"
+        }, 
+        {
+            "info": "Solve in single or double precision", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-precision"
+        }, 
+        {
+            "info": "Theshold for gain accuracy - gains which improve by less than this value\nare considered converged.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-delta-g"
+        }, 
+        {
+            "info": "Theshold for solution stagnancy - if the chi-squared is improving by less\nthan this value, the gain is considered stalled.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-delta-chi"
+        }, 
+        {
+            "info": "Number of iterations to perform between chi-suqared checks. This is done to\navoid computing the expensive chi-squared test evey iteration.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-chi-int"
+        }, 
+        {
+            "info": "Re-estimate chi-squred and noise at the end of a solution cycle. Disabling\nlast rites can save a bit of time, but makes the post-solution stats less\ninformative.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "sol-last-rites"
+        }, 
+        {
+            "info": "Minimum percentage of solutions which must have stalled before terminating\nthe solver.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-stall-quorum"
+        }, 
+        {
+            "info": "Number of iterations per Jones term. If empty, then each Jones\nterm is solved for once, up to convergence, or up to its -max-iter\nsetting.\nOtherwise, set to a list giving the number of iterations per Jones term.\nFor example, given two Jones terms and --sol-num-iter 10,20,10, it will\ndo 10 iterations on the first term, 20 on the second, and 10 again on the\nfirst.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-term-iters"
+        }, 
+        {
+            "info": "Min baseline length to solve for", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "sol-min-bl"
+        }, 
+        {
+            "info": "Max baseline length to solve for. If 0, no maximum is applied.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "sol-max-bl"
+        }, 
+        {
+            "info": "Additional subset of data to actually solve for. Any TaQL string may be\nused.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "sol-subset"
+        }, 
+        {
+            "info": "Load and apply BBCs computed in a previous run. Apply with care! This will\ntend to suppress all unmodelled flux towards the centre of the field.", 
+            "dtype": "file", 
+            "default": null,
+            "io":"input",
+            "name": "bbc-load-from"
+        }, 
+        {
+            "info": "Compute full 2x2 BBCs (as opposed to diagonal-only). Only useful if you\nreally trust the polarisation information in your sky model.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "bbc-compute-2x2"
+        }, 
+        {
+            "info": "Apply full 2x2 BBCs (as opposed to diagonal-only). Only enable this if you\nreally trust the polarisation information in your sky model.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "bbc-apply-2x2"
+        }, 
+        {
+            "info": "Compute suggested BBCs at end of run,\nand save them to the given database. It can be useful to have this always\nenabled, since the BBCs provide useful diagnostics of the solution quality\n(and are not actually applied without a load-from setting).", 
+            "dtype": "str", 
+            "default": "file",
+            "io":"output",
+            "name": "bbc-save-to"
+        }, 
+        {
+            "info": "Compute BBCs per-channel (else across entire band).", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "bbc-per-chan"
+        }, 
+        {
+            "info": "Generate output BBC plots.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "bbc-plot"
+        }, 
+        {
+            "info": "Number of CPUs (processes) to use (0 or 1 disables parallelism).", 
             "dtype": "int", 
-            "name": "out-plots-show"
-        }
+            "default": null, 
+            "name": "dist-ncpu"
+        }, 
+        {
+            "info": "Set CPU affinity of worker processes. If None or 0, no affinity is set. If N>0,\nset affinities starting from core 0, with an increment of N. N=1 is a sensible\nvalue. Can also be an explicit list of NCPU core numbers (or a range(N,M,K) invocation).\nNote that first worker is the I/O worker, the rest are compute workers.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dist-affinity"
+        }, 
+        {
+            "info": "Sets CPU affinity of main process. If None, no affinity is set. If \"auto\", shares\nCPU affinity with the I/O worker. Otherwise, give core number.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dist-main-affinity"
+        }, 
+        {
+            "info": "Minimum number of time/freq data-chunks to load into memory\nsimultaneously. This number should be divisible by ncpu-1 for optimal\nperformance.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dist-min-chunks"
+        }, 
+        {
+            "info": "Base name of output files.", 
+            "dtype": "file",
+            "io":"output",
+            "default": null, 
+            "name": "out-name"
+        },
+        {
+            "info": "Operational mode.\n[so] solve only;\n[sc] solve and generate corrected visibilities;\n[sr] solve and generate corrected residuals;\n[ss] solve and generate uncorrected residuals;\n[ac] apply solutions, generate corrected visibilities;\n[ar] apply solutions, generate corrected residuals;\n[as] apply solutions, generate uncorrected residuals;", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "out-mode",
+            "choices": [
+                "so",
+                "sc",
+                "sr",
+                "ss",
+                "ac",
+                "ar",
+                "as"
+            ]
+        }, 
+        {
+            "info": "Output MS column name (if applicable).", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "out-column"
+        }, 
+        {
+            "info": "If set, model visibilities will be written to the specified column.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "out-model-column"
+        }, 
+        {
+            "info": "Reinitialize output MS column. Useful if the column is in a half-filled\nor corrupt state.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "out-reinit-column"
+        }, 
+        {
+            "info": "Which model to subtract, if generating residuals.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "out-subtract-model"
+        }, 
+        {
+            "info": "Which model directions to subtract, if generating residuals. \":\"\nsubtracts all. Can also be specified as \"N\", \"N:M\", \":N\", \"N:\", \"N,M,K\".", 
+            "dtype": ["str","int"],
+            "default": null, 
+            "name": "out-subtract-dirs"
+        }, 
+        {
+            "info": "Generate summary plots.", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "out-plots"
+        }, 
+        {
+            "info": "Log memory usage.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "log-memory"
+        }, 
+        {
+            "info": "Disable progress bars and some console output.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "log-boring"
+        }, 
+        {
+            "info": "Append to log file if it exists.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "log-append"
+        }, 
+        {
+            "info": "Default console output verbosity level. \nCan either be a single number, or a sequence of \"name=level,name=level,...\"\nassignments.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "log-verbose"
+        }, 
+        {
+            "info": "Default logfile output verbosity level. \nCan either be a single number, or a sequence of \"name=level,name=level,...\"\nassignments. If None, then this simply follows the console level.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "log-file-verbose"
+        }, 
+        {
+            "info": "Jumps into pdb on error.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "debug-pdb"
+        }, 
+        {
+            "info": "Throw an error if a visibility amplitude in the results exceeds the given value.\nUseful for troubleshooting.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "debug-panic-amplitude"
+        }, 
+        {
+            "info": "Invoke pdb before entering the solver.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "debug-stop-before-solver"
+        }, 
+        {
+            "info": "Seed random number generator with explicit seed. Useful for reproducibility\nof the random-based optimizations (sparsification, etc.).", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "misc-random-seed"
+        }, 
+        {
+            "info": "Parset version number, for migration purposes. Can't be specified on command\nline.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "misc-parset-version"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-ref-ant"
+        },
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file",
+            "io":"input",
+            "default": null, 
+            "name": "g-load-from"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file",
+            "io":"input",
+            "default": null, 
+            "name": "g-xfer-from"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file",
+            "io":"output",
+            "default": null, 
+            "name": "g-save-to"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": ["str","int"], 
+            "default": null, 
+            "name": "g-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-prop-flags"
+        },
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-ref-ant"
+        },
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file",
+            "io":"input",
+            "default": null, 
+            "name": "b-load-from"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file",
+            "io":"input",
+            "default": null, 
+            "name": "b-xfer-from"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file",
+            "io":"output",
+            "default": null, 
+            "name": "b-save-to"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": ["str","int"], 
+            "default": null, 
+            "name": "b-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-prop-flags"
+        },
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "dd-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-ref-ant"
+        },
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "dd-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file",
+            "io":"input",
+            "default": null, 
+            "name": "dd-load-from"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file",
+            "io":"input",
+            "default": null, 
+            "name": "dd-xfer-from"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file",
+            "io":"output",
+            "default": null, 
+            "name": "dd-save-to"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-prop-flags"
+        },
+
+
     ]
 }

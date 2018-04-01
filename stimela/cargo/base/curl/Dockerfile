@@ -1,2 +1,2 @@
-FROM stimela/base:0.3.1
+FROM stimela/base:0.3.2
 RUN docker-apt-install curl

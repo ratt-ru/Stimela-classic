@@ -1,7 +1,7 @@
 {
     "task": "eidos", 
     "base": "stimela/eidos", 
-    "tag": "0.3.1", 
+    "tag": "0.3.2", 
     "description": "Create primary beam model of MeerKAT", 
     "prefix": "--", 
     "binary": "eidos", 
@@ -9,41 +9,41 @@
     "parameters": [
         {
             "info": "Number of pixels on one side", 
-            "name": "pixels", 
             "default": 256, 
-            "dtype": "int", 
-            "required": true
+            "required": true, 
+            "name": "pixels", 
+            "dtype": "int"
         }, 
         {
-            "info": "A single freq, or the start, end freqs, and channel width in MHz",
-            "name": "freq",
-            "dtype": "str",
-            "required": true
-        },
+            "info": "A single freq, or the start, end freqs, and channel width in MHz", 
+            "dtype": "str", 
+            "required": true, 
+            "name": "freq"
+        }, 
         {
-            "info": "Diameter of the required beam",
-            "name" : "diameter",
-            "dtype": "float",
-            "default": 6.0
-        },
+            "info": "Diameter of the required beam", 
+            "dtype": "float", 
+            "default": 6.0, 
+            "name": "diameter"
+        }, 
         {
-            "info": "Coefficients file name",
-            "name": "coefficients-file",
-            "dtype": "file",
-            "io": "input",
-            "required": true
-        },
+            "info": "Coefficients file name", 
+            "dtype": "file", 
+            "required": true, 
+            "name": "coefficients-file", 
+            "io": "input"
+        }, 
         {
-            "name":"prefix",
-            "info":"Prefix for output beam file(s)",
-            "dtype": "file",
-            "io":"output"
-        },
+            "info": "Prefix for output beam file(s)", 
+            "dtype": "file", 
+            "name": "prefix", 
+            "io": "output"
+        }, 
         {
-            "name": "output-eight",
-            "info": "Output complex volatge beams (8 files)",
-            "dtype": "bool",
-            "default": true
+            "info": "Output complex volatge beams (8 files)", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "output-eight"
         }
     ]
 }

@@ -110,6 +110,8 @@ def build(argv):
     workdir = "/home/{}/output/".format(USER)
     build_args = [
                   "WORKDIR {:s}".format(workdir),
+                  "RUN useradd -r -u {0:d} -U {1:s}".format(UID, USER),
+                  "USER {0:s}".format(USER),
                   ]
 
     no_cache = ["--no-cache"] if args.no_cache else []

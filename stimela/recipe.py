@@ -12,6 +12,7 @@ from stimela_misc import version
 
 USER = os.environ["USER"]
 UID = os.getuid()
+GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 
 
@@ -69,7 +70,7 @@ class StimelaJob(object):
                     self.job.parameter_file_name)
 	
         self.created = False
-        self.job.create(*['--user {}'.format(UID)])
+        self.job.create(*['--user {}:{}'.format(UID, GID)])
         self.created = True
         self.job.start()
     
@@ -165,12 +166,6 @@ class StimelaJob(object):
         cont.add_volume(self.recipe.stimela_path, '/utils', perm='ro')
         cont.add_volume(self.recipe.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
-        #cont.add_environ('USER', USER)
-
-        cont.add_volume('/etc/group', '/etc/group', 'ro')
-        cont.add_volume('/etc/passwd', '/etc/passwd', 'ro')
-        cont.add_volume('/etc/shadow', '/etc/shadow', 'ro')
-        cont.add_volume('/etc/sudoers.d', '/etc/sudoers.d', 'ro')
 
         if msdir:
             md = '/home/%s/msdir'%USER

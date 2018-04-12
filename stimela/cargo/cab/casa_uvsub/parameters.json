@@ -1,7 +1,7 @@
 {
     "task": "casa_uvsub", 
     "base": "stimela/casa", 
-    "tag": "0.3.2", 
+    "tag": "1.0.0", 
     "description": "Subtract/add model from/to the corrected visibility data.", 
     "prefix": "", 
     "binary": "uvsub", 

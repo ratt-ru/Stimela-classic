@@ -1,4 +1,4 @@
-FROM stimela/base:0.3.2
+FROM stimela/base:1.0.0
 RUN docker-apt-install meqtrees time
 RUN pip install astropy pywcs
 RUN pip install --upgrade git+https://github.com/ska-sa/owlcat

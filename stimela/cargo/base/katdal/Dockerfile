@@ -1,4 +1,4 @@
-FROM stimela/base:0.3.2
+FROM stimela/base:1.0.0
 MAINTAINER <sphemakh@gmail.com>
 
 RUN docker-apt-install casacore-dev python-casacore git python-pip

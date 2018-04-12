@@ -23,12 +23,17 @@ for param in cab['parameters']:
 
     args[name] = value
 
+
+prefix = args['imagename']
+port2fits = args.pop('port2fits', True)
+keep_casa_images = args.pop("keep_casa_images", False)
+
 task = crasa.CasaTask(cab["binary"], **args)
 task.run()
 
-prefix = params['imagename']
-port2fits = params.pop('port2fits', True)
-keep_casa_images = params.pop("keep_casa_images", False)
+nterms = args.get("nterms", 1)
+images = ["flux", "model", "residual", "psf", "image"]
+STD_IMAGES = images[:4]
 
 convert = []
 if port2fits:

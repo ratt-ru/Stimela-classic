@@ -542,9 +542,9 @@ recipe.add('cab/wsclean', 'image_target_field_r0', {
         "msname"        :   MS,
         "channelrange"  :   chans,               #Other channels don't have any data   
         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-        "npix"          :   4696,                   # Image size in pixels
-        "trim"          :   4084,                    # To avoid aliasing
-        "cellsize"      :   1,                      # Size of each square pixel
+        "npix"          :   1026,                   # Image size in pixels
+        "trim"          :   1024,                    # To avoid aliasing
+        "cellsize"      :   2.5,                      # Size of each square pixel
         "clean_iterations"  :   50000000,
         "auto-mask"     :   5,
         "mgain"         :   0.9,
@@ -644,9 +644,9 @@ imname2 = PREFIX+"image2"
 recipe.add('cab/wsclean', 'image_target_field_r2', {
         "msname"        :   MS,
         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-        "npix"          :   4696,                   # Image size in pixels
-        "trim"          :   4084,                    # To avoid aliasing
-        "cellsize"      :   1,                      # Size of each square pixel
+        "npix"          :   1026,                   # Image size in pixels
+        "trim"          :   1024,                    # To avoid aliasing
+        "cellsize"      :   3,                      # Size of each square pixel
         "clean_iterations"  :   5000000,
         "auto-mask"         :   3,
         "local-rms"         :   True,
@@ -702,8 +702,8 @@ imname3 = PREFIX+"image3"
 recipe.add('cab/wsclean', 'image_target_field_r3', {
         "msname"            :   MS,
         "weight"            :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-        "npix"              :   1224,                   # Image size in pixels
-        "trim"              :   1024,                    # To avoid aliasing
+        "npix"              :   512,                   # Image size in pixels
+        "trim"              :   512,                    # To avoid aliasing
         "cellsize"          :   1,                      # Size of each square pixel
         "clean_iterations"  :   5000000,
         "auto-mask"         :   3,
@@ -711,9 +711,9 @@ recipe.add('cab/wsclean', 'image_target_field_r3', {
         "nomfsweighting"    :   True,
         "auto-threshold"    :   0.5,
         "mgain"             :   0.9,
-        "channelsout"       :   nchans,
+        "channelsout"       :   8,
         "stokes"            :   "I",
-        "channelrange"      :   chans,
+#        "channelrange"      :   chans,
         "prefix"            :   "%s:output"%(imname3),
 },
         input=INPUT, output=OUTPUT,
@@ -748,7 +748,7 @@ recipe.add('cab/lwimager', 'lwimager_residue_cube', {
         "npix"              : 256,
         "padding"           : 2.0,
         "cellsize"          : 1.000,
-        "nchan"             : 256,
+        "nchan"             : 8,
         "chanstart"         : 0,
         "chanstep"          : 1,
         "img_nchan"         : 256,

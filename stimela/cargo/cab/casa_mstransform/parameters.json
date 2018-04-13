@@ -144,11 +144,11 @@
             "info": "First channel to use in the output spw (mode-dependant)", 
             "default": 0, 
             "name": "start", 
-            "dtype": "int"
+            "dtype": ["int","str"]
         }, 
         {
             "info": "Number of input channels that are used to create an output channel.", 
-            "dtype": "int", 
+            "dtype": ["int","str"], 
             "default": 1, 
             "name": "width"
         }, 

@@ -1,7 +1,7 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "0.3.2", 
+    "tag": "1.0.0", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--", 
     "binary": "gocubical", 
@@ -9,10 +9,10 @@
     "parameters": [
         {
             "info": "Name of measurement set (MS)", 
-            "dtype": "file",
-            "io": "msfile",
+            "dtype": "file", 
             "default": null, 
-            "name": "data-ms"
+            "name": "data-ms", 
+            "io": "msfile"
         }, 
         {
             "info": "Name of MS column to read for data.", 
@@ -76,23 +76,26 @@
         }, 
         {
             "info": "Predict model visibilities from given LSM (using Montblanc).", 
-            "dtype": "list:file",
-            "io":"output",
+            "dtype": "list:file", 
             "default": null, 
-            "name": "model-list"
+            "name": "model-list", 
+            "io": "output"
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
-            "dtype": ["str","bool"], 
+            "dtype": [
+                "str", 
+                "bool"
+            ], 
             "default": null, 
             "name": "model-ddes"
         }, 
         {
             "info": "Apply beams if specified eg. 'beam_$(corr)_$(reim).fits' or\n'beam_$(CORR)_$(REIM).fits'", 
-            "dtype": "file",
-            "io": "input",
+            "dtype": "file", 
             "default": null, 
-            "name": "model-beam-pattern"
+            "name": "model-beam-pattern", 
+            "io": "input"
         }, 
         {
             "info": "Beam l axis", 
@@ -271,9 +274,9 @@
         {
             "info": "Load and apply BBCs computed in a previous run. Apply with care! This will\ntend to suppress all unmodelled flux towards the centre of the field.", 
             "dtype": "file", 
-            "default": null,
-            "io":"input",
-            "name": "bbc-load-from"
+            "default": null, 
+            "name": "bbc-load-from", 
+            "io": "input"
         }, 
         {
             "info": "Compute full 2x2 BBCs (as opposed to diagonal-only). Only useful if you\nreally trust the polarisation information in your sky model.", 
@@ -290,9 +293,9 @@
         {
             "info": "Compute suggested BBCs at end of run,\nand save them to the given database. It can be useful to have this always\nenabled, since the BBCs provide useful diagnostics of the solution quality\n(and are not actually applied without a load-from setting).", 
             "dtype": "str", 
-            "default": "file",
-            "io":"output",
-            "name": "bbc-save-to"
+            "default": "file", 
+            "name": "bbc-save-to", 
+            "io": "output"
         }, 
         {
             "info": "Compute BBCs per-channel (else across entire band).", 
@@ -332,23 +335,23 @@
         }, 
         {
             "info": "Base name of output files.", 
-            "dtype": "file",
-            "io":"output",
+            "dtype": "file", 
             "default": null, 
-            "name": "out-name"
-        },
+            "name": "out-name", 
+            "io": "output"
+        }, 
         {
             "info": "Operational mode.\n[so] solve only;\n[sc] solve and generate corrected visibilities;\n[sr] solve and generate corrected residuals;\n[ss] solve and generate uncorrected residuals;\n[ac] apply solutions, generate corrected visibilities;\n[ar] apply solutions, generate corrected residuals;\n[as] apply solutions, generate uncorrected residuals;", 
             "dtype": "str", 
             "default": null, 
-            "name": "out-mode",
+            "name": "out-mode", 
             "choices": [
-                "so",
-                "sc",
-                "sr",
-                "ss",
-                "ac",
-                "ar",
+                "so", 
+                "sc", 
+                "sr", 
+                "ss", 
+                "ac", 
+                "ar", 
                 "as"
             ]
         }, 
@@ -378,7 +381,10 @@
         }, 
         {
             "info": "Which model directions to subtract, if generating residuals. \":\"\nsubtracts all. Can also be specified as \"N\", \"N:M\", \":N\", \"N:\", \"N,M,K\".", 
-            "dtype": ["str","int"],
+            "dtype": [
+                "str", 
+                "int"
+            ], 
             "default": null, 
             "name": "out-subtract-dirs"
         }, 
@@ -495,7 +501,7 @@
             "dtype": "str", 
             "default": null, 
             "name": "g-ref-ant"
-        },
+        }, 
         {
             "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
             "dtype": "bool", 
@@ -510,28 +516,31 @@
         }, 
         {
             "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
-            "dtype": "file",
-            "io":"input",
+            "dtype": "file", 
             "default": null, 
-            "name": "g-load-from"
+            "name": "g-load-from", 
+            "io": "input"
         }, 
         {
             "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
-            "dtype": "file",
-            "io":"input",
+            "dtype": "file", 
             "default": null, 
-            "name": "g-xfer-from"
+            "name": "g-xfer-from", 
+            "io": "input"
         }, 
         {
             "info": "Save solutions to given database.", 
-            "dtype": "file",
-            "io":"output",
+            "dtype": "file", 
             "default": null, 
-            "name": "g-save-to"
+            "name": "g-save-to", 
+            "io": "output"
         }, 
         {
             "info": "For DD terms, makes the listed directions non-solvable.", 
-            "dtype": ["str","int"], 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
             "default": null, 
             "name": "g-fix-dirs"
         }, 
@@ -564,7 +573,7 @@
             "dtype": "str", 
             "default": null, 
             "name": "g-prop-flags"
-        },
+        }, 
         {
             "info": "Determines whether this term is direction dependent. --model-ddes must", 
             "dtype": "bool", 
@@ -612,7 +621,7 @@
             "dtype": "str", 
             "default": null, 
             "name": "b-ref-ant"
-        },
+        }, 
         {
             "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
             "dtype": "bool", 
@@ -627,28 +636,31 @@
         }, 
         {
             "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
-            "dtype": "file",
-            "io":"input",
+            "dtype": "file", 
             "default": null, 
-            "name": "b-load-from"
+            "name": "b-load-from", 
+            "io": "input"
         }, 
         {
             "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
-            "dtype": "file",
-            "io":"input",
+            "dtype": "file", 
             "default": null, 
-            "name": "b-xfer-from"
+            "name": "b-xfer-from", 
+            "io": "input"
         }, 
         {
             "info": "Save solutions to given database.", 
-            "dtype": "file",
-            "io":"output",
+            "dtype": "file", 
             "default": null, 
-            "name": "b-save-to"
+            "name": "b-save-to", 
+            "io": "output"
         }, 
         {
             "info": "For DD terms, makes the listed directions non-solvable.", 
-            "dtype": ["str","int"], 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
             "default": null, 
             "name": "b-fix-dirs"
         }, 
@@ -681,7 +693,7 @@
             "dtype": "str", 
             "default": null, 
             "name": "b-prop-flags"
-        },
+        }, 
         {
             "info": "Determines whether this term is direction dependent. --model-ddes must", 
             "dtype": "bool", 
@@ -729,7 +741,7 @@
             "dtype": "str", 
             "default": null, 
             "name": "dd-ref-ant"
-        },
+        }, 
         {
             "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
             "dtype": "bool", 
@@ -744,24 +756,24 @@
         }, 
         {
             "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
-            "dtype": "file",
-            "io":"input",
+            "dtype": "file", 
             "default": null, 
-            "name": "dd-load-from"
+            "name": "dd-load-from", 
+            "io": "input"
         }, 
         {
             "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
-            "dtype": "file",
-            "io":"input",
+            "dtype": "file", 
             "default": null, 
-            "name": "dd-xfer-from"
+            "name": "dd-xfer-from", 
+            "io": "input"
         }, 
         {
             "info": "Save solutions to given database.", 
-            "dtype": "file",
-            "io":"output",
+            "dtype": "file", 
             "default": null, 
-            "name": "dd-save-to"
+            "name": "dd-save-to", 
+            "io": "output"
         }, 
         {
             "info": "For DD terms, makes the listed directions non-solvable.", 
@@ -798,8 +810,6 @@
             "dtype": "str", 
             "default": null, 
             "name": "dd-prop-flags"
-        },
-
-
+        }
     ]
 }

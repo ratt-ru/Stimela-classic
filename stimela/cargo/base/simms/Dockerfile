@@ -1,3 +1,3 @@
-FROM stimela/casa:0.3.2
+FROM stimela/casa:1.0.0
 RUN pip install simms
 RUN pip install pyfits numpy

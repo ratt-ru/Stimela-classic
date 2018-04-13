@@ -96,7 +96,12 @@ def build(argv):
     log = logger.StimelaLogger('{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label))
 
     if args.base:
-        for image in BASE:
+        # Build base and meqtrees images first
+        BASE.remove("base")
+        BASE.remove("meqtrees")
+        BASE.remove("casa")
+        
+        for image in ["base", "meqtrees", "casa"] + BASE:
             dockerfile = "{:s}/{:s}".format(cargo.BASE_PATH, image)
             image = "stimela/{0}:{1}".format(image, __version__)
             docker.build(image,

@@ -840,5 +840,5 @@ recipe.run([
    'image_target_field3',
    'stack_channels',
    'lwimager_residue_cube',
-   'sofia',
+#   'sofia',
 ], resume=False)

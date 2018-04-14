@@ -23,6 +23,7 @@ DELAYCAL_TABLE = PREFIX + '.K0:output'
 GAINCAL_TABLE = PREFIX + '.G0:output'
 FLUXSCALE_TABLE = PREFIX + '.fluxscale:output'
 GAINCAL_TABLE2 = PREFIX + '.G1:output'
+_nchans = 32
 
 
 LABEL = "ngc147_reduction"
@@ -542,9 +543,9 @@ recipe.add('cab/wsclean', 'image_target_field_r0', {
         "msname"        :   MS,
         "channelrange"  :   chans,               #Other channels don't have any data   
         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-        "npix"          :   4696,                   # Image size in pixels
-        "trim"          :   4084,                    # To avoid aliasing
-        "cellsize"      :   1,                      # Size of each square pixel
+        "npix"          :   1026,                   # Image size in pixels
+        "trim"          :   1024,                    # To avoid aliasing
+        "cellsize"      :   2.5,                      # Size of each square pixel
         "clean_iterations"  :   50000000,
         "auto-mask"     :   5,
         "mgain"         :   0.9,
@@ -564,7 +565,7 @@ recipe.add("cab/ddfacet", "ddfacet_test",
             {
                 "Data-MS": [MS],
                 "Output-Name": imname,
-                "Image-NPix": 2048,
+                "Image-NPix": 1024,
                 "Image-Cell": 2,
                 "Cache-Reset": True,
                 "Freq-NBand": 2,
@@ -575,7 +576,7 @@ recipe.add("cab/ddfacet", "ddfacet_test",
                 "Data-Sort": True,
 		"Log-Boring": True,
 		"Deconv-MaxMajorIter": 1,
-		"Deconv-MaxMinorIter": 500,
+		"Deconv-MaxMinorIter": 10,
             },
             input=INPUT, output=OUTPUT, shared_memory="36gb",
             label="image_target_field_r0ddfacet:: Make a test image using ddfacet")
@@ -644,17 +645,17 @@ imname2 = PREFIX+"image2"
 recipe.add('cab/wsclean', 'image_target_field_r2', {
         "msname"        :   MS,
         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-        "npix"          :   4696,                   # Image size in pixels
-        "trim"          :   4084,                    # To avoid aliasing
-        "cellsize"      :   1,                      # Size of each square pixel
-        "clean_iterations"  :   5000000,
+        "npix"          :   1026,                   # Image size in pixels
+        "trim"          :   1024,                    # To avoid aliasing
+        "cellsize"      :   3,                      # Size of each square pixel
+        "clean_iterations"  :   100,
         "auto-mask"         :   3,
         "local-rms"         :   True,
         "auto-threshold"    :   0.5,                      #Since it is not masked
         "stokes"            :   "I",
         "channelrange"      :   chans,
         "channelsout"       :   2,
-        "mgain"             :   0.9,
+        "mgain"             :   0.95,
         "prefix"            :   "%s:output"%(imname2),
 },
         input=INPUT, output=OUTPUT,
@@ -698,22 +699,21 @@ recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm1", {
 
 
 imname3 = PREFIX+"image3"
-
 recipe.add('cab/wsclean', 'image_target_field_r3', {
         "msname"            :   MS,
         "weight"            :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-        "npix"              :   1224,                   # Image size in pixels
-        "trim"              :   1024,                    # To avoid aliasing
+        "npix"              :   512,                   # Image size in pixels
+        "trim"              :   512,                    # To avoid aliasing
         "cellsize"          :   1,                      # Size of each square pixel
-        "clean_iterations"  :   5000000,
+        "clean_iterations"  :   50,
         "auto-mask"         :   3,
 #        "local-rms"        :   True,
         "nomfsweighting"    :   True,
         "auto-threshold"    :   0.5,
-        "mgain"             :   0.9,
-        "channelsout"       :   nchans,
+        "mgain"             :   0.95,
+        "channelsout"       :   _nchans,
         "stokes"            :   "I",
-        "channelrange"      :   chans,
+#        "channelrange"      :   chans,
         "prefix"            :   "%s:output"%(imname3),
 },
         input=INPUT, output=OUTPUT,
@@ -721,7 +721,7 @@ recipe.add('cab/wsclean', 'image_target_field_r3', {
 
 
 combprefix = imname3
-imagelist = ['{0:s}-{1:04d}-image.fits:output'.format(combprefix, jj) for jj in range(nchans)]
+imagelist = ['{0:s}-{1:04d}-image.fits:output'.format(combprefix, jj) for jj in range(_nchans)]
 
 recipe.add('cab/fitstool', 'stack_channels',
             {
@@ -748,13 +748,13 @@ recipe.add('cab/lwimager', 'lwimager_residue_cube', {
         "npix"              : 256,
         "padding"           : 2.0,
         "cellsize"          : 1.000,
-        "nchan"             : 256,
+        "nchan"             : _nchans,
         "chanstart"         : 0,
         "chanstep"          : 1,
-        "img_nchan"         : 256,
+        "img_nchan"         : _nchans,
         "img_chanstart"     : 0,
         "img_chanstep"      : 1,
-        "niter"             : 100000,
+        "niter"             : 10,
         "gain"              : 0.8,
         "sigma"             : 0.5,
         "prefix"            : imname4,
@@ -840,5 +840,5 @@ recipe.run([
    'image_target_field3',
    'stack_channels',
    'lwimager_residue_cube',
-   'sofia',
+#   'sofia',
 ], resume=False)

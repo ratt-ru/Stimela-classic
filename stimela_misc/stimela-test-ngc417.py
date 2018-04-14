@@ -23,6 +23,7 @@ DELAYCAL_TABLE = PREFIX + '.K0:output'
 GAINCAL_TABLE = PREFIX + '.G0:output'
 FLUXSCALE_TABLE = PREFIX + '.fluxscale:output'
 GAINCAL_TABLE2 = PREFIX + '.G1:output'
+_nchans = 32
 
 
 LABEL = "ngc147_reduction"
@@ -698,7 +699,6 @@ recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm1", {
 
 
 imname3 = PREFIX+"image3"
-_nchans = 32
 recipe.add('cab/wsclean', 'image_target_field_r3', {
         "msname"            :   MS,
         "weight"            :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging

@@ -9,6 +9,7 @@ import montage_wrapper as montage
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
+OUTPUT = os.environ["OUTPUT"]
 
 cab = utils.readJson(CONFIG)
 args = {}

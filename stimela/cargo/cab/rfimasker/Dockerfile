@@ -1,5 +1,5 @@
 FROM stimela/rfimasker:1.0.0
 MAINTAINER <sphemakh@gmail.com>
-ADD src /code
+ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /code/run.sh
+CMD /scratch/code/run.sh

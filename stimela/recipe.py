@@ -189,8 +189,6 @@ class StimelaJob(object):
         # always exist in a cab container
         cont.add_volume(self.recipe.stimela_path, '/scratch/stimela', perm='ro')
         cont.add_volume(cont.parameter_file_name, '/scratch/configfile', perm='ro', noverify=True)
-        cont.add_volume(self.recipe.stimela_path+'/cargo/cab/singularity_startscript', 
-                '/.singularity.d/startscript', perm='ro')
         cont.add_volume("{0:s}/cargo/cab/{1:s}/src/".format( 
                 self.recipe.stimela_path, _cab.task), "/scratch/code", "ro")
         cont.RUNSCRIPT = "{0:s}/cargo/cab/singularity_run".format(self.recipe.stimela_path, 
@@ -305,7 +303,7 @@ class StimelaJob(object):
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container
-        cont.add_volume(self.recipe.stimela_path, '/utils', perm='ro')
+        cont.add_volume(self.recipe.stimela_path, '/scratch/stimela', perm='ro')
         cont.add_volume(self.recipe.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 

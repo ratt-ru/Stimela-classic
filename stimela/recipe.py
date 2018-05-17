@@ -145,17 +145,13 @@ class StimelaJob(object):
         input = script_context.get('_STIMELA_INPUT', None) or input
         output = script_context.get('_STIMELA_OUTPUT', None) or output
         msdir = script_context.get('_STIMELA_MSDIR', None) or msdir
-        build_label = script_context.get('_STIMELA_BUILD_LABEL', None) or build_label
 
         # Get location of template parameters file
-        cabs_logger = stimela.get_cabs('{0:s}/{1:s}_stimela_logfile.json'.format(stimela.LOG_HOME, build_label))
-        try:
-            cabpath = cabs_logger['{0:s}_{1:s}'.format(build_label, image)]['DIR']
-        except KeyError:
-            raise RuntimeError('Cab {} has is uknown to stimela. Was it built?'.format(image))
+        cabpath = self.recipe.stimela_path + "/cargo/cab/{0:s}/".format(image.split("/")[1])
         parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
+        name = str(id(name))[:3]
 
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)

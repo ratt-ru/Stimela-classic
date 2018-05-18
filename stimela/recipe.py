@@ -187,8 +187,8 @@ class StimelaJob(object):
         cont.add_volume(cont.parameter_file_name, '/scratch/configfile', perm='ro', noverify=True)
         cont.add_volume("{0:s}/cargo/cab/{1:s}/src/".format( 
                 self.recipe.stimela_path, _cab.task), "/scratch/code", "ro")
-        cont.RUNSCRIPT = "{0:s}/cargo/cab/singularity_run".format(self.recipe.stimela_path, 
-                _cab.task)
+        cont.add_volume("{0:s}/cargo/cab/singularity_run".format(self.recipe.stimela_path, 
+                _cab.task), "/singularity")
 
         if msdir:
             md = '/scratch/msdir'

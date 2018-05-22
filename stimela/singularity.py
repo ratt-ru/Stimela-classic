@@ -76,7 +76,7 @@ class Container(object):
         self._print("Instantiating container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("singularity instance.start", 
                         list(args) + [volumes,
-                        "-c",
+#                        "-c",
                         self.image, self.name])
 
         self.status = "created"

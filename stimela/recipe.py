@@ -9,6 +9,8 @@ import inspect
 import re
 from stimela.dismissable import dismissable
 from stimela_misc import version
+import string
+import random
 
 USER = os.environ["USER"]
 UID = os.getuid()
@@ -151,7 +153,8 @@ class StimelaJob(object):
         parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
-        name = str(id(name))[:3]
+        _name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
+        name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(3))
 
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
@@ -221,7 +224,11 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = '/scratch/output'
-        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
+        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(output, _name.split('-')[0])
+        if not os.path.exists(self.logfile):
+            with open(self.logfile, 'w') as std:
+                pass
+        cont.add_volume(self.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
         
@@ -411,10 +418,10 @@ class Recipe(object):
         self.failed = None
         self.remaining = []
 
-        self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
+        #self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
         self.pid = os.getpid()
-        self.proc_logger.log_process(self.pid, self.name)
-        self.proc_logger.write()
+        #self.proc_logger.log_process(self.pid, self.name)
+        #self.proc_logger.write()
         self.singularity_image_dir = singularity_image_dir
 
         self.log.info('---------------------------------')
@@ -621,8 +628,8 @@ class Recipe(object):
                 self.log.info('Saving pipeline information in {}'.format(self.resume_file))
                 utils.writeJson(self.resume_file, recipe)
 
-                self.proc_logger.remove('processes', self.pid)
-                self.proc_logger.write()
+                #self.proc_logger.remove('processes', self.pid)
+                #self.proc_logger.write()
                 pe = PipelineException(e, self.completed, job, self.remaining)
                 raise pe, None, sys.exc_info()[2]
 
@@ -633,8 +640,8 @@ class Recipe(object):
                 if job.jtype == 'singularity' and job.created:
                     job.job.stop()
 
-        self.proc_logger.remove('processes', self.pid)
-        self.proc_logger.write()
+        #self.proc_logger.remove('processes', self.pid)
+        #self.proc_logger.write()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)

@@ -189,7 +189,7 @@
         }, 
         {
             "info": "Use XY basis correlations for beam filenames and Mueller matrices.", 
-            "dtype": "str", 
+            "dtype": "bool", 
             "default": null, 
             "name": "linear-pol"
         }, 

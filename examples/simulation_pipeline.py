@@ -33,7 +33,9 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              },
              input=INPUT,                               # Input folder
              output=OUTPUT,                             # Output folder
-             label="Creating MS")                       # Process label
+             label="Creating MS",                       # Process label
+             cpus=2.5,
+             memory_limit="20gb") 
 
 
 # 2: Simulate visibilities into it
@@ -85,7 +87,9 @@ for i, robust in enumerate(briggs_robust):
                  },
                  input=INPUT, 
                  output=OUTPUT, 
-                 label="Imaging MS, robust={:d}".format(robust))
+                 label="Imaging MS, robust={:d}".format(robust), 
+                 cpus=4,
+                 memory_limit="30gb")
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added

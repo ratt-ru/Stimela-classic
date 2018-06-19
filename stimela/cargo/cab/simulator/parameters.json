@@ -36,6 +36,12 @@
             "name": "threads"
         }, 
         {
+            "name" : "tile-size",
+            "info" : "Chunk size in timebins",
+            "default" : 16,
+            "dtype" : "int"
+        }
+        {
             "info": "Section to execute in TDL config file. Only needed if using custom TDL config", 
             "dtype": "str", 
             "default": null, 

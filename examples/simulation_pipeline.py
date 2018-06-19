@@ -35,7 +35,7 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              output=OUTPUT,                             # Output folder
              label="Creating MS",                       # Process label
              cpus=2.5,
-             memory_limit="20gb") 
+             memory_limit="2gb") 
 
 
 # 2: Simulate visibilities into it
@@ -47,7 +47,9 @@ pipeline.add("cab/simulator",
                 "addnoise"  :   True,                   # Add thermal noise to visibilities
                 "column"    :   "CORRECTED_DATA",       # Simulated data will be saved in this column
                 "sefd"      :   831,                    # Compute noise from this SEFD
-                "recenter"  :   True                    # Recentre sky model to phase tracking centre of MS
+                "recenter"  :   True,                    # Recentre sky model to phase tracking centre of MS
+                "tile-size" : 64,
+                "threads"   : 4,
              },
             input=INPUT, output=OUTPUT,
             label="Simulating visibilities")
@@ -88,8 +90,15 @@ for i, robust in enumerate(briggs_robust):
                  input=INPUT, 
                  output=OUTPUT, 
                  label="Imaging MS, robust={:d}".format(robust), 
-                 cpus=4,
-                 memory_limit="30gb")
+                 cpus=2,
+                 memory_limit="2gb")
+
+pipeline.add("cab/casa_rmtables", "delete_ms", {
+        "tablenames"    : MS + ":msfile",
+        },
+        input=INPUT,
+        output=OUTPUT,
+        label="Remove MS")
 
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added

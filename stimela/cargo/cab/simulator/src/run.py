@@ -59,6 +59,7 @@ options["sim_mode"] = modes[mode]
 options["ms_sel.input_column"] = incol
 options["ms_sel.output_column"] = column
 options["me.use_smearing"] = 1 if params.pop('smearing', False) else 0
+options["ms_sel.tile_size"] = params.pop("tile-size", 0)
 saveconf = params.pop('save-config', None)
 
 addnoise = params.pop("addnoise", False)

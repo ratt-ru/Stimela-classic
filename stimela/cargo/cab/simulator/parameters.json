@@ -59,6 +59,12 @@
             ]
         }, 
         {
+            "info": "Size of tile (time bins) to process. Can be used to reduce memory footprint", 
+            "dtype": "int", 
+            "default": 1,  
+            "name": "tile-size"
+        },
+        {
             "info": "Sky model to be simulated", 
             "dtype": "file", 
             "default": null, 

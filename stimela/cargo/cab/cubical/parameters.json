@@ -79,7 +79,8 @@
             "dtype": "list:file", 
             "default": null, 
             "name": "model-list", 
-            "io": "output"
+            "io": "input",
+            "check_io": false
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
@@ -95,7 +96,8 @@
             "dtype": "file", 
             "default": null, 
             "name": "model-beam-pattern", 
-            "io": "input"
+            "io": "input",
+            "check_io": false
         }, 
         {
             "info": "Beam l axis", 

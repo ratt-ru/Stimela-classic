@@ -58,7 +58,7 @@ params["ms_rfl.read_legacy_flags"] = 1 if jdict.pop("read-legacy-flags", False) 
 params["ms_sel.msname"] = msname
 field_id = jdict.pop("field-id", 0)
 spw_id = jdict.pop("spw-id", 0)
-params["ms_sel.tile_size"] = jdict.pop("tile-size", 0)
+params["ms_sel.tile_size"] = jdict.pop("tile-size", 16)
 params["ms_sel.ddid_index"] = spw_id
 params["ms_sel.field_index"] = field_id
 

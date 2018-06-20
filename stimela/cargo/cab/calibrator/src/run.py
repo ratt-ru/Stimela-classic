@@ -69,7 +69,7 @@ beam_files_pattern = jdict.pop("beam-files-pattern", False)
 jones_type = jdict.pop("jones-implementation", "Gain2x2")
 
 column = jdict.pop("column", "DATA")
-outcol = jdict.pop("output", "CORRECTED_DATA")
+outcol = jdict.pop("output-column", "CORRECTED_DATA")
 
 params["ms_sel.input_column"] = column
 params["ms_sel.output_column"] = outcol

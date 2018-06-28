@@ -10,7 +10,6 @@
         {
             "info": "Residual image to extract the four (4) statistical moments of distribution",
             "name": "residual-image",
-            "io": "input",
             "default": null,
             "dtype": "file",
             "required": true
@@ -18,7 +17,6 @@
         {
             "info": "Model lsm.html/text file to extract peak source flux",
             "name": "tigger-model",
-            "io": "input",
             "default": null,
             "dtype": "file",
             "required": false
@@ -26,7 +24,6 @@
         {
             "info": "Restored image to extract the dynamic range",
             "name": "restored-image",
-            "io": "input",
             "default": null,
             "dtype": "file",
             "required": false
@@ -41,7 +38,6 @@
         {
             "info": "Name of the point spread function file or psf size in arcsec",
             "name": "psf",
-            "io": "input",
             "default": null,
             "dtype": ["float",
                       "file"
@@ -70,7 +66,6 @@
             "default": null,
             "required": false,
             "name": "compare-models",
-            "io": "output",
             "dtype": "list:file",
             "delimiter": " "
         }

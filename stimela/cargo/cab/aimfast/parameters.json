@@ -1,7 +1,7 @@
 {
     "task": "aimfast",
     "base": "stimela/aimfast",
-    "tag": "1.0.0",
+    "tag": "1.0.1-dev",
     "description": "An Astronomical Image Fedility Assessment Tool",
     "prefix": "--",
     "binary": "aimfast",

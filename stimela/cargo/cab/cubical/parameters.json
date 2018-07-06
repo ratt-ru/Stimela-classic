@@ -206,7 +206,53 @@
             "dtype": "str", 
             "default": null, 
             "name": "flags-ddid-density"
-        }, 
+        },
+        {
+            "name": "flags-mad-flag",
+            "info" : "Enable Mad Max flagging in the solver. This computes the median absolute residual (i.e. median absolute deviation from zero), and flags visibilities exceeding the thresholds",
+            "dtype": "bool"
+        },
+        {
+            "name": "flags-mad-estimate",
+            "info": "MAD estimation mode. Use 'corr' for a separate estimate per each baseline and correlation. Otherwise, a single estimate per baseline is computed using 'all' correlations, or only the 'diag' or 'offdiag' correlations.",
+            "dtype": "str",
+            "choices": [
+                        "corr", 
+                        "all",
+                        "diag",
+                        "offdiag"
+                        ]
+        },
+        {
+            "name": "flags-mad-plot",
+            "info": "Enable plots for Mad Max flagging. Use 'show' to show figures interactively. Plots will show the worst flagged baseline, and a median flagged baseline, provided the fraction of flagged visibilities is above --flags-mad-plot-thr.",
+            "dtype": "bool"
+        },
+        {
+            "name": "flags-mad-plot-thr",
+            "info": "Threshold (in terms of fraction of visibilities flagged) above which plots will be generated.",
+            "dtype": "float"
+        },
+        {
+            "name": "flags-mad-diag",
+            "info": "Flag on on-diagonal (parallel-hand) residuals",
+            "dtype": "bool"
+        },
+        {
+            "name": "flags-mad-offdiag",
+            "info": "Flag on off-diagonal (cross-hand) residuals",
+            "dtype": "bool"
+        },
+        {
+            "name": "flags-mad-thr",
+            "info": "Threshold for MAD flagging per baseline (specified in sigmas). Residuals exceeding mad-thr*MAD/1.428 will be flagged. MAD is computed per baseline. This can be specified as a list e.g. N1,N2,N3,... The first value is used to flag residuals before a solution starts (use 0 to disable), the next value is used when the residuals are first recomputed during the solution several iteratins later (see -chi-int), etc. A final pass may be done at the end of the solution. The last value in the list is reused if necessary. Using a list with gradually decreasing values may be sensible. #metavar:SIGMAS",
+            "dtype": "list:float"
+        },
+        {
+            "name": "flags-mad-med-thr",
+            "info": "Threshold for global median MAD (MMAD) flagging. MMAD is computed as the median of the per-baseline MADs. Residuals exceeding mad-med-thr*MAD/1.428 will be flagged. Can be specified as a list, with the same semantics as --flags-mad-thr",
+            "dtype": "list:float"
+        },
         {
             "info": "Comma-separated list of Jones terms to enable, e.g. \"G,B,dE\"\n(default: G)", 
             "dtype": "str", 
@@ -389,7 +435,13 @@
             ], 
             "default": null, 
             "name": "out-subtract-dirs"
-        }, 
+        },
+        {
+            "name" : "out-casa-gaintables",
+            "info": "Export gaintables to CASA caltable format. Tables are exported to same directory as set for cubical databases",
+            "dtype": "bool",
+            "default": false
+        },
         {
             "info": "Generate summary plots.", 
             "dtype": "bool", 
@@ -812,6 +864,11 @@
             "dtype": "str", 
             "default": null, 
             "name": "dd-prop-flags"
+        },
+        {
+            "name"  : "log-verbose",
+            "info"  : "Default console output verbosity level",
+            "dtype" : ["bool","str"]
         }
     ]
 }

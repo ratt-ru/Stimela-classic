@@ -1,0 +1,15 @@
+-
+ type: enum
+ name: quackmode
+ symbols:
+  - beg
+  - endb
+  - end
+  - tail
+-
+ type: enum
+ name: calmode
+ symbols:
+   - ap
+   - p
+   - a

@@ -3,4 +3,5 @@ ADD . /Stimela
 WORKDIR /Stimela
 RUN pip install /Stimela
 ENV USER root
-RUN stimela
+RUN stimela -h
+RUN stimela cabs -i simms

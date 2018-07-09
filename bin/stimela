@@ -3,11 +3,6 @@
 import os
 import sys
 
-import stimela
+from stimela.main import main
 
-# Ensure that logging infrastructure exists
-
-if not os.path.exists(stimela.LOG_HOME):
-    os.mkdir(stimela.LOG_HOME)
-
-stimela.main([a for a in sys.argv[1:]])
+main([a for a in sys.argv[1:]])

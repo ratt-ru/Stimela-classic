@@ -7,24 +7,20 @@ try:
 except ImportError as e:
   from distutils.core import setup
 
-from stimela_misc import version
-
 setup(name = "stimela",
-    version = version.version,
+    version = "1.1.0",
     description = "Dockerized radio interferometry scripting framework",
     author = "Sphesihle Makhathini",
     author_email = "sphemakh@gmail.com",
     url = "https://github.com/sphemakh/Stimela",
-    packages = ["stimela","stimela_misc", "stimela/cargo","stimela/utils", "stimela/cargo/cab"],
+    packages = ["stimela","stimela_misc", "stimela/cargo", "stimela/cargo/cab"],
     package_data = { "stimela/cargo" : ["cab/*/Dockerfile",
                                    "base/*/Dockerfile",
-                                   "cab/*/src/*.py",
-                                   "cab/*/src/*.sh",
-                                   "cab/*/src/*.json",
-                                   "cab/*/xvfb.init.d",
-                                   "cab/*/parameters.json",
-                                   "cab/*/src/tdlconf.profiles"]},
-    install_requires = ["pyyaml"],
+                                   "cab/*.cwl",
+                                   "cab//types/*.yml",
+                                   ]
+                   },
+    install_requires = ["pyyaml", "scriptcwl", "toil"],
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

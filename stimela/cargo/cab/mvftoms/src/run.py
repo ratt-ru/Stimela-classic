@@ -24,7 +24,7 @@ for param in cab['parameters']:
     elif name == 'mvffiles':
         files = value
         continue
-    elif name == "awscred" and value:
+    elif name == "credentials_dir" and value:
         os.system("cp -rf {0:s} {1:s}/.aws".format(value, HOME))
         continue 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]

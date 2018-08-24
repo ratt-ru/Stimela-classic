@@ -127,8 +127,8 @@
             "name": "quack"
         },
         {
-            "info": "Folder contaning AWS credintials",
-            "name": "awscred",
+            "info": "Folder contaning loggin credintials",
+            "name": "credentials_dir",
             "dtype": "file",
             "io": "input",
             "required": false,

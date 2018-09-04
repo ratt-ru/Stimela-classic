@@ -125,6 +125,13 @@
             "dtype": "int", 
             "default": null, 
             "name": "quack"
-        }
+        },
+        {
+            "info": "Folder contaning loggin credintials",
+            "name": "credentials_dir",
+            "dtype": "file",
+            "io": "input",
+            "required": false,
+        },
     ]
 }

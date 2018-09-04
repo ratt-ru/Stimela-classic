@@ -298,8 +298,7 @@
         }, 
         {
             "info": "Shift the sky model from the nominal center to a different field center. COORDINATES specified as per the --center option.", 
-            "dtype": "bool", 
-            "default": false, 
+            "dtype": "str", 
             "name": "recenter"
         }, 
         {

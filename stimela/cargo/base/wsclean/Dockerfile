@@ -29,6 +29,6 @@ RUN wget https://sourceforge.net/projects/wsclean/files/wsclean-2.6/wsclean-2.6.
 RUN tar xvf wsclean-2.6.tar.bz2 && cd wsclean-2.6
 RUN mkdir wsclean-2.6/build
 RUN cd wsclean-2.6/build && \
-    cmake -DCMAKE_BUILD_TYPE=Release .. && \
+    cmake .. && \
     make -j 10 && \
     make install

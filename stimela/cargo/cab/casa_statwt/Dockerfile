@@ -1,4 +1,4 @@
-FROM stimela/casa:1.0.0
+FROM stimela/casa:dev
 MAINTAINER <sphemakh@gmail.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

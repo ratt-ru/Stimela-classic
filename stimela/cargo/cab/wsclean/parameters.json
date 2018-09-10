@@ -1,10 +1,10 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "WSClean imaging software", 
     "prefix": "-", 
-    "binary": "/usr/bin/wsclean", 
+    "binary": "wsclean", 
     "msdir": true, 
     "parameters": [
         {

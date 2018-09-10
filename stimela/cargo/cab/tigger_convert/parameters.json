@@ -308,6 +308,13 @@
             "name": "verbose"
         }, 
         {
+            "info": "use diagonal Jones terms only for beam model. Default is to use all four terms if available.",
+            "dtype": "bool",
+            "default": false,
+            "name": "beam-diag"
+        },
+
+        {
             "info": "Enables various diagnostic plots", 
             "dtype": "bool", 
             "default": false, 

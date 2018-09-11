@@ -8,5 +8,5 @@ RUN docker-apt-install libboost-dev \
     python-pip
 
 RUN pip install -U pip setuptools pyyaml
-RUN git clone https://github.com/ska-sa/katdal /tmp/katdal
-RUN pip install /tmp/katdal[ms,s3]
+RUN git clone https://github.com/ska-sa/katdal.git /tmp/katdal
+RUN pip install  /tmp/katdal[ms,s3]

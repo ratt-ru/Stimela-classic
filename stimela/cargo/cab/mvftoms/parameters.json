@@ -1,7 +1,7 @@
 {
     "task": "mvftoms", 
     "base": "stimela/katdal", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "Convert HDF5 file(s) to MeasurementSet", 
     "prefix": "--", 
     "binary": "mvftoms.py", 
@@ -24,6 +24,11 @@
             "dtype": "file", 
             "required": true
         }, 
+        {
+            "name"  : "overwrite",
+            "info"  : "Delete MS file(s) if they already exist",
+            "dtype" : "bool"
+        },
         {
             "info": "Produce quad circular polarisation. (RR, RL, LR, LL) *** Currently just relabels the linear pols ****", 
             "dtype": "bool", 

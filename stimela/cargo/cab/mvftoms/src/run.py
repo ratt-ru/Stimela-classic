@@ -13,11 +13,16 @@ HOME = os.environ["HOME"]
 
 cab = utils.readJson(CONFIG)
 args = []
+overwrite = False
+
 for param in cab['parameters']:
     value = param['value']
     name = param['name']
 
     if value in [None, False]:
+        continue
+    elif name == "overwrite":
+        overwrite = value
         continue
     elif value is True:
         value = ""
@@ -28,5 +33,9 @@ for param in cab['parameters']:
         os.system("cp -rf {0:s} {1:s}/.aws".format(value, HOME))
         continue 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+
+
+if overwrite:
+    os.system("rm -fr {0:s}".format(" ".join(files)))
 
 utils.xrun(cab["binary"], args+files )

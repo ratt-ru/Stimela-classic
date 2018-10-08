@@ -37,10 +37,10 @@ subprocess.check_output(make_table)
 make_header = ['mMakeHdr',outdir+'/mosaic_table.tbl',outdir+'/mosaic_header.hdr']
 subprocess.check_output(make_header)
 
-project_mosaic = ['mProjExec', '-p',args['input_dir'],outdir+'/mosaic_table.tbl',outdir+'/mosaic_header.hdr',args['output_dir'],outdir+'/stats.tbl']
+project_mosaic = ['mProjExec', '-p',args['input_dir'],outdir+'/mosaic_table.tbl',outdir+'/mosaic_header.hdr',outdir,outdir+'/stats.tbl']
 subprocess.check_output(project_mosaic)
 
-make_mosaic_table = ['mImgtbl',args['output_dir'],outdir+'/mosaic_table2.tbl']
+make_mosaic_table = ['mImgtbl',outdir,outdir+'/mosaic_table2.tbl']
 subprocess.check_output(make_mosaic_table)
 
 make_mosaic=['mAdd', '-p', args['input_dir'], outdir+'/mosaic_table2.tbl',outdir+'/mosaic_header.hdr',OUTPUT+'/mosaic.fits']

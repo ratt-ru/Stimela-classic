@@ -16,13 +16,19 @@
         {
             "name": "header",
             "info": "The header to project to. If this is not specified, then an optimal header is chosen.",
-            "dtype": "str",
+            "dtype": "str"
         },
         {
             "name": "image_table",
             "info": "The table file containing the list of input images. This can be specified to avoid recomputing it every time a mosaic is made from the same set of input files.",
             "dtype": "file",
             "io": "input"
+        },
+        {
+            "name": "output_dir",
+            "info": "Montage output directory",
+            "io":"output",
+            "dtype":"file"
         },
         {
             "name": "mpi",

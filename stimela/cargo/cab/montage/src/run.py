@@ -19,8 +19,9 @@ for param in cab['parameters']:
 
     if value is None:
         continue
+    if name == "output_dir":
+        args["output_dir"] = os.path.join(OUTPUT, value)
 
     args[name] = value
-args["output_dir"] = OUTPUT
 
 montage.mosaic(**args)

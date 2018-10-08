@@ -673,6 +673,95 @@
             "dtype": "bool", 
             "default": true, 
             "name": "writeCat.writeXML"
+        },
+        {
+            "name" : "pipeline.pedantic",
+            "info": null,
+            "dtype": "bool"
+        },
+        {
+            "name": "steps.doWriteNoiseCube",
+            "info": null,
+            "dtype": "bool"
+        },
+        {
+            "name": "flag.file",
+            "info": null,
+            "dtype": "file",
+            "io": "input"
+        },
+        {
+            "name": "scaleNoise.method",
+            "info": null,
+            "dtype": "str",
+            "default": "global",
+            "choices": [
+                "global",
+                "local"
+            ]
+        },
+        {
+            "name": "scaleNoise.fluxRange",
+            "info": null,
+            "dtype": "str",
+            "default": "all",
+            "choices": [
+                "negative",
+                "positive",
+                "all"
+            ]
+        },
+        {
+            "name": "scaleNoise.windowSpatial",
+            "info": null,
+            "dtype": "int",
+            "default": 25
+        },
+        {
+            "name": "scaleNoise.windowSpectral",
+            "info": null,
+            "dtype": "int",
+            "default": 15
+        },
+        {
+            "name": "scaleNoise.gridSpatial",
+            "info": null,
+            "dtype": "int",
+            "default": 0
+        },
+        {
+            "name": "scaleNoise.interpolation",
+            "info": null,
+            "dtype":"str",
+            "default": "none",
+            "choices": [
+                "none",
+                "linear",
+                "cubic"
+            ]
+        },
+        {
+            "name": "SCfind.fluxRange",
+            "dtype": "str",
+            "info": null,
+            "default": "all",
+            "choices": [
+                "positive",
+                "negative",
+                "all"
+            ]
+
+        },
+        {
+            "name": "threshold.fluxRange",
+            "dtype": "str",
+            "info": null,
+            "default": "all",
+            "choices" : [
+                "positive",
+                "negative",
+                "all"
+            ]
         }
     ]
 }

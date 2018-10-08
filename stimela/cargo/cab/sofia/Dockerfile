@@ -1,4 +1,4 @@
-FROM stimela/sofia:1.0.0
+FROM stimela/sofia:dev
 MAINTAINER <sphemakh@gmial.com>
 ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt

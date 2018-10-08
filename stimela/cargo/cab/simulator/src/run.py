@@ -62,6 +62,8 @@ options["me.use_smearing"] = 1 if params.pop('smearing', False) else 0
 saveconf = params.pop('save-config', None)
 
 addnoise = params.pop("addnoise", False)
+options["ms_sel.tile_size"] = params.pop("tile-size", 16)
+
 if addnoise:
     noise = params.pop("noise", 0) or utils.compute_vis_noise(msname, params.pop("sefd", 551))
     options["noise_stddev"] = noise

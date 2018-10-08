@@ -74,7 +74,7 @@
         }, 
         {
             "info": "comma separated list of (zero-indexed) band ids to process", 
-            "dtype": "list:int", 
+            "dtype": ["int", "str"], 
             "default": null, 
             "name": "bands"
         }, 

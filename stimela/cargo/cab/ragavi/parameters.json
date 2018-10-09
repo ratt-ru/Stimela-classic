@@ -41,7 +41,7 @@
             "info": "Correlation index to plot (usually just 0 or 1",
             "name": "corr",
             "default": 0,
-            "dtype": "int"
+            "dtype": "int",
             "required": false
         },
         {
@@ -90,7 +90,7 @@
         {
             "info": "Measurement Set to consult for proper antenna names",
             "name": "ms",
-            "dtype": "file"
+            "dtype": "file",
             "io": "msdir",
             "default": "",
             "required": false,

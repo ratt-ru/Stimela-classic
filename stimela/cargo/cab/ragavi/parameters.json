@@ -1,0 +1,107 @@
+{
+    "task": "ragavi",
+    "base": "stimela/ragavi",
+    "tag": "1.0.1",
+    "description": "Radio Astronomy Gain and Visibility Inspector",
+    "prefix": "--",
+    "binary": "ragavi",
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "Gain table to plot",
+            "name": "table",
+            "dtype": "file",
+            "io": "output",
+            "required": true
+        }, 
+        {
+            "info": "Field ID to plot",
+            "name": "field",
+            "default": 0,
+            "dtype": "int",
+            "required": false
+        }, 
+        {
+            "info": "Plot complex values as amp and phase (ap) or real and imag (ri)",
+            "name": "doplot",
+            "default": "ap",
+            "dtype": "str",
+            "required": false,
+            "choices": ["ap",
+                        "ri"]
+        }, 
+        {
+            "info": "Plot only this antenna, or comma-separated list of antennas. Default plots all",
+            "name": "ant",
+            "dtype": "list:str",
+            "delimiter": ",",
+            "required": false
+        }, 
+        {
+            "info": "Correlation index to plot (usually just 0 or 1",
+            "name": "corr",
+            "default": 0,
+            "dtype": "int"
+            "required": false
+        },
+        {
+            "info": "Minimum time to plot (default = full range)",
+            "name": "t0",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Maximum time to plot (default = full range)",
+            "name": "t1",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Maximum y-value to plot for upper panel (default=full range)",
+            "name": "yu1",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Minimum y-value to plot for upper panel (default=full range)",
+            "name": "yu0",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Minimum y-value to plot for lower panel (default=full range",
+            "name": "yl0",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Maximum y-value to plot for lower panel (default=full range",
+            "name": "yl1",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Matplotlib colour map to use for antennas (default=coolwarm)",
+            "name": "cmap",
+            "dtype": "str",
+            "default": "coolwarm",
+            "required": false
+        },
+        {
+            "info": "Measurement Set to consult for proper antenna names",
+            "name": "ms",
+            "dtype": "file"
+            "io": "msdir",
+            "default": "",
+            "required": false,
+        },
+        {
+            "info": "Output PNG name",
+            "name": "plotname",
+            "dtype": "file",
+            "io": "output",
+            "required": false
+        }
+
+    ]
+}

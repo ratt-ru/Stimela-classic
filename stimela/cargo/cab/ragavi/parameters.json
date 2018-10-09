@@ -91,7 +91,7 @@
             "info": "Measurement Set to consult for proper antenna names",
             "name": "ms",
             "dtype": "file",
-            "io": "msdir",
+            "io": "msfile",
             "default": "",
             "required": false,
         },

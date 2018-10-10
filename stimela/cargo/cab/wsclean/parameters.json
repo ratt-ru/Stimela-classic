@@ -620,6 +620,12 @@
             "dtype": "float", 
             "default": null, 
             "name": "padding"
+        },
+        {
+            "info": "Number of major cycles", 
+            "dtype": "int",
+            "default": null,
+            "name": "nmiter"
         }
     ]
 }

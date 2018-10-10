@@ -40,7 +40,6 @@
         {
             "info": "Correlation index to plot (usually just 0 or 1",
             "name": "corr",
-            "default": 0,
             "dtype": "int",
             "required": false
         },
@@ -92,7 +91,6 @@
             "name": "ms",
             "dtype": "file",
             "io": "msfile",
-            "default": "",
             "required": false,
         },
         {

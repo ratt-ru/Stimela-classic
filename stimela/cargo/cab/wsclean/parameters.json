@@ -4,7 +4,7 @@
     "tag": "1.0.0", 
     "description": "WSClean imaging software", 
     "prefix": "-", 
-    "binary": "/usr/bin/wsclean", 
+    "binary": "wsclean", 
     "msdir": true, 
     "parameters": [
         {

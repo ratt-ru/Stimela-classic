@@ -44,6 +44,11 @@
             "dtype": "bool", 
             "default": true, 
             "name": "output-eight"
+        },
+        {
+            "name": "normalise",
+            "dtype": "bool",
+            "info": "normalise the E-Jones wrt central pixels"
         }
     ]
 }

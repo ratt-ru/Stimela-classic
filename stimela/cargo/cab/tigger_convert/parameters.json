@@ -189,7 +189,7 @@
         }, 
         {
             "info": "Use XY basis correlations for beam filenames and Mueller matrices.", 
-            "dtype": "str", 
+            "dtype": "bool", 
             "default": null, 
             "name": "linear-pol"
         }, 
@@ -298,8 +298,7 @@
         }, 
         {
             "info": "Shift the sky model from the nominal center to a different field center. COORDINATES specified as per the --center option.", 
-            "dtype": "bool", 
-            "default": false, 
+            "dtype": "str", 
             "name": "recenter"
         }, 
         {
@@ -308,6 +307,13 @@
             "default": false, 
             "name": "verbose"
         }, 
+        {
+            "info": "use diagonal Jones terms only for beam model. Default is to use all four terms if available.",
+            "dtype": "bool",
+            "default": false,
+            "name": "beam-diag"
+        },
+
         {
             "info": "Enables various diagnostic plots", 
             "dtype": "bool", 

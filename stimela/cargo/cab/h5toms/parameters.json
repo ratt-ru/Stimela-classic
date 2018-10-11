@@ -1,7 +1,7 @@
 {
     "task": "h5toms", 
     "base": "stimela/katdal", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "Convert HDF5 file(s) to MeasurementSet", 
     "prefix": "--", 
     "binary": "h5toms.py", 

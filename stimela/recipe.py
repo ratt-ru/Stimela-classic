@@ -48,7 +48,8 @@ class PipelineException(Exception):
 
 class StimelaJob(object):
     def __init__(self, name, recipe, label=None, 
-                jtype='docker', singularity_dir=None):
+
+        jtype='docker', cpus=None, memory_limit=None, singularity_dir=None):
 
         self.name = name
         self.recipe = recipe
@@ -58,8 +59,13 @@ class StimelaJob(object):
         self.jtype = 'docker' # ['docker', 'python', or 'singularity']
         self.job = None
         self.created = False
+        self.args = ['--user {}:{}'.format(UID, GID)]
+        if cpus:
+            self.args.append("--cpus {0:f}".format(cpus))
+        if memory_limit:
+            self.args.append("--memory {0:s}".format(memory_limit)) 
 
-
+        
     def run_python_job(self):
         function = self.job['function']
         options = self.job['parameters']
@@ -73,7 +79,7 @@ class StimelaJob(object):
                     self.job.parameter_file_name)
 	
         self.created = False
-        self.job.create(*['--user {}:{}'.format(UID, GID)])
+        self.job.create(*self.args)
         self.created = True
         self.job.start()
         return 0
@@ -433,10 +439,13 @@ class Recipe(object):
 
     def add(self, image, name, config=None,
             input=None, output=None, msdir=None,
-            label=None, shared_memory='1gb', build_label=None):
+            label=None, shared_memory='1gb',
+            build_label=None,
+            cpus=None, memory_limit=None):
 
 
-        job = StimelaJob(name, recipe=self, label=label)
+        job = StimelaJob(name, recipe=self, label=label,
+                         cpus=cpus, memory_limit=memory_limit)
 
         if callable(image):
             job.jtype = 'function'

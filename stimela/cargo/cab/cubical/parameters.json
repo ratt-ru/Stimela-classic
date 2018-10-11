@@ -1,7 +1,7 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "1.0.0", 
+    "tag": "dev", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--", 
     "binary": "gocubical", 
@@ -79,7 +79,8 @@
             "dtype": "list:file", 
             "default": null, 
             "name": "model-list", 
-            "io": "output"
+            "io": "input",
+            "check_io": false
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
@@ -95,7 +96,8 @@
             "dtype": "file", 
             "default": null, 
             "name": "model-beam-pattern", 
-            "io": "input"
+            "io": "input",
+            "check_io": false
         }, 
         {
             "info": "Beam l axis", 
@@ -204,7 +206,53 @@
             "dtype": "str", 
             "default": null, 
             "name": "flags-ddid-density"
-        }, 
+        },
+        {
+            "name": "madmax-enable",
+            "info" : "Enable Mad Max flagging in the solver. This computes the median absolute residual (i.e. median absolute deviation from zero), and flags visibilities exceeding the thresholds",
+            "dtype": "bool"
+        },
+        {
+            "name": "madmax-estimate",
+            "info": "MAD estimation mode. Use 'corr' for a separate estimate per each baseline and correlation. Otherwise, a single estimate per baseline is computed using 'all' correlations, or only the 'diag' or 'offdiag' correlations.",
+            "dtype": "str",
+            "choices": [
+                        "corr", 
+                        "all",
+                        "diag",
+                        "offdiag"
+                        ]
+        },
+        {
+            "name": "madmax-plot",
+            "info": "Enable plots for Mad Max flagging. Use 'show' to show figures interactively. Plots will show the worst flagged baseline, and a median flagged baseline, provided the fraction of flagged visibilities is above --flags-mad-plot-thr.",
+            "dtype": "bool"
+        },
+        {
+            "name": "madmax-plot-frac-above",
+            "info": "Threshold (in terms of fraction of visibilities flagged) above which plots will be generated.",
+            "dtype": "float"
+        },
+        {
+            "name": "madmax-diag",
+            "info": "Flag on on-diagonal (parallel-hand) residuals",
+            "dtype": "bool"
+        },
+        {
+            "name": "madmax-offdiag",
+            "info": "Flag on off-diagonal (cross-hand) residuals",
+            "dtype": "bool"
+        },
+        {
+            "name": "global-threshold",
+            "info": "Threshold for global median MAD (MMAD) flagging. MMAD is computed as the median of the per-baseline MADs. Residuals exceeding S*MMAD/1.428 will be flagged. Can be specified",
+            "dtype": "list:float"
+        },
+        {
+            "name": "madmax-threshold",
+            "info": "Threshold for MAD flagging per baseline (specified in sigmas). Residuals exceeding mad-thr*MAD/1.428 will be flagged. MAD is computed per baseline. This can be specified as a list e.g. N1,N2,N3,... The first value is used to flag residuals before a solution starts (use 0 to disable), the next value is used when the residuals are first recomputed during the solution several iteratins later (see -chi-int), etc. A final pass may be done at the end of the solution. The last value in the list is reused if necessary. Using a list with gradually decreasing values may be sensible. #metavar:SIGMAS",
+            "dtype": "list:float"
+        },
         {
             "info": "Comma-separated list of Jones terms to enable, e.g. \"G,B,dE\"\n(default: G)", 
             "dtype": "str", 
@@ -387,7 +435,13 @@
             ], 
             "default": null, 
             "name": "out-subtract-dirs"
-        }, 
+        },
+        {
+            "name" : "out-casa-gaintables",
+            "info": "Export gaintables to CASA caltable format. Tables are exported to same directory as set for cubical databases",
+            "dtype": "bool",
+            "default": false
+        },
         {
             "info": "Generate summary plots.", 
             "dtype": "bool", 
@@ -810,6 +864,11 @@
             "dtype": "str", 
             "default": null, 
             "name": "dd-prop-flags"
+        },
+        {
+            "name"  : "log-verbose",
+            "info"  : "Default console output verbosity level",
+            "dtype" : ["bool","str"]
         }
     ]
 }

@@ -1,7 +1,7 @@
 {
     "task": "casa_listobs", 
     "base": "stimela/casa", 
-    "tag": "1.0.0", 
+    "tag": "dev", 
     "description": "List the summary of a data set in the logger or in a file", 
     "prefix": "-", 
     "binary": "listobs", 

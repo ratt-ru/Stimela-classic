@@ -1,7 +1,7 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "WSClean imaging software", 
     "prefix": "-", 
     "binary": "wsclean", 
@@ -620,6 +620,12 @@
             "dtype": "float", 
             "default": null, 
             "name": "padding"
+        },
+        {
+            "info": "Number of major cycles", 
+            "dtype": "int",
+            "default": null,
+            "name": "nmiter"
         }
     ]
 }

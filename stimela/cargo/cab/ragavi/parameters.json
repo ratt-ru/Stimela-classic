@@ -22,6 +22,12 @@
             "required": false
         }, 
         {
+            "info": "The gain type table to be plotted",
+            "name": "gaintype",
+            "dtype": "str",
+            "required": false
+        },
+        {
             "info": "Plot complex values as amp and phase (ap) or real and imag (ri)",
             "name": "doplot",
             "default": "ap",
@@ -94,8 +100,15 @@
             "required": false,
         },
         {
-            "info": "Output PNG name",
-            "name": "plotname",
+            "info": "Output image name",
+            "name": "imagename",
+            "dtype": "file",
+            "io": "output",
+            "required": false
+        },
+        {
+            "info": "Output html file name",
+            "name": "htmlname",
             "dtype": "file",
             "io": "output",
             "required": false

@@ -44,7 +44,7 @@
             "required": false
         }, 
         {
-            "info": "Correlation index to plot (usually just 0 or 1",
+            "info": "Correlation index to plot (usually just 0 or 1)",
             "name": "corr",
             "dtype": "int",
             "required": false
@@ -74,13 +74,13 @@
             "required": false
         },
         {
-            "info": "Minimum y-value to plot for lower panel (default=full range",
+            "info": "Minimum y-value to plot for lower panel (default=full range)",
             "name": "yl0",
             "dtype": "float",
             "required": false
         },
         {
-            "info": "Maximum y-value to plot for lower panel (default=full range",
+            "info": "Maximum y-value to plot for lower panel (default=full range)",
             "name": "yl1",
             "dtype": "float",
             "required": false

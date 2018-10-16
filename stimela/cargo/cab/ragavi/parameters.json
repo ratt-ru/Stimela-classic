@@ -100,7 +100,7 @@
             "required": false,
         },
         {
-            "info": "Output image name",
+            "info": "Output image file name",
             "name": "imagename",
             "dtype": "file",
             "io": "output",

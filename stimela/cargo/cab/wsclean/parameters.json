@@ -626,6 +626,14 @@
             "dtype": "int",
             "default": null,
             "name": "nmiter"
+        },
+        {
+            "info": "list of model components from wsclean",
+            "dtype": "bool",
+            "default": false,
+            "name": "savesourcelist",
+            "mapping": "-save-source-list"
         }
+
     ]
 }

@@ -4,7 +4,7 @@ import re
 import pyfits
 from pyrap.tables import table
 
-sys.path.append("/scratch/stimela")
+sys.path.append("/utils")
 import utils
 
 CONFIG = os.environ["CONFIG"]

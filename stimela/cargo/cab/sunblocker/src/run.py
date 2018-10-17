@@ -3,7 +3,7 @@ import os
 from sunblocker.sunblocker import Sunblocker
 import inspect
 
-sys.path.append("/scratch/stimela")
+sys.path.append("/utils")
 import utils
 
 CONFIG = os.environ["CONFIG"]

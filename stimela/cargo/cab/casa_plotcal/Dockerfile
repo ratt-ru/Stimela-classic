@@ -9,6 +9,6 @@ COPY xvfb.init.d /etc/init.d/xvfb
 RUN chmod 755 /etc/init.d/xvfb
 RUN chmod 777 /var/run
 ENV DISPLAY :99
-ADD src /scratch/code
+ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /scratch/code/run.sh
+CMD /code/run.sh

@@ -3,7 +3,7 @@ import sys
 import logging
 import Crasa.Crasa as crasa
 
-sys.path.append("/scratch/stimela")
+sys.path.append("/utils")
 import utils
 
 CONFIG = os.environ["CONFIG"]

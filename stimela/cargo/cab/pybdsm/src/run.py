@@ -11,7 +11,7 @@ from astLib.astWCS import WCS
 from Tigger.Models import SkyModel, ModelClasses
 
 
-sys.path.append('/scratch/stimela')
+sys.path.append('/utils')
 import utils
 
 CONFIG = os.environ['CONFIG']

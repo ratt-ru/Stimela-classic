@@ -2,15 +2,13 @@ import os
 import sys
 import time
 import stimela
-from stimela import docker, singularity, utils, cargo
+from stimela import docker, utils, cargo
 from stimela.cargo import cab
 import logging
 import inspect
 import re
 from stimela.dismissable import dismissable
 from stimela_misc import version
-import string
-import random
 
 USER = os.environ["USER"]
 UID = os.getuid()
@@ -48,15 +46,14 @@ class PipelineException(Exception):
 
 class StimelaJob(object):
     def __init__(self, name, recipe, label=None, 
-
-        jtype='docker', cpus=None, memory_limit=None, singularity_dir=None):
+                jtype='docker', cpus=None, memory_limit=None):
 
         self.name = name
         self.recipe = recipe
         self.label = label or '{0}_{1}'.format(name, id(name))
         self.log = recipe.log
         self.active = False
-        self.jtype = 'docker' # ['docker', 'python', or 'singularity']
+        self.jtype = 'docker' # ['docker' or 'python']
         self.job = None
         self.created = False
         self.args = ['--user {}:{}'.format(UID, GID)]
@@ -67,11 +64,10 @@ class StimelaJob(object):
 
         
     def run_python_job(self):
-        function = self.job['function']
-        options = self.job['parameters']
-        function(**options)
-        return 0
-
+            function = self.job['function']
+            options = self.job['parameters']
+            function(**options)
+            
 
     def run_docker_job(self):
         if hasattr(self.job, '_cab'):
@@ -82,20 +78,7 @@ class StimelaJob(object):
         self.job.create(*self.args)
         self.created = True
         self.job.start()
-        return 0
-
-
-    def run_singularity_job(self):
-        if hasattr(self.job, '_cab'):
-            self.job._cab.update(self.job.config,
-                    self.job.parameter_file_name)
-	
-        self.created = False
-        self.job.start()
-        self.created = True
-        self.job.run()
-        return 0
-
+    
 
     def python_job(self, function, parameters=None):
         """
@@ -118,137 +101,10 @@ class StimelaJob(object):
                         'parameters':   parameters,
                    }
 
-        return 0
-
-
-
-    def singularity_job(self, image, config, singularity_image_dir,
-            input=None, output=None, msdir=None, **kw):
-        
-        """
-            Run task in singularity
-            
-        image   :   stimela cab name, e.g. 'cab/simms'
-        name    :   This name will be part of the name of the contaier that will 
-                    execute the task (now optional)
-        config  :   Dictionary of options to parse to the task. This will modify 
-                    the parameters in the default parameter file which 
-                    can be viewd by running 'stimela cabs -i <cab name>', e.g 'stimela cabs -i simms'
-        input   :   input dirctory for cab
-        output  :   output directory for cab
-        msdir   :   MS directory for cab. Only specify if different from recipe ms_dir
-
-
-        """
-
-        # check if name has any offending charecters
-        offenders = re.findall('\W', self.name)
-        if offenders:
-            raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
-                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(name))
-
-        ## Update I/O with values specified on command line
-        # TODO (sphe) I think this feature should be removed
-        script_context = self.recipe.stimela_context
-        input = script_context.get('_STIMELA_INPUT', None) or input
-        output = script_context.get('_STIMELA_OUTPUT', None) or output
-        msdir = script_context.get('_STIMELA_MSDIR', None) or msdir
-
-        # Get location of template parameters file
-        cabpath = self.recipe.stimela_path + "/cargo/cab/{0:s}/".format(image.split("/")[1])
-        parameter_file = cabpath+'/parameters.json'
-
-        name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
-        _name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
-        name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(3))
-
-        _cab = cab.CabDefinition(indir=input, outdir=output,
-                    msdir=msdir, parameter_file=parameter_file)
-
-        cab.IODEST = {
-            "input"     : "/scratch/input",
-            "output"    : "/scratch/output",
-            "msfile"    : "/scratch/msdir",
-        }
-        
-        cont = singularity.Container(image, name, 
-                    logger=self.log)
-
-        # Container parameter file will be updated and validated before the container is executed
-        cont._cab = _cab
-        cont.parameter_file_name = '{0}/{1}.json'.format(self.recipe.parameter_file_dir, name)
-
-        # Remove dismissable kw arguments:
-        ops_to_pop = []
-        for op in config:
-            if isinstance(config[op], dismissable):
-                ops_to_pop.append(op)
-        for op in ops_to_pop:
-            arg = config.pop(op)()
-            if arg is not None:
-                config[op] = arg
-        cont.config = config
-
-        # These are standard volumes and
-        # environmental variables. These will be
-        # always exist in a cab container
-        cont.add_volume(self.recipe.stimela_path, '/scratch/stimela', perm='ro')
-        cont.add_volume(cont.parameter_file_name, '/scratch/configfile', perm='ro', noverify=True)
-        cont.add_volume("{0:s}/cargo/cab/{1:s}/src/".format( 
-                self.recipe.stimela_path, _cab.task), "/scratch/code", "ro")
-        cont.add_volume("{0:s}/cargo/cab/singularity_run".format(self.recipe.stimela_path, 
-                _cab.task), "/singularity")
-
-        if msdir:
-            md = '/scratch/msdir'
-            cont.add_volume(msdir, md)
-            # Keep a record of the content of the
-            # volume
-            dirname, dirs, files = [a for a in next(os.walk(msdir))]
-            cont.msdir_content = {
-                "volume"    :   dirname,
-                "dirs"      :   dirs,
-                "files"     :   files,
-            }
-
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
-
-        if input:
-            cont.add_volume( input,'/scratch/input', perm='ro')
-            # Keep a record of the content of the
-            # volume
-            dirname, dirs, files = [a for a in next(os.walk(input))]
-            cont.input_content = {
-                "volume"    :   dirname,
-                "dirs"      :   dirs,
-                "files"     :   files,
-            }
-
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, '/scratch/input'))
-
-        if not os.path.exists(output):
-            os.mkdir(output)
-
-        od = '/scratch/output'
-        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(output, _name.split('-')[0])
-        if not os.path.exists(self.logfile):
-            with open(self.logfile, 'w') as std:
-                pass
-        cont.add_volume(self.logfile, "/scratch/logfile")
-        cont.add_volume(output, od)
-        self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
-        
-        simage = _cab.base.replace("/", "_")
-        cont.image = '{0:s}/{1:s}_{2:s}.img'.format(singularity_image_dir, simage, _cab.tag)
-        # Added and ready for execution
-        self.job = cont
-
-        return 0
-
 
     def docker_job(self, image, config=None,
             input=None, output=None, msdir=None,
-            shared_memory='1gb', build_label=None, **kw):
+            shared_memory='1gb', build_label=None):
         """
         Add a task to a stimela recipe
 
@@ -312,7 +168,7 @@ class StimelaJob(object):
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container
-        cont.add_volume(self.recipe.stimela_path, '/scratch/stimela', perm='ro')
+        cont.add_volume(self.recipe.stimela_path, '/utils', perm='ro')
         cont.add_volume(self.recipe.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 
@@ -359,15 +215,13 @@ class StimelaJob(object):
         cont.image = '{0}_{1}'.format(build_label, image)
         # Added and ready for execution
         self.job = cont
-
-        return 0
        
 
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
                  tag=None, build_label=None, loglevel='INFO',
-                 loggername='STIMELA', singularity_image_dir=None):
+                 loggername='STIMELA'):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -424,11 +278,10 @@ class Recipe(object):
         self.failed = None
         self.remaining = []
 
-        #self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
+        self.proc_logger = utils.logger.StimelaLogger(stimela.LOG_FILE)
         self.pid = os.getpid()
-        #self.proc_logger.log_process(self.pid, self.name)
-        #self.proc_logger.write()
-        self.singularity_image_dir = singularity_image_dir
+        self.proc_logger.log_process(self.pid, self.name)
+        self.proc_logger.write()
 
         self.log.info('---------------------------------')
         self.log.info('Stimela version {0}'.format(version.version))
@@ -453,33 +306,29 @@ class Recipe(object):
             self.jobs.append(job)
             self.log.info('Adding Python job \'{0}\' to recipe.'.format(name))
         else:
-            job.jtype = 'singularity' if self.singularity_image_dir else 'docker'
-            job_func = getattr(job, "{0:s}_job".format(job.jtype))
-            job_func(image=image, config=config,
-                input=input, output=output, msdir=msdir or self.ms_dir,
-                shared_memory=shared_memory, build_label=build_label or self.build_label, 
-                singularity_image_dir=self.singularity_image_dir)
+            job.jtype = 'docker'
+            job.docker_job(image=image, config=config,
+            input=input, output=output, msdir=msdir or self.ms_dir,
+            shared_memory=shared_memory, build_label=build_label or self.build_label)
 
             self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(job.job.image, name))
             self.jobs.append(job)
 
-        return 0
-
 
     def log2recipe(self, job, recipe, num, status):
 
-        if job.jtype in ['docker', 'singularity']:
+        if job.jtype == 'docker':
             cont = job.job
             step = {
                 "name"          :   cont.name,
                 "number"        :   num,
                 "cab"           :   cont.image,
                 "volumes"       :   cont.volumes,
-                "environs"      :   getattr(cont, "environs", None),
-                "shared_memory" :   getattr(cont, "shared_memory", None),
+                "environs"      :   cont.environs,
+                "shared_memory" :   cont.shared_memory,
                 "input_content" :   cont.input_content,
                 "msdir_content" :   cont.msdir_content,
-                "label"         :   getattr(cont, "label", ""),
+                "label"         :   cont.label,
                 "logfile"       :   cont.logfile,
                 "status"        :   status,
                 "jtype"         :   'docker',
@@ -496,8 +345,6 @@ class Recipe(object):
             }
         
         recipe['steps'].append(step)
-        
-        return 0
 
 
     def run(self, steps=None, resume=False, redo=None):
@@ -607,16 +454,14 @@ class Recipe(object):
             try:
                 if job.jtype == 'function':
                     job.run_python_job()
-                elif job.jtype in ['docker', 'singularity']:
+                elif job.jtype == 'docker':
                     with open(job.job.logfile, 'a') as astd:
                         astd.write('\n-----------------------------------\n')
                         astd.write('Stimela version     : {}\n'.format(version.version))
                         astd.write('Cab name            : {}\n'.format(job.job.image))
                         astd.write('-------------------------------------\n')
 
-                    run_job = getattr(job, "run_{0:s}_job".format(job.jtype))
-                    run_job()
-                    
+                    job.run_docker_job()
 
                 self.log2recipe(job, recipe, step, 'completed')
 
@@ -637,8 +482,8 @@ class Recipe(object):
                 self.log.info('Saving pipeline information in {}'.format(self.resume_file))
                 utils.writeJson(self.resume_file, recipe)
 
-                #self.proc_logger.remove('processes', self.pid)
-                #self.proc_logger.write()
+                self.proc_logger.remove('processes', self.pid)
+                self.proc_logger.write()
                 pe = PipelineException(e, self.completed, job, self.remaining)
                 raise pe, None, sys.exc_info()[2]
 
@@ -646,15 +491,11 @@ class Recipe(object):
                 if job.jtype == 'docker' and job.created:
                     job.job.stop()
                     job.job.remove()
-                if job.jtype == 'singularity' and job.created:
-                    job.job.stop()
 
-        #self.proc_logger.remove('processes', self.pid)
-        #self.proc_logger.write()
+        self.proc_logger.remove('processes', self.pid)
+        self.proc_logger.write()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)
 
         self.log.info('Recipe executed successfully')
-        
-        return 0

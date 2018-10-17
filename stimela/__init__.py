@@ -14,7 +14,7 @@ from stimela import utils, cargo
 from stimela.cargo import cab
 from recipe import Recipe as Pipeline
 from recipe import Recipe, PipelineException
-from stimela import docker
+from stimela import docker, singularity
 
 from stimela.utils import logger
 
@@ -319,11 +319,15 @@ def pull(argv):
 
     add = parser.add_argument
 
-    add("-image", action="append", metavar="IMAGE[:TAG]",
+    add("-im", "--image", action="append", metavar="IMAGE[:TAG]",
             help="Pull base image along with its tag (or version). Can be called multiple times")
 
     add("-t", "--tag",
             help="Tag")
+
+    add("-s", "--singularity", action="store_true",
+            help="Use singularity instead of docker."
+                 "Images will be pulled into the directory specified by the enviroment varaible, SINGULARITY_PULLFOLDER. $PWD by default")
 
     args = parser.parse_args(argv)
     log = logger.StimelaLogger(LOG_FILE)
@@ -332,7 +336,11 @@ def pull(argv):
     if args.image:
         for image in args.image:
 
-            if not img.find(image):
+            simage = image.replace("/", "_")
+            simage = simage.replace(":", "_") + ".img"
+            if args.singularity:
+                singularity.pull(image, simage)
+            else:
                 docker.pull(image)
                 log.log_image(image, 'pulled')
     else:
@@ -346,8 +354,13 @@ def pull(argv):
 
         for image in base:
             if image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
-                docker.pull(image)
-                log.log_image(image, 'pulled')
+                if args.singularity:
+                    simage = image.replace("/", "_")
+                    simage = simage.replace(":", "_") + ".img"
+                    singularity.pull(image, simage)
+                else:
+                    docker.pull(image)
+                    log.log_image(image, 'pulled')
 
     log.write()
 

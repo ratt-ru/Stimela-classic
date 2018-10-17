@@ -5,7 +5,7 @@ import MSUtils.ClassESW as esw
 import inspect
 from MSUtils.imp_plotter import gain_plotter
 
-sys.path.append("/utils")
+sys.path.append("/scratch/stimela")
 import utils
 
 CONFIG = os.environ["CONFIG"]

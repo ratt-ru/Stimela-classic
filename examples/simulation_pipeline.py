@@ -6,7 +6,6 @@ INPUT = "input" # This folder must exist
 OUTPUT = "output"
 MSDIR = "msdir"
 PREFIX = "stimela-example"  # Prefix for output images
-SINGULARTITY_IMAGE_DIR = "/data/users/sphe/STIMELA_SINGULARITY_IMAGES"
 
 # MS name
 MS = "meerkat_simulation_example.ms"
@@ -17,9 +16,7 @@ LSM = "nvss1deg.lsm.html"
 
 # Start stimela Recipe instance
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
-                  ms_dir=MSDIR,
-#                  singularity_image_dir=SINGULARTITY_IMAGE_DIR,
-                  )
+                  ms_dir=MSDIR)             # Folder in which to find MSs
 
 # 1: Make empty MS 
 pipeline.add("cab/simms",                   # Executor image to start container from 

@@ -32,4 +32,3 @@ RUN cd wsclean-2.6/build && \
     cmake .. && \
     make -j 10 && \
     make install
-RUN ulimit -p 9000

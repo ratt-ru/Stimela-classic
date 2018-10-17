@@ -6,7 +6,7 @@ from MSUtils import msutils
 import tempfile
 import pyfits
 
-sys.path.append('/scratch/stimela')
+sys.path.append('/utils')
 import utils
 
 CONFIG = os.environ['CONFIG']

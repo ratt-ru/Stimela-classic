@@ -1,5 +1,5 @@
 FROM stimela/simms:1.0.0
 MAINTAINER <sphemakh@gmail.com>
-ADD src /scratch/code
+ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /scratch/code/run.sh
+CMD /code/run.sh

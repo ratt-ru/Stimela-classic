@@ -1,5 +1,5 @@
 FROM stimela/politsiyakat:1.0.0
 MAINTAINER <bhugo@ska.ac.za>
-ADD src /scratch/code
+ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /scratch/code/run.sh
+CMD /code/run.sh

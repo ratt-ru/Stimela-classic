@@ -1,5 +1,5 @@
 FROM stimela/casa:dev
 MAINTAINER <sphemakh@gmail.com>
-ADD src /scratch/code
+ADD src /code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /scratch/code/run.sh
+CMD python /code/run.py 2>&1 | tee -a $LOGFILE ; (exit ${PIPESTATUS[@]})

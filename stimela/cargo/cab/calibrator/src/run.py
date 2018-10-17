@@ -3,7 +3,7 @@ import sys
 from pyrap.tables import table
 import subprocess
 
-sys.path.append("/scratch/stimela")
+sys.path.append("/utils")
 import utils
 import numpy
 
@@ -11,7 +11,7 @@ CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
-CODE = "/scratch/code"
+CODE = "/code"
 
 cab = utils.readJson(CONFIG)
 binary = cab['binary']
@@ -62,7 +62,7 @@ params["ms_sel.tile_size"] = jdict.pop("tile-size", 16)
 params["ms_sel.ddid_index"] = spw_id
 params["ms_sel.field_index"] = field_id
 
-TDL = jdict.pop("tdlconf", None) or CODE + "/tdlconf.profiles"
+TDL = jdict.pop("tdlconf", None) or "/code/tdlconf.profiles"
 SECTION = jdict.pop("section", None) or "stefcal"
 skymodel = jdict.pop("skymodel", None)
 beam_files_pattern = jdict.pop("beam-files-pattern", False)

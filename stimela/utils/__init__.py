@@ -14,7 +14,6 @@ import re
 import math
 
 from multiprocessing import Process, Manager, Lock
-manager = Manager()
 
 CPUS = 1
 
@@ -87,6 +86,7 @@ def pper(iterable, command, cpus=None, stagger=2, logger=None):
     """
 
     cpus = cpus or CPUS
+    manager = Manager()
 
     if not hasattr(iterable, "__iter__"):
         raise TypeError("Can not iterate over [%s]. Make its iterable"%iterable)

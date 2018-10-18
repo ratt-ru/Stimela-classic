@@ -2,7 +2,7 @@ import os
 import sys
 from pyrap.tables import table
 
-sys.path.append("/utils")
+sys.path.append("/scratch/stimela")
 import utils
 import numpy
 
@@ -10,7 +10,7 @@ CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
-CODE = "/code/"
+CODE = "/scratch/code/"
 
 cab = utils.readJson(CONFIG)
 
@@ -30,7 +30,7 @@ for param in _params:
 options["ms_sel.ddid_index"] = params.get('spw-id', 0)
 options["ms_sel.field_index"] = params.get('field-id', 0)
 
-tdlconf = params.get("tdlconf", None) or  "/code/tdlconf.profiles"
+tdlconf = params.get("tdlconf", None) or  CODE+"/tdlconf.profiles"
 section = params.get("section", None) or 'sim'
 mode = params.pop("mode", None) or "simulate"
 threads = params.pop("threads", 4)

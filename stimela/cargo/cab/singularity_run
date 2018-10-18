@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+export INPUT=/scratch/input
+export OUTPUT=/scratch/output
+export CONFIG=/scratch/configfile
+export MSDIR=/scratch/msdir
+python /scratch/code/run.py 2>&1 | tee -a /scratch/logfile
+(exit ${PIPESTATUS[0]})

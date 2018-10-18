@@ -14,11 +14,13 @@ TYPES = {
     "list"  :   list,
    }
 
+
 IODEST = {
     "input"     :   "/input",
     "output"    :   "/home/{}/output".format(USER),
     "msfile"    :   "/home/{}/msdir".format(USER),
 }
+
 
 class Parameter(object):
     def __init__(self, name, dtype, info, 

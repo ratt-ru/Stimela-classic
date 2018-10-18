@@ -1,5 +1,5 @@
 FROM stimela/sofia:dev
 MAINTAINER <sphemakh@gmial.com>
-ADD src /code
+ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /code/run.sh
+CMD /scratch/code/run.sh

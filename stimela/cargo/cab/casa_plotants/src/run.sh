@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
-python /code/run.py 2>&1 | tee -a $LOGFILE 
-(exit ${PIPESTATUS[0]})
+/etc/init.d/xvfb start 
+python /scratch/code/run.py 2>&1 | tee -a $LOGFILE 
+EXIT_STAT=${PIPESTATUS[0]}
+/etc/init.d/xvfb stop
+exit $EXIT_STAT

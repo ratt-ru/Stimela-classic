@@ -1,5 +1,5 @@
 FROM stimela/ragavi:1.0.1
 MAINTAINER <sphemakh@gmial.com>
-ADD src /code
+ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /code/run.sh
+CMD /scratch/code/run.sh

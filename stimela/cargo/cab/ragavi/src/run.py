@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append('/utils')
+sys.path.append('/scratch/stimela')
 import utils
 
 CONFIG = os.environ["CONFIG"]

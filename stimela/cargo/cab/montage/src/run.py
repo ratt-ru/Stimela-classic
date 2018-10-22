@@ -1,7 +1,7 @@
 import os
 import sys
 import subprocess
-sys.path.append('/scrath/stimela')
+sys.path.append('/scratch/stimela')
 import utils
 #import montage_wrapper as montage
 

@@ -3,10 +3,10 @@ import numpy
 from pyrap.tables import table
 import numpy
 import os
-import sys 
+import sys
 import tempfile
 
-sys.path.append('/utils')
+sys.path.append('/scratch/stimela')
 import utils
 
 imagename = sys.argv[1]

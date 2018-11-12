@@ -180,7 +180,7 @@ if predict:
         raise RuntimeError('The size of a pixel in this FITS image was not specified \
 in FITS header (CDELT1/2), or as parameter for this module ("cellsize"). Cannot proceed')
     
-    utils.xrun('python /code/predict_from_fits.py', [predict, options['ms'], cell,
+    utils.xrun('python /scratch/code/predict_from_fits.py', [predict, options['ms'], cell,
                 tfile.name])
     predict_vis(msname=options['ms'], image=tfile.name, column=options.get('data','MODEL_DATA'), 
         chanchunk=options.get('chanchunk', None), chanstart=options.get('img_chanstart', 0), 

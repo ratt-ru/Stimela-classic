@@ -19,7 +19,7 @@
             "info": "Additional table outputs, format inferred from extension (database: .db, votable: .vot, and ascii: .csv)",
             "name": "outfile",
             "default": null,
-            "dtype": "string",
+            "dtype": "str",
             "required": true,
             "mapping": "table"
         },

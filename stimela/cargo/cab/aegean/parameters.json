@@ -24,8 +24,7 @@
             "mapping": "table"
         },
         {
-            "info": "If the input data is a cube, then this slice will determine the"\
-                    "array index of the image which will be processed by aegean",
+            "info": "If the input data is a cube, then this slice will determine the array index of the image which will be processed by aegean",
             "name": "slice",
             "default": null,
             "dtype": "int",

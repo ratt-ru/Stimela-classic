@@ -1,0 +1,93 @@
+{
+    "task": "aegean",
+    "base": "stimela/aegean",
+    "tag": "dev",
+    "description": "A source finding program designed to find and characterise compact continuum radio sources",
+    "prefix": "--",
+    "binary": "aegean",
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "Image to extract radio sources",
+            "name": "filename",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": true
+        },
+        {
+            "info": "Additional table outputs, format inferred from extension (database: .db, votable: .vot, and ascii: .csv/.tab)",
+            "name": "outfile",
+            "default": null,
+            "dtype": "str",
+            "required": true,
+            "mapping": "table"
+        },
+        {
+            "info": "If the input data is a cube, then this slice will determine the array index of the image which will be processed by aegean",
+            "name": "slice",
+            "default": null,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "A .fits file that represents the local psf",
+            "name": "psf",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "A .fits file that represents the image noise",
+            "name": "noise",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "Use this regions file to restrict source finding in this image. Use MIMAS region (.mim) files.",
+            "name": "region",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "Assume a single image noise of rms",
+            "name": "forcerms",
+            "default": null,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Assume a single image background",
+            "name": "forcebkg",
+            "default": null,
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "If more than *maxsummits* summits are detected in an island, no fitting is done, only estimation. [default: no limit]",
+            "name": "maxsummits",
+            "default": null,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "The clipping value (in sigmas) for seeding islands",
+            "name": "seedclip",
+            "default": 5,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "The clipping value (in sigmas) for growing islands",
+            "name": "floodclip",
+            "default": 4,
+            "dtype": "int",
+            "required": false
+        }
+    ]
+}

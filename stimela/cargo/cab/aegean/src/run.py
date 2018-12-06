@@ -6,6 +6,7 @@ import tempfile
 import pyfits
 
 from astLib.astWCS import WCS
+from astropy.table import Table
 from Tigger.Models import SkyModel, ModelClasses
 
 sys.path.append('/scratch/stimela')
@@ -71,14 +72,15 @@ tfile.close()
 def tigger_src(src, idx):
 
     name = "SRC%d" % idx
-    # TODO: (05-12-2018) USE from astropy.table import Table
-    flux = ModelClasses.Polarization(src["Total_flux"], 0, 0, 0, I_err=src["E_Total_flux"])
-    ra, ra_err = map(numpy.deg2rad, (src["RA"], src["E_RA"]))
-    dec, dec_err = map(numpy.deg2rad, (src["DEC"], src["E_DEC"]))
+    flux = ModelClasses.Polarization(float(src["int_flux"]), 0, 0, 0,
+                                     I_err=float(src["err_int_flux"]))
+    ra, ra_err = map(numpy.deg2rad, (float(src["ra"]), float(src["err_ra"])))
+    dec, dec_err = map(numpy.deg2rad, (float(src["dec"]),
+                                       float(src["err_dec"])))
     pos = ModelClasses.Position(ra, dec, ra_err=ra_err, dec_err=dec_err)
-    ex, ex_err = map(numpy.deg2rad, (src["DC_Maj"], src["E_DC_Maj"]))
-    ey, ey_err = map(numpy.deg2rad, (src["DC_Min"], src["E_DC_Min"]))
-    pa, pa_err = map(numpy.deg2rad, (src["PA"], src["E_PA"]))
+    ex, ex_err = map(numpy.deg2rad, (float(src["a"]), float(src["err_a"])))
+    ey, ey_err = map(numpy.deg2rad, (float(src["b"]), float(src["err_b"])))
+    pa, pa_err = map(numpy.deg2rad, (float(src["pa"]), float(src["err_pa"])))
 
     if ex and ey:
         shape = ModelClasses.Gaussian(ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
@@ -88,21 +90,20 @@ def tigger_src(src, idx):
     # Adding source peak flux (error) as extra flux attributes for sources,
     # and to avoid null values for point sources I_peak = src["Total_flux"]
     if shape:
-        source.setAttribute("I_peak", src["Peak_flux"])
-        source.setAttribute("I_peak_err", src["E_peak_flux"])
+        source.setAttribute("I_peak", float(src["peak_flux"]))
+        source.setAttribute("I_peak_err", float(src["err_peak_flux"]))
     else:
-        source.setAttribute("I_peak", src["Total_flux"])
-        source.setAttribute("I_peak_err", src["E_Total_flux"])
+        source.setAttribute("I_peak", float(src["int_flux"]))
+        source.setAttribute("I_peak_err", float(src["err_int_flux"]))
 
     return source
 
+data = Table.read('{0}_comp.{1}'.format(outfile.split('.')[0], outfile.split('.')[-1]),
+                  format=outfile.split('.')[-1])
 
-with pyfits.open(outfile.split('.')[0]+"_comp."+outfile.split('.')[-1]) as hdu:
-    data = hdu[1].data
+for i, src in enumerate(data):
 
-    for i, src in enumerate(data):
-        print src
-        model.sources.append(tigger_src(src, i))
+    model.sources.append(tigger_src(src, i))
 
 wcs = WCS(image)
 centre = wcs.getCentreWCSCoords()

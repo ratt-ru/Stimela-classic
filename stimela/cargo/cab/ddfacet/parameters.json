@@ -1,7 +1,7 @@
 {
     "task": "ddfacet", 
     "base": "stimela/ddfacet", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "DDFacet: a facet-based imager", 
     "prefix": "--", 
     "binary": "DDF.py", 
@@ -28,12 +28,7 @@
             "name": "Data-ColName", 
             "default": "DATA", 
             "dtype": "str", 
-            "required": false, 
-            "choices": [
-                "DATA", 
-                "CORRECTED_DATA", 
-                "MODEL_DATA"
-            ]
+            "required": false
         }, 
         {
             "info": "Chunk data into time bins of x hours to conserve memory", 
@@ -1209,13 +1204,6 @@
             "dtype": "int"
         }, 
         {
-            "info": "SSDCLEAN_MINSIZEINITHMP (???)", 
-            "default": -1, 
-            "required": false, 
-            "name": "SSDClean-MinSizeInitHMP", 
-            "dtype": "int"
-        }, 
-        {
             "info": "SSDCLEAN_MINMAXGROUPDISTANCE (???)", 
             "default": "\"[5, 50]\"", 
             "required": false, 
@@ -1235,185 +1223,6 @@
             "required": false, 
             "name": "GAClean-NMaxGen", 
             "dtype": "str"
-        }, 
-        {
-            "info": "MORESANE_MOSOLVEPARS (default=[S]): Solving parameters for MORESANE (only Flux & monochannel for the moment)", 
-            "default": "\"['S']\"", 
-            "required": false, 
-            "name": "MORESANE-MOSolvePars", 
-            "dtype": "str"
-        }, 
-        {
-            "info": "MORESANE_ACCURACY (default=1e-6): Threshold on the standard deviation of the residual noise. Exit main loop when this threshold is reached.", 
-            "default": "1e-06", 
-            "required": false, 
-            "name": "MORESANE-Accuracy", 
-            "dtype": "float"
-        }, 
-        {
-            "info": "MORESANE_CONVMODE (default='linear'): Specifier for convolution mode - linear or circular.", 
-            "name": "MORESANE-ConvMode", 
-            "default": "linear", 
-            "dtype": "str", 
-            "required": false, 
-            "choices": [
-                "linear", 
-                "circular"
-            ]
-        }, 
-        {
-            "info": "MORESANE_CORECOUNT (default=1): For multiprocessing, specifies the number of cores.", 
-            "default": 1, 
-            "required": false, 
-            "name": "MORESANE-CoreCount", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_DECOMMODE (default='ser'): (ser) = serial, (mp) = multiprocessing of the IUWT decomposition", 
-            "name": "MORESANE-DecomMode", 
-            "default": "ser", 
-            "dtype": "str", 
-            "required": false, 
-            "choices": [
-                "ser", 
-                "mp"
-            ]
-        }, 
-        {
-            "info": "MORESANE_EDGEEXCL (default=0) : Width (in pixel) of the area to discard from border", 
-            "default": 0, 
-            "required": false, 
-            "name": "MORESANE-EdgeExcl", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_EDGEOFFSET (default=0): Numeric value for an additional user- specified number of edge pixels to be ignored. This is added to the minimum suppression.", 
-            "default": 0, 
-            "required": false, 
-            "name": "MORESANE-EdgeOffset", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_EDGESUPPRESSION (default=False): Boolean specifier for whether or not the edges are to be suppressed.", 
-            "default": false, 
-            "required": false, 
-            "name": "MORESANE-EdgeSuppression", 
-            "dtype": "bool"
-        }, 
-        {
-            "info": "MORESANE_ENFORCEPOSITIVITY (default=False): Boolean specifier for whether or not a model must be strictly positive.", 
-            "default": false, 
-            "required": false, 
-            "name": "MORESANE-EnforcePositivity", 
-            "dtype": "bool"
-        }, 
-        {
-            "info": "MORESANE_EXTRACTIONMODE (default='cpu'): Specifier for mode to be used - cpu.", 
-            "name": "MORESANE-ExtractionMode", 
-            "default": "cpu", 
-            "dtype": "str", 
-            "required": false, 
-            "choices": [
-                "cpu"
-            ]
-        }, 
-        {
-            "info": "MORESANE_FLUXTHRESHOLD (default=0): Float value, assumed to be in Jy, which specifies an approximate convolution depth.", 
-            "default": 0, 
-            "required": false, 
-            "name": "MORESANE-FluxThreshold", 
-            "dtype": "float"
-        }, 
-        {
-            "info": "MORESANE_INTEXCL (default=0) : Width of the box (in pixel) to discard from the center.", 
-            "default": 0, 
-            "required": false, 
-            "name": "MORESANE-IntExcl", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_LOGLEVEL (default=INFO) : Logging level in the python logger.", 
-            "default": "INFO", 
-            "required": false, 
-            "name": "MORESANE-LogLevel", 
-            "dtype": "str"
-        }, 
-        {
-            "info": "MORESANE_LOOPGAIN (default=0.1): Loop gain for MORESANE deconvolution.", 
-            "default": 0.5, 
-            "required": false, 
-            "name": "MORESANE-LoopGain", 
-            "dtype": "float"
-        }, 
-        {
-            "info": "MORESANE_MAJORLOOPMITER (default=100): Maximum number of iterations allowed in the major loop. Exit condition.", 
-            "default": 100, 
-            "required": false, 
-            "name": "MORESANE-MajorLoopMiter", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_MINORLOOPMITER (default=30): Maximum number of iterations allowed in the minor loop. Serves as an exit condition when the SNR is does not reach a maximum.", 
-            "default": 30, 
-            "required": false, 
-            "name": "MORESANE-MinorLoopMiter", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_NEGCOMP Enable negative components in model", 
-            "default": false, 
-            "required": false, 
-            "name": "MORESANE-NegComp", 
-            "dtype": "bool"
-        }, 
-        {
-            "info": "MORESANE_SCALECOUNT (default=None): Maximum scale to be considered - maximum scale considered during initialisation.", 
-            "default": null, 
-            "required": false, 
-            "name": "MORESANE-ScaleCount", 
-            "dtype": "str"
-        }, 
-        {
-            "info": "MORESANE_SIGMALEVEL (default=4): Number of sigma at which thresholding is to be performed.", 
-            "default": 4, 
-            "required": false, 
-            "name": "MORESANE-SigmaLevel", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_SINGLERUN (default=False). If false, will run moresane sequentially scale by scale from startscale to stopscale, else, will use scalecount as a maximum scale.", 
-            "default": false, 
-            "required": false, 
-            "name": "MORESANE-SingleRun", 
-            "dtype": "bool"
-        }, 
-        {
-            "info": "MORESANE_STARTSCALE Starting wavelet scale in IUWT", 
-            "default": 1, 
-            "required": false, 
-            "name": "MORESANE-StartScale", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_STOPSCALE Stopping wavelet scale in IUWT", 
-            "default": 20, 
-            "required": false, 
-            "name": "MORESANE-StopScale", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_SUBREGION (default=None): Size, in pixels, of the central region to be analyzed and deconvolved.", 
-            "default": null, 
-            "required": false, 
-            "name": "MORESANE-SubRegion", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "MORESANE_TOLERANCE (default=0.75): Tolerance level for object extraction. Significant objects contain wavelet coefficients greater than the tolerance multiplied by the maximum wavelet coefficient in the scale under consideration.", 
-            "default": 0.75, 
-            "required": false, 
-            "name": "MORESANE-Tolerance", 
-            "dtype": "float"
         }, 
         {
             "info": "log memory use", 

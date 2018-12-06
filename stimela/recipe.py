@@ -145,7 +145,7 @@ class StimelaJob(object):
         offenders = re.findall('\W', self.name)
         if offenders:
             raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
-                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(name))
+                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
 
         ## Update I/O with values specified on command line
         # TODO (sphe) I think this feature should be removed
@@ -267,7 +267,7 @@ class StimelaJob(object):
         offenders = re.findall('\W', self.name)
         if offenders:
             raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
-                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(name))
+                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
 
         ## Update I/O with values specified on command line
         # TODO (sphe) I think this feature should be removed

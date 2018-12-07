@@ -18,8 +18,9 @@
         {
             "info": "Additional table outputs, format inferred from extension (database: .db, votable: .vot, and ascii: .csv/.tab)",
             "name": "outfile",
+            "io": "input",
             "default": null,
-            "dtype": "str",
+            "dtype": "file",
             "required": true,
             "mapping": "table"
         },
@@ -88,6 +89,12 @@
             "default": 4,
             "dtype": "int",
             "required": false
+        },
+        {
+            "info": "Convert output model to tigger format",
+            "dtype": "bool",
+            "default": true,
+            "name": "port2tigger"
         }
     ]
 }

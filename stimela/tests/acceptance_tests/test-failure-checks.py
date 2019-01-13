@@ -327,7 +327,7 @@ class ngc417_reduce(unittest.TestCase):
                                 "outputvis" :   corr_ms,
                                 "field"     :   str(TARGET),
                                 "datacolumn":   'corrected',
-                                "spw"       :   "0:a2:b3'
+                                "spw"       :   '0:a2:b3'
                         },
                         input=INPUT,
                         output=OUTPUT,

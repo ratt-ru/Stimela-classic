@@ -61,16 +61,16 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
                   shell=True)
     out, err = None, None
-    if process.stdout or process.stderr:
-
-        out, err = process.communicate()
-        sys.stdout.write(out)
-        sys.stderr.write(err)
-        return out, err
-    else:
+    try:
+        if process.stdout or process.stderr:
+            out, err = process.communicate()
+            sys.stdout.write(out)
+            sys.stderr.write(err)
+            return out, err
         process.wait()
-    if process.returncode:
-         raise SystemError('%s: returns errr code %d'%(command, process.returncode))
+    finally:
+        if process.returncode:
+           raise SystemError('%s: returns errr code %d'%(command, process.returncode))
     return out, err
 
 

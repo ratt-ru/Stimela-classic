@@ -22,6 +22,10 @@ mkdir $TEST_OUTPUT_DIR/input
 cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 
 which stimela
+stimela --version
+stimela pull
+# fresh build
+stimela build -nc
 
 #Run forest run!
 cd $TEST_OUTPUT_DIR

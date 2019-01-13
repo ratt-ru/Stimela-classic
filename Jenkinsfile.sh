@@ -25,6 +25,6 @@ which stimela
 
 #Run forest run!
 cd $TEST_OUTPUT_DIR
-nosetests "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
+nosetests --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
 
 

@@ -221,6 +221,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label = 'phase_cal::Initial phase calibration')
                         recipe.run(resume=False)
+
         def testFailBandpassCal(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -326,6 +327,7 @@ class ngc417_reduce(unittest.TestCase):
                                 "outputvis" :   corr_ms,
                                 "field"     :   str(TARGET),
                                 "datacolumn":   'corrected',
+                                "spw"       :   "0:a2:b3'
                         },
                         input=INPUT,
                         output=OUTPUT,

@@ -7,7 +7,6 @@ class ngc417_reduce(unittest.TestCase):
         @classmethod
         def setUpClass(cls):
                 unittest.TestCase.setUpClass()
-                subprocess.check_call(["which", "stimela"], shell=True)
                 subprocess.check_call(["stimela", "--version"], shell=True)
                 subprocess.check_call(["stimela", "pull"], shell=True)
                 # fresh build

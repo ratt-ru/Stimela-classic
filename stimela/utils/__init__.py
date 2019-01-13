@@ -66,8 +66,10 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             out, err = process.communicate()
             sys.stdout.write(out)
             sys.stderr.write(err)
+            process.wait()
             return out, err
-        process.wait()
+        else:
+            process.wait()
     finally:
         if process.returncode:
            raise SystemError('%s: returns errr code %d'%(command, process.returncode))

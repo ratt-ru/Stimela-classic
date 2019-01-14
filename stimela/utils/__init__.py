@@ -63,7 +63,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     out, err = None, None
     if process.stdout or process.stderr:
 
-        out, err = process.comunicate()
+        out, err = process.communicate()
         sys.stdout.write(out)
         sys.stderr.write(err)
         return out, err

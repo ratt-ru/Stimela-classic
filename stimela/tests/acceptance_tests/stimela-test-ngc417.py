@@ -563,9 +563,9 @@ class ngc417_reduce(unittest.TestCase):
                         "msname"        :   MS,
                         "channelrange"  :   chans,               #Other channels don't have any data   
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-                        "npix"          :   1026,                   # Image size in pixels
-                        "trim"          :   1024,                    # To avoid aliasing
-                        "cellsize"      :   2.5,                      # Size of each square pixel
+                        "npix"          :   8196,                   # Image size in pixels
+                        "trim"          :   5000,                    # To avoid aliasing
+                        "cellsize"      :   0.5,                      # Size of each square pixel
                         "clean_iterations"  :   50000000,
                         "auto-mask"     :   5,
                         "mgain"         :   0.9,
@@ -585,8 +585,8 @@ class ngc417_reduce(unittest.TestCase):
                         {
                                 "Data-MS": [MS],
                                 "Output-Name": imname,
-                                "Image-NPix": 1024,
-                                "Image-Cell": 2,
+                                "Image-NPix": 8196,
+                                "Image-Cell": 0.5,
                                 "Cache-Reset": True,
                                 "Freq-NBand": 2,
                                 "Weight-ColName": "WEIGHT",
@@ -665,9 +665,9 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/wsclean', 'image_target_field_r2', {
                         "msname"        :   MS,
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-                        "npix"          :   1026,                   # Image size in pixels
-                        "trim"          :   1024,                    # To avoid aliasing
-                        "cellsize"      :   3,                      # Size of each square pixel
+                        "npix"          :   8192,                   # Image size in pixels
+                        "trim"          :   5000,                    # To avoid aliasing
+                        "cellsize"      :   0.5,                      # Size of each square pixel
                         "clean_iterations"  :   100,
                         "auto-mask"         :   3,
                         "local-rms"         :   True,
@@ -722,9 +722,9 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/wsclean', 'image_target_field_r3', {
                         "msname"            :   MS,
                         "weight"            :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-                        "npix"              :   512,                   # Image size in pixels
-                        "trim"              :   512,                    # To avoid aliasing
-                        "cellsize"          :   1,                      # Size of each square pixel
+                        "npix"              :   2048,                   # Image size in pixels
+                        "trim"              :   2048,                    # To avoid aliasing
+                        "cellsize"          :   0.5,                      # Size of each square pixel
                         "clean_iterations"  :   50,
                         "auto-mask"         :   3,
                 #        "local-rms"        :   True,
@@ -765,8 +765,8 @@ class ngc417_reduce(unittest.TestCase):
                         "column"            : "CORRECTED_DATA",
                         "weight"            : "briggs",
                         "robust"            : 0.0,
-                        "npix"              : 256,
-                        "padding"           : 2.0,
+                        "npix"              : 2048,
+                        "padding"           : 0.5,
                         "cellsize"          : 1.000,
                         "nchan"             : _nchans,
                         "chanstart"         : 0,

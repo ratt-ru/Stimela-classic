@@ -281,8 +281,8 @@ class ngc417_reduce(unittest.TestCase):
                                 "vis"           :   MS,
                                 "caltable"      :   GAINCAL_TABLE2,
                                 "fluxtable"     :   FLUXSCALE_TABLE,
-                                "reference"     :   [BPCAL],
-                                "transfer"      :   [GCAL],
+                                "reference"     :   ["dadado"],
+                                "transfer"      :   ["helloworld"],
                                 "incremental"   :   False,
                         },
                         input=INPUT,
@@ -304,7 +304,7 @@ class ngc417_reduce(unittest.TestCase):
                                 "gaintable" :   [ANTPOS_TABLE, DELAYCAL_TABLE,BPCAL_TABLE,FLUXSCALE_TABLE],
                                 "gainfield" :   ['','','',BPCAL],
                                 "interp"    :   ['','','','nearest'],
-                                "spw"       :   '0:21~235',
+                                "spw"       :   '0:2a1~2dw3s5',
                                 "calwt"     :   [False],
                                 "parang"    :   False,
                         },
@@ -324,7 +324,7 @@ class ngc417_reduce(unittest.TestCase):
                         recipe.add('cab/casa_split', 'split_corr_data',
                         {
                                 "vis"       :   MS,
-                                "outputvis" :   corr_ms,
+                                "outputvis" :   corr_ms + ".dadado.ms",
                                 "field"     :   str(TARGET),
                                 "datacolumn":   'corrected',
                                 "spw"       :   '0:a2:b3'
@@ -474,6 +474,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('LWIMAGER_FAIL', ms_dir=MSDIR)
+                imname4 = PREFIX+"image4"
                 with self.assertRaises(Exception):
                         recipe.add('cab/lwimager', 'lwimager_residue_cube', {
                                         "msname"            : MS,
@@ -493,8 +494,8 @@ class ngc417_reduce(unittest.TestCase):
                                         "gain"              : 0.8,
                                         "sigma"             : 0.5,
                                         "prefix"            : imname4,
-                                        "stokes"            : "I",
-                                        "mode"              : "velocity"
+                                        "stokes"            : "IKASDW",
+                                        "mode"              : "ve23l4o5c67i8t9y"
                                 },
                                 input=OUTPUT,
                                 output=OUTPUT,

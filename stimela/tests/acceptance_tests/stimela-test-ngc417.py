@@ -563,7 +563,7 @@ class ngc417_reduce(unittest.TestCase):
                         "msname"        :   MS,
                         "channelrange"  :   chans,               #Other channels don't have any data   
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-                        "npix"          :   1024,                   # Image size in pixels
+                        "npix"          :   8192,                   # Image size in pixels
                         "padding"       :   1.2,                    # To avoid aliasing
                         "cellsize"      :   1.0,                      # Size of each square pixel
                         "clean_iterations"  :   50000000,

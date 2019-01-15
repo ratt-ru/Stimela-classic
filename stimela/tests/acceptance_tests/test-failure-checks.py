@@ -494,8 +494,8 @@ class ngc417_reduce(unittest.TestCase):
                                         "gain"              : 0.8,
                                         "sigma"             : 0.5,
                                         "prefix"            : imname4,
-                                        "stokes"            : "I",
-                                        "mode"              : "velocity"
+                                        "stokes"            : "IKASDW",
+                                        "mode"              : "ve23l4o5c67i8t9y"
                                 },
                                 input=OUTPUT,
                                 output=OUTPUT,

@@ -605,7 +605,8 @@ class ngc417_reduce(unittest.TestCase):
                         "plot_amp_phase",
                         ])
 
-
+                recipe = stimela.Recipe('VLA NGC417 reduction script', ms_dir=MSDIR)
+                
                 recipe.add('cab/casa_split', 'split_corr_data',
                 {
                         "vis"       :   MS,
@@ -616,8 +617,6 @@ class ngc417_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='split_corr_data:: Split corrected data from MS')
-
-                recipe = stimela.Recipe('VLA NGC417 reduction script', ms_dir=MSDIR)
 
                 MS = MS[:-3]+'-corr.ms'
 
@@ -1146,6 +1145,7 @@ class ngc417_reduce(unittest.TestCase):
                         label='sofia:: Make SoFiA mask and images')
 
                 recipe.run([
+                        "split_corr_data",
                         "image_target_field_r0",
                         "mask0", 
                         "image_target_field_r1",

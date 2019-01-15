@@ -1104,6 +1104,20 @@ class ngc417_reduce(unittest.TestCase):
                 label='lwimager_residue_cube:: make a cube after most of the continuum has'
                       ' been cleaned and subtracted away')
 
+                combprefix = imname3
+                imagelist = ['{0:s}-{1:04d}-image.fits:output'.format(combprefix, jj) for jj in range(_nchans)]
+
+                recipe.add('cab/fitstool', 'stack_channels',
+                {
+                        "stack"      :   True,
+                        "image"      :   imagelist,
+                        "fits-axis"  :   'FREQ',
+                        "output"     :   '{:s}-cube.dirty.fits'.format(combprefix),
+                },
+                input=INPUT,
+                output=OUTPUT,
+                label='stack_channels:: Stack individual channels made by WSClean')
+
                 recipe.add('cab/sofia', 'sofia',
                         {
                         #    USE THIS FOR THE WSCLEAN DIRTY CUBE
@@ -1157,5 +1171,6 @@ class ngc417_reduce(unittest.TestCase):
                         "casa_dirty_cube",
                         "cube_target_field_dirty",
                         "lwimager_residue_cube",
+                        "stack_channels",
                         "sofia"
                         ])

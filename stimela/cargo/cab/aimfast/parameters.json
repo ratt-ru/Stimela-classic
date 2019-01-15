@@ -53,7 +53,7 @@
             "info": "Name of model to use for normality testing.",
             "default": null,
             "required": false,
-            "name": "normality-model",
+            "name": "normality-test",
             "dtype": "str",
             "choices": ["normaltest",
                         "shapiro"]

@@ -628,7 +628,7 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add('cab/wsclean', 'image_target_field_r0', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                         "channelrange"  :   [21,235],               #Other channels don't have any data   
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
@@ -659,7 +659,7 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add('cab/wsclean', 'image_target_field_r1', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                         "channelrange"  :   [21,235],               #Other channels don't have any data   
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
@@ -693,7 +693,7 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add('cab/wsclean', 'cube_target_field', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                         "channelrange"  :   [21,235],
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
@@ -776,7 +776,7 @@ class ngc417_reduce(unittest.TestCase):
                 #           "Gjones-chisq-clipping" : False,
                 #           "make-plots"         : True,
                         "tile-size"          : 512,
-                        "field-id"           : int(TARGET),
+                        "field-id"           : 0,
                 },
                         input=INPUT, output=OUTPUT,
                         label="calibrator_Gjones_subtract_lsm0:: Calibrate and subtract LSM0")
@@ -785,7 +785,7 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add('cab/wsclean', 'image_target_field_r2', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
                         "trim"          :   4084,                    # To avoid aliasing
@@ -841,7 +841,7 @@ class ngc417_reduce(unittest.TestCase):
                 imname3=PREFIX+"-image3"
                 recipe.add('cab/wsclean', 'image_target_field3', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
                         "trim"          :   4084,                    # To avoid aliasing
@@ -909,7 +909,7 @@ class ngc417_reduce(unittest.TestCase):
                         # "Gjones-chisq-clipping" : True,
                         "tile-size"          : 512,
                         # "make-plots"         : True,
-                        "field-id"           : int(TARGET),
+                        "field-id"           : 0,
                         "save-config"        : "selfcal_2nd_round",
                 },
                         input=INPUT, output=OUTPUT,
@@ -920,7 +920,7 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add('cab/wsclean', 'image_target_field_r4', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
                         "trim"          :   4084,                    # To avoid aliasing
@@ -956,7 +956,7 @@ class ngc417_reduce(unittest.TestCase):
                 imname5 = PREFIX+"image5"
                 recipe.add('cab/wsclean', 'image_target_field_r5', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
                         "trim"          :   4084,                    # To avoid aliasing
@@ -993,7 +993,7 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add('cab/wsclean', 'cube_target_field2', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                 #        "channelrange"  :   [21,235],
                         "weight"        :   "natural",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
@@ -1052,7 +1052,7 @@ class ngc417_reduce(unittest.TestCase):
                 #Instead, make wsclean dirty cube
                 recipe.add('cab/wsclean', 'cube_target_field_dirty', {
                         "msname"        :   MS,
-                        "field"         :   TARGET,
+                        "field"         :   0,
                 #        "channelrange"  :   [21,235],
                         "weight"        :   "natural",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   700,                   # Image size in pixels

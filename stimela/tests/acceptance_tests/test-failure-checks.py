@@ -451,10 +451,10 @@ class ngc417_reduce(unittest.TestCase):
                         "Gjones-solution-intervals" : [20,64],     #Ad-hoc right now, subject to change
                         "Gjones-matrix-type" : "GainDiagPhase",
                         "write-flags-to-ms"  :  True,
-                        "write-flagset"      : "stefcal",
+                        "write-flagset"      : "ste2f3cal",
                         "read-legacy-flags"  : True,
                         "read-flags-from-ms" : True,
-                        "read-flagsets"       : "-stefcal",    # ignore any stefcal flags that may exist
+                        "read-flagsets"       : "-st1efc5al",    # ignore any stefcal flags that may exist
                         "Gjones-ampl-clipping"  :   True,
                         "Gjones-ampl-clipping-low"  :   0.15,
                         "Gjones-ampl-clipping-high" :   2.0,

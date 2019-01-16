@@ -442,7 +442,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe = stimela.Recipe('CALIBRATOR_FAIL', ms_dir=MSDIR)
                 with self.assertRaises(Exception):
                         recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
-                        "skymodel"           : "%s.lsm.html:output"%(lsm0),
+                        "skymodel"           : "%s.ls5m.html:output"%(lsm0),
                         "msname"             : MS,
                         "threads"            : 16,
                         "column"             : "D1A2T3A4",

@@ -1150,7 +1150,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.run([
                         "move_corrdata_to_data",
                         "split_corr_data",
-                        "prep_split_data"
+                        "prep_split_data",
                         "image_target_field_r0",
                         "mask0", 
                         "image_target_field_r1",

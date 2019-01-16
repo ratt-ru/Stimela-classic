@@ -1,7 +1,9 @@
-FROM stimela/casa:0.3.2
-RUN docker-apt-install git locales
+FROM stimela/casa:1.0.1
+RUN docker-apt-install locales \
+    casalite \
+    python-pip \
+    git
 RUN locale-gen en_US.UTF-8
 RUN pip install -U pip 
-RUN pip install -U drive-casa pyyaml
-RUN pip install -U git+https://github.com/SpheMakh/crasa.git
+RUN pip install crasa pyyaml
 RUN casa-config --exec update-data

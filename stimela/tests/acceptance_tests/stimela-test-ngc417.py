@@ -777,6 +777,7 @@ class ngc417_reduce(unittest.TestCase):
                 #           "make-plots"         : True,
                         "tile-size"          : 512,
                         "field-id"           : 0,
+                        "write-flagset"      : "FLAG0"
                 },
                         input=INPUT, output=OUTPUT,
                         label="calibrator_Gjones_subtract_lsm0:: Calibrate and subtract LSM0")

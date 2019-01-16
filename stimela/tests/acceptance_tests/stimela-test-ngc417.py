@@ -996,7 +996,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/wsclean', 'cube_target_field2', {
                         "msname"        :   MS,
                         "field"         :   0,
-			"datacolumn"    :   "CORRECTED_DATA"
+			"datacolumn"    :   "CORRECTED_DATA",
                 #        "channelrange"  :   [21,235],
                         "weight"        :   "natural",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels

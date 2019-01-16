@@ -605,21 +605,38 @@ class ngc417_reduce(unittest.TestCase):
                         "plot_amp_phase",
                         ])
 
+                recipe = stimela.Recipe('VLA NGC417 reduction script', ms_dir=MSDIR)
+                # Copy CORRECTED_DATA to DATA, so we can start uv_contsub
+                recipe.add("cab/msutils", "move_corrdata_to_data", {
+                        "command"           : "copycol",
+                        "msname"            : MS,
+                        "fromcol"           : "CORRECTED_DATA",
+                        "tocol"             : "DATA",
+                },
+                        input=INPUT, output=OUTPUT,
+                        label="move_corrdata_to_data::msutils")
 
                 recipe.add('cab/casa_split', 'split_corr_data',
                 {
                         "vis"       :   MS,
                         "outputvis" :   MS[:-3]+'-corr.ms',
                         "field"     :   str(TARGET),
-                        "datacolumn":   'corrected',
+                        "datacolumn":   'data',
                 },
                 input=INPUT,
                 output=OUTPUT,
                 label='split_corr_data:: Split corrected data from MS')
 
-                recipe = stimela.Recipe('VLA NGC417 reduction script', ms_dir=MSDIR)
-
                 MS = MS[:-3]+'-corr.ms'
+
+                recipe.add('cab/casa_clearcal', 'prep_split_data',
+                {
+                        "vis"       :   MS,
+                        "addmodel"  :   True
+                },
+                input=INPUT,
+                output=OUTPUT,
+                label='prep_split_data:: Prep split data with casa clearcal')
 
                 ## Clean-Mask-Clean 
                 imname0=PREFIX+'image0'
@@ -724,22 +741,6 @@ class ngc417_reduce(unittest.TestCase):
                         input=INPUT, output=OUTPUT,
                         label="extract_init_model:: Make initial model from preselfcal image")
 
-
-
-
-                # Copy CORRECTED_DATA to DATA, so we can start selfcal
-                recipe.add("cab/msutils", "move_corrdata_to_data", {
-                        "command"           : "copycol",
-                        "msname"            : MS,
-                        "fromcol"           : "CORRECTED_DATA",
-                        "tocol"             : "DATA",
-                },
-                        input=INPUT, output=OUTPUT,
-                        label="move_corrdata_to_data::msutils")
-
-
-
-
                 #Add bitflag column. To keep track of flagsets. 
                 recipe.add("cab/msutils", "msutils", {
                         'command'    : 'prep',
@@ -756,8 +757,6 @@ class ngc417_reduce(unittest.TestCase):
                 },
                         input=INPUT, output=OUTPUT,
                         label="backup_initial_flags:: Backup selfcal flags")
-
-
 
                 #First selfcal round
                 recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
@@ -922,6 +921,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/wsclean', 'image_target_field_r4', {
                         "msname"        :   MS,
                         "field"         :   TARGET,
+                        "datacolumn"   :   "CORRECTED_DATA",
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
                         "trim"          :   4084,                    # To avoid aliasing
@@ -958,6 +958,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/wsclean', 'image_target_field_r5', {
                         "msname"        :   MS,
                         "field"         :   TARGET,
+                        "datacolumn"   :   "CORRECTED_DATA",
                         "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
                         "npix"          :   4696,                   # Image size in pixels
                         "trim"          :   4084,                    # To avoid aliasing
@@ -1013,7 +1014,6 @@ class ngc417_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label="cube_target_field2:: Image cube for target field after selfcal")
-
 
                 recipe.add('cab/casa_uvcontsub','uvcontsub',
                         {
@@ -1146,6 +1146,9 @@ class ngc417_reduce(unittest.TestCase):
                         label='sofia:: Make SoFiA mask and images')
 
                 recipe.run([
+                        "move_corrdata_to_data",
+                        "split_corr_data",
+                        "prep_split_data"
                         "image_target_field_r0",
                         "mask0", 
                         "image_target_field_r1",
@@ -1154,7 +1157,6 @@ class ngc417_reduce(unittest.TestCase):
                         "mask01",
                         "prepms",
                         "backup_initial_flags",
-                        "move_corrdata_to_data",
                         "calibrator_Gjones_subtract_lsm0",
                         "image_target_field2",
                         "mask1",

@@ -873,7 +873,8 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add("cab/flagms", "unflag_pselfcalflags", {
                         "msname"             : MS,
-                        "flag"             : "FLAG_BACKUP",
+                        "flag"               : "FLAG_BACKUP",
+                        "create"             : True
                 },
                         input=INPUT, output=OUTPUT,
                         label="flag_backup_pselfcalflags:: Backup phase selfcal flags")

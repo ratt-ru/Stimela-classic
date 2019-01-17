@@ -777,7 +777,6 @@ class ngc417_reduce(unittest.TestCase):
                 #           "make-plots"         : True,
                         "tile-size"          : 512,
                         "field-id"           : 0,
-                        "write-flagset"      : "FLAG0"
                 },
                         input=INPUT, output=OUTPUT,
                         label="calibrator_Gjones_subtract_lsm0:: Calibrate and subtract LSM0")
@@ -874,10 +873,10 @@ class ngc417_reduce(unittest.TestCase):
 
                 recipe.add("cab/flagms", "unflag_pselfcalflags", {
                         "msname"             : MS,
-                        "unflag"             : "FLAG0",
+                        "flag"             : "FLAG_BACKUP",
                 },
                         input=INPUT, output=OUTPUT,
-                        label="unflag_pselfcalflags:: Unflag phase selfcal flags")
+                        label="flag_backup_pselfcalflags:: Backup phase selfcal flags")
 
                 #Stitch LSMs together
                 lsm2=PREFIX+'-LSM2'
@@ -1166,7 +1165,7 @@ class ngc417_reduce(unittest.TestCase):
                         "mask1",
                         "image_target_field3",
                         "extract_pselfcal_model",
-                        "unflag_pselfcalflags",
+                        "flag_backup_pselfcalflags",
                         "stitch_lsms1",
                         "calibrator_Gjones_subtract_lsm1", 
                         "image_target_field4",    

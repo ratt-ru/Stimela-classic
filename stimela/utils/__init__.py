@@ -64,8 +64,10 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     try:
         if process.stdout or process.stderr:
             out, err = process.communicate()
-            sys.stdout.write(out)
-            sys.stderr.write(err)
+            if out is not None:
+                sys.stdout.write(str(out))
+            if err is not None:
+                sys.stderr.write(str(err))
             
         process.wait()
     finally:

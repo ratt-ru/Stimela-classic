@@ -126,7 +126,7 @@ class ngc417_reduce(unittest.TestCase):
                 },
                 input=INPUT,
                 output=OUTPUT,
-                label='listobs: some stats')
+                label='listobs:: some stats')
 
                 # It is common for the array to require a small amount of time to settle down at the start of a scan. Consequently, it has
                 # become standard practice to flag the initial samples from the start of each scan. This is known as 'quack' flagging

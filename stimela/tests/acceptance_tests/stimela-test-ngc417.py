@@ -594,6 +594,8 @@ class ngc417_reduce(unittest.TestCase):
 
 
                 recipe.run([
+                          "split_subset_data",
+                          "listobs",
                           "quack_flagging",
                           "autocorr_flagging",
                           "antenna_flagging",
@@ -1169,8 +1171,6 @@ class ngc417_reduce(unittest.TestCase):
                         label='sofia:: Make SoFiA mask and images')
 
                 recipe.run([
-                        "split_subset_data",
-                        "listobs",
                         "move_corrdata_to_data",
                         "split_corr_data",
                         "prep_split_data",

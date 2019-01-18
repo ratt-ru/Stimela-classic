@@ -111,7 +111,7 @@ class ngc417_reduce(unittest.TestCase):
                 {
                         "vis"       :   MS,
                         "outputvis" :   MS[:-3]+'-subset.ms',
-                        "field"     :   str(TARGET),
+                        "field"     :   "",
                         "datacolumn":   'data',
                         "scan"      :   '26~32' #make test faster
                 },

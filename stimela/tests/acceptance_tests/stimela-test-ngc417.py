@@ -107,6 +107,26 @@ class ngc417_reduce(unittest.TestCase):
                 
                 recipe = stimela.Recipe('VLA NGC417 reduction script', ms_dir=MSDIR)
 
+                recipe.add('cab/casa_split', 'split_subset_data',
+                {
+                        "vis"       :   MS,
+                        "outputvis" :   MS[:-3]+'-corr.ms',
+                        "field"     :   str(TARGET),
+                        "datacolumn":   'data',
+                        "scan"      :   '26~32' #make test faster
+                },
+                input=INPUT,
+                output=OUTPUT,
+                label='split_subset_data:: Split subset of data from MS')
+
+                MS = MS[:-3]+'-subset.ms'
+
+                recipe.add('cab/casa_listobs', 'listobs',{
+                        "vis": MS
+                },
+                input=INPUT,
+                output=OUTPUT,
+                label='listobs: some stats')
 
                 # It is common for the array to require a small amount of time to settle down at the start of a scan. Consequently, it has
                 # become standard practice to flag the initial samples from the start of each scan. This is known as 'quack' flagging
@@ -1020,7 +1040,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/casa_uvcontsub','uvcontsub',
                         {
                                 "msname"         :    MS,
-                                "field"          :    TARGET,
+                                "field"          :    0,
                                 "fitorder"       :    1,
                         },
                         input=INPUT,
@@ -1149,6 +1169,8 @@ class ngc417_reduce(unittest.TestCase):
                         label='sofia:: Make SoFiA mask and images')
 
                 recipe.run([
+                        "split_subset_data",
+                        "listobs",
                         "move_corrdata_to_data",
                         "split_corr_data",
                         "prep_split_data",

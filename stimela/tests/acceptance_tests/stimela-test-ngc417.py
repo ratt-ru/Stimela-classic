@@ -110,7 +110,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/casa_split', 'split_subset_data',
                 {
                         "vis"       :   MS,
-                        "outputvis" :   MS[:-3]+'-corr.ms',
+                        "outputvis" :   MS[:-3]+'-subset.ms',
                         "field"     :   str(TARGET),
                         "datacolumn":   'data',
                         "scan"      :   '26~32' #make test faster

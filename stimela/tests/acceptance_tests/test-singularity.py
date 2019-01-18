@@ -8,13 +8,15 @@ class singularity_test(unittest.TestCase):
         @classmethod
         def setUpClass(cls):
                 unittest.TestCase.setUpClass()
-                global INPUT, MSDIR, OUTPUT, MS
+                global INPUT, MSDIR, OUTPUT, MS, PREFIX, LSM
                 INPUT=os.path.join(os.path.dirname(stimela.__file__), "tests", "acceptance_tests", "input")
                 MSDIR="msdir"
                 OUTPUT="output"
                 # MS name
                 MS = "meerkat_simulation_example.ms"
 
+                # Use the NVSS skymodel. This is natively available
+                LSM = "nvss1deg.lsm.html"
                 PREFIX = "stimela-example"  # Prefix for output images
                 stimela.register_globals()
                 if not "SINGULARITY_PULLFOLDER" in os.environ:
@@ -31,7 +33,7 @@ class singularity_test(unittest.TestCase):
                 unittest.TestCase.setUp(self)
 
         def testBasicSim(self):
-            global INPUT, MSDIR, OUTPUT, MS, LSM, PREFIX
+            global INPUT, MSDIR, OUTPUT, MS, PREFIX, LSM
 
             # Start stimela Recipe instance
             pipeline = stimela.Recipe("Singularity Test",     # Recipe name

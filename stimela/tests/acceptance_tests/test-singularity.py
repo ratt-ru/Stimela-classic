@@ -17,7 +17,7 @@ class singularity_test(unittest.TestCase):
 
                 PREFIX = "stimela-example"  # Prefix for output images
                 stimela.register_globals()
-                if not os.environ["SINGULARITY_PULLFOLDER"]:
+                if not "SINGULARITY_PULLFOLDER" in os.environ:
                     raise ValueError("ENV SINGULARITY_PULLFOLDER not set! This test requires singularity images to be pulled")
 
         @classmethod

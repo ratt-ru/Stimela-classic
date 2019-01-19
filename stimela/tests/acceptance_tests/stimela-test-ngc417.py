@@ -1043,7 +1043,8 @@ class ngc417_reduce(unittest.TestCase):
                         {
                                 "msname"         :    MS,
                                 "field"          :    "0",
-                                "fitorder"       :    1,
+                                "fitorder"       :    0,
+                                "solint"         :    "inf"
                         },
                         input=INPUT,
                         output=OUTPUT,

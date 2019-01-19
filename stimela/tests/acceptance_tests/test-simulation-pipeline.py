@@ -8,7 +8,7 @@ class test_basic_simulation(unittest.TestCase):
         def setUpClass(cls):
                 unittest.TestCase.setUpClass()
                 global INPUT, MSDIR, OUTPUT, MS, LSM, PREFIX
-                INPUT=os.path.join(os.path.dirname(stimela.__file__), "tests", "acceptance_tests", "input")
+                INPUT=os.path.join(os.path.dirname(__file__), "tests", "acceptance_tests", "input")
                 MSDIR="msdir"
                 OUTPUT="output"
                 # MS name

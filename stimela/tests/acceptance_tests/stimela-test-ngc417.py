@@ -1042,7 +1042,7 @@ class ngc417_reduce(unittest.TestCase):
                 recipe.add('cab/casa_uvcontsub','uvcontsub',
                         {
                                 "msname"         :    MS,
-                                "field"          :    0,
+                                "field"          :    "0",
                                 "fitorder"       :    1,
                         },
                         input=INPUT,

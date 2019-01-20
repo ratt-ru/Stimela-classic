@@ -107,20 +107,6 @@ class ngc417_reduce(unittest.TestCase):
                 
                 recipe = stimela.Recipe('VLA NGC417 reduction script', ms_dir=MSDIR)
 
-                recipe.add('cab/casa_split', 'split_subset_data',
-                {
-                        "vis"       :   MS,
-                        "outputvis" :   MS[:-3]+'-subset.ms',
-                        "field"     :   "",
-                        "datacolumn":   'data',
-                        "scan"      :   '26~32' #make test faster
-                },
-                input=INPUT,
-                output=OUTPUT,
-                label='split_subset_data:: Split subset of data from MS')
-
-                MS = MS[:-3]+'-subset.ms'
-
                 recipe.add('cab/casa_listobs', 'listobs',{
                         "vis": MS
                 },
@@ -594,7 +580,6 @@ class ngc417_reduce(unittest.TestCase):
 
 
                 recipe.run([
-                          "split_subset_data",
                           "listobs",
                           "quack_flagging",
                           "autocorr_flagging",
@@ -1043,8 +1028,7 @@ class ngc417_reduce(unittest.TestCase):
                         {
                                 "msname"         :    MS,
                                 "field"          :    "0",
-                                "fitorder"       :    0,
-                                "solint"         :    "inf"
+                                "fitorder"       :    1,
                         },
                         input=INPUT,
                         output=OUTPUT,

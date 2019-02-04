@@ -1,7 +1,7 @@
 {
     "task": "lwimager", 
     "base": "stimela/casarest", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "Image and deconvolve a measurement set (MS)", 
     "prefix": " ", 
     "binary": "lwimager", 

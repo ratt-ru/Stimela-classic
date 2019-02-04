@@ -1,4 +1,4 @@
-FROM stimela/ddfacet:0.3.1
+FROM stimela/ddfacet:1.0.1
 RUN pip install -U pip
 
 

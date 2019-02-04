@@ -25,10 +25,10 @@
         }, 
         {
             "info": "ColName to image", 
-            "name": "Data-ColName", 
             "default": "DATA", 
-            "dtype": "str", 
-            "required": false
+            "required": false, 
+            "name": "Data-ColName", 
+            "dtype": "str"
         }, 
         {
             "info": "Chunk data into time bins of x hours to conserve memory", 

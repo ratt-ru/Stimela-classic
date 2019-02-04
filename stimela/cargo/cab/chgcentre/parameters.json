@@ -1,54 +1,54 @@
 {
-    "task": "chgcentre",
-    "base": "stimela/chgcentre",
-    "tag": "dev",
-    "description": "Tool used to change the phase centre of a measurement set",
-    "prefix": "-",
-    "binary": "chgcentre",
-    "msdir": true,
+    "task": "chgcentre", 
+    "base": "stimela/chgcentre", 
+    "tag": "1.0.1", 
+    "description": "Tool used to change the phase centre of a measurement set", 
+    "prefix": "-", 
+    "binary": "chgcentre", 
+    "msdir": true, 
     "parameters": [
         {
             "info": "Name of MS file to change the phase centre", 
             "check_io": false, 
             "name": "msname", 
+            "io": "msfile", 
             "default": null, 
             "dtype": "file", 
-            "required": true, 
-            "io": "msfile"
+            "required": true
         }, 
         {
-            "info": "New RA to change to. The format of RA can either be 00h00m00.0s or 00:00:00.0",
-            "default": null,
-            "required": false,
-            "name": "new-ra",
+            "info": "New RA to change to. The format of RA can either be 00h00m00.0s or 00:00:00.0", 
+            "default": null, 
+            "required": false, 
+            "name": "new-ra", 
             "dtype": "str"
-        },
+        }, 
         {
-            "info": "New DEC to change to. The format of DEC can either be 00h00m00.0s or 00:00:00.0",
-            "default": null,
-            "required": false,
-            "name": "new-dec",
+            "info": "New DEC to change to. The format of DEC can either be 00h00m00.0s or 00:00:00.0", 
+            "default": null, 
+            "required": false, 
+            "name": "new-dec", 
             "dtype": "str"
-        },
+        }, 
         {
-            "info": "Rephase to the direction orthogonal to the best-fit plane to the antennas",
-            "default": null,
-            "required": false,
-            "name": "minw",
+            "info": "Rephase to the direction orthogonal to the best-fit plane to the antennas", 
+            "default": null, 
+            "required": false, 
+            "name": "minw", 
             "dtype": "bool"
-        },
+        }, 
         {
-            "info": "Rephase to the local array zenith",
-            "default": null,
-            "required": false,
-            "name": "zenith",
+            "info": "Rephase to the local array zenith", 
+            "default": null, 
+            "required": false, 
+            "name": "zenith", 
             "dtype": "bool"
-        },
+        }, 
         {
-            "info": "Prepare the measurement set for w-snapshot imaging with WSClean",
-            "default": null,
-            "required": false,
-            "name": "shiftback",
+            "info": "Prepare the measurement set for w-snapshot imaging with WSClean", 
+            "default": null, 
+            "required": false, 
+            "name": "shiftback", 
             "dtype": "bool"
         }
     ]

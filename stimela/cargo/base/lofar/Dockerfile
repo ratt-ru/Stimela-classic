@@ -1,4 +1,4 @@
-FROM stimela/base:1.0.0
+FROM stimela/base:1.0.1
 RUN docker-apt-install lofar python-tigger
 RUN pip install --upgrade git+https://github.com/ska-sa/tigger
 RUN pip install astropy

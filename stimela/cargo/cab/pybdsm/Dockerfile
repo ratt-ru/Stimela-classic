@@ -1,4 +1,4 @@
-FROM stimela/lofar:1.0.1
+FROM stimela/pybdsf:1.0.1
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

@@ -393,37 +393,37 @@
         {
             "info": null, 
             "dtype": "int", 
-            "default": 0, 
+            "default": null, 
             "name": "scaleNoise.edgeX"
         }, 
         {
             "info": null, 
             "dtype": "int", 
-            "default": 0, 
+            "default": null, 
             "name": "scaleNoise.edgeY"
         }, 
         {
             "info": null, 
             "dtype": "int", 
-            "default": 0, 
+            "default": null, 
             "name": "scaleNoise.edgeZ"
         }, 
         {
             "info": null, 
             "dtype": "bool", 
-            "default": false, 
+            "default": null, 
             "name": "scaleNoise.scaleX"
         }, 
         {
             "info": null, 
             "dtype": "bool", 
-            "default": false, 
+            "default": null, 
             "name": "scaleNoise.scaleY"
         }, 
         {
             "info": null, 
             "dtype": "bool", 
-            "default": true, 
+            "default": null, 
             "name": "scaleNoise.scaleZ"
         }, 
         {
@@ -693,7 +693,7 @@
         {
             "info": null, 
             "dtype": "str", 
-            "default": "global", 
+            "default": null, 
             "name": "scaleNoise.method", 
             "choices": [
                 "global", 
@@ -703,7 +703,7 @@
         {
             "info": null, 
             "dtype": "str", 
-            "default": "all", 
+            "default": null, 
             "name": "scaleNoise.fluxRange", 
             "choices": [
                 "negative", 
@@ -714,25 +714,25 @@
         {
             "info": null, 
             "dtype": "int", 
-            "default": 25, 
+            "default": null, 
             "name": "scaleNoise.windowSpatial"
         }, 
         {
             "info": null, 
             "dtype": "int", 
-            "default": 15, 
+            "default": null, 
             "name": "scaleNoise.windowSpectral"
         }, 
         {
             "info": null, 
             "dtype": "int", 
-            "default": 0, 
+            "default": null, 
             "name": "scaleNoise.gridSpatial"
         }, 
         {
             "info": null, 
             "dtype": "str", 
-            "default": "none", 
+            "default": null, 
             "name": "scaleNoise.interpolation", 
             "choices": [
                 "none", 

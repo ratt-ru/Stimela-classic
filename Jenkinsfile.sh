@@ -17,7 +17,7 @@ pip install ${WORKSPACE_ROOT}/projects/Stimela/
 
 # Copy a clean dataset over
 mkdir $TEST_OUTPUT_DIR/msdir
-tar -xvf $TEST_DATA_DIR/12A-405.sb7601493.eb10633016.56086.127048738424.tgz -C $TEST_OUTPUT_DIR/msdir
+tar -xzvf $TEST_DATA_DIR/12A-405.sb7601493.eb10633016.56086.127048738424.tgz -C $TEST_OUTPUT_DIR/msdir
 mkdir $TEST_OUTPUT_DIR/input
 cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 

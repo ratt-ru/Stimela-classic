@@ -432,30 +432,30 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label='casa_dirty_cube:: Make a dirty cube with CASA CLEAN')
 
-                recipe.add('cab/sofia', 'sofia',
-                        {
-                        #    USE THIS FOR THE WSCLEAN DIRTY CUBE
-                        #    "import.inFile"     :   '{:s}-cube.dirty.fits:output'.format(combprefix),
-                        #    USE THIS FOR THE CASA CLEAN CUBE
-                        "import.inFile"         :   '{:s}.image.fits:output'.format(PREFIX),       # CASA CLEAN cube
-                        "steps.doMerge"         :   True,
-                        "steps.doMom0"          :   True,
-                        "steps.doMom1"          :   False,
-                        "steps.doParameterise"  :   False,
-                        "steps.doReliability"   :   False,
-                        "steps.doWriteCat"      :   False,
-                        "steps.doWriteMask"     :   True,
-                        "steps.doFlag"          :   True,
-                        "SCfind.threshold"      :   4,
-                        "merge.radiusX"         :   2,
-                        "merge.radiusY"         :   2,
-                        "merge.radiusZ"         :   3,
-                        "merge.minSizeX"        :   3,
-                        "merge.minSizeY"        :   3,
-                        "merge.minSizeZ"        :   5,
-                        },
-                        input=INPUT,
-                        output=OUTPUT,
-                        label='sofia:: Make SoFiA mask and images')
+#               recipe.add('cab/sofia', 'sofia',
+#                       {
+#                       #    USE THIS FOR THE WSCLEAN DIRTY CUBE
+#                       #    "import.inFile"     :   '{:s}-cube.dirty.fits:output'.format(combprefix),
+#                       #    USE THIS FOR THE CASA CLEAN CUBE
+#                       "import.inFile"         :   '{:s}.image.fits:output'.format(PREFIX),       # CASA CLEAN cube
+#                       "steps.doMerge"         :   True,
+#                       "steps.doMom0"          :   True,
+#                       "steps.doMom1"          :   False,
+#                       "steps.doParameterise"  :   False,
+#                       "steps.doReliability"   :   False,
+#                       "steps.doWriteCat"      :   False,
+#                       "steps.doWriteMask"     :   True,
+#                       "steps.doFlag"          :   True,
+#                       "SCfind.threshold"      :   4,
+#                       "merge.radiusX"         :   2,
+#                       "merge.radiusY"         :   2,
+#                       "merge.radiusZ"         :   3,
+#                       "merge.minSizeX"        :   3,
+#                       "merge.minSizeY"        :   3,
+#                       "merge.minSizeZ"        :   5,
+#                       },
+#                       input=INPUT,
+#                       output=OUTPUT,
+#                       label='sofia:: Make SoFiA mask and images')
 
                 recipe.run()

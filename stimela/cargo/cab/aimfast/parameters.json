@@ -13,7 +13,7 @@
             "io": "input",
             "default": null,
             "dtype": "file",
-            "required": true
+            "required": false
         }, 
         {
             "info": "Model lsm.html/text file to extract peak source flux",

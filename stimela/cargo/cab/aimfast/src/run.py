@@ -20,7 +20,8 @@ for param in cab['parameters']:
         continue
 
     if type(value) is list:
-        args += ['{0}{1} {2}'.format(cab['prefix'], name, " ".join(value))]
+        args += ['{0}{1} {2}'.format(cab['prefix'], name,
+                 " ".join([val.replace(':output', '') for val in value]))]
     else:
         args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 

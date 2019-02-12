@@ -102,7 +102,7 @@ class singularity_test(unittest.TestCase):
             ## Image
             # Make things a bit interesting by imaging with different weights 
             # Briggs robust values to use for each image
-            briggs_robust = 2, 0, -2
+            briggs_robust = [2]
 
             for i, robust in enumerate(briggs_robust):
 

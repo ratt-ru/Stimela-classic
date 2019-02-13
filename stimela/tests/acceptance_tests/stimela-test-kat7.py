@@ -2,6 +2,7 @@ import stimela
 import os
 import unittest
 import subprocess
+from nose.tools import timed
 
 class ngc417_reduce(unittest.TestCase):
         @classmethod
@@ -93,7 +94,8 @@ class ngc417_reduce(unittest.TestCase):
 
         def setUp(self):
                 unittest.TestCase.setUp(self)
-
+                
+        @timed(3600)
         def testEndToEndReduction(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE

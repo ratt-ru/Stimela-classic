@@ -2,6 +2,7 @@ import stimela
 import os
 import unittest
 import subprocess
+from nose.tools import timed
 
 class ngc417_reduce(unittest.TestCase):
         @classmethod
@@ -97,7 +98,7 @@ class ngc417_reduce(unittest.TestCase):
 
         def setUp(self):
                 unittest.TestCase.setUp(self)
-                
+        @timed(300)        
         def testFailCasaFlagdata(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -116,7 +117,7 @@ class ngc417_reduce(unittest.TestCase):
                         output = OUTPUT,
                         label = 'quack_flagging:: Quack flagging')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailAutoflagger(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -133,7 +134,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,    
                         label='aoflag_data:: Flag DATA column')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailPlotMS(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -156,7 +157,7 @@ class ngc417_reduce(unittest.TestCase):
                         output = OUTPUT,
                         label = 'plot_manual:: Plot data after manual flagging')
                         recipe.run(resume=False)
-        
+        @timed(300)        
         def testFailGenCal(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -174,7 +175,7 @@ class ngc417_reduce(unittest.TestCase):
                         output = OUTPUT,
                         label = 'baseline_positions:: Correct baseline positions')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailSetJy(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -196,7 +197,7 @@ class ngc417_reduce(unittest.TestCase):
                         output = OUTPUT,
                         label = 'set_flux_scaling:: Set flux density value for the amplitude calibrator')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailGainCal(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -221,7 +222,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label = 'phase_cal::Initial phase calibration')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailBandpassCal(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -245,7 +246,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label = 'bandpass_cal:: Bandpass calibration')
                         recipe.run(resume=False)
-        
+        @timed(300)        
         def testFailPlotcal(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -268,7 +269,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label='plot_bandpass_amp_R:: Plot bandpass table. AMP, R')
                         recipe.run(resume=False)
-        
+        @timed(300)        
         def testFailFluxscale(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -289,7 +290,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label='fluxscale:: Set fluxscale')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailApplyCal(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -312,7 +313,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label='applycal_bp:: Apply calibration to Bandpass Calibrator')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailSplit(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -333,7 +334,7 @@ class ngc417_reduce(unittest.TestCase):
                         output=OUTPUT,
                         label='split_corr_data:: Split corrected data from MS')
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailWSCLEAN(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -362,7 +363,7 @@ class ngc417_reduce(unittest.TestCase):
                                 output=OUTPUT,
                                 label="image_target_field_r0:: Image target field first round")
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailDDFacet(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -392,7 +393,7 @@ class ngc417_reduce(unittest.TestCase):
                                 input=INPUT, output=OUTPUT, shared_memory="36gb",
                                 label="image_target_field_r0ddfacet:: Make a test image using ddfacet")
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailPyBSDM(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -414,7 +415,7 @@ class ngc417_reduce(unittest.TestCase):
                                 input=INPUT, output=OUTPUT,
                                 label="extract_init_model:: Make initial model from preselfcal image")
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailPyMSUTILS(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -432,7 +433,7 @@ class ngc417_reduce(unittest.TestCase):
                                 input=INPUT, output=OUTPUT,
                                 label="move_corrdata_to_data::msutils")
                         recipe.run(resume=False)
-                
+        @timed(300)                
         def testFailCalibrator(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
@@ -466,7 +467,7 @@ class ngc417_reduce(unittest.TestCase):
                         input=INPUT, output=OUTPUT,
                         label="calibrator_Gjones_subtract_lsm0:: Calibrate and subtract LSM0")
                         recipe.run(resume=False)
-
+        @timed(300)        
         def testFailLWImager(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE

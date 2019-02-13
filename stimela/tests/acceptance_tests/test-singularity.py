@@ -3,6 +3,7 @@ import os
 import sys
 import unittest
 import subprocess
+from nose.tools import timed
 
 class singularity_test(unittest.TestCase):
         @classmethod
@@ -31,7 +32,7 @@ class singularity_test(unittest.TestCase):
 
         def setUp(self):
                 unittest.TestCase.setUp(self)
-
+        @timed(1800)    
         def testBasicSim(self):
             global INPUT, MSDIR, OUTPUT, MS, PREFIX, LSM
 

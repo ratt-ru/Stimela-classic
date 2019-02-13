@@ -32,7 +32,7 @@ stimela build -nc
 
 #Run forest run!
 cd $TEST_OUTPUT_DIR
-nosetests --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
+nosetests -s --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
 
 #wholesale garage sale --- send SIGKILL to whoever remains - nobody else should be running jobs on the testing machine
 pgrep -f bash | xargs kill -9

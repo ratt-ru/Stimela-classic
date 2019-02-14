@@ -69,7 +69,10 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             if err is not None:
                 sys.stderr.write(str(err))
             
-        process.wait()
+        while process.poll() is None
+            time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
+            #check whether there is an alternative with a callback
+        assert hasattr(process, "returncode"), "No returncode after termination!"
     finally:
         if process.returncode:
            raise SystemError('%s: returns errr code %d'%(command, process.returncode))

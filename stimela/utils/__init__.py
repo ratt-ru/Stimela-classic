@@ -69,7 +69,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             if err is not None:
                 sys.stderr.write(str(err))
             
-        while (process.poll() is None)
+        while (process.poll() is None):
             currenttime = time.time()
             if (timeout >= 0) and (currenttime - starttime < timeout):
                 time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 

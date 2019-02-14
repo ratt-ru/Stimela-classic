@@ -73,14 +73,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
                   shell=True)
     out, err = None, None
-    try:
-        if process.stdout or process.stderr:
-            out, err = process.communicate()
-            if out is not None:
-                sys.stdout.write(str(out))
-            if err is not None:
-                sys.stderr.write(str(err))
-            
+    try:            
         while (process.poll() is None):
             currenttime = time.time()
             if (timeout >= 0) and (currenttime - starttime < timeout):
@@ -96,6 +89,15 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 time.sleep(0.5) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
+
+        # now log whatever there is in the pipes, make sure to do this after the return code is received to avoid any potential for a race on the
+        # termination string of the pipe!
+        if process.stdout or process.stderr:
+            out, err = process.communicate()
+            if out is not None:
+                sys.stdout.write(str(out))
+            if err is not None:
+                sys.stderr.write(str(err))
     finally:
         if process.returncode == -99:
            raise StimelaCabRuntimeError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 

@@ -3,8 +3,9 @@ import os
 import unittest
 import subprocess
 from nose.tools import timed
-
-class ngc417_reduce(unittest.TestCase):
+import stimela.utils as stimela_utils
+from stimela.recipe import PipelineException
+class failure_checks(unittest.TestCase):
         @classmethod
         def setUpClass(cls):
                 unittest.TestCase.setUpClass()
@@ -16,8 +17,9 @@ class ngc417_reduce(unittest.TestCase):
 
                 global MS
                 MS = '12A-405.sb7601493.eb10633016.56086.127048738424.ms'
+                os.mkdir(os.path.join(MSDIR, MS)) # make dummy
                 global PREFIX
-                PREFIX = 'vla_NGC417_LBand'
+                PREFIX = 'error_tests'
 
 
                 # Fields
@@ -94,7 +96,8 @@ class ngc417_reduce(unittest.TestCase):
         @classmethod
         def tearDownClass(cls):
                 unittest.TestCase.tearDownClass()
-
+                global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
+                os.rmdir(os.path.join(MSDIR, MS)) # make dummy
         def tearDown(self):
                 unittest.TestCase.tearDown(self)
 
@@ -108,12 +111,12 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('QUICK_FLAG_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_flagdata', 'quack_flagging', {
                                 "vis"           :   MS,
-                                "mode"         :   'quackity',
+                                "mode"         :   'manual',
                                 "quackinterval" :   10.0,
-                                "quackmode"     :   'beggy',
+                                "quackmode"     :   'beg',
                         },
                         input = INPUT,
                         output = OUTPUT,
@@ -128,7 +131,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('AUTOFLAG_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/autoflagger', 'aoflag_data', {
                                 "msname"    :   MS,
                                 "column"    :   "DATA5",
@@ -146,7 +149,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('PLOTMS_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_plotms', 'plot_manual', {
                                 "vis"           :   MS,
                                 "plotfile"      :   PREFIX + 'after_manual_flags.png',
@@ -170,7 +173,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('PLOTMS_SINGULARITY_FAIL', ms_dir=MSDIR, singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"])
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_plotms', 'plot_manual', {
                                 "vis"           :   MS,
                                 "plotfile"      :   PREFIX + 'after_manual_flags.png',
@@ -194,11 +197,11 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('GENCAL_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_gencal', 'baseline_positions', {
                                 "vis"       :   MS,
                                 "caltable"  :   ANTPOS_TABLE,
-                                "caltype"   :   'a1n2t3p4o5s6',
+                                "caltype"   :   'antpos',
                         },
                         input = INPUT,
                         output = OUTPUT,
@@ -213,11 +216,11 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('SETJY_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_setjy', 'set_flux_scaling', {
                                 "vis"           :   MS,
                                 "field"         :   BPCAL,
-                                "standard"      :   'Perley-Butler-JaneDoe 5013',
+                                "standard"      :   'Perley-Butler 2010',
                                 "model"         :   '3C286_L.im',
                                 "usescratch"    :   False,
                                 "scalebychan"   :   True,
@@ -236,7 +239,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('GAINCAL_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_gaincal', 'phase_cal', {
                                 "vis"           :   MS,
                                 "caltable"      :   GAINCAL_TABLE,
@@ -262,7 +265,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('BANDPASS_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_bandpass', 'bandpass_cal', {
                                 "vis"       :   MS,
                                 "caltable"  :   BPCAL_TABLE,
@@ -287,12 +290,12 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('PLOTCAL_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_plotcal', 'plot_bandpass_amp_R', {
                                 "caltable"  :   BPCAL_TABLE,
                                 "poln"      :   'R',
-                                "xaxis"     :   'chanASDASDXXZVCZXDFSA',
-                                "yaxis"     :   'ampASDERXCDASF',
+                                "xaxis"     :   'chan',
+                                "yaxis"     :   'amp',
                                 "field"     :   "YADADIDA",
                                 "subplot"   :   221,
                         #        "iteration" :   'antenna',
@@ -311,7 +314,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('FLUXSCALE_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_fluxscale', 'fluxscale', {
                                 "vis"           :   MS,
                                 "caltable"      :   GAINCAL_TABLE2,
@@ -333,7 +336,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('APPLYCAL_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_applycal', 'applycal_bp', {
                                 "vis"      :    MS,
                                 "field"     :   BPCAL,
@@ -357,7 +360,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('SPLIT_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/casa_split', 'split_corr_data',
                         {
                                 "vis"       :   MS,
@@ -379,7 +382,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('WSCLEAN_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/wsclean', 'image_target_field_r0', {
                                         "msname"        :   MS,
                                         "channelrange"  :   chans,               #Other channels don't have any data   
@@ -410,7 +413,7 @@ class ngc417_reduce(unittest.TestCase):
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('DDFACET_FAIL', ms_dir=MSDIR)
                 imname=PREFIX+'ddfacet'
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add("cab/ddfacet", "ddfacet_test",
                                 {
                                         "Data-MS": [MS],
@@ -419,7 +422,7 @@ class ngc417_reduce(unittest.TestCase):
                                         "Image-Cell": 2,
                                         "Cache-Reset": True,
                                         "Freq-NBand": 2,
-                                        "Weight-ColName": "W1E2I3G4H5T6",
+                                        "Weight-ColName": "WEIGHT",
                                         "Beam-Model": "FITS",
                                         "Beam-FITSFile": "'baeseafdasms/JVLA-L-centred-$(xy)_$(reim).fits'",
                                         "Data-ChunkHours": 0.5,
@@ -440,7 +443,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('PYBDSM_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add("cab/pybdsm", "extract_init_model", {
                                 "image"             :  '%s-MFS-image.fits:output' %(imname0),
                                 "outfile"           :  '%s:output'%(lsm0),
@@ -463,7 +466,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('MSUTILS_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add("cab/msutils", "move_corrdata_to_data", {
                                 "command"           : "copycol",
                                 "msname"            : MS,
@@ -482,7 +485,7 @@ class ngc417_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('CALIBRATOR_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
                         "skymodel"           : "%s.ls5m.html:output"%(lsm0),
                         "msname"             : MS,
@@ -518,7 +521,7 @@ class ngc417_reduce(unittest.TestCase):
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('LWIMAGER_FAIL', ms_dir=MSDIR)
                 imname4 = PREFIX+"image4"
-                with self.assertRaises(Exception):
+                with self.assertRaises(PipelineException):
                         recipe.add('cab/lwimager', 'lwimager_residue_cube', {
                                         "msname"            : MS,
                                         "column"            : "C1O2R3R4E5C6T7E8D9_1D12A3T4A5",
@@ -538,7 +541,7 @@ class ngc417_reduce(unittest.TestCase):
                                         "sigma"             : 0.5,
                                         "prefix"            : imname4,
                                         "stokes"            : "IKASDW",
-                                        "mode"              : "ve23l4o5c67i8t9y"
+                                        "mode"              : "velocity"
                                 },
                                 input=OUTPUT,
                                 output=OUTPUT,

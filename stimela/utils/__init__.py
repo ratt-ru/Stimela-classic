@@ -13,6 +13,8 @@ import warnings
 import re
 import math
 
+class StimelaCabRuntimeError(RuntimeError): pass
+
 from multiprocessing import Process, Manager, Lock
 
 CPUS = 1
@@ -55,7 +57,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         sys.stdout.write('running: %s\n'%cmd)
 
     sys.stdout.flush()
-    start = time.time()
+    starttime = time.time()
     process = subprocess.Popen(cmd,
                   stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
@@ -83,9 +85,9 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         assert hasattr(process, "returncode"), "No returncode after termination!"
     finally:
         if process.returncode == -99:
-           raise SystemError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 
+           raise StimelaCabRuntimeError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 
         elif process.returncode:
-           raise SystemError('%s: returns errr code %d' % (command, process.returncode))
+           raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
     return out, err
 
 

@@ -74,7 +74,7 @@ class Container(object):
         else:
             volumes = ""
         
-        self._print("Instantiating container [{}]. The container ID is printed below.".format(self.name))
+        self._print("Instantiating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
         utils.xrun("singularity instance.start", 
                         list(args) + [volumes,
 #                        "-c",

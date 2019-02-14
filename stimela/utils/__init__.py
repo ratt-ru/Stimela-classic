@@ -13,6 +13,8 @@ import warnings
 import re
 import math
 
+DEBUG = True
+
 class StimelaCabRuntimeError(RuntimeError): pass
 
 from multiprocessing import Process, Manager, Lock
@@ -50,11 +52,19 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     """
     
     cmd = " ".join([command]+ map(str, options) )
+    def _print_info(msg):
+        if log:
+            log.info(msg)
+        else:
+            sys.stdout.write(msg + "\n")
 
-    if log:
-        log.info("Running: %s"%cmd)
-    else:
-        sys.stdout.write('running: %s\n'%cmd)
+    def _print_warn(msg):
+        if log:
+            log.warn(msg)
+        else:
+            sys.stderr.write(msg + "\n")
+    
+    _print_info("Running: {0:s}".format(cmd))
 
     sys.stdout.flush()
     starttime = time.time()
@@ -74,14 +84,16 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         while (process.poll() is None):
             currenttime = time.time()
             if (timeout >= 0) and (currenttime - starttime < timeout):
-                time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
+                DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
+                time.sleep(0.5) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
             elif (timeout >= 0):
-                log.warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(command))
+                _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(command))
                 process.kill() # send SIGKILL
                 process.returncode = -99
             else:
-                time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
+                DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
+                time.sleep(0.5) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
     finally:

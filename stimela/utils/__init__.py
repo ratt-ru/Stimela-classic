@@ -20,7 +20,7 @@ except ImportError:
     from Queue import Queue, Empty  # python 2.x
 
 DEBUG = False
-
+INTERRUPT_TIME = 5 # seconds -- do not want to constantly interrupt the child process
 class StimelaCabRuntimeError(RuntimeError): pass
 
 from multiprocessing import Process, Manager, Lock
@@ -112,7 +112,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             currenttime = time.time()
             if (timeout >= 0) and (currenttime - starttime < timeout):
                 DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
-                time.sleep(0.5) # this is probably not ideal as it interrupts the process every few seconds, 
+                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
             elif (timeout >= 0):
                 _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
@@ -120,7 +120,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 process.returncode = -99
             else:
                 DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
-                time.sleep(0.5) # this is probably not ideal as it interrupts the process every few seconds, 
+                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
 

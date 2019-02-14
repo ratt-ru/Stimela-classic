@@ -12,6 +12,12 @@ import inspect
 import warnings
 import re
 import math
+from threading  import Thread
+
+try:
+    from queue import Queue, Empty
+except ImportError:
+    from Queue import Queue, Empty  # python 2.x
 
 DEBUG = False
 
@@ -68,13 +74,41 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
 
     sys.stdout.flush()
     starttime = time.time()
-    process = subprocess.Popen(cmd,
-                  stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
-                  stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
-                  shell=True)
-    out, err = None, None
+    ON_POSIX = 'posix' in sys.builtin_module_names
+
+    def enqueue_output(out, queue):
+        for line in iter(out.readline, b''):
+            queue.put(line)
+        out.close()
+    p = process = subprocess.Popen(cmd,
+                  stderr=subprocess.PIPE,
+                  stdout=subprocess.PIPE,
+                  shell=True, 
+                  close_fds=ON_POSIX)
+    qo = Queue()
+    t = Thread(target=enqueue_output, args=(p.stdout, qo))
+    t.daemon = True # thread dies with the program
+    t.start()                 
+
+    qe = Queue()
+    t = Thread(target=enqueue_output, args=(p.stderr, qe))
+    t.daemon = True # thread dies with the program
+    t.start()                 
+
     try:            
         while (process.poll() is None):
+            try:  line = qo.get_nowait() # or q.get(timeout=.1)
+            except Empty:
+                pass # no output as of yet
+            else: # got line
+                sys.stdout.write(str(line))
+            
+            try:  line = qo.get_nowait() # or q.get(timeout=.1)
+            except Empty:
+                pass # no output as of yet
+            else: # got line
+                sys.stderr.write(str(line))
+
             currenttime = time.time()
             if (timeout >= 0) and (currenttime - starttime < timeout):
                 DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
@@ -90,20 +124,12 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
 
-        # now log whatever there is in the pipes, make sure to do this after the return code is received to avoid any potential for a race on the
-        # termination string of the pipe!
-        if process.stdout or process.stderr:
-            out, err = process.communicate()
-            if out is not None:
-                sys.stdout.write(str(out))
-            if err is not None:
-                sys.stderr.write(str(err))
     finally:
         if process.returncode == -99:
            raise StimelaCabRuntimeError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 
         elif process.returncode:
            raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
-    return out, err
+
 
 
 def pper(iterable, command, cpus=None, stagger=2, logger=None):

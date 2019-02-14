@@ -399,8 +399,9 @@ class Recipe(object):
         ch.setFormatter(formatter)
         fh.setFormatter(formatter)
         # Add the handlers to logger
-        self.log.addHandler(ch)
-        self.log.addHandler(fh)
+        
+        len(filter(lambda x: isinstance(x, logging.StreamHandler), self.log.handlers)) == 0 and self.log.addHandler(ch)
+        len(filter(lambda x: isinstance(x, logging.FileHandler), self.log.handlers)) == 0 and self.log.addHandler(fh)
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 

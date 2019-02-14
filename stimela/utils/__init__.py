@@ -13,7 +13,7 @@ import warnings
 import re
 import math
 
-DEBUG = True
+DEBUG = False
 
 class StimelaCabRuntimeError(RuntimeError): pass
 
@@ -23,9 +23,9 @@ CPUS = 1
 
 def _logger(level=0, logfile=None):
 
-    if logfile:
+    if logfile and not logging.getLogger("STIMELA"):
         logging.basicConfig(filename=logfile)
-    else:
+    elif not logging.getLogger("STIMELA"):
         logging.basicConfig()
 
     LOGL = {"0": "INFO",

@@ -31,6 +31,7 @@ class Container(object):
     def __init__(self, image, name, 
                  volumes=None,
                  logger=None,
+                 time_out=-1,
                  runscript=None):
         """
         Python wrapper to singularity tools for managing containers.
@@ -45,7 +46,7 @@ class Container(object):
         self.RUNSCRIPT = runscript
         self.PID = os.getpid()
         self.uptime = "00:00:00"
-
+        self.time_out = time_out
         #self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
 
 
@@ -77,7 +78,8 @@ class Container(object):
         utils.xrun("singularity instance.start", 
                         list(args) + [volumes,
 #                        "-c",
-                        self.image, self.name])
+                        self.image, self.name],
+                        timeout= self.time_out)
 
         self.status = "created"
 
@@ -95,7 +97,8 @@ class Container(object):
             volumes = ""
         
         self._print("Starting container [{}]. The container ID is printed below.".format(self.name))
-        utils.xrun("singularity run", ["instance://{0:s} {1:s}".format(self.name, self.RUNSCRIPT)])
+        utils.xrun("singularity run", ["instance://{0:s} {1:s}".format(self.name, self.RUNSCRIPT)],
+                   timeout= self.time_out)
 
         self.status = "running"
 

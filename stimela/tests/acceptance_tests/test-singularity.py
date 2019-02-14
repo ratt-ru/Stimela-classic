@@ -58,7 +58,8 @@ class singularity_test(unittest.TestCase):
                          output=OUTPUT,                             # Output folder
                          label="Creating MS",                       # Process label
                          cpus=2.5,
-                         memory_limit="2gb") 
+                         memory_limit="2gb",
+                         time_out=300) 
 
             pipeline.add("cab/casa_listobs",
                          "listobs_example",
@@ -67,7 +68,8 @@ class singularity_test(unittest.TestCase):
                          },
                          input=INPUT,
                          output=OUTPUT,
-                         label="Some obs details")
+                         label="Some obs details",
+                         time_out=100) 
 
             pipeline.add("cab/simulator", 
                          "simulator_example",
@@ -82,7 +84,8 @@ class singularity_test(unittest.TestCase):
                             "threads"   : 4,
                          },
                         input=INPUT, output=OUTPUT,
-                        label="Simulating visibilities")
+                        label="Simulating visibilities",
+                        time_out=600) 
 
 
             pipeline.add('cab/casa_plotms', 
@@ -98,7 +101,8 @@ class singularity_test(unittest.TestCase):
                         },
                         input=INPUT,
                         output=OUTPUT,
-                        label='plot_amp_uvdist:: Plot amplitude vs uv-distance')
+                        label='plot_amp_uvdist:: Plot amplitude vs uv-distance',
+                        time_out=600) 
 
             ## Image
             # Make things a bit interesting by imaging with different weights 
@@ -121,14 +125,16 @@ class singularity_test(unittest.TestCase):
                              output=OUTPUT, 
                              label="Imaging MS, robust={:d}".format(robust), 
                              cpus=2,
-                             memory_limit="2gb")
+                             memory_limit="2gb",
+                             time_out=600) 
 
             pipeline.add("cab/casa_rmtables", "delete_ms", {
                     "tablenames"    : MS + ":msfile",
                     },
                     input=INPUT,
                     output=OUTPUT,
-                    label="Remove MS")
+                    label="Remove MS",
+                    time_out=300) 
 
 
 

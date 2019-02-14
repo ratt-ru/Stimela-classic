@@ -40,13 +40,13 @@ def assign(key, value):
     frame.f_globals[key] = value
 
 
-def xrun(command, options, log=None, _log_container_as_started=False, logfile=None):
+def xrun(command, options, log=None, _log_container_as_started=False, logfile=None, timeout=-1):
     """
         Run something on command line.
 
         Example: _run("ls", ["-lrt", "../"])
     """
-
+    
     cmd = " ".join([command]+ map(str, options) )
 
     if log:
@@ -55,7 +55,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         sys.stdout.write('running: %s\n'%cmd)
 
     sys.stdout.flush()
-
+    start = time.time()
     process = subprocess.Popen(cmd,
                   stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
@@ -69,13 +69,23 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             if err is not None:
                 sys.stderr.write(str(err))
             
-        while process.poll() is None
-            time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
-            #check whether there is an alternative with a callback
+        while (process.poll() is None)
+            currenttime = time.time()
+            if (timeout >= 0) and (currenttime - starttime < timeout):
+                time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
+                #check whether there is an alternative with a callback
+            elif (timeout >= 0)
+                process.kill() # send SIGKILL
+                process.returncode = -99
+            else:
+                time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
+                #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
     finally:
-        if process.returncode:
-           raise SystemError('%s: returns errr code %d'%(command, process.returncode))
+        if process.returncode == -99:
+           raise SystemError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 
+        elif process.returncode:
+           raise SystemError('%s: returns errr code %d' % (command, process.returncode))
     return out, err
 
 

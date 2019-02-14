@@ -77,6 +77,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
             elif (timeout >= 0):
+                log.warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(command))
                 process.kill() # send SIGKILL
                 process.returncode = -99
             else:

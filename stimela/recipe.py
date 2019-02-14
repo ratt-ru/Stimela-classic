@@ -18,7 +18,7 @@ GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 
 class StimelaCabParameterError(Exception): pass
-class StimelaRuntimeError(Exception): pass
+class StimelaRecipeExecutionError(Exception): pass
 class PipelineException(Exception):
     """ 
     Encapsulates information about state of pipeline when an
@@ -561,7 +561,7 @@ class Recipe(object):
             try:
                 recipe = utils.readJson(self.resume_file)
             except IOError:
-                raise StimelaRuntimeError("Cannot resume pipeline, resume file '{}' not found".format(self.resume_file))
+                raise StimelaRecipeExecutionError("Cannot resume pipeline, resume file '{}' not found".format(self.resume_file))
 
             steps_ = recipe.pop('steps')
             recipe['steps'] = []
@@ -579,7 +579,7 @@ class Recipe(object):
                     self.log.info('recipe step \'{0}\' is fit for re-execution. Label = {1}'.format(number, label))
                     _steps.append(number)
                 else:
-                    raise StimelaRuntimeError('Recipe flow, or task scheduling has changed. Cannot resume recipe. Label = {0}'.format(label))
+                    raise StimelaRecipeExecutionError('Recipe flow, or task scheduling has changed. Cannot resume recipe. Label = {0}'.format(label))
 
             # Check whether there are steps to resume        
             if len(_steps)==0:
@@ -625,7 +625,7 @@ class Recipe(object):
                 self.log2recipe(job, recipe, step, 'completed')
 
             except (utils.StimelaCabRuntimeError,
-                   StimelaRuntimeError,
+                   StimelaRecipeExecutionError,
                    StimelaCabParameterError) as e:
                 self.completed = [jb[1] for jb in jobs[:i]]
                 self.remaining = [jb[1] for jb in jobs[i+1:]]

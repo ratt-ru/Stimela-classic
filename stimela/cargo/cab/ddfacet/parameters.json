@@ -1233,7 +1233,7 @@
         }, 
         {
             "info": "able progress bars and other pretty console output", 
-            "default": false, 
+            "default": true, 
             "required": false, 
             "name": "Log-Boring", 
             "dtype": "bool"

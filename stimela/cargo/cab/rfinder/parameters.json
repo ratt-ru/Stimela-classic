@@ -1,85 +1,85 @@
 {
-    "task": "rfinder", 
-    "base": "stimela/rfinder", 
-    "tag": "1.0.1", 
+    "task": "rfinder",
+    "base": "stimela/rfinder",
+    "tag": "1.0.1",
     "description": "A tool to investigate the presence of RFI",
-    "prefix": "--", 
-    "binary": "rfinder", 
-    "msdir": false, 
+    "prefix": "--",
+    "binary": "rfinder",
+    "msdir": false,
     "parameters": [
         {
-            "info": "Name of telescope", 
-            "dtype": "str", 
-            "default": "meerkat", 
+            "info": "Name of telescope",
+            "dtype": "str",
+            "default": "meerkat",
             "name": "telescope"
         }, 
         {
-            "info": "Name of input ms file", 
-            "dtype": "str", 
+            "info": "Name of input ms file",
+            "dtype": "str",
             "io": "msfile",
-            "default": null, 
+            "default": null,
             "name": "msname"
         }, 
         {
-            "info": "Field ID of target of file", 
-            "dtype": "int", 
-            "default": null, 
+            "info": "Field ID of target of file",
+            "dtype": "int",
+            "default": null,
             "name": "field"
         }, 
         {
-            "info": "Path to ms file directory", 
-            "dtype": "str", 
-            "default": "msdir", 
-            "name": "msdir"
+            "info": "Path to ms file directory",
+            "dtype": "str",
+            "default": null,
+            "name": "msdir",
             "mapping": "workdir"
         }, 
         {
-            "info": "Path to output directory", 
-            "dtype": "str", 
-            "default": "output", 
-            "name": "output"
+            "info": "Path to output directory",
+            "dtype": "str",
+            "default": null,
+            "name": "output",
             "mapping": "outdir"
         }, 
         {
-            "info": "RFInder mode", 
-            "dtype": "str", 
-            "default": 'rms_clip', 
-            "name": "mode"
+            "info": "RFInder mode",
+            "dtype": "str",
+            "default": "rms_clip",
+            "name": "mode",
             "mapping": "RFInder_mode"
         }, 
         {
-            "info": "List of bad antennas. default `[]` e.g. '[1,2]' ", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "bad-antenna"
+            "info": "List of bad antennas. default `[]` e.g. '[1,2]' ",
+            "dtype": "str",
+            "default": null,
+            "name": "bad-antenna",
             "mapping": "bad_antenna"
         }, 
         {
-            "info": "Polarization to examine. xx, yy, xy, yx, q (also in CAPS)", 
-            "dtype": "str", 
-            "default": 'XX', 
+            "info": "Polarization to examine. xx, yy, xy, yx, q (also in CAPS)",
+            "dtype": "str",
+            "default": "XX",
             "name": "polarization"
         }, 
         {
-            "info": "Threshold for RFI identification", 
-            "dtype": "int", 
-            "default": 5, 
+            "info": "Threshold for RFI identification",
+            "dtype": "int",
+            "default": 5,
             "name": "rms-clip",
             "mapping": "rms_clip"
         }, 
         {
-            "info": "Min and Max frequency where to measure average std of visibilities", 
-            "dtype": "list:float", 
-            "default": null 
+            "info": "Min and Max frequency where to measure average std of visibilities",
+            "dtype": "list:float",
+            "default": null
             "name": "noise-measure-edges",
             "mapping": "noise_measure_edges"
         }, 
         {
-            "info": "Cutoff baseline lenght: <  = Short, > = Long", 
-            "dtype": "int", 
-            "default": 200, 
+            "info": "Cutoff baseline lenght: <  = Short, > = Long",
+            "dtype": "int",
+            "default": 200,
             "name": "baseline-cut",
             "mapping": "baseline_cut"
-        }, 
+        }
     ]
 }

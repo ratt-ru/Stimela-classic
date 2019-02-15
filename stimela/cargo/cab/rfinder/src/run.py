@@ -15,10 +15,15 @@ cab = utils.readJson(CONFIG)
 args = []
 msname = None
 
-rfinder_file = 'rfinder_default.yml'
+rfinder_file = '/build/rfinder/rfinder_default.yml'
 
 with open(rfinder_file) as f:
     list_doc = yaml.load(f)
+
+
+list_doci['general']['outdir'] = OUTPUT
+list_doci['general']['workdir'] = MSDIR
+
 
 for param in cab['parameters']:
     name = param['name']
@@ -27,9 +32,14 @@ for param in cab['parameters']:
     if value is None:
         continue
 
-    for par in list_doc:
-        if par['name'] == name:
-            par["value"] = value
+    for par in list_doc.keys():
+	if type(par) == dict:
+            for p in par.keys():
+                if pa == name:
+                    list_doc[par][p] = value
+	else:
+            if par == name:
+                list_doc[par] = value
 
 with open(rfinder_file, "w") as f:
     yaml.dump(list_doc, f)

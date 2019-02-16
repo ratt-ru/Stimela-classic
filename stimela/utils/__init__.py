@@ -55,7 +55,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         sys.stdout.write('running: %s\n'%cmd)
 
     sys.stdout.flush()
-    start = time.time()
+    starttime = time.time()
     process = subprocess.Popen(cmd,
                   stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
                   stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
@@ -74,7 +74,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             if (timeout >= 0) and (currenttime - starttime < timeout):
                 time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
-            elif (timeout >= 0)
+            elif (timeout >= 0):
                 process.kill() # send SIGKILL
                 process.returncode = -99
             else:

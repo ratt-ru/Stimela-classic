@@ -123,7 +123,8 @@ class StimelaJob(object):
 
 
     def singularity_job(self, image, config, singularity_image_dir,
-            input=None, output=None, msdir=None, **kw):
+            input=None, output=None, msdir=None,
+            time_out=-1, **kw):
         
         """
             Run task in singularity
@@ -172,7 +173,7 @@ class StimelaJob(object):
         }
         
         cont = singularity.Container(image, name, 
-                    logger=self.log)
+                    logger=self.log, time_out=time_out)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -248,7 +249,8 @@ class StimelaJob(object):
 
     def docker_job(self, image, config=None,
             input=None, output=None, msdir=None,
-            shared_memory='1gb', build_label=None, **kw):
+            shared_memory='1gb', build_label=None,
+            time_out=-1, **kw):
         """
         Add a task to a stimela recipe
 
@@ -292,7 +294,9 @@ class StimelaJob(object):
         
         cont = docker.Container(image, name,
                      label=self.label, logger=self.log,
-                     shared_memory=shared_memory, log_container=stimela.LOG_FILE)
+                     shared_memory=shared_memory, 
+                     time_out=time_out,
+                     log_container=stimela.LOG_FILE)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -441,7 +445,8 @@ class Recipe(object):
             input=None, output=None, msdir=None,
             label=None, shared_memory='1gb',
             build_label=None,
-            cpus=None, memory_limit=None):
+            cpus=None, memory_limit=None,
+            time_out=-1):
 
 
         job = StimelaJob(name, recipe=self, label=label,
@@ -458,7 +463,8 @@ class Recipe(object):
             job_func(image=image, config=config,
                 input=input, output=output, msdir=msdir or self.ms_dir,
                 shared_memory=shared_memory, build_label=build_label or self.build_label, 
-                singularity_image_dir=self.singularity_image_dir)
+                singularity_image_dir=self.singularity_image_dir,
+                time_out=time_out)
 
             self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(job.job.image, name))
             self.jobs.append(job)

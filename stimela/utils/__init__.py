@@ -13,15 +13,22 @@ import warnings
 import re
 import math
 
+from fcntl import fcntl, F_GETFL, F_SETFL
+from os import O_NONBLOCK, read
+
+DEBUG = False
+INTERRUPT_TIME = 0.1 # seconds -- do not want to constantly interrupt the child process
+class StimelaCabRuntimeError(RuntimeError): pass
+
 from multiprocessing import Process, Manager, Lock
 
 CPUS = 1
 
 def _logger(level=0, logfile=None):
 
-    if logfile:
+    if logfile and not logging.getLogger("STIMELA"):
         logging.basicConfig(filename=logfile)
-    else:
+    elif not logging.getLogger("STIMELA"):
         logging.basicConfig()
 
     LOGL = {"0": "INFO",
@@ -48,45 +55,73 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     """
     
     cmd = " ".join([command]+ map(str, options) )
+    def _print_info(msg):
+        if log:
+            log.info(msg)
+        else:
+            sys.stdout.write(msg + "\n")
 
-    if log:
-        log.info("Running: %s"%cmd)
-    else:
-        sys.stdout.write('running: %s\n'%cmd)
+    def _print_warn(msg):
+        if log:
+            log.warn(msg)
+        else:
+            sys.stderr.write(msg + "\n")
+    
+    _print_info("Running: {0:s}".format(cmd))
 
     sys.stdout.flush()
     starttime = time.time()
-    process = subprocess.Popen(cmd,
-                  stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
-                  stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
-                  shell=True)
-    out, err = None, None
-    try:
-        if process.stdout or process.stderr:
-            out, err = process.communicate()
-            if out is not None:
-                sys.stdout.write(str(out))
-            if err is not None:
-                sys.stderr.write(str(err))
-            
+
+    ON_POSIX = 'posix' in sys.builtin_module_names
+
+    p = process = subprocess.Popen(cmd,
+                  stderr=subprocess.PIPE,
+                  stdout=subprocess.PIPE,
+                  shell=True, 
+                  close_fds=ON_POSIX)
+
+    flags = fcntl(p.stdout, F_GETFL) # get current p.stdout flags
+    fcntl(p.stdout, F_SETFL, flags | O_NONBLOCK)
+
+    try:            
+        reaped = False
         while (process.poll() is None):
+            try:
+                _print_info(read(p.stdout.fileno(), 2**24))
+                _print_info(read(p.stderr.fileno(), 2**24))
+
+            except OSError:
+                pass #no more data
+
             currenttime = time.time()
             if (timeout >= 0) and (currenttime - starttime < timeout):
-                time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
+                DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
+                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
             elif (timeout >= 0):
+                _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
                 process.kill() # send SIGKILL
-                process.returncode = -99
+                reaped = True
             else:
-                time.sleep(5) # this is probably not ideal as it interrupts the process every few seconds, 
+                DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
+                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
+
+        try:
+            _print_info(read(p.stdout.fileno(), 2**24))
+            _print_info(read(p.stderr.fileno(), 2**24))
+
+        except OSError:
+             pass #no more data
+
+        if reaped: process.returncode = -99
     finally:
         if process.returncode == -99:
-           raise SystemError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 
+           raise StimelaCabRuntimeError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 
         elif process.returncode:
-           raise SystemError('%s: returns errr code %d' % (command, process.returncode))
-    return out, err
+           raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
+
 
 
 def pper(iterable, command, cpus=None, stagger=2, logger=None):

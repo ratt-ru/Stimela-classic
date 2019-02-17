@@ -13,10 +13,10 @@ class failure_checks(unittest.TestCase):
                 global INPUT
                 INPUT = 'input'
                 global MSDIR
-                MSDIR = 'msdir'
+                MSDIR = 'msdir-0'
 
                 global MS
-                MS = '12A-405.sb7601493.eb10633016.56086.127048738424.ms'
+                MS = 'kat-7-small.ms'
                 os.mkdir(os.path.join(MSDIR, MS)) # make dummy
                 global PREFIX
                 PREFIX = 'error_tests'
@@ -32,7 +32,7 @@ class failure_checks(unittest.TestCase):
 
                 # Reference antenna
                 global REFANT
-                REFANT = 'ea21'
+                REFANT = '0'
 
                 # Calibration tables
                 global ANTPOS_TABLE
@@ -55,7 +55,7 @@ class failure_checks(unittest.TestCase):
                 global OUTPUT
                 OUTPUT = "output_%s" % LABEL
                 global MSCONTSUB
-                MSCONTSUB = '12A-405.sb7601493.eb10633016.56086.127048738424.ms.contsub'
+                MSCONTSUB = MS+".contsub"
                 
 
                 global SPW
@@ -86,7 +86,7 @@ class failure_checks(unittest.TestCase):
                 global imname1
                 imname1 = PREFIX+'image1'
                 global corr_ms
-                corr_ms = '12A-405.sb7601493.eb10633016.56086.127048738424-corr.ms'
+                corr_ms = MS[:-3]+'-corr.ms'
                 global lsm0
                 lsm0=PREFIX+'-LSM0'
                 stimela.register_globals()
@@ -154,7 +154,7 @@ class failure_checks(unittest.TestCase):
                                 "vis"           :   MS,
                                 "plotfile"      :   PREFIX + 'after_manual_flags.png',
                                 "selectdata"    :    True,
-                                "correlation"   :   'RR,LL',
+                                "correlation"   :   'XX,YY',
                                 "averagedata"   :   True,
                                 "avgchannel"    :   '64',
                                 "coloraxis"     :   'f1i2e3l4d5',
@@ -178,7 +178,7 @@ class failure_checks(unittest.TestCase):
                                 "vis"           :   MS,
                                 "plotfile"      :   PREFIX + 'after_manual_flags.png',
                                 "selectdata"    :    True,
-                                "correlation"   :   'RR,LL',
+                                "correlation"   :   'XX,YY',
                                 "averagedata"   :   True,
                                 "avgchannel"    :   '64',
                                 "coloraxis"     :   'f1i2e3l4d5',
@@ -270,7 +270,6 @@ class failure_checks(unittest.TestCase):
                                 "vis"       :   MS,
                                 "caltable"  :   BPCAL_TABLE,
                                 "field"     :   BPCAL,
-                        #        "spw"       :   '0:21~235',
                                 "refant"    :   'DORAYME',
                                 "solint"    :   'inf',
                                 "bandtype"  :   'B',
@@ -298,7 +297,6 @@ class failure_checks(unittest.TestCase):
                                 "yaxis"     :   'amp',
                                 "field"     :   "YADADIDA",
                                 "subplot"   :   221,
-                        #        "iteration" :   'antenna',
                                 "figfile"   :   PREFIX+'-B0-R-amp.png',
                         },
                         input=INPUT,

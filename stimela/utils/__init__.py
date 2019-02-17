@@ -12,6 +12,7 @@ import inspect
 import warnings
 import re
 import math
+import thread
 
 from fcntl import fcntl, F_GETFL, F_SETFL
 from os import O_NONBLOCK, read
@@ -47,7 +48,7 @@ def assign(key, value):
     frame.f_globals[key] = value
 
 
-def xrun(command, options, log=None, _log_container_as_started=False, logfile=None, timeout=-1):
+def xrun(command, options, log=None, _log_container_as_started=False, logfile=None, timeout=-1, kill_callback=None):
     """
         Run something on command line.
 
@@ -79,11 +80,22 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                   shell=True, 
                   close_fds=ON_POSIX)
 
+    def clock_killer(p):
+        while process.poll() is None and (timeout >= 0):
+            currenttime = time.time()
+            if (currenttime - starttime < timeout):
+                DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
+            else:
+                _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
+                (kill_callback is not None) and kill_callback()
+            time.sleep(INTERRUPT_TIME)
+
+    t = thread.start_new_thread(clock_killer, tuple([p]))
+
     flags = fcntl(p.stdout, F_GETFL) # get current p.stdout flags
     fcntl(p.stdout, F_SETFL, flags | O_NONBLOCK)
 
-    try:            
-        reaped = False
+    try:
         while (process.poll() is None):
             try:
                 _print_info(read(p.stdout.fileno(), 2**24))
@@ -93,18 +105,9 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 pass #no more data
 
             currenttime = time.time()
-            if (timeout >= 0) and (currenttime - starttime < timeout):
-                DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
-                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
-                #check whether there is an alternative with a callback
-            elif (timeout >= 0):
-                _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
-                process.kill() # send SIGKILL
-                reaped = True
-            else:
-                DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
-                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
-                #check whether there is an alternative with a callback
+            DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
+            time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
+            #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
 
         try:
@@ -114,11 +117,8 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         except OSError:
              pass #no more data
 
-        if reaped: process.returncode = -99
     finally:
-        if process.returncode == -99:
-           raise StimelaCabRuntimeError('%s: has failed to run in allotted time and has been killed by Clock' % (command)) 
-        elif process.returncode:
+        if process.returncode:
            raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
 
 

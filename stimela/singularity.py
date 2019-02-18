@@ -78,8 +78,7 @@ class Container(object):
         utils.xrun("singularity instance.start", 
                         list(args) + [volumes,
 #                        "-c",
-                        self.image, self.name],
-                        timeout= self.time_out)
+                        self.image, self.name])
 
         self.status = "created"
 
@@ -96,9 +95,9 @@ class Container(object):
         else:
             volumes = ""
         
-        self._print("Starting container [{}]. The container ID is printed below.".format(self.name))
+        self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
         utils.xrun("singularity run", ["instance://{0:s} {1:s}".format(self.name, self.RUNSCRIPT)],
-                   timeout= self.time_out)
+                   timeout= self.time_out, kill_callback=self.stop)
 
         self.status = "running"
 
@@ -115,7 +114,7 @@ class Container(object):
         else:
             volumes = ""
         
-        self._print("Starting container [{}]. The container ID is printed below.".format(self.name))
+        self._print("Stopping container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("singularity", ["instance.stop {0:s}".format(self.name)])
 
         self.status = "exited"

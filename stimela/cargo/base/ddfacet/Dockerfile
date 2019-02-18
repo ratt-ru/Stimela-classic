@@ -1,21 +1,5 @@
-FROM kernsuite/base:5
+FROM kernsuite/base:3
 MAINTAINER Ben Hugo "bhugo@ska.ac.za"
-
-#Setup environment
-ENV DDFACET_TEST_DATA_DIR /test_data
-ENV DDFACET_TEST_OUTPUT_DIR /test_output
-
-#Copy DDFacet and SkyModel into the image
-ADD DDFacet /src/DDFacet/DDFacet
-ADD SkyModel /src/DDFacet/SkyModel
-ADD MANIFEST.in /src/DDFacet/MANIFEST.in
-ADD requirements.txt /src/DDFacet/requirements.txt
-ADD setup.py /src/DDFacet/setup.py
-ADD setup.cfg /src/DDFacet/setup.cfg
-ADD README.rst /src/DDFacet/README.rst
-ADD .git /src/DDFacet/.git
-ADD .gitignore /src/DDFacet/.gitignore
-ADD .gitmodules /src/DDFacet/.gitmodules
 
 # Support large mlocks
 RUN echo "*        -   memlock     unlimited" > /etc/security/limits.conf
@@ -56,31 +40,18 @@ ENV DEB_DEPENCENDIES \
     # Reference image generation dependencies
     make
 
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y -s ppa:kernsuite/kern-3 && \
-    apt-add-repository -y multiverse && \
-    apt-get update && \
-    apt-get install -y $DEB_SETUP_DEPENDENCIES && \
-    apt-get install -y $DEB_DEPENCENDIES && \
-    #Setup a virtual environment for the python packages
-    pip install -U "pip==9.0.3" setuptools wheel && \
-    # Install Montblanc and all other optional dependencies
-    pip install -r /src/DDFacet/requirements.txt --force-reinstall -U && \
-    cd /src/DDFacet/ && git submodule update --init --recursive && cd / && \
-    # Finally install DDFacet
-    rm -rf /src/DDFacet/DDFacet/cbuild && \
-    pip install -I -U --force-reinstall --no-binary :all: /src/DDFacet/ && \
-    # Nuke the unused & cached binaries needed for compilation, etc.
-    rm -r /src/DDFacet && \
-    apt-get remove -y $DEB_SETUP_DEPENDENCIES && \
-    apt-get autoclean -y && \
-    apt-get clean -y && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /root/.cache/ && \
-    rm -rf /var/cache/ && \
-    rm -rf LOFAR-Release-2_21_9
+RUN apt-get update 
+RUN apt-get install -y software-properties-common 
+RUN add-apt-repository -y -s ppa:kernsuite/kern-3
+RUN apt-add-repository -y multiverse
+RUN apt-get update
+RUN apt-get install -y $DEB_SETUP_DEPENDENCIES
+RUN apt-get install -y $DEB_DEPENCENDIES
+RUN pip install -U "pip==9.0.3" setuptools wheel
+RUN pip install -U "numpy<=1.16"
+RUN pip install "ddfacet==0.3.4.1"
+RUN pip install git+https://github.com/ska-sa/montblanc.git@ddfacet
+RUN pip install "pymoresane >= 0.3.0"
 
 # Set MeqTrees Cattery path to virtualenv installation directory
 ENV MEQTREES_CATTERY_PATH /usr/local/lib/python2.7/dist-packages/Cattery/

@@ -123,25 +123,25 @@ class failure_checks(unittest.TestCase):
                         label = 'quack_flagging:: Quack flagging',
                         time_out=300) 
                         recipe.run(resume=False)
-                
-        def testFailAutoflagger(self):
-                global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
-                global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
-                global REFANT, BPCAL, TARGET, GCAL, PREFIX
-                global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
-                global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
-                recipe = stimela.Recipe('AUTOFLAG_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(PipelineException):
-                        recipe.add('cab/autoflagger', 'aoflag_data', {
-                                "msname"    :   MS,
-                                "column"    :   "DATA5",
-                        },    
-                        input=INPUT,
-                        output=OUTPUT,    
-                        label='aoflag_data:: Flag DATA column',
-                        time_out=300) 
-                        recipe.run(resume=False)
-                
+
+#       def testFailAutoflagger(self):
+#               global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
+#               global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
+#               global REFANT, BPCAL, TARGET, GCAL, PREFIX
+#               global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
+#               global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
+#               recipe = stimela.Recipe('AUTOFLAG_FAIL', ms_dir=MSDIR)
+#               with self.assertRaises(PipelineException):
+#                       recipe.add('cab/autoflagger', 'aoflag_data', {
+#                               "msname"    :   MS,
+#                               "column"    :   "DATA5",
+#                       },    
+#                       input=INPUT,
+#                       output=OUTPUT,    
+#                       label='aoflag_data:: Flag DATA column',
+#                       time_out=300) 
+#                       recipe.run(resume=False)
+#               
         def testFailPlotMS(self):
                 global INPUT, OUTPUT, MSDIR, MS, LABEL, _nchans
                 global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE

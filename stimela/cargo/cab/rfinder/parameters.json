@@ -77,7 +77,7 @@
         {
             "info": "Min and Max frequency where to measure average std of visibilities",
             "dtype": "list:float",
-            "default": null
+            "default": null,
             "name": "noise-measure-edges",
             "mapping": "noise_measure_edges"
         }, 

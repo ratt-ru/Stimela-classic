@@ -1,7 +1,7 @@
 {
     "task": "casa_mstransform", 
     "base": "stimela/casa", 
-    "tag": "dev", 
+    "tag": "1.0.1", 
     "description": "Split the MS, combine/separate/regrid spws and do channel and time averaging", 
     "prefix": "-", 
     "binary": "mstransform", 
@@ -144,11 +144,17 @@
             "info": "First channel to use in the output spw (mode-dependant)", 
             "default": 0, 
             "name": "start", 
-            "dtype": ["int","str"]
+            "dtype": [
+                "int", 
+                "str"
+            ]
         }, 
         {
             "info": "Number of input channels that are used to create an output channel.", 
-            "dtype": ["int","str"], 
+            "dtype": [
+                "int", 
+                "str"
+            ], 
             "default": 1, 
             "name": "width"
         }, 

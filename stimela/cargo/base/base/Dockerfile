@@ -1,4 +1,4 @@
-FROM kernsuite/base:4
+FROM kernsuite/base:5
 RUN docker-apt-install git python-pip git wget
-RUN pip install -U pyyaml pip setuptools wheel 
+RUN pip install -U pip
 RUN pip install pyyaml

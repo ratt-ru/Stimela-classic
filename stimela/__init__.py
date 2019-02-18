@@ -9,12 +9,17 @@ import signal
 
 import inspect
 import stimela
-from stimela_misc import version
 from stimela import utils, cargo
 from stimela.cargo import cab
 from recipe import Recipe as Pipeline
 from recipe import Recipe, PipelineException
 from stimela import docker, singularity
+import pkg_resources
+
+try:
+    __version__ = pkg_resources.require("stimela")[0].version
+except pkg_resources.DistributionNotFound:
+    __version__ = "dev"
 
 from stimela.utils import logger
 
@@ -49,8 +54,6 @@ for item in os.listdir(cargo.CAB_PATH):
         continue
     if dockerfile and paramfile and srcdir:
         CAB.append(item)
-
-__version__ = version.version
 
 GLOBALS = {}
 

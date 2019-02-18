@@ -1,7 +1,9 @@
-FROM stimela/casa:0.3.2
-RUN docker-apt-install git locales
-RUN locale-gen en_US.UTF-8
+FROM stimela/crasa:5.4.1
+RUN apt-get -y install xvfb
+COPY xvfb.init.d /etc/init.d/xvfb
+RUN chmod 755 /etc/init.d/xvfb
+RUN chmod 777 /var/run
+ENV DISPLAY :99
 RUN pip install -U pip 
-RUN pip install -U drive-casa pyyaml
-RUN pip install -U git+https://github.com/SpheMakh/crasa.git
-RUN casa-config --exec update-data
+RUN pip install -U crasa pyyaml
+ENV PATH /${PATH}

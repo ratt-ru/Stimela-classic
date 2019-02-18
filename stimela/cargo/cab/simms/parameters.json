@@ -1,7 +1,7 @@
 {
     "task": "simms", 
     "base": "stimela/simms", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "Uses the CASA simulator tool to create a simulated measurement set (MS)", 
     "prefix": "--", 
     "binary": "simms", 

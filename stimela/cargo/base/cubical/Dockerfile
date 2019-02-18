@@ -1,8 +1,8 @@
-FROM stimela/base:1.0.0
+FROM stimela/base:1.0.1
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install casacore-dev \
         libboost-python-dev \
-        libcfitsio3-dev \
+        libcfitsio-dev \
         wcslib-dev
 RUN pip install -U pip setuptools wheel
 RUN docker-apt-install wget git-all

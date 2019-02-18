@@ -1,7 +1,7 @@
 FROM stimela/base:1.0.0
 
 RUN docker-apt-install casacore-dev \
-		       python-casacore
+                       python-casacore
 
 RUN pip install --upgrade pip
 RUN pip install matplotlib==2.2.3

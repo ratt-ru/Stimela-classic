@@ -5,7 +5,7 @@
     "description": "A tool to investigate the presence of RFI",
     "prefix": "--",
     "binary": "rfinder",
-    "msdir": false,
+    "msdir": true,
     "parameters": [
         {
             "info": "Name of telescope",
@@ -40,6 +40,13 @@
             "name": "output",
             "mapping": "outdir"
         }, 
+        {
+            "info": "Enable to find RFI in msfile over threshold",
+            "dtype": "bool",
+            "default": null,
+            "name": "rfi-enable",
+            "mapping": "rfi_enable"
+        },
         {
             "info": "RFInder mode",
             "dtype": "str",
@@ -80,6 +87,90 @@
             "default": 200,
             "name": "baseline-cut",
             "mapping": "baseline_cut"
+        },
+        {
+            "info": "Enable time chunking",
+            "dtype": "bool",
+            "default": null,
+            "name": "time-enable",
+            "mapping": "time_enable"
+        },
+        {
+            "info": "Time chunks in minutes",
+            "dtype": "int",
+            "default": 10,
+            "name": "time-step",
+            "mapping": "time_step"
+        },
+        {
+            "info": "Enable spw for rebinning",
+            "dtype": "bool",
+            "default": null,
+            "name": "spw-enable",
+            "mapping": "spw_enable"
+        },
+        {
+            "info": "Channel width of rebinned output table [MHz]",
+            "dtype": "int",
+            "default": 20,
+            "name": "spw-width",
+            "mapping": "spw_width"
+        },
+        {
+            "info": "Enable estimation of the beam shape aster RFI flagging",
+            "dtype": "bool",
+            "default": null,
+            "name": "beam-shape-enable",
+            "mapping": "beam_shape_enable"
+        },
+        {
+            "info": "Enable output plotting",
+            "dtype": "bool",
+            "default": null,
+            "name": "plot_enable",
+            "mapping": "plot_enable"
+        },
+        {
+            "info": "Choose to plot % of RFI, 'rfi', or noise, 'noise', or factor of noise increase, 'noise_factor' in 1D plots",
+            "dtype": "str",
+            "default": null,
+            "name": "plot-noise",
+            "mapping": "plot_noise"
+        },
+        {
+            "info": "Plot all baselines, or only the short and the long movies:",
+            "dtype": "bool",
+            "default": null,
+            "name": "plot-long-short",
+            "mapping": "plot_long_short"
+        },
+        {
+            "info": "Make 1-D movie plots (gif)",
+            "dtype": "bool",
+            "default": null,
+            "name": "1d-gif",
+            "mapping": "1d_gif"
+        },
+        {
+            "info": "Make 2-D movie plots (gif)",
+            "dtype": "bool",
+            "default": null,
+            "name": "2d-gif",
+            "mapping": "2d_gif"
+        },
+        {
+            "info": "Make Alt-AZ plots",
+            "dtype": "bool",
+            "default": null,
+            "name": "altaz-gif",
+            "mapping": "altaz_gif"
+        },
+        {
+            "info": "Generate movies in a report",
+            "dtype": "bool",
+            "default": null,
+            "name": "report",
+            "mapping": "movies_in_report"
         }
     ]
 }

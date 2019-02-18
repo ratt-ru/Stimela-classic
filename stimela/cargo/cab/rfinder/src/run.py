@@ -21,8 +21,8 @@ with open(rfinder_file) as f:
     list_doc = yaml.load(f)
 
 
-list_doci['general']['outdir'] = OUTPUT
-list_doci['general']['workdir'] = MSDIR
+list_doc['general']['outdir'] = OUTPUT
+list_doc['general']['workdir'] = MSDIR
 
 
 for param in cab['parameters']:
@@ -33,11 +33,11 @@ for param in cab['parameters']:
         continue
 
     for par in list_doc.keys():
-	if type(par) == dict:
+        if type(par) == dict:
             for p in par.keys():
-                if pa == name:
+                if p == name:
                     list_doc[par][p] = value
-	else:
+        else:
             if par == name:
                 list_doc[par] = value
 

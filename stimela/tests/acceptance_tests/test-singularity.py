@@ -88,21 +88,21 @@ class singularity_test(unittest.TestCase):
                         time_out=600) 
 
 
-            pipeline.add('cab/casa_plotms', 
-                        'plot_vis',
-                        {
-                            "vis"           :   MS,
-                            "xaxis"         :   'uvdist',
-                            "yaxis"         :   'amp',
-                            "xdatacolumn"   :   'corrected',
-                            "ydatacolumn"   :   'corrected',
-                            "plotfile"      :   PREFIX+'-amp_uvdist.png',
-                            "overwrite"     :   True,
-                        },
-                        input=INPUT,
-                        output=OUTPUT,
-                        label='plot_amp_uvdist:: Plot amplitude vs uv-distance',
-                        time_out=600) 
+#           pipeline.add('cab/casa_plotms', 
+#                       'plot_vis',
+#                       {
+#                           "vis"           :   MS,
+#                           "xaxis"         :   'uvdist',
+#                           "yaxis"         :   'amp',
+#                           "xdatacolumn"   :   'corrected',
+#                           "ydatacolumn"   :   'corrected',
+#                           "plotfile"      :   PREFIX+'-amp_uvdist.png',
+#                           "overwrite"     :   True,
+#                       },
+#                       input=INPUT,
+#                       output=OUTPUT,
+#                       label='plot_amp_uvdist:: Plot amplitude vs uv-distance',
+#                       time_out=600) 
 
             ## Image
             # Make things a bit interesting by imaging with different weights 

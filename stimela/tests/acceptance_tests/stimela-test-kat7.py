@@ -444,8 +444,6 @@ class ngc417_reduce(unittest.TestCase):
                                 "mode"           : 'channel',
                                 "nchan"          : nchans,
                                 "niter"          : 0,
-                                "psfmode"        : 'hogbom',
-                                "threshold"      : '1mJy',
                                 "npix"           : 256,
                                 "cellsize"       : 30,
                                 "weight"         : 'natural',
@@ -454,7 +452,7 @@ class ngc417_reduce(unittest.TestCase):
                         input=INPUT,
                         output=OUTPUT,
                         label='casa_dirty_cube:: Make a dirty cube with CASA CLEAN',
-                        time_out=30) 
+                        time_out=300) 
 
 #               recipe.add('cab/sofia', 'sofia',
 #                       {

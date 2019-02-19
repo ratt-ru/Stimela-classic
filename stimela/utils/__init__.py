@@ -14,8 +14,11 @@ import re
 import math
 import thread
 
-from fcntl import fcntl, F_GETFL, F_SETFL
-from os import O_NONBLOCK, read
+#from fcntl import fcntl, F_GETFL, F_SETFL
+#from os import O_NONBLOCK, read
+
+from threading import Thread
+from Queue import Queue, Empty
 
 DEBUG = False
 INTERRUPT_TIME = 0.1 # seconds -- do not want to constantly interrupt the child process
@@ -57,12 +60,14 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     
     cmd = " ".join([command]+ map(str, options) )
     def _print_info(msg):
+        if msg is None: return
         if log:
             log.info(msg)
         else:
             sys.stdout.write(msg + "\n")
 
     def _print_warn(msg):
+        if msg is None: return
         if log:
             log.warn(msg)
         else:
@@ -73,13 +78,45 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     sys.stdout.flush()
     starttime = time.time()
 
-    ON_POSIX = 'posix' in sys.builtin_module_names
-
     p = process = subprocess.Popen(cmd,
                   stderr=subprocess.PIPE,
                   stdout=subprocess.PIPE,
-                  shell=True, 
-                  close_fds=ON_POSIX)
+                  shell=True)
+    class NonBlockingStreamReader:
+
+        def __init__(self, stream):
+            '''
+            stream: the stream to read from.
+                    Usually a process' stdout or stderr.
+            '''
+
+            self._s = stream
+            self._q = Queue()
+
+            def _populateQueue(stream, queue):
+                '''
+                Collect lines from 'stream' and put them in 'quque'.
+                '''
+
+                while True:
+                    try:
+                        line = stream.readline()
+                        if line:
+                            queue.put(line)
+                    except:
+                        pass
+
+            self._t = Thread(target = _populateQueue,
+                    args = (self._s, self._q))
+            self._t.daemon = True
+            self._t.start() #start collecting lines from the stream
+
+        def readline(self, timeout = None):
+            try:
+                return self._q.get(block = timeout is not None,
+                        timeout = timeout)
+            except (Empty):
+                return None
 
     def clock_killer(p):
         while process.poll() is None and (timeout >= 0):
@@ -91,32 +128,23 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 (kill_callback is not None) and kill_callback()
             time.sleep(INTERRUPT_TIME)
 
+    nbsr_out = NonBlockingStreamReader(p.stdout)
+    nbsr_err = NonBlockingStreamReader(p.stderr)
+
     t = thread.start_new_thread(clock_killer, tuple([p]))
 
-    flags = fcntl(p.stdout, F_GETFL) # get current p.stdout flags
-    fcntl(p.stdout, F_SETFL, flags | O_NONBLOCK)
 
     try:
         while (process.poll() is None):
-            try:
-                _print_info(read(p.stdout.fileno(), 2**24))
-                _print_info(read(p.stderr.fileno(), 2**24))
-
-            except OSError:
-                pass #no more data
-
+            _print_info(nbsr_out.readline(0.1))
+            _print_warn(nbsr_err.readline(0.1))
             currenttime = time.time()
             DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
             time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
             #check whether there is an alternative with a callback
         assert hasattr(process, "returncode"), "No returncode after termination!"
-
-        try:
-            _print_info(read(p.stdout.fileno(), 2**24))
-            _print_info(read(p.stderr.fileno(), 2**24))
-
-        except OSError:
-             pass #no more data
+        _print_info(nbsr_out.readline(0.1))
+        _print_warn(nbsr_err.readline(0.1))
 
     finally:
         if process.returncode:

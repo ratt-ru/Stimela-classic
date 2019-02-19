@@ -248,6 +248,12 @@
             "name": "docallib"
         }, 
         {
+            "info": "Path to calibration library file", 
+            "dtype": "file",
+            "io": "input",
+            "name": "callib"
+        }, 
+        {
             "info": "Enable continuum subtraction as in task uvcontsub", 
             "dtype": "bool", 
             "default": false, 

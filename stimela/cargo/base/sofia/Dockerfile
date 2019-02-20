@@ -11,9 +11,10 @@ RUN pip install numpy \
         matplotlib \
         astropy
 
-RUN git clone https://github.com/SoFiA-Admin/SoFiA /build/sofia
-RUN cd /build/sofia && git checkout tags/v1.2.0 && python setup.py install 
-
+RUN git clone https://github.com/SoFiA-Admin/SoFiA.git /sofia
+RUN cd /sofia && git fetch && git fetch --tags
+RUN cd /sofia && git checkout v1.2.0
+RUN cd /sofia && python setup.py  install
 ENV SOFIA_MODULE_PATH="/build/sofia/build/lib.linux-x86_64-2.7"
 ENV SOFIA_PIPELINE_PATH="/build/sofia/sofia_pipeline.py"
 ENV PATH="$PATH:/build/sofia:/build/sofia/gui"

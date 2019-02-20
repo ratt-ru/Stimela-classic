@@ -1,7 +1,7 @@
 {
     "task": "casa_concat", 
     "base": "stimela/casa", 
-    "tag": "dev", 
+    "tag": "1.0.1", 
     "description": "Concatenate several visibility data sets", 
     "prefix": "", 
     "binary": "concat", 

@@ -10,7 +10,7 @@ from datetime import datetime
 
 class StimelaLogger(object):
     def __init__(self, lfile):
-        
+
         self.lfile = lfile
         # Create file if it does not exist
         if not os.path.exists(self.lfile):

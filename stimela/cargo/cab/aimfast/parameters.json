@@ -51,14 +51,16 @@
             "mapping": "psf-file"
         }, 
         {
-            "info": "Name of model to use for normality testing.",
-            "default": null,
-            "required": false,
-            "name": "normality-test",
-            "dtype": "str",
-            "choices": ["normaltest",
-                        "shapiro"]
-        },
+            "info": "Name of model to use for normality testing.", 
+            "name": "normality-test", 
+            "default": null, 
+            "dtype": "str", 
+            "required": false, 
+            "choices": [
+                "normaltest", 
+                "shapiro"
+            ]
+        }, 
         {
             "info": "Label", 
             "dtype": "str", 

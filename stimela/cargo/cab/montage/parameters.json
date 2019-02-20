@@ -1,81 +1,85 @@
 {
     "task": "montage.mosiac", 
     "base": "stimela/montage", 
-    "tag": "dev", 
+    "tag": "1.0.1", 
     "description": "Combine FITS files into a mosaic", 
-    "prefix": "-",
-    "binary": "montage.mosiac",
-    "msdir": false,
+    "prefix": "-", 
+    "binary": "montage.mosiac", 
+    "msdir": false, 
     "parameters": [
         {
-            "name" : "input_dir",
-            "info" : "The directory containing the input FITS files",
-            "dtype": "file",
+            "info": "The directory containing the input FITS files", 
+            "dtype": "file", 
+            "name": "input_dir", 
             "io": "input"
-        },
+        }, 
         {
-            "name": "header",
-            "info": "The header to project to. If this is not specified, then an optimal header is chosen.",
-            "dtype": "str"
-        },
+            "info": "The header to project to. If this is not specified, then an optimal header is chosen.", 
+            "dtype": "str", 
+            "name": "header"
+        }, 
         {
-            "name": "image_table",
-            "info": "The table file containing the list of input images. This can be specified to avoid recomputing it every time a mosaic is made from the same set of input files.",
-            "dtype": "file",
+            "info": "The table file containing the list of input images. This can be specified to avoid recomputing it every time a mosaic is made from the same set of input files.", 
+            "dtype": "file", 
+            "name": "image_table", 
             "io": "input"
-        },
+        }, 
         {
-            "name": "output_dir",
-            "info": "Montage output directory",
-            "io":"output",
-            "dtype":"file"
-        },
+            "info": "Montage output directory", 
+            "dtype": "file", 
+            "name": "output_dir", 
+            "io": "output"
+        }, 
         {
-            "name": "mpi",
-            "info": "Whether to use MPI whenever possible (requires the MPI-enabled Montage binaries to be installed).",
-            "dtype": "bool"
-        },
+            "info": "Whether to use MPI whenever possible (requires the MPI-enabled Montage binaries to be installed).", 
+            "dtype": "bool", 
+            "name": "mpi"
+        }, 
         {
-            "name": "n_proc",
-            "info": "The number of processes to use if `mpi` is set to `True`",
-            "dtype": "int"
-        },
+            "info": "The number of processes to use if `mpi` is set to `True`", 
+            "dtype": "int", 
+            "name": "n_proc"
+        }, 
         {
-            "name": "background_match",
-            "info": "Whether to include a background-matching step",
-            "dtype": "bool"
-        },
+            "info": "Whether to include a background-matching step", 
+            "dtype": "bool", 
+            "name": "background_match"
+        }, 
         {
-            "name": "imglist",
-            "info": "A list of images to use (useful if not all the files inside `input_dir` should be combined).",
-            "dtype": "list:str"
-        },
+            "info": "A list of images to use (useful if not all the files inside `input_dir` should be combined).", 
+            "dtype": "list:str", 
+            "name": "imglist"
+        }, 
         {
-            "name": "combine",
-            "info": "How to combine the images",
-            "choices": ["mean", "median", "count"],
-            "dtype": "str"
-        },
+            "info": "How to combine the images", 
+            "dtype": "str", 
+            "name": "combine", 
+            "choices": [
+                "mean", 
+                "median", 
+                "count"
+            ]
+        }, 
         {
-            "name": "exact_size",
-            "info": "Whether the output mosaic should match the input header exactly, or whether the mosaic should be trimmed if possible.",
-            "dtype": "bool"
-        },
+            "info": "Whether the output mosaic should match the input header exactly, or whether the mosaic should be trimmed if possible.", 
+            "dtype": "bool", 
+            "name": "exact_size"
+        }, 
         {
-            "name": "cleanup",
-            "info": "Whether to remove any temporary directories used for mosaicking",
-            "dtype": "bool",
-            "default": "true"
-        },
+            "info": "Whether to remove any temporary directories used for mosaicking", 
+            "dtype": "bool", 
+            "default": "true", 
+            "name": "cleanup"
+        }, 
         {
-            "name": "bitpix",
-            "info": "BITPIX value for the ouput FITS file (default is -32). Possible values are: 8 (character or unsigned binary integer), 16 (16-bit integer), 32 (32-bit integer), -32 (single precision floating point), -64 (double precision floating point).",
-            "dtype" : "int"
-        },
+            "info": "BITPIX value for the ouput FITS file (default is -32). Possible values are: 8 (character or unsigned binary integer), 16 (16-bit integer), 32 (32-bit integer), -32 (single precision floating point), -64 (double precision floating point).", 
+            "dtype": "int", 
+            "name": "bitpix"
+        }, 
         {
-            "name": "level_only",
-            "info": "When doing background matching, whether to only allow changes in the level of frames, not the slope.",
-            "dtype": "bool"
+            "info": "When doing background matching, whether to only allow changes in the level of frames, not the slope.", 
+            "dtype": "bool", 
+            "name": "level_only"
         }
     ]
 }

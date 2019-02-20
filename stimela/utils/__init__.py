@@ -12,6 +12,17 @@ import inspect
 import warnings
 import re
 import math
+import thread
+
+#from fcntl import fcntl, F_GETFL, F_SETFL
+#from os import O_NONBLOCK, read
+
+from threading import Thread
+from Queue import Queue, Empty
+
+DEBUG = False
+INTERRUPT_TIME = 0.1 # seconds -- do not want to constantly interrupt the child process
+class StimelaCabRuntimeError(RuntimeError): pass
 
 from multiprocessing import Process, Manager, Lock
 
@@ -19,9 +30,9 @@ CPUS = 1
 
 def _logger(level=0, logfile=None):
 
-    if logfile:
+    if logfile and not logging.getLogger("STIMELA"):
         logging.basicConfig(filename=logfile)
-    else:
+    elif not logging.getLogger("STIMELA"):
         logging.basicConfig()
 
     LOGL = {"0": "INFO",
@@ -40,38 +51,105 @@ def assign(key, value):
     frame.f_globals[key] = value
 
 
-def xrun(command, options, log=None, _log_container_as_started=False, logfile=None):
+def xrun(command, options, log=None, _log_container_as_started=False, logfile=None, timeout=-1, kill_callback=None):
     """
         Run something on command line.
 
         Example: _run("ls", ["-lrt", "../"])
     """
-
+    
     cmd = " ".join([command]+ map(str, options) )
+    def _print_info(msg):
+        if msg is None: return
+        if log:
+            log.info(msg)
+        else:
+            sys.stdout.write(msg + "\n")
 
-    if log:
-        log.info("Running: %s"%cmd)
-    else:
-        sys.stdout.write('running: %s\n'%cmd)
+    def _print_warn(msg):
+        if msg is None: return
+        if log:
+            log.warn(msg)
+        else:
+            sys.stderr.write(msg + "\n")
+    
+    _print_info("Running: {0:s}".format(cmd))
 
     sys.stdout.flush()
+    starttime = time.time()
 
-    process = subprocess.Popen(cmd,
-                  stderr=subprocess.PIPE if not isinstance(sys.stderr,file) else sys.stderr,
-                  stdout=subprocess.PIPE if not isinstance(sys.stdout,file) else sys.stdout,
+    p = process = subprocess.Popen(cmd,
+                  stderr=subprocess.PIPE,
+                  stdout=subprocess.PIPE,
                   shell=True)
-    out, err = None, None
+    class NonBlockingStreamReader:
+
+        def __init__(self, stream):
+            '''
+            stream: the stream to read from.
+                    Usually a process' stdout or stderr.
+            '''
+
+            self._s = stream
+            self._q = Queue()
+
+            def _populateQueue(stream, queue):
+                '''
+                Collect lines from 'stream' and put them in 'quque'.
+                '''
+
+                while True:
+                    try:
+                        line = stream.readline()
+                        if line:
+                            queue.put(line)
+                    except:
+                        pass
+
+            self._t = Thread(target = _populateQueue,
+                    args = (self._s, self._q))
+            self._t.daemon = True
+            self._t.start() #start collecting lines from the stream
+
+        def readline(self, timeout = None):
+            try:
+                return self._q.get(block = timeout is not None,
+                        timeout = timeout)
+            except (Empty):
+                return None
+
+    def clock_killer(p):
+        while process.poll() is None and (timeout >= 0):
+            currenttime = time.time()
+            if (currenttime - starttime < timeout):
+                DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
+            else:
+                _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
+                (kill_callback is not None) and kill_callback()
+            time.sleep(INTERRUPT_TIME)
+
+    nbsr_out = NonBlockingStreamReader(p.stdout)
+    nbsr_err = NonBlockingStreamReader(p.stderr)
+
+    t = thread.start_new_thread(clock_killer, tuple([p]))
+
+
     try:
-        if process.stdout or process.stderr:
-            out, err = process.communicate()
-            sys.stdout.write(out)
-            sys.stderr.write(err)
-            
-        process.wait()
+        while (process.poll() is None):
+            _print_info(nbsr_out.readline(0.1))
+            _print_warn(nbsr_err.readline(0.1))
+            currenttime = time.time()
+            DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
+            time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
+            #check whether there is an alternative with a callback
+        assert hasattr(process, "returncode"), "No returncode after termination!"
+        _print_info(nbsr_out.readline(0.1))
+        _print_warn(nbsr_err.readline(0.1))
+
     finally:
         if process.returncode:
-           raise SystemError('%s: returns errr code %d'%(command, process.returncode))
-    return out, err
+           raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
+
 
 
 def pper(iterable, command, cpus=None, stagger=2, logger=None):

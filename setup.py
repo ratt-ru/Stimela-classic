@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
 import os
+from setuptools import setup
 
-try:
-  from setuptools import setup
-except ImportError as e:
-  from distutils.core import setup
 
-from stimela_misc import version
+PACKAGE_NAME = "stimela"
+__version__ = "1.0.1"
 
-setup(name = "stimela",
-    version = version.version,
+setup(name = PACKAGE_NAME,
+    version = __version__,
     description = "Dockerized radio interferometry scripting framework",
     author = "Sphesihle Makhathini",
     author_email = "sphemakh@gmail.com",

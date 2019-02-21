@@ -260,6 +260,11 @@
             "name": "sol-jones"
         }, 
         {
+            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
+            "dtype": "bool",
+            "name": "sol-diag-diag"
+        },
+        {
             "info": "Solve in single or double precision", 
             "dtype": "str", 
             "default": null, 

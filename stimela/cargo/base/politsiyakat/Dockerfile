@@ -1,4 +1,4 @@
-FROM stimela/base:1.0.0
+FROM stimela/base:1.0.1
 RUN docker-apt-install libfreetype6-dev \
         wcslib-dev libcfitsio-dev \ 
         python-casacore

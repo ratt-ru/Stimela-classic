@@ -23,5 +23,5 @@ for param in cab['parameters']:
 
     args[name] = value
 
-task = crasa.CasaTask(cab["binary"], **args)
+task = crasa.CasaTask(cab["binary"], crash_on_severe=True, **args)
 task.run()

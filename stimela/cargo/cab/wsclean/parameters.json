@@ -620,18 +620,18 @@
             "dtype": "float", 
             "default": null, 
             "name": "padding"
-        },
+        }, 
         {
             "info": "Number of major cycles", 
-            "dtype": "int",
-            "default": null,
+            "dtype": "int", 
+            "default": null, 
             "name": "nmiter"
-        },
+        }, 
         {
-            "info": "list of model components from wsclean",
-            "dtype": "bool",
-            "default": false,
-            "name": "savesourcelist",
+            "info": "list of model components from wsclean", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "savesourcelist", 
             "mapping": "-save-source-list"
         },
         {
@@ -641,7 +641,5 @@
             "name": "predict",
             "mapping": "-predict"
         }
-
-
     ]
 }

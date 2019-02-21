@@ -1,7 +1,7 @@
 {
     "task": "sunblocker", 
     "base": "stimela/sunblocker", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "Tools for manipulating measurement sets (MSs)", 
     "prefix": " ", 
     "binary": "msutils", 

@@ -1,7 +1,7 @@
 {
     "task": "casa_plotms", 
     "base": "stimela/casa", 
-    "tag": "dev", 
+    "tag": "1.0.1", 
     "description": "CASA plotms task", 
     "prefix": " ", 
     "binary": "plotms", 

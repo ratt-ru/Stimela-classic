@@ -1,4 +1,4 @@
-FROM stimela/politsiyakat:1.0.0
+FROM stimela/politsiyakat:1.0.1
 MAINTAINER <bhugo@ska.ac.za>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

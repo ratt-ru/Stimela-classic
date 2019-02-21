@@ -25,10 +25,10 @@
             "required": true
         }, 
         {
-            "name"  : "overwrite",
-            "info"  : "Delete MS file(s) if they already exist",
-            "dtype" : "bool"
-        },
+            "info": "Delete MS file(s) if they already exist", 
+            "dtype": "bool", 
+            "name": "overwrite"
+        }, 
         {
             "info": "Produce quad circular polarisation. (RR, RL, LR, LL) *** Currently just relabels the linear pols ****", 
             "dtype": "bool", 
@@ -73,10 +73,10 @@
             "name": "pols-to-use"
         }, 
         {
-            "info": "Keep spaces in source names, default removes spaces",
-            "name": "keep-spaces",
-            "dtype": "bool"
-        },
+            "info": "Keep spaces in source names, default removes spaces", 
+            "dtype": "bool", 
+            "name": "keep-spaces"
+        }, 
         {
             "info": "Print command to convert MS to miriad uvfits in casapy", 
             "dtype": "bool", 
@@ -130,13 +130,13 @@
             "dtype": "int", 
             "default": null, 
             "name": "quack"
-        },
+        }, 
         {
-            "info": "Folder contaning loggin credintials",
-            "name": "credentials_dir",
-            "dtype": "file",
-            "io": "input",
-            "required": false,
-        },
+            "info": "Folder contaning loggin credintials", 
+            "dtype": "file", 
+            "required": false, 
+            "name": "credentials_dir", 
+            "io": "input"
+        }
     ]
 }

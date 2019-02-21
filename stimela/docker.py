@@ -64,6 +64,7 @@ class Container(object):
                  volumes=None, environs=None,
                  label="", logger=None, 
                  shared_memory="1gb",
+                 time_out=-1,
                  log_container=None):
         """
         Python wrapper to docker engine tools for managing containers.
@@ -81,7 +82,7 @@ class Container(object):
         self.shared_memory = shared_memory
         self.PID = os.getpid()
         self.uptime = "00:00:00"
-
+        self.time_out = time_out
         self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
 
 
@@ -156,7 +157,10 @@ class Container(object):
         self.cont_logger.log_container(self.name)
         self.cont_logger.write()
         try:
-            utils.xrun("docker", ["start", "-a", self.name])
+            self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
+            utils.xrun("docker", ["start", "-a", self.name], 
+                       timeout=self.time_out, 
+                       kill_callback=lambda: utils.xrun("docker", ["kill", self.name]))
         except KeyboardInterrupt:
             utils.xrun("docker", ["kill", self.name])
             raise 

@@ -1,7 +1,7 @@
 {
     "task": "eidos", 
     "base": "stimela/eidos", 
-    "tag": "1.0.0", 
+    "tag": "1.0.1", 
     "description": "Create primary beam model of MeerKAT", 
     "prefix": "--", 
     "binary": "eidos", 
@@ -44,11 +44,11 @@
             "dtype": "bool", 
             "default": true, 
             "name": "output-eight"
-        },
+        }, 
         {
-            "name": "normalise",
-            "dtype": "bool",
-            "info": "normalise the E-Jones wrt central pixels"
+            "info": "normalise the E-Jones wrt central pixels", 
+            "dtype": "bool", 
+            "name": "normalise"
         }
     ]
 }

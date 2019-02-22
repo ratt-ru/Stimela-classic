@@ -31,6 +31,7 @@ class Container(object):
     def __init__(self, image, name, 
                  volumes=None,
                  logger=None,
+                 time_out=-1,
                  runscript=None):
         """
         Python wrapper to singularity tools for managing containers.
@@ -45,7 +46,7 @@ class Container(object):
         self.RUNSCRIPT = runscript
         self.PID = os.getpid()
         self.uptime = "00:00:00"
-
+        self.time_out = time_out
         #self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
 
 
@@ -73,7 +74,7 @@ class Container(object):
         else:
             volumes = ""
         
-        self._print("Instantiating container [{}]. The container ID is printed below.".format(self.name))
+        self._print("Instantiating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
         utils.xrun("singularity instance.start", 
                         list(args) + [volumes,
 #                        "-c",
@@ -94,8 +95,9 @@ class Container(object):
         else:
             volumes = ""
         
-        self._print("Starting container [{}]. The container ID is printed below.".format(self.name))
-        utils.xrun("singularity run", ["instance://{0:s} {1:s}".format(self.name, self.RUNSCRIPT)])
+        self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
+        utils.xrun("singularity run", ["instance://{0:s} {1:s}".format(self.name, self.RUNSCRIPT)],
+                   timeout= self.time_out, kill_callback=self.stop)
 
         self.status = "running"
 
@@ -112,7 +114,7 @@ class Container(object):
         else:
             volumes = ""
         
-        self._print("Starting container [{}]. The container ID is printed below.".format(self.name))
+        self._print("Stopping container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("singularity", ["instance.stop {0:s}".format(self.name)])
 
         self.status = "exited"

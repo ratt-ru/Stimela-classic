@@ -1,75 +1,78 @@
 {
-    "task": "aimfast",
-    "base": "stimela/aimfast",
-    "tag": "1.0.1",
-    "description": "An Astronomical Image Fedility Assessment Tool",
-    "prefix": "--",
-    "binary": "aimfast",
-    "msdir": false,
+    "task": "aimfast", 
+    "base": "stimela/aimfast", 
+    "tag": "1.0.1", 
+    "description": "An Astronomical Image Fidelity Assessment Tool", 
+    "prefix": "--", 
+    "binary": "aimfast", 
+    "msdir": false, 
     "parameters": [
         {
-            "info": "Residual image to extract the four (4) statistical moments of distribution",
-            "name": "residual-image",
-            "io": "input",
-            "default": null,
-            "dtype": "file",
-            "required": true
-        }, 
-        {
-            "info": "Model lsm.html/text file to extract peak source flux",
-            "name": "tigger-model",
-            "io": "input",
-            "default": null,
-            "dtype": "file",
+            "info": "Residual image to extract the four (4) statistical moments of distribution", 
+            "name": "residual-image", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "file", 
             "required": false
         }, 
         {
-            "info": "Restored image to extract the dynamic range",
-            "name": "restored-image",
-            "io": "input",
-            "default": null,
-            "dtype": "file",
+            "info": "Model lsm.html/text file to extract peak source flux", 
+            "name": "tigger-model", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "file", 
             "required": false
         }, 
         {
-            "info": "Source area multiplying factor i.e tot_area = psf-size*af",
-            "default": 6,
-            "required": false,
-            "name": "area-factor",
+            "info": "Restored image to extract the dynamic range", 
+            "name": "restored-image", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "file", 
+            "required": false
+        }, 
+        {
+            "info": "Source area multiplying factor i.e tot_area = psf-size*af", 
+            "default": 6, 
+            "required": false, 
+            "name": "area-factor", 
             "dtype": "int"
-        },
+        }, 
         {
-            "info": "Name of the point spread function file or psf size in arcsec",
-            "name": "psf",
-            "io": "input",
-            "default": null,
-            "dtype": ["float",
-                      "file"
-            ],
-            "required": false,
+            "info": "Name of the point spread function file or psf size in arcsec", 
+            "name": "psf", 
+            "io": "input", 
+            "default": null, 
+            "dtype": [
+                "float", 
+                "file"
+            ], 
+            "required": false, 
             "mapping": "psf-file"
-        },
+        }, 
         {
-            "info": "Name of model to use for normality testing.",
-            "default": null,
-            "required": false,
-            "name": "normality-model",
-            "dtype": "str",
-            "choices": ["normaltest",
-                        "shapiro"]
-        },
+            "info": "Name of model to use for normality testing.", 
+            "name": "normality-test", 
+            "default": null, 
+            "dtype": "str", 
+            "required": false, 
+            "choices": [
+                "normaltest", 
+                "shapiro"
+            ]
+        }, 
         {
-            "name": "label",
-            "info": "Label",
-            "dtype": "str"
-        },
+            "info": "Label", 
+            "dtype": "str", 
+            "name": "label"
+        }, 
         {
-            "info": "Data range to perform normality testing",
-            "default": null,
-            "required": false,
-            "name": "data-range",
+            "info": "Data range to perform normality testing", 
+            "default": null, 
+            "required": false, 
+            "name": "data-range", 
             "dtype": "int"
-        },
+        }, 
         {
             "info": "Two tigger model (text/lsm.html) files to compare",
             "default": null,
@@ -78,7 +81,29 @@
             "io": "output",
             "dtype": "list:file",
             "delimiter": " "
+        },
+        {
+            "info": "Two residual (fits) files to compare. e.g: ['res1.fits:res2.fits']",
+            "default": null,
+            "required": false,
+            "name": "compare-residuals",
+            "io": "output",
+            "dtype": "list:file",
+            "delimiter": " "
+        },
+        {
+            "info": "Phase tracking centre of the catalog. e.g: J2000.0,0.0deg,-30.0",
+            "default": null,
+            "required": false,
+            "name": "phase-centre",
+            "dtype": "str"
+        },
+        {
+            "info": "Data points to randomly sample the residual/noise image",
+            "default": null,
+            "required": false,
+            "name": "data-points",
+            "dtype": "int"
         }
-
     ]
 }

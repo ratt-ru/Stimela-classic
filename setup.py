@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
 import os
+from setuptools import setup
 
-try:
-  from setuptools import setup
-except ImportError as e:
-  from distutils.core import setup
 
-from stimela_misc import version
+PACKAGE_NAME = "stimela"
+__version__ = "1.0.1"
 
-setup(name = "stimela",
-    version = version.version,
+setup(name = PACKAGE_NAME,
+    version = __version__,
     description = "Dockerized radio interferometry scripting framework",
     author = "Sphesihle Makhathini",
     author_email = "sphemakh@gmail.com",
@@ -27,7 +25,8 @@ setup(name = "stimela",
                                    "cab/*/src/tdlconf.profiles",
                                    "cab/singularity_run",
                                    ]},
-    install_requires = ["pyyaml"],
+    install_requires = ["pyyaml", 
+                        "nose>=1.3.7"],
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

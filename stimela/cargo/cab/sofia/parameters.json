@@ -393,37 +393,37 @@
         {
             "info": null, 
             "dtype": "int", 
-            "default": 0, 
+            "default": null, 
             "name": "scaleNoise.edgeX"
         }, 
         {
             "info": null, 
             "dtype": "int", 
-            "default": 0, 
+            "default": null, 
             "name": "scaleNoise.edgeY"
         }, 
         {
             "info": null, 
             "dtype": "int", 
-            "default": 0, 
+            "default": null, 
             "name": "scaleNoise.edgeZ"
         }, 
         {
             "info": null, 
             "dtype": "bool", 
-            "default": false, 
+            "default": null, 
             "name": "scaleNoise.scaleX"
         }, 
         {
             "info": null, 
             "dtype": "bool", 
-            "default": false, 
+            "default": null, 
             "name": "scaleNoise.scaleY"
         }, 
         {
             "info": null, 
             "dtype": "bool", 
-            "default": true, 
+            "default": null, 
             "name": "scaleNoise.scaleZ"
         }, 
         {
@@ -673,93 +673,92 @@
             "dtype": "bool", 
             "default": true, 
             "name": "writeCat.writeXML"
-        },
+        }, 
         {
-            "name" : "pipeline.pedantic",
-            "info": null,
-            "dtype": "bool"
-        },
+            "info": null, 
+            "dtype": "bool", 
+            "name": "pipeline.pedantic"
+        }, 
         {
-            "name": "steps.doWriteNoiseCube",
-            "info": null,
-            "dtype": "bool"
-        },
+            "info": null, 
+            "dtype": "bool", 
+            "name": "steps.doWriteNoiseCube"
+        }, 
         {
-            "name": "flag.file",
-            "info": null,
-            "dtype": "file",
+            "info": null, 
+            "dtype": "file", 
+            "name": "flag.file", 
             "io": "input"
-        },
+        }, 
         {
-            "name": "scaleNoise.method",
-            "info": null,
-            "dtype": "str",
-            "default": "global",
+            "info": null, 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scaleNoise.method", 
             "choices": [
-                "global",
+                "global", 
                 "local"
             ]
-        },
+        }, 
         {
-            "name": "scaleNoise.fluxRange",
-            "info": null,
-            "dtype": "str",
-            "default": "all",
+            "info": null, 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scaleNoise.fluxRange", 
             "choices": [
-                "negative",
-                "positive",
+                "negative", 
+                "positive", 
                 "all"
             ]
-        },
+        }, 
         {
-            "name": "scaleNoise.windowSpatial",
-            "info": null,
-            "dtype": "int",
-            "default": 25
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": null, 
+            "name": "scaleNoise.windowSpatial"
+        }, 
         {
-            "name": "scaleNoise.windowSpectral",
-            "info": null,
-            "dtype": "int",
-            "default": 15
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": null, 
+            "name": "scaleNoise.windowSpectral"
+        }, 
         {
-            "name": "scaleNoise.gridSpatial",
-            "info": null,
-            "dtype": "int",
-            "default": 0
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": null, 
+            "name": "scaleNoise.gridSpatial"
+        }, 
         {
-            "name": "scaleNoise.interpolation",
-            "info": null,
-            "dtype":"str",
-            "default": "none",
+            "info": null, 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scaleNoise.interpolation", 
             "choices": [
-                "none",
-                "linear",
+                "none", 
+                "linear", 
                 "cubic"
             ]
-        },
+        }, 
         {
-            "name": "SCfind.fluxRange",
-            "dtype": "str",
-            "info": null,
-            "default": "all",
+            "info": null, 
+            "dtype": "str", 
+            "default": "all", 
+            "name": "SCfind.fluxRange", 
             "choices": [
-                "positive",
-                "negative",
+                "positive", 
+                "negative", 
                 "all"
             ]
-
-        },
+        }, 
         {
-            "name": "threshold.fluxRange",
-            "dtype": "str",
-            "info": null,
-            "default": "all",
-            "choices" : [
-                "positive",
-                "negative",
+            "info": null, 
+            "dtype": "str", 
+            "default": "all", 
+            "name": "threshold.fluxRange", 
+            "choices": [
+                "positive", 
+                "negative", 
                 "all"
             ]
         }

@@ -1,7 +1,7 @@
 {
     "task": "casa_tclean", 
     "base": "stimela/casa", 
-    "tag": "dev", 
+    "tag": "1.0.1", 
     "description": "CASA tclean task. Clean based algorithm for multi-scale and wideband image reconstruction, widefield imaging correcting for the w-term", 
     "prefix": "", 
     "binary": "tclean", 
@@ -116,26 +116,26 @@
         }, 
         {
             "info": "Data column to image", 
-            "dtype": "str",
-            "default": "corrected",
+            "dtype": "str", 
+            "default": "corrected", 
+            "name": "datacolumn", 
             "choices": [
-                "data",
+                "data", 
                 "corrected"
-            ],
-            "name": "datacolumn"
+            ]
         }, 
         {
             "info": "Spectral gridding type (mfs, cube, cubedata, cont)", 
-            "dtype": "str", 
-            "default": "mfs", 
             "name": "mode", 
+            "default": "mfs", 
+            "dtype": "str", 
+            "mapping": "specmode", 
             "choices": [
                 "mfs", 
                 "cube", 
-                "cubedata",
+                "cubedata", 
                 "cont"
-            ],
-            "mapping": "specmode"
+            ]
         }, 
         {
             "info": "Number of channels (planes) in output image; -1 = all", 
@@ -177,7 +177,7 @@
         {
             "info": "Re-restore the cube image to a common beam when True", 
             "dtype": "bool", 
-            "default": null,
+            "default": null, 
             "name": "resmooth"
         }, 
         {
@@ -204,10 +204,10 @@
             "name": "veltype", 
             "choices": [
                 "radio", 
-                "optical",
-                "z",
-                "ratio",
-                "beta",
+                "optical", 
+                "z", 
+                "ratio", 
+                "beta", 
                 "gamma"
             ]
         }, 
@@ -225,17 +225,17 @@
         }, 
         {
             "info": "Gridding kernel for FFT-based transforms", 
-            "dtype": "str", 
-            "default": "standard", 
             "name": "gridmode", 
+            "default": "standard", 
+            "dtype": "str", 
+            "mapping": "gridder", 
             "choices": [
                 "standard", 
                 "widefield", 
-                "awproject",
-                "wproject",
+                "awproject", 
+                "wproject", 
                 "mosaic"
-            ],
-            "mapping": "gridder"
+            ]
         }, 
         {
             "info": "Number of w-projection planes for convolution", 
@@ -246,98 +246,98 @@
         {
             "info": "Coordinate prection", 
             "dtype": "str", 
-            "default": "SIN",
+            "default": "SIN", 
+            "name": "projection", 
             "choices": [
-                "SIN",
+                "SIN", 
                 "NCP"
-            ],
-            "name": "projection"
-        },
+            ]
+        }, 
         {
             "info": "Number of facets along each axis (main image only)", 
             "dtype": "int", 
             "default": 1, 
             "name": "facets"
-        },
+        }, 
         {
             "info": "Convolution function cache directory", 
             "dtype": "file", 
             "default": null, 
             "name": "cfcache", 
             "io": "output"
-        },
+        }, 
         {
             "info": "Maximum number of iterations", 
             "dtype": "int", 
             "default": 500, 
             "name": "clean_iterations", 
             "mapping": "niter"
-        },
+        }, 
         {
             "info": "Maximum number of minor-cycle iterations (per plane) before triggering a major cycle", 
             "dtype": "int", 
             "default": -1, 
             "name": "cycleniter"
-        },
+        }, 
         {
             "info": "Loop gain for cleaning", 
             "dtype": "float", 
             "default": 0.1, 
             "name": "gain"
-        },
+        }, 
         {
             "info": "Flux level to stop cleaning, must include units: '1.0mJy'", 
             "dtype": "str", 
             "default": "0.0mJy", 
             "name": "threshold"
-        },
+        }, 
         {
             "info": "Method of PSF calculation to use during minor cycles", 
-            "dtype": "str", 
-            "default": "clark", 
             "name": "psfmode", 
+            "default": "clark", 
+            "dtype": "str", 
+            "mapping": "deconvolver", 
             "choices": [
                 "clark", 
-                "clarkstokes",
-                "mtmfs",
-                "hogbom",
-                "multiscale",
+                "clarkstokes", 
+                "mtmfs", 
+                "hogbom", 
+                "multiscale", 
                 "mem"
-            ],
-            "mapping": "deconvolver"
-        },
+            ]
+        }, 
         {
             "info": "Controls how often major cycles are done. (e.g. 5 for frequently)", 
             "dtype": "float", 
             "default": 1.5, 
             "name": "cyclefactor"
-        },
+        }, 
         {
             "info": "List of deconvolution scales (pixels); [] = standard clean", 
             "dtype": "list", 
             "default": null, 
-            "name": "multiscale",
+            "name": "multiscale", 
             "mapping": "scales"
-        },
+        }, 
         {
             "info": "a bias to give more weight toward smaller scales", 
             "dtype": "float", 
             "default": 0.6, 
             "name": "smallscalebias"
-        },
+        }, 
         {
             "info": "Use interactive clean (with GUI viewer)", 
             "dtype": "bool", 
             "default": false, 
             "name": "interactive"
-        },
+        }, 
         {
             "info": "Cleanbox(es), mask image(s),region(s), or a level", 
             "dtype": "file", 
             "default": null, 
             "name": "mask", 
             "io": "input"
-        },
+        }, 
         {
             "info": "x and y image size in pixels.  Single value: same for both", 
             "dtype": [
@@ -350,7 +350,7 @@
             ], 
             "name": "npix", 
             "mapping": "imsize"
-        },
+        }, 
         {
             "info": "x and y cell size(s). Default unit arcsec.", 
             "dtype": [
@@ -363,25 +363,25 @@
             ], 
             "name": "cellsize", 
             "mapping": "cell"
-        },
+        }, 
         {
             "info": "Image center: direction or field index", 
             "dtype": "str", 
             "default": null, 
             "name": "phasecenter"
-        },
+        }, 
         {
             "info": "Rest frequency to assign to image (see help)", 
             "dtype": "str", 
             "default": null, 
             "name": "restfreq"
-        },
+        }, 
         {
             "info": "Stokes params to image (eg 'I','Q','U','V','IV','QU','IQ','UV','IQUV','RR','LL','XX','YY','RRLL','XXYY')", 
             "dtype": "str", 
             "default": "I", 
             "name": "stokes"
-        },
+        }, 
         {
             "info": "Weighting of uv (natural, uniform,briggs, ...)", 
             "name": "weight", 
@@ -395,226 +395,226 @@
                 "radial", 
                 "superuniform"
             ]
-        },
+        }, 
         {
             "info": "Briggs robustness parameter", 
             "dtype": "float", 
             "default": 0.5, 
             "name": "robust"
-        },
+        }, 
         {
             "info": "number of pixels to determine uv-cell size 0=> field of view", 
             "dtype": "int", 
             "default": 0, 
             "name": "npixels"
-        },
+        }, 
         {
             "info": "uv-taper on outer baselines in uv-plane", 
-            "dtype": "list:str", 
             "delimiter": " ", 
             "name": "outertaper", 
-            "default": null,
+            "default": null, 
+            "dtype": "list:str", 
             "mapping": "uvtaper"
-        },
+        }, 
         {
             "info": "Name of model image(s) to initialize cleaning", 
+            "name": "modelimage", 
+            "io": "input", 
+            "default": null, 
             "dtype": "file", 
-            "default": null,
-            "name": "modelimage",
-            "io": "input",
             "mapping": "startmodel"
-        },
+        }, 
         {
             "info": "Output Gaussian restoring beam for CLEAN image", 
-            "dtype": "list:str",
-            "delimiter": " ",
+            "dtype": "list:str", 
+            "delimiter": " ", 
             "name": "restoringbeam", 
             "default": null
-        },
+        }, 
         {
             "info": "Output primary beam-corrected image", 
-            "dtype": "bool",
-            "default": null,
+            "dtype": "bool", 
+            "default": null, 
             "name": "pbcor"
-        },
+        }, 
         {
             "info": "Minimum PB level to use (i.e. fraction that marks the max depth of cleaning)", 
-            "dtype": "float",
-            "default": null,
-            "name": "minpb",
+            "dtype": "float", 
+            "default": null, 
+            "name": "minpb", 
             "mapping": "minpsffraction"
-        },
+        }, 
         {
             "info": "Maximum PB level to use (i.e. fraction that marks the min depth of cleaning)", 
-            "dtype": "float",
-            "default": null,
-            "name": "maxpb",
+            "dtype": "float", 
+            "default": null, 
+            "name": "maxpb", 
             "mapping": "maxpsffraction"
-        },
+        }, 
         {
             "info": "Convert output images to FITS files", 
-            "dtype": "bool",
-            "default": true,
+            "dtype": "bool", 
+            "default": true, 
             "name": "port2fits"
-        },
+        }, 
         {
             "info": "Keep casa images when 'port2fits' is enabled", 
-            "dtype": "bool",
-            "default": false,
+            "dtype": "bool", 
+            "default": false, 
             "name": "keep_casa_images"
-        },
+        }, 
         {
             "info": "Run major cycles in parallel", 
-            "dtype": "bool",
-            "default": false,
+            "dtype": "bool", 
+            "default": false, 
             "name": "parallel"
-        },
+        }, 
         {
             "info": "Calculate PSF", 
-            "dtype": "bool",
-            "default": true,
+            "dtype": "bool", 
+            "default": true, 
             "name": "calcpsf"
-        },
+        }, 
         {
             "info": "Calculate initial residual image", 
-            "dtype": "bool",
-            "default": true,
-            "name": "calcres"
-        },
-        {
-            "info": "Options to save model visibilities", 
-            "dtype": "str",
-            "default": null,
-            "choices": [
-                "none", 
-                "virtual",
-                "modelcolumn",
-            ],
-            "name": "savemodel"
-        },
-        {
-            "info": "Restore the model image", 
-            "dtype": "bool",
-            "default": true,
-            "name": "restoration"
-        },
-        {
-            "info": "Restart using existing images (and start from an existing model image)", 
-            "dtype": "bool",
-            "default": true,
-            "name": "restart"
-        },
-        {
-            "info": "Automatically adjust automask threshold to a higher value at the begging", 
-            "dtype": "bool",
-            "default": null, 
-            "name": "autoadjust"
-        },
-        {
-            "info": "Maximum number of mask regions to be added by automasking at the beginning each minor cycles run", 
-            "dtype": "int",
-            "default": null, 
-            "name": "nmask"
-        },
-        {
-            "info": "Primary beam mask", 
-            "dtype": "float",
-            "default": 0.0, 
-            "name": "pbmask"
-        },
-        {
-            "info": "Calculate initial residual image", 
-            "dtype": "bool",
+            "dtype": "bool", 
             "default": true, 
             "name": "calcres"
-        },
+        }, 
+        {
+            "info": "Options to save model visibilities", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "savemodel", 
+            "choices": [
+                "none", 
+                "virtual", 
+                "modelcolumn"
+            ]
+        }, 
+        {
+            "info": "Restore the model image", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "restoration"
+        }, 
+        {
+            "info": "Restart using existing images (and start from an existing model image)", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "restart"
+        }, 
+        {
+            "info": "Automatically adjust automask threshold to a higher value at the begging", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "autoadjust"
+        }, 
+        {
+            "info": "Maximum number of mask regions to be added by automasking at the beginning each minor cycles run", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "nmask"
+        }, 
+        {
+            "info": "Primary beam mask", 
+            "dtype": "float", 
+            "default": 0.0, 
+            "name": "pbmask"
+        }, 
+        {
+            "info": "Calculate initial residual image", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "calcres"
+        }, 
         {
             "info": "Type of mask(s) to be used for deconvolution", 
-            "dtype": "str",
+            "dtype": "str", 
             "default": "user", 
             "name": "usemask"
-        },
+        }, 
         {
             "info": "Threshold for automasking (with a unit e.g. 1.0mJy or in sigma e.g 3.0", 
             "dtype": "str", 
-            "default": null,
+            "default": null, 
             "name": "maskthreshold"
-        },
+        }, 
         {
             "info": "Resolution for automasking (e.g. 10arcsec)", 
             "dtype": "str", 
-            "default": null,
+            "default": null, 
             "name": "maskresolution"
-        },
+        }, 
         {
             "info": "Primary beam gain level at which to cut off normalizations", 
-            "dtype": "float",
+            "dtype": "float", 
             "default": 0.2, 
             "name": "pblimit"
-        },
+        }, 
         {
             "info": "Parallactic angle interval to rotate nearest aperture illumination function (in deg)", 
-            "dtype": "float",
+            "dtype": "float", 
             "default": 360.0, 
             "name": "rotatepastep"
-        },
+        }, 
         {
             "info": "Parallactic angle interval to recompute aperture illumination function (in deg)", 
-            "dtype": "float",
+            "dtype": "float", 
             "default": 360.0, 
             "name": "computepastep"
-        },
+        }, 
         {
             "info": "Convolution function cache directory name", 
-            "dtype": "str",
-            "default": null,
+            "dtype": "str", 
+            "default": null, 
             "name": "cfcache"
-        },
+        }, 
         {
             "info": "Use conjugate frequency for wideband A-terms", 
-            "dtype": "bool",
-            "default": true,
+            "dtype": "bool", 
+            "default": true, 
             "name": "conjbeams"
-        },
+        }, 
         {
             "info": "Use frequency dependent A-term", 
-            "dtype": "bool",
-            "default": true,
+            "dtype": "bool", 
+            "default": true, 
             "name": "wbawp"
-        },
+        }, 
         {
             "info": "Use prolate spheroidal during gridding", 
-            "dtype": "bool",
-            "default": false,
+            "dtype": "bool", 
+            "default": false, 
             "name": "psterm"
-        },
+        }, 
         {
             "info": "Use aperture illumination functions during gridding", 
-            "dtype": "bool",
-            "default": true,
+            "dtype": "bool", 
+            "default": true, 
             "name": "aterm"
-        },
+        }, 
         {
             "info": "Number of channel chunks to grid separately", 
-            "dtype": "int",
-            "default": 1,
+            "dtype": "int", 
+            "default": 1, 
             "name": "chanchunks"
-        },
+        }, 
         {
             "info": "VP table saved via the vpmanager", 
             "dtype": "str", 
-            "default": null,
+            "default": null, 
             "name": "vptable"
-        },
+        }, 
         {
             "info": "Normalization type", 
             "dtype": "str", 
-            "default": "flatnoise",
+            "default": "flatnoise", 
+            "name": "normtype", 
             "choices": [
-                "flatnoise",
+                "flatnoise", 
                 "flatsky"
-            ],
-            "name": "normtype"
+            ]
         }
     ]
 }

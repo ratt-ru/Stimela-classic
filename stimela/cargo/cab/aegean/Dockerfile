@@ -1,4 +1,4 @@
-FROM stimela/aegean:dev
+FROM stimela/aegean:1.0.1
 MAINTAINER <sphemakh@gmial.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

@@ -1,7 +1,7 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "dev", 
+    "tag": "1.0.1", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--", 
     "binary": "gocubical", 
@@ -76,11 +76,11 @@
         }, 
         {
             "info": "Predict model visibilities from given LSM (using Montblanc).", 
-            "dtype": "list:file", 
-            "default": null, 
+            "check_io": false, 
             "name": "model-list", 
-            "io": "input",
-            "check_io": false
+            "io": "input", 
+            "default": null, 
+            "dtype": "list:file"
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
@@ -93,11 +93,11 @@
         }, 
         {
             "info": "Apply beams if specified eg. 'beam_$(corr)_$(reim).fits' or\n'beam_$(CORR)_$(REIM).fits'", 
-            "dtype": "file", 
-            "default": null, 
+            "check_io": false, 
             "name": "model-beam-pattern", 
-            "io": "input",
-            "check_io": false
+            "io": "input", 
+            "default": null, 
+            "dtype": "file"
         }, 
         {
             "info": "Beam l axis", 
@@ -206,59 +206,64 @@
             "dtype": "str", 
             "default": null, 
             "name": "flags-ddid-density"
-        },
+        }, 
         {
-            "name": "madmax-enable",
-            "info" : "Enable Mad Max flagging in the solver. This computes the median absolute residual (i.e. median absolute deviation from zero), and flags visibilities exceeding the thresholds",
-            "dtype": "bool"
-        },
+            "info": "Enable Mad Max flagging in the solver. This computes the median absolute residual (i.e. median absolute deviation from zero), and flags visibilities exceeding the thresholds", 
+            "dtype": "bool", 
+            "name": "madmax-enable"
+        }, 
         {
-            "name": "madmax-estimate",
-            "info": "MAD estimation mode. Use 'corr' for a separate estimate per each baseline and correlation. Otherwise, a single estimate per baseline is computed using 'all' correlations, or only the 'diag' or 'offdiag' correlations.",
-            "dtype": "str",
+            "info": "MAD estimation mode. Use 'corr' for a separate estimate per each baseline and correlation. Otherwise, a single estimate per baseline is computed using 'all' correlations, or only the 'diag' or 'offdiag' correlations.", 
+            "dtype": "str", 
+            "name": "madmax-estimate", 
             "choices": [
-                        "corr", 
-                        "all",
-                        "diag",
-                        "offdiag"
-                        ]
-        },
+                "corr", 
+                "all", 
+                "diag", 
+                "offdiag"
+            ]
+        }, 
         {
-            "name": "madmax-plot",
-            "info": "Enable plots for Mad Max flagging. Use 'show' to show figures interactively. Plots will show the worst flagged baseline, and a median flagged baseline, provided the fraction of flagged visibilities is above --flags-mad-plot-thr.",
-            "dtype": "bool"
-        },
+            "info": "Enable plots for Mad Max flagging. Use 'show' to show figures interactively. Plots will show the worst flagged baseline, and a median flagged baseline, provided the fraction of flagged visibilities is above --flags-mad-plot-thr.", 
+            "dtype": "bool", 
+            "name": "madmax-plot"
+        }, 
         {
-            "name": "madmax-plot-frac-above",
-            "info": "Threshold (in terms of fraction of visibilities flagged) above which plots will be generated.",
-            "dtype": "float"
-        },
+            "info": "Threshold (in terms of fraction of visibilities flagged) above which plots will be generated.", 
+            "dtype": "float", 
+            "name": "madmax-plot-frac-above"
+        }, 
         {
-            "name": "madmax-diag",
-            "info": "Flag on on-diagonal (parallel-hand) residuals",
-            "dtype": "bool"
-        },
+            "info": "Flag on on-diagonal (parallel-hand) residuals", 
+            "dtype": "bool", 
+            "name": "madmax-diag"
+        }, 
         {
-            "name": "madmax-offdiag",
-            "info": "Flag on off-diagonal (cross-hand) residuals",
-            "dtype": "bool"
-        },
+            "info": "Flag on off-diagonal (cross-hand) residuals", 
+            "dtype": "bool", 
+            "name": "madmax-offdiag"
+        }, 
         {
-            "name": "global-threshold",
-            "info": "Threshold for global median MAD (MMAD) flagging. MMAD is computed as the median of the per-baseline MADs. Residuals exceeding S*MMAD/1.428 will be flagged. Can be specified",
-            "dtype": "list:float"
-        },
+            "info": "Threshold for global median MAD (MMAD) flagging. MMAD is computed as the median of the per-baseline MADs. Residuals exceeding S*MMAD/1.428 will be flagged. Can be specified", 
+            "dtype": "list:float", 
+            "name": "global-threshold"
+        }, 
         {
-            "name": "madmax-threshold",
-            "info": "Threshold for MAD flagging per baseline (specified in sigmas). Residuals exceeding mad-thr*MAD/1.428 will be flagged. MAD is computed per baseline. This can be specified as a list e.g. N1,N2,N3,... The first value is used to flag residuals before a solution starts (use 0 to disable), the next value is used when the residuals are first recomputed during the solution several iteratins later (see -chi-int), etc. A final pass may be done at the end of the solution. The last value in the list is reused if necessary. Using a list with gradually decreasing values may be sensible. #metavar:SIGMAS",
-            "dtype": "list:float"
-        },
+            "info": "Threshold for MAD flagging per baseline (specified in sigmas). Residuals exceeding mad-thr*MAD/1.428 will be flagged. MAD is computed per baseline. This can be specified as a list e.g. N1,N2,N3,... The first value is used to flag residuals before a solution starts (use 0 to disable), the next value is used when the residuals are first recomputed during the solution several iteratins later (see -chi-int), etc. A final pass may be done at the end of the solution. The last value in the list is reused if necessary. Using a list with gradually decreasing values may be sensible. #metavar:SIGMAS", 
+            "dtype": "list:float", 
+            "name": "madmax-threshold"
+        }, 
         {
             "info": "Comma-separated list of Jones terms to enable, e.g. \"G,B,dE\"\n(default: G)", 
             "dtype": "str", 
             "default": null, 
             "name": "sol-jones"
         }, 
+        {
+            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
+            "dtype": "bool",
+            "name": "sol-diag-diag"
+        },
         {
             "info": "Solve in single or double precision", 
             "dtype": "str", 
@@ -364,17 +369,25 @@
             "name": "dist-ncpu"
         }, 
         {
-            "info": "Set CPU affinity of worker processes. If None or 0, no affinity is set. If N>0,\nset affinities starting from core 0, with an increment of N. N=1 is a sensible\nvalue. Can also be an explicit list of NCPU core numbers (or a range(N,M,K) invocation).\nNote that first worker is the I/O worker, the rest are compute workers.", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "dist-affinity"
-        }, 
+            "info": "Number of OMP threads to use. 0: determine automatically.",
+            "name" : "dist-nthread",
+            "dtype": "int"
+        },
         {
-            "info": "Sets CPU affinity of main process. If None, no affinity is set. If \"auto\", shares\nCPU affinity with the I/O worker. Otherwise, give core number.", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "dist-main-affinity"
-        }, 
+          "info":"If empty or None, processes will not be pinned to cores. Otherwise, set to the starting core number, or 'N:K' to start with N and step by K",
+            "name": "dist-pin",
+            "dtype" : "int"
+        },
+        {
+            "info": "If not 0, pins the I/O & Montblanc process to a separate core, or cores if --montblanc-threads is specified). Ignored if --dist-pin is not set",
+            "name" : "dist-pin-io",
+            "dtype" : "bool"
+        },
+        {
+            "info" : "If set, pins the main process to a separate core. If set to, pins it to the same core as the I/O process, if I/O process is pinned. Ignored if --dist-pin is not set",
+            "name" : "pin-main",
+            "dtype": ["bool", "str"]
+        },
         {
             "info": "Minimum number of time/freq data-chunks to load into memory\nsimultaneously. This number should be divisible by ncpu-1 for optimal\nperformance.", 
             "dtype": "str", 
@@ -435,13 +448,13 @@
             ], 
             "default": null, 
             "name": "out-subtract-dirs"
-        },
+        }, 
         {
-            "name" : "out-casa-gaintables",
-            "info": "Export gaintables to CASA caltable format. Tables are exported to same directory as set for cubical databases",
-            "dtype": "bool",
-            "default": false
-        },
+            "info": "Export gaintables to CASA caltable format. Tables are exported to same directory as set for cubical databases", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "out-casa-gaintables"
+        }, 
         {
             "info": "Generate summary plots.", 
             "dtype": "bool", 
@@ -864,11 +877,14 @@
             "dtype": "str", 
             "default": null, 
             "name": "dd-prop-flags"
-        },
+        }, 
         {
-            "name"  : "log-verbose",
-            "info"  : "Default console output verbosity level",
-            "dtype" : ["bool","str"]
+            "info": "Default console output verbosity level", 
+            "dtype": [
+                "bool", 
+                "str"
+            ], 
+            "name": "log-verbose"
         }
     ]
 }

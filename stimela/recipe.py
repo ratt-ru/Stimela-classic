@@ -17,7 +17,8 @@ UID = os.getuid()
 GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 
-
+class StimelaCabParameterError(Exception): pass
+class StimelaRecipeExecutionError(Exception): pass
 class PipelineException(Exception):
     """ 
     Encapsulates information about state of pipeline when an
@@ -49,7 +50,8 @@ class PipelineException(Exception):
 class StimelaJob(object):
     def __init__(self, name, recipe, label=None, 
 
-        jtype='docker', cpus=None, memory_limit=None, singularity_dir=None):
+        jtype='docker', cpus=None, memory_limit=None, singularity_dir=None,
+        time_out=-1):
 
         self.name = name
         self.recipe = recipe
@@ -64,7 +66,7 @@ class StimelaJob(object):
             self.args.append("--cpus {0:f}".format(cpus))
         if memory_limit:
             self.args.append("--memory {0:s}".format(memory_limit)) 
-
+        self.time_out = time_out
         
     def run_python_job(self):
         function = self.job['function']
@@ -108,7 +110,7 @@ class StimelaJob(object):
         """
         
         if not callable(function):
-            raise RuntimeError('Object given as function is not callable')
+            raise utils.StimelaCabRuntimeError('Object given as function is not callable')
         
         if self.name is None:
             self.name = function.__name__
@@ -123,7 +125,8 @@ class StimelaJob(object):
 
 
     def singularity_job(self, image, config, singularity_image_dir,
-            input=None, output=None, msdir=None, **kw):
+            input=None, output=None, msdir=None,
+            **kw):
         
         """
             Run task in singularity
@@ -144,8 +147,8 @@ class StimelaJob(object):
         # check if name has any offending charecters
         offenders = re.findall('\W', self.name)
         if offenders:
-            raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
-                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
+            raise StimelaCabParameterError('The cab name \'{:s}\' has some non-alphanumeric characters.'
+                                           ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
 
         ## Update I/O with values specified on command line
         # TODO (sphe) I think this feature should be removed
@@ -172,7 +175,7 @@ class StimelaJob(object):
         }
         
         cont = singularity.Container(image, name, 
-                    logger=self.log)
+                    logger=self.log, time_out=self.time_out)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -248,7 +251,8 @@ class StimelaJob(object):
 
     def docker_job(self, image, config=None,
             input=None, output=None, msdir=None,
-            shared_memory='1gb', build_label=None, **kw):
+            shared_memory='1gb', build_label=None,
+            **kw):
         """
         Add a task to a stimela recipe
 
@@ -266,8 +270,8 @@ class StimelaJob(object):
         # check if name has any offending charecters
         offenders = re.findall('\W', self.name)
         if offenders:
-            raise ValueError('The cab name \'{:s}\' has some non-alphanumeric characters.'
-                             ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
+            raise StimelaCabParameterError('The cab name \'{:s}\' has some non-alphanumeric characters.'
+                                           ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
 
         ## Update I/O with values specified on command line
         # TODO (sphe) I think this feature should be removed
@@ -282,7 +286,7 @@ class StimelaJob(object):
         try:
             cabpath = cabs_logger['{0:s}_{1:s}'.format(build_label, image)]['DIR']
         except KeyError:
-            raise RuntimeError('Cab {} has is uknown to stimela. Was it built?'.format(image))
+            raise StimelaCabParameterError('Cab {} has is uknown to stimela. Was it built?'.format(image))
         parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image), str(time.time()).replace('.', ''))
@@ -292,7 +296,9 @@ class StimelaJob(object):
         
         cont = docker.Container(image, name,
                      label=self.label, logger=self.log,
-                     shared_memory=shared_memory, log_container=stimela.LOG_FILE)
+                     shared_memory=shared_memory, 
+                     log_container=stimela.LOG_FILE,
+                     time_out=self.time_out)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -396,8 +402,9 @@ class Recipe(object):
         ch.setFormatter(formatter)
         fh.setFormatter(formatter)
         # Add the handlers to logger
-        self.log.addHandler(ch)
-        self.log.addHandler(fh)
+        
+        len(filter(lambda x: isinstance(x, logging.StreamHandler), self.log.handlers)) == 0 and self.log.addHandler(ch)
+        len(filter(lambda x: isinstance(x, logging.FileHandler), self.log.handlers)) == 0 and self.log.addHandler(fh)
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -441,11 +448,12 @@ class Recipe(object):
             input=None, output=None, msdir=None,
             label=None, shared_memory='1gb',
             build_label=None,
-            cpus=None, memory_limit=None):
+            cpus=None, memory_limit=None,
+            time_out=-1):
 
 
         job = StimelaJob(name, recipe=self, label=label,
-                         cpus=cpus, memory_limit=memory_limit)
+                         cpus=cpus, memory_limit=memory_limit, time_out=time_out)
 
         if callable(image):
             job.jtype = 'function'
@@ -458,7 +466,8 @@ class Recipe(object):
             job_func(image=image, config=config,
                 input=input, output=output, msdir=msdir or self.ms_dir,
                 shared_memory=shared_memory, build_label=build_label or self.build_label, 
-                singularity_image_dir=self.singularity_image_dir)
+                singularity_image_dir=self.singularity_image_dir,
+                time_out=time_out)
 
             self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(job.job.image, name))
             self.jobs.append(job)
@@ -557,7 +566,7 @@ class Recipe(object):
             try:
                 recipe = utils.readJson(self.resume_file)
             except IOError:
-                raise IOError("Cannot resume pipeline, resume file '{}' not found".format(self.resume_file))
+                raise StimelaRecipeExecutionError("Cannot resume pipeline, resume file '{}' not found".format(self.resume_file))
 
             steps_ = recipe.pop('steps')
             recipe['steps'] = []
@@ -575,7 +584,7 @@ class Recipe(object):
                     self.log.info('recipe step \'{0}\' is fit for re-execution. Label = {1}'.format(number, label))
                     _steps.append(number)
                 else:
-                    raise RuntimeError('Recipe flow, or task scheduling has changed. Cannot resume recipe. Label = {0}'.format(label))
+                    raise StimelaRecipeExecutionError('Recipe flow, or task scheduling has changed. Cannot resume recipe. Label = {0}'.format(label))
 
             # Check whether there are steps to resume        
             if len(_steps)==0:
@@ -592,7 +601,7 @@ class Recipe(object):
                     try:
                         _steps.append(labels.index(step)+1)
                     except ValueError:
-                        raise ValueError('Recipe label ID [{0}] doesn\'t exist'.format(step))
+                        raise StimelaCabParameterError('Recipe label ID [{0}] doesn\'t exist'.format(step))
                 steps = _steps
         else:
             steps = range(1, len(self.jobs)+1)
@@ -620,7 +629,9 @@ class Recipe(object):
 
                 self.log2recipe(job, recipe, step, 'completed')
 
-            except BaseException as e:
+            except (utils.StimelaCabRuntimeError,
+                   StimelaRecipeExecutionError,
+                   StimelaCabParameterError) as e:
                 self.completed = [jb[1] for jb in jobs[:i]]
                 self.remaining = [jb[1] for jb in jobs[i+1:]]
                 self.failed = job
@@ -641,6 +652,10 @@ class Recipe(object):
                 #self.proc_logger.write()
                 pe = PipelineException(e, self.completed, job, self.remaining)
                 raise pe, None, sys.exc_info()[2]
+            except:
+                import traceback
+                traceback.print_exc()
+                raise RuntimeError("An unhandled exception has occured. This is a bug, please report")
 
             finally:
                 if job.jtype == 'docker' and job.created:

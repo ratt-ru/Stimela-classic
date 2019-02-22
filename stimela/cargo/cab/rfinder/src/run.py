@@ -1,6 +1,7 @@
 import os
 import sys
 import yaml
+import rfinder
 
 sys.path.append('/scratch/stimela')
 import utils
@@ -15,11 +16,11 @@ cab = utils.readJson(CONFIG)
 args = []
 msname = None
 
-rfinder_file = '/build/rfinder/rfinder_default.yml'
+pkg_path = os.path.dirname(os.path.realpath(rfinder.__file__))
+rfinder_file = '{:s}/rfinder_default.yml'.format(pkg_path)
 
 with open(rfinder_file) as f:
     list_doc = yaml.load(f)
-
 
 list_doc['general']['outdir'] = '{:s}/'.format(OUTPUT)
 list_doc['general']['workdir'] = '{:s}/'.format(MSDIR)

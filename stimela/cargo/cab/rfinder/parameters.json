@@ -150,7 +150,7 @@
             "info": "Generate movies in a report",
             "dtype": "bool",
             "default": null,
-            "name": "movie_in_report"
+            "name": "movies_in_report"
         }
     ]
 }

@@ -369,17 +369,25 @@
             "name": "dist-ncpu"
         }, 
         {
-            "info": "Set CPU affinity of worker processes. If None or 0, no affinity is set. If N>0,\nset affinities starting from core 0, with an increment of N. N=1 is a sensible\nvalue. Can also be an explicit list of NCPU core numbers (or a range(N,M,K) invocation).\nNote that first worker is the I/O worker, the rest are compute workers.", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "dist-affinity"
-        }, 
+            "info": "Number of OMP threads to use. 0: determine automatically.",
+            "name" : "dist-nthread",
+            "dtype": "int"
+        },
         {
-            "info": "Sets CPU affinity of main process. If None, no affinity is set. If \"auto\", shares\nCPU affinity with the I/O worker. Otherwise, give core number.", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "dist-main-affinity"
-        }, 
+          "info":"If empty or None, processes will not be pinned to cores. Otherwise, set to the starting core number, or 'N:K' to start with N and step by K",
+            "name": "dist-pin",
+            "dtype" : "int"
+        },
+        {
+            "info": "If not 0, pins the I/O & Montblanc process to a separate core, or cores if --montblanc-threads is specified). Ignored if --dist-pin is not set",
+            "name" : "dist-pin-io",
+            "dtype" : "bool"
+        },
+        {
+            "info" : "If set, pins the main process to a separate core. If set to, pins it to the same core as the I/O process, if I/O process is pinned. Ignored if --dist-pin is not set",
+            "name" : "pin-main",
+            "dtype": ["bool", "str"]
+        },
         {
             "info": "Minimum number of time/freq data-chunks to load into memory\nsimultaneously. This number should be divisible by ncpu-1 for optimal\nperformance.", 
             "dtype": "str", 

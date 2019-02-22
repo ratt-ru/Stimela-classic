@@ -13,7 +13,7 @@ class failure_checks(unittest.TestCase):
                 global INPUT
                 INPUT = 'input'
                 global MSDIR
-                MSDIR = 'msdir-0'
+                MSDIR = 'msdir'
 
                 global MS
                 MS = 'kat-7-small.ms'

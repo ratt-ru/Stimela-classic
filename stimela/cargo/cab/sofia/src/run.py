@@ -38,9 +38,6 @@ port2tigger = write_opts.pop('port2tigger')
 outfile = write_opts.pop('table')
 image = img_opts.pop('filename')
 
-if port2tigger:
-    write_opts['format'] = 'fits'
-
 if not port2tigger:
     sys.exit(0)
 

@@ -54,7 +54,7 @@ RUN pip install git+https://github.com/ska-sa/montblanc.git@ddfacet
 RUN pip install "pymoresane >= 0.3.0"
 
 # Set MeqTrees Cattery path to virtualenv installation directory
-ENV MEQTREES_CATTERY_PATH /usr/local/lib/python2.7/dist-packages/Cattery/
+ENV MEQTREES_CATTERY_PATH /usr/lib/python2.7/dist-packages/Cattery/
 # Execute virtual environment version of DDFacet
 ENTRYPOINT ["DDF.py"]
 CMD ["--help"]

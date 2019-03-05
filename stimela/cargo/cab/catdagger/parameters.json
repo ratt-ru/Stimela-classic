@@ -1,0 +1,159 @@
+{
+    "task": "dagger", 
+    "base": "stimela/catdagger", 
+    "tag": "1.0.1", 
+    "description": "CATDagger - An automatic differential gain catalog tagger", 
+    "prefix": "--", 
+    "binary": "dagger", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Residual / noise FITS map to use for estimating local RMS", 
+            "dtype": "file",    
+            "check_io": true,          
+            "name": "noise-map",
+            "required": true,
+            "default": null, 
+            "io": "output",
+            "map": "noise_map"
+        },
+        {
+            "info": "Stokes to consider when computing global noise estimates. Ideally this should be 'V', if available", 
+            "dtype": "str", 
+            "default": "I", 
+            "name": "stokes",
+            "required": false
+        },
+        {
+            "info": "Minimum number of tiles per region. Regions with fewer tiles will not be tagged as dE", 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "min-tiles-region",
+            "required": false
+        },
+        {
+            "info": "Tigger LSM to recluster and tag. If this is not specified only DS9 regions will be written out", 
+            "dtype": "file", 
+            "check_io": true,
+            "name": "min-tiles-region",
+            "io": "input",
+            "required": false
+        },
+        {
+            "info": "SAODS9 regions filename to write out", 
+            "dtype": "file", 
+            "check_io": false,
+            "default": "dE.reg", 
+            "name": "ds9-reg-file",
+            "required": false,
+            "io": "output"
+        },
+        {
+            "info": "SAODS9 regions filename to contain tagged cluster leads as circles", 
+            "dtype": "file", 
+            "check_io": false,
+            "default": "dE.clusterleads.reg", 
+            "name": "ds9-tag-reg-file",
+            "required": false,
+            "io": "output"
+        },
+        {
+            "info": "Threshold to use in detecting outlier regions", 
+            "dtype": "float", 
+            "default": 4.5, 
+            "name": "sigma",
+            "required": false
+        },
+        {
+            "info": "Number of pixels per region tile axis", 
+            "dtype": "int", 
+            "default": 80, 
+            "name": "tile-size",
+            "required": false
+        },
+        {
+            "info": "Percentile tiles to consider for global rms calculations", 
+            "dtype": "float", 
+            "default": 20.0, 
+            "name": "global-rms-percentile",
+            "required": false
+        },
+        {
+            "info": "Tag name to use for tagged sources in tigger LSM", 
+            "dtype": "str", 
+            "default": "dE", 
+            "name": "de-tag-name",
+            "required": false
+        },
+        {
+            "info": "Tag name to use for tagged sources in tigger LSM", 
+            "dtype": "str", 
+            "default": "dE", 
+            "name": "de-tag-name",
+            "required": false
+        },
+        {
+            "info": "Cutoff distance from phase centre in which no tags be raised. This can be used to effectively exclude the FWHM of an parabolic reflector-based interferometer.", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "min-distance-from-tracking-centre",
+            "required": false
+        },
+        {
+            "info": "Cutoff distance from phase centre in which no tags be raised. This can be used to effectively exclude the FWHM of an parabolic reflector-based interferometer.", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "min-distance-from-tracking-centre",
+            "required": false
+        },
+        {
+            "info": "Add manual exclusion zone to which no dE tags shall be added. Expects a tripple of centre X, Y pixel and radius.", 
+            "dtype": "list:int", 
+            "name": "add-custom-exclusion-zone",
+            "required": false
+        },
+        {
+            "info": "The maximum tolerance for right skewness of a pixel distribution within a region.A large value (tailed distribution) indicates significant uncleaned flux remaining in the residual. This can be used to effectively control detection sensitivity to uncleaned extended emission, but should be set to 0 if residuals other than stokes I are used", 
+            "dtype": "float", 
+            "name": "max-region-right-skewness",
+            "default": 2,
+            "required": false
+        },
+        {
+            "info": "PSF image from which BPA, BMAJ and BMIN may be extracted", 
+            "dtype": "list:file", 
+            "check_io": true,
+            "name": "psf-image",
+            "required": false,
+            "io": "output"
+        },
+        {
+            "info": "Blank out model images within resolution of tagged LSM components. Expects list of model FITS files. This option is useful for hybrid DFT-CLEAN component modelling as onlyextended / faint clean components contributes to model.", 
+            "dtype": "list:file", 
+            "check_io": true,
+            "name": "remove-tagged-dE-components-from-model-images",
+            "required": false,
+            "io": "output"
+        },
+        {
+            "info": "Only store dE tagged sources in lsm. This option is useful for hybrid DFT-CLEAN component modelling, as only bright compact gaussian emission contributes to dE solutions", 
+            "dtype": "bool", 
+            "name": "only-dEs-in-lsm",
+            "required": false
+        },
+        {
+            "info": "The maximum tolerance for the ratio of positive to negative flux. Only to be used with stokes I", 
+            "dtype": "float", 
+            "default": 1.1,
+            "name": "max-positive-to-negative-flux",
+            "required": false
+        },
+        {
+            "info": "The maximum tolerance for absolute skewness of a pixel distribution within a region.A large value (tailed distribution) indicates significant uncleaned flux remaining in the residual. This can be used to effectively control detection sensitivity to uncleaned extended emission, but should be set to 0 if residuals other than stokes Q,U or V are used", 
+            "dtype": "float", 
+            "name": "max-region-abs-skewness",
+            "required": false,
+            "default": 99999999999999
+        }
+    ]
+}

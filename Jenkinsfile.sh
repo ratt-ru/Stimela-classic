@@ -34,7 +34,7 @@ stimela build -nc
 cd $TEST_OUTPUT_DIR
 nosetests -s --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
 
-#wholesale garage sale --- send SIGKILL to whoever remains - nobody else should be running jobs on the testing machine
-pgrep -f bash | xargs kill -9
-docker kill $(docker ps -qa)
-docker rm $(docker ps -a -q)
+##wholesale garage sale --- send SIGKILL to whoever remains - nobody else should be running jobs on the testing machine
+#pgrep -f bash | xargs kill -9
+#docker kill $(docker ps -qa)
+#docker rm $(docker ps -a -q)

@@ -86,20 +86,6 @@
             "required": false
         },
         {
-            "info": "Tag name to use for tagged sources in tigger LSM", 
-            "dtype": "str", 
-            "default": "dE", 
-            "name": "de-tag-name",
-            "required": false
-        },
-        {
-            "info": "Cutoff distance from phase centre in which no tags be raised. This can be used to effectively exclude the FWHM of an parabolic reflector-based interferometer.", 
-            "dtype": "int", 
-            "default": 0, 
-            "name": "min-distance-from-tracking-centre",
-            "required": false
-        },
-        {
             "info": "Cutoff distance from phase centre in which no tags be raised. This can be used to effectively exclude the FWHM of an parabolic reflector-based interferometer.", 
             "dtype": "int", 
             "default": 0, 
@@ -121,9 +107,17 @@
         },
         {
             "info": "PSF image from which BPA, BMAJ and BMIN may be extracted", 
-            "dtype": "list:file", 
+            "dtype": "file", 
             "check_io": true,
             "name": "psf-image",
+            "required": false,
+            "io": "output"
+        },
+        {
+            "info": "Tigger LSM to recluster and tag. If this is not specified only DS9 regions will be written out", 
+            "dtype": "file", 
+            "check_io": true,
+            "name": "input-lsm",
             "required": false,
             "io": "output"
         },

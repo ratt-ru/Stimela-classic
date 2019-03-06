@@ -16,7 +16,9 @@ class failure_checks(unittest.TestCase):
                 MSDIR = 'msdir'
 
                 global MS
+
                 MS = 'dummy.ms'
+
                 os.mkdir(os.path.join(MSDIR, MS)) # make dummy
                 global PREFIX
                 PREFIX = 'error_tests'

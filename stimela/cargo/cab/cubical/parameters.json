@@ -465,7 +465,7 @@
             "info": "Number of processes",
             "dtype" : "int",
             "default": 0,
-            "name" : "nworker",
+            "name" : "dist-nworker",
         },
         {
             "info": "Number of threads per process",

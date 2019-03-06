@@ -123,7 +123,7 @@
         },
         {
             "info": "Blank out model images within resolution of tagged LSM components. Expects list of model FITS files. This option is useful for hybrid DFT-CLEAN component modelling as onlyextended / faint clean components contributes to model.", 
-            "dtype": "list:file", 
+            "dtype": "file", 
             "check_io": true,
             "name": "remove-tagged-dE-components-from-model-images",
             "required": false,

@@ -22,7 +22,9 @@ for param in cab['parameters']:
         continue
     elif value is False:
         continue
-    
+    if param["dtype"] == "bool" and value:
+        args += ['{0}{1}'.format(cab['prefix'], name)]
+        continue
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
 utils.xrun(cab['binary'], args)

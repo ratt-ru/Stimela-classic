@@ -468,12 +468,6 @@
             "name" : "dist-nworker",
         },
         {
-            "info": "Number of threads per process",
-            "dtype" : "int",
-            "default": 0,
-            "name" : "nthread",
-        },
-        {
             "info": "Log memory usage.", 
             "dtype": "bool", 
             "default": null, 

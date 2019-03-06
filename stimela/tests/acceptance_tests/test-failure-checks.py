@@ -13,10 +13,10 @@ class failure_checks(unittest.TestCase):
                 global INPUT
                 INPUT = 'input'
                 global MSDIR
-                MSDIR = 'msdir-0'
+                MSDIR = 'msdir'
 
                 global MS
-                MS = 'kat-7-small.ms'
+                MS = 'kat-7-small-dummy.ms'
                 os.mkdir(os.path.join(MSDIR, MS)) # make dummy
                 global PREFIX
                 PREFIX = 'error_tests'

@@ -13,15 +13,13 @@ import warnings
 import re
 import math
 import thread
-
+import unicodedata
+import hashlib
 #from fcntl import fcntl, F_GETFL, F_SETFL
 #from os import O_NONBLOCK, read
 
-from threading import Thread
-from Queue import Queue, Empty
-
 DEBUG = False
-INTERRUPT_TIME = 0.1 # seconds -- do not want to constantly interrupt the child process
+INTERRUPT_TIME = 1.0 # seconds -- do not want to constantly interrupt the child process
 class StimelaCabRuntimeError(RuntimeError): pass
 
 from multiprocessing import Process, Manager, Lock
@@ -59,96 +57,57 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     """
     
     cmd = " ".join([command]+ map(str, options) )
+
     def _print_info(msg):
         if msg is None: return
         if log:
             log.info(msg)
         else:
-            sys.stdout.write(msg + "\n")
+            print msg
 
     def _print_warn(msg):
         if msg is None: return
         if log:
             log.warn(msg)
         else:
-            sys.stderr.write(msg + "\n")
+            print msg
     
-    _print_info("Running: {0:s}".format(cmd))
+    _print_info(u"Running: {0:s}".format(cmd))
 
     sys.stdout.flush()
     starttime = time.time()
-
-    p = process = subprocess.Popen(cmd,
-                  stderr=subprocess.PIPE,
-                  stdout=subprocess.PIPE,
-                  shell=True)
-    class NonBlockingStreamReader:
-
-        def __init__(self, stream):
-            '''
-            stream: the stream to read from.
-                    Usually a process' stdout or stderr.
-            '''
-
-            self._s = stream
-            self._q = Queue()
-
-            def _populateQueue(stream, queue):
-                '''
-                Collect lines from 'stream' and put them in 'quque'.
-                '''
-
-                while True:
-                    try:
-                        line = stream.readline()
-                        if line:
-                            queue.put(line)
-                    except:
-                        pass
-
-            self._t = Thread(target = _populateQueue,
-                    args = (self._s, self._q))
-            self._t.daemon = True
-            self._t.start() #start collecting lines from the stream
-
-        def readline(self, timeout = None):
-            try:
-                return self._q.get(block = timeout is not None,
-                        timeout = timeout)
-            except (Empty):
-                return None
-
-    def clock_killer(p):
-        while process.poll() is None and (timeout >= 0):
-            currenttime = time.time()
-            if (currenttime - starttime < timeout):
-                DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
-            else:
-                _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
-                (kill_callback is not None) and kill_callback()
-            time.sleep(INTERRUPT_TIME)
-
-    nbsr_out = NonBlockingStreamReader(p.stdout)
-    nbsr_err = NonBlockingStreamReader(p.stderr)
-
-    t = thread.start_new_thread(clock_killer, tuple([p]))
-
-
+    process = p = None
     try:
-        while (process.poll() is None):
-            _print_info(nbsr_out.readline(0.1))
-            _print_warn(nbsr_err.readline(0.1))
-            currenttime = time.time()
-            DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
-            time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
-            #check whether there is an alternative with a callback
-        assert hasattr(process, "returncode"), "No returncode after termination!"
-        _print_info(nbsr_out.readline(0.1))
-        _print_warn(nbsr_err.readline(0.1))
+        foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(hashlib.md5(cmd).hexdigest(), starttime))
+        with open(foutname, "w+") as fout:
+            p = process = subprocess.Popen(cmd,
+                                            stderr=fout,
+                                            stdout=fout,
+                                            shell=True)
 
+            def clock_killer(p):
+                while process.poll() is None and (timeout >= 0):
+                    currenttime = time.time()
+                    if (currenttime - starttime < timeout):
+                        DEBUG and _print_warn(u"Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
+                    else:
+                        _print_warn(u"Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
+                        (kill_callback is not None) and kill_callback()
+                    time.sleep(INTERRUPT_TIME)
+
+            t = thread.start_new_thread(clock_killer, tuple([p]))
+
+            while (process.poll() is None):
+                currenttime = time.time()
+                DEBUG and _print_info(u"God mode on: has been running for {0:f}".format(currenttime - starttime))
+                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
+                #check whether there is an alternative with a callback
+            assert hasattr(process, "returncode"), "No returncode after termination!"
+        with open(foutname, "r") as fout:
+            _print_info(fout.read())
     finally:
-        if process.returncode:
-           raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
+        if (process is not None) and process.returncode:
+            raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
 
 
 

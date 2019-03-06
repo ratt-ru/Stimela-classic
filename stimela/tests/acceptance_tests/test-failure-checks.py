@@ -16,7 +16,9 @@ class failure_checks(unittest.TestCase):
                 MSDIR = 'msdir'
 
                 global MS
-                MS = 'kat-7-small-dummy.ms'
+
+                MS = 'dummy.ms'
+
                 os.mkdir(os.path.join(MSDIR, MS)) # make dummy
                 global PREFIX
                 PREFIX = 'error_tests'
@@ -380,7 +382,7 @@ class failure_checks(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 recipe = stimela.Recipe('WSCLEAN_FAIL', ms_dir=MSDIR)
-                with self.assertRaises(PipelineException):
+                with self.assertRaises(Exception):
                         recipe.add('cab/wsclean', 'image_target_field_r0', {
                                         "msname"        :   MS,
                                         "channelrange"  :   chans,               #Other channels don't have any data   

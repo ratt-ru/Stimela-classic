@@ -57,7 +57,7 @@ tfile.close()
 def tigger_src(src, idx):
 
     name = "SRC%d" % idx
-    flux = ModelClasses.Polarization(float(src["f_int"]), 0, 0, 0))
+    flux = ModelClasses.Polarization(float(src["f_int"]), 0, 0, 0)
     ra = map(numpy.deg2rad, (float(src["ra"])))
     dec = map(numpy.deg2rad, (float(src["dec"])))
     pos = ModelClasses.Position(ra, dec)

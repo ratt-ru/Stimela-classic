@@ -13,12 +13,10 @@ import warnings
 import re
 import math
 import thread
-
+import unicodedata
+import hashlib
 #from fcntl import fcntl, F_GETFL, F_SETFL
 #from os import O_NONBLOCK, read
-
-from threading import Thread
-from Queue import Queue, Empty
 
 DEBUG = False
 INTERRUPT_TIME = 1.0 # seconds -- do not want to constantly interrupt the child process
@@ -59,27 +57,28 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     """
     
     cmd = " ".join([command]+ map(str, options) )
+
     def _print_info(msg):
         if msg is None: return
         if log:
             log.info(msg)
         else:
-            sys.stdout.write(msg + "\n")
+            print msg
 
     def _print_warn(msg):
         if msg is None: return
         if log:
             log.warn(msg)
         else:
-            sys.stderr.write(msg + "\n")
+            print msg
     
-    _print_info("Running: {0:s}".format(cmd))
+    _print_info(u"Running: {0:s}".format(cmd))
 
     sys.stdout.flush()
     starttime = time.time()
     process = p = None
     try:
-        foutname = os.path.join("/tmp", "output_{0:s}_{1:f}".format(command, starttime))
+        foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(hashlib.md5(cmd).hexdigest(), starttime))
         with open(foutname, "w+") as fout:
             p = process = subprocess.Popen(cmd,
                                             stderr=fout,
@@ -90,9 +89,9 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 while process.poll() is None and (timeout >= 0):
                     currenttime = time.time()
                     if (currenttime - starttime < timeout):
-                        DEBUG and _print_warn("Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
+                        DEBUG and _print_warn(u"Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
                     else:
-                        _print_warn("Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
+                        _print_warn(u"Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
                         (kill_callback is not None) and kill_callback()
                     time.sleep(INTERRUPT_TIME)
 
@@ -100,7 +99,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
 
             while (process.poll() is None):
                 currenttime = time.time()
-                DEBUG and _print_info("God mode on: has been running for {0:f}".format(currenttime - starttime))
+                DEBUG and _print_info(u"God mode on: has been running for {0:f}".format(currenttime - starttime))
                 time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
                 #check whether there is an alternative with a callback
             assert hasattr(process, "returncode"), "No returncode after termination!"

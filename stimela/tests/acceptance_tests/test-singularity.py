@@ -39,7 +39,7 @@ class singularity_test(unittest.TestCase):
             # Start stimela Recipe instance
             pipeline = stimela.Recipe("Singularity Test",     # Recipe name
                               ms_dir=MSDIR,
-                    #          singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"],
+                              singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"],
                               )
 
             pipeline.add("cab/simms",                   # Executor image to start container from 

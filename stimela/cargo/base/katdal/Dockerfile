@@ -1,12 +1,7 @@
-FROM kernsuite/base:4
+FROM stimela/base:1.0.1
 MAINTAINER <sphemakh@gmail.com>
-
 RUN docker-apt-install libboost-dev \
     casacore-dev \
-    python-casacore \
-    git \
-    python-pip
-
+    python-casacore
 RUN pip install -U pip setuptools pyyaml
-RUN git clone https://github.com/ska-sa/katdal.git /tmp/katdal
-RUN pip install  /tmp/katdal[ms,s3]
+RUN pip install katdal[ms,s3]

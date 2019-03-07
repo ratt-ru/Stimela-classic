@@ -4,7 +4,7 @@ import unittest
 import subprocess
 from nose.tools import timed
 
-class ngc417_reduce(unittest.TestCase):
+class kat7_reduce(unittest.TestCase):
         @classmethod
         def setUpClass(cls):
                 unittest.TestCase.setUpClass()
@@ -390,39 +390,52 @@ class ngc417_reduce(unittest.TestCase):
 
                 # Diversity is a good thing... lets add some DDFacet to this soup bowl
                 imname=PREFIX+'ddfacet'
-# DDFacet does not work with KAT7 data
-#                recipe.add("cab/ddfacet", "ddfacet_test",
-#                        {
-#                                "Data-MS": [MS],
-#                                "Output-Name": imname,
-#                                "Image-NPix": 256,
-#                                "Image-Cell": 30,
-#                                "Cache-Reset": True,
-#                                "Freq-NBand": 2,
-#                                "Weight-ColName": "WEIGHT",
-#                                "Data-ChunkHours": 10,
-#                                "Beam-FITSFeed" : "rl",
-#                                "Data-Sort": True,
-#                                "Log-Boring": True,
-#                                "Deconv-MaxMajorIter": 1,
-#                                "Deconv-MaxMinorIter": 500,
-#                        },
-#                        input=INPUT, output=OUTPUT, shared_memory="200gb",
-#                        label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
-#                        time_out=30) 
-#
 
-                # #Stitch LSMs together
-                # lsm2=PREFIX+'-LSM2'
-                # recipe.add("cab/tigger_convert", "stitch_lsms1", {
-                #         "input-skymodel"  :   "%s.lsm.html:output" % lsm0,
-                #         "output-skymodel" :   "%s.lsm.html:output" % lsm1,
-                #         "rename"	  : True,
-                #         "force"           : True,
-                # },
-                #         input=INPUT, output=OUTPUT,
-                #         label="stitch_lsms1::Create master lsm file",
-                #         time_out=30) 
+                recipe.add("cab/ddfacet", "ddfacet_test",
+                       {
+                               "Data-MS": [MS],
+                               "Output-Name": imname,
+                               "Image-NPix": 256,
+                               "Image-Cell": 30,
+                               "Cache-Reset": True,
+                               "Freq-NBand": 2,
+                               "Weight-ColName": "WEIGHT",
+                               "Data-ChunkHours": 10,
+                               "Beam-FITSFeed" : "rl",
+                               "Data-Sort": True,
+                               "Log-Boring": True,
+                               "Deconv-MaxMajorIter": 1,
+                               "Deconv-MaxMinorIter": 500,
+                       },
+                       input=INPUT, output=OUTPUT, shared_memory="200gb",
+                       label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
+                       time_out=30) 
+
+                lsm1 = PREFIX+'-LSM0'
+                #Source finding for initial model
+                recipe.add("cab/pybdsm", "extract_init_model", {
+                        "image"             :  '%s.app.restored.fits:output' %(imname),
+                        "outfile"           :  '%s:output'%(lsm1),
+                        "thresh_pix"        :  25,
+                        "thresh_isl"        :  15,
+                        "port2tigger"       :  True,
+                },
+                        input=INPUT, output=OUTPUT,
+                        label="extract_init_model:: Make initial model from preselfcal image",
+                        time_out=30) 
+
+                #Stitch LSMs together
+                lsm2=PREFIX+'-LSM2'
+                recipe.add("cab/tigger_convert", "stitch_lsms1", {
+                        "input-skymodel"  :   "%s.lsm.html:output" % lsm0,
+                        "output-skymodel" :   "%s.lsm.html:output" % lsm2,
+                        "rename"	  : True,
+                        "force"           : True,
+                        "append"          :   "%s.lsm.html:output" % lsm1,
+                },
+                        input=INPUT, output=OUTPUT,
+                        label="stitch_lsms1::Create master lsm file",
+                        time_out=30) 
 
                 recipe.add('cab/casa_uvcontsub','uvcontsub',
                         {
@@ -454,30 +467,35 @@ class ngc417_reduce(unittest.TestCase):
                         label='casa_dirty_cube:: Make a dirty cube with CASA CLEAN',
                         time_out=300) 
 
-#               recipe.add('cab/sofia', 'sofia',
-#                       {
-#                       #    USE THIS FOR THE WSCLEAN DIRTY CUBE
-#                       #    "import.inFile"     :   '{:s}-cube.dirty.fits:output'.format(combprefix),
-#                       #    USE THIS FOR THE CASA CLEAN CUBE
-#                       "import.inFile"         :   '{:s}.image.fits:output'.format(PREFIX),       # CASA CLEAN cube
-#                       "steps.doMerge"         :   True,
-#                       "steps.doMom0"          :   True,
-#                       "steps.doMom1"          :   False,
-#                       "steps.doParameterise"  :   False,
-#                       "steps.doReliability"   :   False,
-#                       "steps.doWriteCat"      :   False,
-#                       "steps.doWriteMask"     :   True,
-#                       "steps.doFlag"          :   True,
-#                       "SCfind.threshold"      :   4,
-#                       "merge.radiusX"         :   2,
-#                       "merge.radiusY"         :   2,
-#                       "merge.radiusZ"         :   3,
-#                       "merge.minSizeX"        :   3,
-#                       "merge.minSizeY"        :   3,
-#                       "merge.minSizeZ"        :   5,
-#                       },
-#                       input=INPUT,
-#                       output=OUTPUT,
-#                       label='sofia:: Make SoFiA mask and images')
+                recipe.add('cab/sofia', 'sofia',
+                        {
+                                #    USE THIS FOR THE WSCLEAN DIRTY CUBE
+                                #    "import.inFile"     :   '{:s}-cube.dirty.fits:output'.format(combprefix),
+                                #    USE THIS FOR THE CASA CLEAN CUBE
+                                "import.inFile"         :   '{:s}.image.fits:output'.format(PREFIX),       # CASA CLEAN cube
+                                "steps.doFlag"          : False,
+                                "steps.doScaleNoise"    : True,
+                                "steps.doSCfind"        : True,
+                                "steps.doMerge"         : True,
+                                "steps.doReliability"   : False,
+                                "steps.doParameterise"  : False,
+                                "steps.doWriteMask"     : True,
+                                "steps.doMom0"          : False,
+                                "steps.doMom1"          : False,
+                                "steps.doWriteCat"      : False,
+                                "flag.regions"          : [],
+                                "scaleNoise.statistic"  : 'mad' ,
+                                "SCfind.threshold"      : 4,
+                                "SCfind.rmsMode"        : 'mad',
+                                "merge.radiusX"         : 2,
+                                "merge.radiusY"         : 2,
+                                "merge.radiusZ"         : 2,
+                                "merge.minSizeX"        : 2,
+                                "merge.minSizeY"        : 2,
+                                "merge.minSizeZ" : 2,
+                        },
+                        input=INPUT,
+                        output=OUTPUT,
+                        label='sofia:: Make SoFiA mask and images')
 
                 recipe.run()

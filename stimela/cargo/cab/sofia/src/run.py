@@ -1,6 +1,11 @@
 import os
 import sys
 import Tigger
+import numpy
+import tempfile
+
+from astLib.astWCS import WCS
+from Tigger.Models import SkyModel, ModelClasses
 
 sys.path.append('/scratch/stimela')
 import utils
@@ -19,6 +24,10 @@ sofia_file = 'sofia_parameters.par'
 wstd = open(sofia_file, 'w')
 
 wstd.write('writeCat.outputDir={:s}\n'.format(OUTPUT))
+port2tigger = False
+image = None
+writecat = False
+parameterise = False
 
 for param in cab['parameters']:
     name = param['name']
@@ -26,17 +35,21 @@ for param in cab['parameters']:
     
     if value is None:
         continue
-    print name, value
+    if name == "port2tigger":
+        port2tigger = value
+        continue
+    if name == "steps.doWriteCat":
+        writecat = value
+    if name == "steps.doParameterise":
+        parameterise = value
+    if name == "import.inFile":
+        image = value
 	
     wstd.write('{0}={1}\n'.format(name, value))
 
 wstd.close()
 
 utils.xrun('sofia_pipeline.py', [sofia_file])
-
-port2tigger = write_opts.pop('port2tigger')
-outfile = write_opts.pop('table')
-image = img_opts.pop('filename')
 
 if not port2tigger:
     sys.exit(0)
@@ -46,7 +59,12 @@ if not port2tigger:
 tfile = tempfile.NamedTemporaryFile(suffix='.txt')
 tfile.flush()
 
-prefix = os.path.splitext(outfile)[0]
+if image and writecat and parameterise:
+    pass
+else:
+    sys.exit(0)
+
+prefix = os.path.splitext(image)[0]
 tname_lsm = prefix + ".lsm.html"
 with open(tfile.name, "w") as stdw:
     stdw.write("#format:name ra_d dec_d i emaj_s emin_s pa_d\n")
@@ -57,13 +75,13 @@ tfile.close()
 def tigger_src(src, idx):
 
     name = "SRC%d" % idx
-    flux = ModelClasses.Polarization(float(src["f_int"]), 0, 0, 0)
-    ra = map(numpy.deg2rad, (float(src["ra"])))
-    dec = map(numpy.deg2rad, (float(src["dec"])))
+    flux = ModelClasses.Polarization(src["f_int"], 0, 0, 0)
+    ra = numpy.deg2rad(src["ra"])
+    dec = numpy.deg2rad(src["dec"])
     pos = ModelClasses.Position(ra, dec)
-    ex = map(numpy.deg2rad, (float(src["ell_maj"])))
-    ey = map(numpy.deg2rad, (float(src["ell_min"])))
-    pa = map(numpy.deg2rad, (float(src["ell_pa"])))
+    ex = numpy.deg2rad(src["ell_maj"])
+    ey = numpy.deg2rad(src["ell_min"])
+    pa = numpy.deg2rad(src["ell_pa"])
 
     if ex and ey:
         shape = ModelClasses.Gaussian(ex, ey, pa)
@@ -79,11 +97,20 @@ def tigger_src(src, idx):
 	
     return source
 
-data = Table.read('{0}_cat.{1}'.format(outfile.split('.')[0], 'ascii'),
-                  format=outfile.split('.')[-1])
+with open('{0}_cat.ascii'.format(prefix)) as stdr:
+    # Header
+    stdr.readline()
+    # Column names 
+    names = stdr.readline().split("#")[1].strip().split()
+    # Units
+    stdr.readline()
+    # Column numbers
+    stdr.readline()
+    sys.stdout.write(" ".join(names))
+    data = numpy.genfromtxt(stdr,
+            names=names + ["col"])
 
 for i, src in enumerate(data):
-
     model.sources.append(tigger_src(src, i))
 
 wcs = WCS(image)

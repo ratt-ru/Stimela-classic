@@ -761,6 +761,11 @@
                 "negative", 
                 "all"
             ]
+        },
+        {
+            "name": "port2tigger",
+            "info": null,
+            "dtype": "bool"
         }
     ]
 }

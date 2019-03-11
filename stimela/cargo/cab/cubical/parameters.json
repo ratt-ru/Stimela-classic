@@ -764,7 +764,7 @@
         {
             "info": "Determines whether this term is direction dependent. --model-ddes must", 
             "dtype": "bool", 
-            "default": null, 
+            "default": true, 
             "name": "dd-dd-term"
         }, 
         {

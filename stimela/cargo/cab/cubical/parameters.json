@@ -88,7 +88,7 @@
                 "str", 
                 "bool"
             ], 
-            "default": null, 
+            "default": "auto", 
             "name": "model-ddes"
         }, 
         {

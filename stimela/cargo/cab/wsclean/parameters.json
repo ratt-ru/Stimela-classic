@@ -633,6 +633,13 @@
             "default": false, 
             "name": "savesourcelist", 
             "mapping": "-save-source-list"
+        },
+        {
+            "info": "list of model components from wsclean",
+            "dtype": "bool",
+            "default": false,
+            "name": "predict",
+            "mapping": "-predict"
         }
     ]
 }

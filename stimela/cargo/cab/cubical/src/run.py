@@ -9,8 +9,8 @@ INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 
 cab = utils.readJson(CONFIG)
-args = []
-parset = []
+args = {}
+parset = ["/scratch/code/DefaultParset.cfg"]
 
 for param in cab['parameters']:
     name = param['name']
@@ -35,6 +35,16 @@ for param in cab['parameters']:
     elif isinstance(value, list):
         value = ",".join( map(str, value) )
 
-    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+    args[name] = value
 
-utils.xrun(cab['binary'], parset+args)
+# available jones terms
+joneses = "g b dd".split()
+
+for jones in joneses:
+    if jones.lower() not in args["sol-jones"].lower():
+        jopts = filter(lambda a: a.startswith("{0:s}-".format(jones)), args.keys())
+        for item in jopts:
+            del args[item]
+
+opts = ['{0}{1} {2}'.format(cab['prefix'], name, value) for name,value in args.iteritems()]
+utils.xrun(cab['binary'], parset+opts)

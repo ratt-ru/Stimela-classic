@@ -57,4 +57,4 @@ edited_file = 'rfinder_default.yml'
 with open(edited_file, "w") as f:
     yaml.dump(list_doc, f)
 
-utils.xrun('rfinder', [edited_file])
+utils.xrun('rfinder -c', [edited_file])

@@ -10,7 +10,7 @@ MSDIR = os.environ["MSDIR"]
 
 cab = utils.readJson(CONFIG)
 args = {}
-parset = ["/scratch/code/DefaultParset.cfg"]
+parset = []
 
 for param in cab['parameters']:
     name = param['name']
@@ -39,12 +39,15 @@ for param in cab['parameters']:
 
 # available jones terms
 joneses = "g b dd".split()
+soljones = args.pop("sol-jones")
 
 for jones in joneses:
-    if jones.lower() not in args["sol-jones"].lower():
+    if jones.lower() not in soljones.lower():
         jopts = filter(lambda a: a.startswith("{0:s}-".format(jones)), args.keys())
         for item in jopts:
             del args[item]
 
-opts = ['{0}{1} {2}'.format(cab['prefix'], name, value) for name,value in args.iteritems()]
+opts =  ["{0:s}sol-jones {1:s}".format(cab["prefix"], soljones)] + \
+        ['{0}{1} {2}'.format(cab['prefix'], name, value) for name,value in args.iteritems()]
+
 utils.xrun(cab['binary'], parset+opts)

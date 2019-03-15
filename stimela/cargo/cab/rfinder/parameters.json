@@ -14,8 +14,8 @@
             "name": "telescope"
         }, 
         {
-            "info": "Names of input ms files",
-            "dtype": "list:file",
+            "info": "Name of input ms file",
+            "dtype": "file",
             "io": "msfile",
             "default": null,
             "name": "msname"

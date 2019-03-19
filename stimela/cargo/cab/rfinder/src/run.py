@@ -32,11 +32,8 @@ for param in cab['parameters']:
     if value is None:
         continue
 
-    msnames = []
     if name == 'msname':
-        for ms in value:
-            msnames.append(ms.split('/')[-1])
-        list_doc['general']['msname'] = msnames
+        list_doc['general']['msname'] = value.split('/')[-1]
         continue
 
     for key, val in list_doc.items():
@@ -57,4 +54,4 @@ edited_file = 'rfinder_default.yml'
 with open(edited_file, "w") as f:
     yaml.dump(list_doc, f)
 
-utils.xrun('rfinder', [edited_file])
+utils.xrun('rfinder -c', [edited_file])

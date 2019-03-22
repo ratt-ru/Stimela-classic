@@ -7,5 +7,5 @@ RUN docker-apt-install python-casacore \
     libboost-python-dev \
     libcfitsio-dev \
     wcslib-dev
-RUN pip install pip setptools -U
+RUN pip install pip setuptools -U
 RUN pip install codex-africanus[complete]>0.1.4

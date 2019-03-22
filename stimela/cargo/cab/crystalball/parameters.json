@@ -1,156 +1,75 @@
 {
     "task": "rfinder",
-    "base": "stimela/rfinder",
+    "base": "stimela/codex-africanus",
     "tag": "1.0.1",
-    "description": "A tool to investigate the presence of RFI",
+    "description": "Distributed prediction of visibilities from a sky model",
     "prefix": "--",
-    "binary": "rfinder",
+    "binary": "crystalball",
     "msdir": true,
     "parameters": [
         {
-            "info": "Name of telescope",
-            "dtype": "str",
-            "default": "meerkat",
-            "name": "telescope"
-        }, 
-        {
-            "info": "Name of input ms file",
+            "info": "Input MS file",
             "dtype": "file",
             "io": "msfile",
-            "default": null,
-            "name": "msname"
+            "name": "ms",
+            "required": true
         }, 
         {
-            "info": "Field ID of target of file",
+            "info": "Name of file containing the sky model. Default is 'sky-model.txt'",
+            "dtype": "file",
+            "io": "input",
+            "name": "sky-model"
+        }, 
+        {
+            "info": "Output visibility column",
+            "dtype": "str",
+            "default": "MODEL_DATA",
+            "name": "output-column"
+        }, 
+        {
+            "info": "Number of rows of input .MS that are processed in a single chunk",
             "dtype": "int",
-            "default": null,
-            "name": "field"
+            "default": 10000,
+            "name": "row-chunks"
         }, 
         {
-            "info": "Path to ms file directory",
-            "dtype": "str",
-            "default": null,
-            "name": "msdir"
-        }, 
-        {
-            "info": "Path to output directory",
-            "dtype": "str",
-            "default": null,
-            "name": "output"
-        }, 
-        {
-            "info": "Enable to find RFI in msfile over threshold",
-            "dtype": "bool",
-            "default": null,
-            "name": "rfi_enable"
-        },
-        {
-            "info": "uses RFI clip method or simply reads the FLAG column 'use_flags' / 'rms_clip'",
-            "dtype": "str",
-            "default": null,
-            "name": "RFInder_mode"
-        }, 
-        {
-            "info": "List of bad antennas. default `[]` e.g. '[1,2]' ",
-            "dtype": "str",
-            "default": null,
-            "name": "bad_antenna"
-        }, 
-        {
-            "info": "Polarization to examine. xx, yy, xy, yx, q (also in CAPS)",
-            "dtype": "str",
-            "default": "XX",
-            "name": "polarization"
-        }, 
-        {
-            "info": "Threshold for RFI identification",
-            "dtype": "int",
-            "default": null,
-            "name": "rms_clip"
-        }, 
-        {
-            "info": "Min and Max frequency where to measure average std of visibilities",
-            "dtype": "list:float",
-            "default": null,
-            "name": "noise_measure_edges"
-        }, 
-        {
-            "info": "Cutoff baseline lenght: <  = Short, > = Long",
-            "dtype": "int",
-            "default": 200,
-            "name": "baseline_cut"
-        },
-        {
-            "info": "Enable time chunking",
-            "dtype": "bool",
-            "default": null,
-            "name": "time_enable"
-        },
-        {
-            "info": "Time chunks in minutes",
+            "info": "Number of sky model components that are processed in a single chunk.",
             "dtype": "int",
             "default": 10,
-            "name": "time_step"
-        },
+            "name": "model-chunks"
+        }, 
         {
-            "info": "Enable spw for rebinning",
+            "info": "Optional. Invert UVW coordinates. Useful if we want compare our visibilities against MeqTrees",
             "dtype": "bool",
-            "default": null,
-            "name": "spw_enable"
+            "default": false,
+            "name": "invert-uwv"
         },
         {
-            "info": "Channel width of rebinned output table [MHz]",
-            "dtype": "int",
-            "default": 20,
-            "name": "spw_width"
-        },
-        {
-            "info": "Enable estimation of the beam shape aster RFI flagging",
+            "info": "Optional. Model sources as non-flat spectra. The spectral coefficients and reference frequency must be present in the sky model.",
             "dtype": "bool",
-            "default": null,
-            "name": "beam_shape_enable"
-        },
+            "default": false,
+            "name": "spectra"
+        }, 
         {
-            "info": "Enable output plotting",
-            "dtype": "bool",
-            "default": null,
-            "name": "plot_enable"
-        },
-        {
-            "info": "Choose to plot % of RFI, 'rfi', or noise, 'noise', or factor of noise increase, 'noise_factor' in 1D plots",
+            "info": "Optional. Give JS9 region file. Only sources within those regions will be included.",
             "dtype": "str",
-            "default": null,
-            "name": "plot_noise"
-        },
+            "name": "within"
+        }, 
         {
-            "info": "Plot all baselines, or only the short and the long movies:",
+            "info": "Select only point-type sources.",
             "dtype": "bool",
-            "default": null,
-            "name": "plot_long_short"
-        },
+            "default": false,
+            "name": "points-only"
+        }, 
         {
-            "info": "Make 1-D movie plots (gif)",
-            "dtype": "bool",
-            "default": null,
-            "name": "1d_gif"
-        },
+            "info": "Select only N brightest sources.",
+            "dtype": "int",
+            "name": "num-sources"
+        }, 
         {
-            "info": "Make 2-D movie plots (gif)",
-            "dtype": "bool",
-            "default": null,
-            "name": "2d_gif"
-        },
-        {
-            "info": "Make Alt-AZ plots",
-            "dtype": "bool",
-            "default": null,
-            "name": "altaz_gif"
-        },
-        {
-            "info": "Generate movies in a report",
-            "dtype": "bool",
-            "default": null,
-            "name": "movies_in_report"
+            "info": "Explicitly set the number of worker threads",
+            "dtype": "int",
+            "name": "num-workers"
         }
     ]
 }

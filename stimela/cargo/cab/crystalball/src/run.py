@@ -23,7 +23,7 @@ for param in cab['parameters']:
     elif value is True:
         value = ''
     if name == "ms":
-        msname = value
+        ms = value
         continue
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]

@@ -1,0 +1,156 @@
+{
+    "task": "rfinder",
+    "base": "stimela/rfinder",
+    "tag": "1.0.1",
+    "description": "A tool to investigate the presence of RFI",
+    "prefix": "--",
+    "binary": "rfinder",
+    "msdir": true,
+    "parameters": [
+        {
+            "info": "Name of telescope",
+            "dtype": "str",
+            "default": "meerkat",
+            "name": "telescope"
+        }, 
+        {
+            "info": "Name of input ms file",
+            "dtype": "file",
+            "io": "msfile",
+            "default": null,
+            "name": "msname"
+        }, 
+        {
+            "info": "Field ID of target of file",
+            "dtype": "int",
+            "default": null,
+            "name": "field"
+        }, 
+        {
+            "info": "Path to ms file directory",
+            "dtype": "str",
+            "default": null,
+            "name": "msdir"
+        }, 
+        {
+            "info": "Path to output directory",
+            "dtype": "str",
+            "default": null,
+            "name": "output"
+        }, 
+        {
+            "info": "Enable to find RFI in msfile over threshold",
+            "dtype": "bool",
+            "default": null,
+            "name": "rfi_enable"
+        },
+        {
+            "info": "uses RFI clip method or simply reads the FLAG column 'use_flags' / 'rms_clip'",
+            "dtype": "str",
+            "default": null,
+            "name": "RFInder_mode"
+        }, 
+        {
+            "info": "List of bad antennas. default `[]` e.g. '[1,2]' ",
+            "dtype": "str",
+            "default": null,
+            "name": "bad_antenna"
+        }, 
+        {
+            "info": "Polarization to examine. xx, yy, xy, yx, q (also in CAPS)",
+            "dtype": "str",
+            "default": "XX",
+            "name": "polarization"
+        }, 
+        {
+            "info": "Threshold for RFI identification",
+            "dtype": "int",
+            "default": null,
+            "name": "rms_clip"
+        }, 
+        {
+            "info": "Min and Max frequency where to measure average std of visibilities",
+            "dtype": "list:float",
+            "default": null,
+            "name": "noise_measure_edges"
+        }, 
+        {
+            "info": "Cutoff baseline lenght: <  = Short, > = Long",
+            "dtype": "int",
+            "default": 200,
+            "name": "baseline_cut"
+        },
+        {
+            "info": "Enable time chunking",
+            "dtype": "bool",
+            "default": null,
+            "name": "time_enable"
+        },
+        {
+            "info": "Time chunks in minutes",
+            "dtype": "int",
+            "default": 10,
+            "name": "time_step"
+        },
+        {
+            "info": "Enable spw for rebinning",
+            "dtype": "bool",
+            "default": null,
+            "name": "spw_enable"
+        },
+        {
+            "info": "Channel width of rebinned output table [MHz]",
+            "dtype": "int",
+            "default": 20,
+            "name": "spw_width"
+        },
+        {
+            "info": "Enable estimation of the beam shape aster RFI flagging",
+            "dtype": "bool",
+            "default": null,
+            "name": "beam_shape_enable"
+        },
+        {
+            "info": "Enable output plotting",
+            "dtype": "bool",
+            "default": null,
+            "name": "plot_enable"
+        },
+        {
+            "info": "Choose to plot % of RFI, 'rfi', or noise, 'noise', or factor of noise increase, 'noise_factor' in 1D plots",
+            "dtype": "str",
+            "default": null,
+            "name": "plot_noise"
+        },
+        {
+            "info": "Plot all baselines, or only the short and the long movies:",
+            "dtype": "bool",
+            "default": null,
+            "name": "plot_long_short"
+        },
+        {
+            "info": "Make 1-D movie plots (gif)",
+            "dtype": "bool",
+            "default": null,
+            "name": "1d_gif"
+        },
+        {
+            "info": "Make 2-D movie plots (gif)",
+            "dtype": "bool",
+            "default": null,
+            "name": "2d_gif"
+        },
+        {
+            "info": "Make Alt-AZ plots",
+            "dtype": "bool",
+            "default": null,
+            "name": "altaz_gif"
+        },
+        {
+            "info": "Generate movies in a report",
+            "dtype": "bool",
+            "default": null,
+            "name": "movies_in_report"
+        }
+    ]
+}

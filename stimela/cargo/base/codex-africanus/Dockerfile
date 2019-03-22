@@ -9,3 +9,5 @@ RUN docker-apt-install python-casacore \
     wcslib-dev
 RUN pip install pip setuptools -U
 RUN pip install codex-africanus[complete]>0.1.4
+RUN pip install crystalball>=0.1.2
+RUN crystalball -h

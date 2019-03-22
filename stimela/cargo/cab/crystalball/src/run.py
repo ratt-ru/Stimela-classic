@@ -11,7 +11,7 @@ MSDIR = os.environ["MSDIR"]
 
 cab = utils.readJson(CONFIG)
 args = []
-msname = None
+ms = None
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
@@ -22,8 +22,10 @@ for param in cab['parameters']:
         continue
     elif value is True:
         value = ''
+    if name == "ms":
+        msname = value
+        continue
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-
-utils.xrun(cab['binary'], args)
+utils.xrun(cab['binary'], args + [ms])

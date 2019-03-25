@@ -1,0 +1,75 @@
+{
+    "task": "rfinder",
+    "base": "stimela/codex-africanus",
+    "tag": "1.0.1",
+    "description": "Distributed prediction of visibilities from a sky model",
+    "prefix": "--",
+    "binary": "crystalball",
+    "msdir": true,
+    "parameters": [
+        {
+            "info": "Input MS file",
+            "dtype": "file",
+            "io": "msfile",
+            "name": "ms",
+            "required": true
+        }, 
+        {
+            "info": "Name of file containing the sky model. Default is 'sky-model.txt'",
+            "dtype": "file",
+            "io": "input",
+            "name": "sky-model"
+        }, 
+        {
+            "info": "Output visibility column",
+            "dtype": "str",
+            "default": "MODEL_DATA",
+            "name": "output-column"
+        }, 
+        {
+            "info": "Number of rows of input .MS that are processed in a single chunk",
+            "dtype": "int",
+            "default": 10000,
+            "name": "row-chunks"
+        }, 
+        {
+            "info": "Number of sky model components that are processed in a single chunk.",
+            "dtype": "int",
+            "default": 10,
+            "name": "model-chunks"
+        }, 
+        {
+            "info": "Optional. Invert UVW coordinates. Useful if we want compare our visibilities against MeqTrees",
+            "dtype": "bool",
+            "default": false,
+            "name": "invert-uwv"
+        },
+        {
+            "info": "Optional. Model sources as non-flat spectra. The spectral coefficients and reference frequency must be present in the sky model.",
+            "dtype": "bool",
+            "default": false,
+            "name": "spectra"
+        }, 
+        {
+            "info": "Optional. Give JS9 region file. Only sources within those regions will be included.",
+            "dtype": "str",
+            "name": "within"
+        }, 
+        {
+            "info": "Select only point-type sources.",
+            "dtype": "bool",
+            "default": false,
+            "name": "points-only"
+        }, 
+        {
+            "info": "Select only N brightest sources.",
+            "dtype": "int",
+            "name": "num-sources"
+        }, 
+        {
+            "info": "Explicitly set the number of worker threads",
+            "dtype": "int",
+            "name": "num-workers"
+        }
+    ]
+}

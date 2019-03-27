@@ -37,7 +37,13 @@
             "dtype": "str",
             "default": null,
             "name": "output"
-        }, 
+        },
+        {
+            "info": "Ouput folder is called: rfi_polarization_outlabel",
+            "dtype": "str",
+            "default": null,
+            "name": "outlabel"
+        },
         {
             "info": "Enable to find RFI in msfile over threshold",
             "dtype": "bool",

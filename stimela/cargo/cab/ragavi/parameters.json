@@ -10,9 +10,8 @@
         {
             "info": "Plot only this antenna, or comma-separated list of antennas. Default plots all", 
             "name": "ant",
-            "dtype": "list:str", 
+            "dtype": "str", 
             "required": false,
-            "delimiter": ","
         },
         {
             "info": "Correlation index to plot (usually just 0 or 1)", 
@@ -44,7 +43,6 @@
             "name": "field", 
             "dtype": "list:str",
             "required": true, 
-            "delimiter": " "
         },
         {
             "info": "The gain type of table(s) to be plotted", 
@@ -55,7 +53,6 @@
                     "B", "F", 
                     "G", "K"
                 ],
-            "delimiter": " "
         },
         {
             "info": "Output html file name", 
@@ -77,7 +74,6 @@
             "dtype": "list:file", 
             "required": true,              
             "io": "input",
-            "delimiter": " "
         }, 
         {
             "info": "Minimum time to plot (default = full range)", 

@@ -19,6 +19,9 @@ for param in cab['parameters']:
     elif value is False:
         continue
 
-    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+    if type(value) == list:
+        args += ['{0}{1} {2}'.format(cab['prefix'], name, " ".join(value))]
+    else:
+        args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
 utils.xrun(cab['binary'], args)

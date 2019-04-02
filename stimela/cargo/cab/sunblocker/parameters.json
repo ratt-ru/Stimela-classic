@@ -103,11 +103,22 @@
             "dtype": "float", 
             "default": null, 
             "name": "angle"
+        },
+        {
+            "info": "Apply phazer only on daytime data as selected using vampirisms", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "vampirisms"
         }, 
         {
             "info": "Show histogram and cutoff line in a viewgraph", 
             "dtype": "str", 
             "name": "show"
+        }, 
+        {
+            "info": "Directory to put viewgraphs in (default: current directory)", 
+            "dtype": "str", 
+            "name": "showdir"
         }, 
         {
             "info": "Do not apply flags, but (e.g. produce viewgraphs only)", 
@@ -174,7 +185,18 @@
             "dtype": "str", 
             "default": null, 
             "name": "horizon"
-        }, 
+        },
+        {
+            "info": "Restrict analysis to visibilities with a baseline b with uvmax > b > uvmin, in units of wavelengths", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "uvmax"
+        },                {
+            "info": "Restrict analysis to visibilities with a baseline b with uvmax > b > uvmin, in units of wavelengths", 
+            "dtype": "float", 
+            "default": 0, 
+            "name": "uvmin"
+        },
         {
             "info": "Invert flags before applying/returning them (defaults to False)", 
             "dtype": "bool", 

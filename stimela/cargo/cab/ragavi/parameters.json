@@ -73,7 +73,7 @@
             "name": "table",
             "dtype": "list:file", 
             "required": true,              
-            "io": "input",
+            "io": "output",
         }, 
         {
             "info": "Minimum time to plot (default = full range)", 

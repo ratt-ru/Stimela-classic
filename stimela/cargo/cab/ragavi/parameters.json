@@ -41,7 +41,7 @@
         {
             "info": "Field ID to plot", 
             "name": "field", 
-            "dtype": "list:str",
+            "dtype": ["list:str","list:int"],
             "required": true, 
         },
         {

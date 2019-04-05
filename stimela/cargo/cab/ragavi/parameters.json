@@ -45,7 +45,7 @@
             "required": true, 
         },
         {
-            "info": "The gain type of table(s) to be plotted", 
+            "info": "The gain type of table(s) to be plotted. Options: ['B', 'F', 'G', 'K']", 
             "name": "gaintype",
             "dtype": "list:str", 
             "required": true,

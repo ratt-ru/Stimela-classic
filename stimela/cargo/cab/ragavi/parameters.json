@@ -48,11 +48,7 @@
             "info": "The gain type of table(s) to be plotted", 
             "name": "gaintype",
             "dtype": "list:str", 
-            "required": true, 
-            "choices": [
-                    "B", "F", 
-                    "G", "K"
-                ],
+            "required": true,
         },
         {
             "info": "Output html file name", 

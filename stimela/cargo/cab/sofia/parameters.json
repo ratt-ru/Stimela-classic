@@ -280,7 +280,7 @@
             "info": null, 
             "dtype": "int", 
             "default": 1, 
-            "name": "parameters.dilateChan"
+            "name": "parameters.dilateChanMax"
         }, 
         {
             "info": null, 

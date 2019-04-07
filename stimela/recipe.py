@@ -49,9 +49,10 @@ class PipelineException(Exception):
 
 class StimelaJob(object):
     def __init__(self, name, recipe, label=None, 
-
-        jtype='docker', cpus=None, memory_limit=None, singularity_dir=None,
-        time_out=-1):
+        jtype='docker', cpus=None, memory_limit=None, 
+        singularity_dir=None,
+        time_out=-1,
+        log_dir=None):
 
         self.name = name
         self.recipe = recipe
@@ -67,6 +68,7 @@ class StimelaJob(object):
         if memory_limit:
             self.args.append("--memory {0:s}".format(memory_limit)) 
         self.time_out = time_out
+        self.log_dir = log_dir
         
     def run_python_job(self):
         function = self.job['function']
@@ -233,7 +235,7 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = '/scratch/output'
-        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(output, _name.split('-')[0])
+        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(self.log_dir, _name.split('-')[0])
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass
@@ -356,8 +358,12 @@ class StimelaJob(object):
 
         od = '/home/%s/output'%USER
         cont.add_environ('HOME', od)
-        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(output, name.split('-')[0])
+        self.logfile = cont.logfile = '{0:s}/log-{1:s}.txt'.format(self.log_dir, name.split('-')[0])
         cont.add_volume(output, od)
+        if not os.path.exists(self.logfile):
+            with open(self.logfile, "w") as std:
+                pass
+        cont.add_volume(cont.logfile, '{0}/log-{1}.txt'.format(od, name.split('-')[0]), "rw")
         cont.add_environ('OUTPUT', od)
         cont.add_environ('LOGFILE', '{0}/log-{1}.txt'.format(od, name.split('-')[0]))
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
@@ -373,7 +379,7 @@ class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
                  tag=None, build_label=None, loglevel='INFO',
-                 loggername='STIMELA', singularity_image_dir=None):
+                 loggername='STIMELA', singularity_image_dir=None, log_dir=None):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -386,10 +392,19 @@ class Recipe(object):
         
         self.log = logging.getLogger(loggername)
         self.log.setLevel(getattr(logging, loglevel))
+
+        name_ = name.lower().replace(' ', '_')
+        self.log_dir = log_dir
+        if self.log_dir:
+            if not os.path.exists(self.log_dir):
+                self.log.info('The Log directory \'{0:s}\' cannot be found. Will create it'.format(self.log_dir))
+                os.mkdir(self.log_dir)
+            self.logfile = '{0:s}/log-{1:s}.txt'.format(log_dir, name_)
+        else:
+            self.logfile = 'log-{}.txt'.format(name_)
+
         # Create file handler which logs even debug
         # messages
-        name_ = name.lower().replace(' ', '_')
-        self.logfile = 'log-{}.txt'.format(name_)
         self.resume_file = '.last_{}.json'.format(name_)
 
         fh = logging.FileHandler(self.logfile, 'w')
@@ -423,8 +438,9 @@ class Recipe(object):
         # task
         self.parameter_file_dir = parameter_file_dir or "stimela_parameter_files"
         if not os.path.exists(self.parameter_file_dir):
-            self.log.info('Config directory not be found. Will create ./{}'.format(self.parameter_file_dir))
+            self.log.info('Config directory cannot be found. Will create ./{}'.format(self.parameter_file_dir))
             os.mkdir(self.parameter_file_dir)
+
 
         self.jobs = []
         self.completed = []
@@ -449,11 +465,19 @@ class Recipe(object):
             label=None, shared_memory='1gb',
             build_label=None,
             cpus=None, memory_limit=None,
-            time_out=-1):
+            time_out=-1, 
+            log_dir=None):
 
+        if self.log_dir:
+            if not os.path.exists(self.log_dir):
+                self.log.info('The Log directory \'{0:s}\' cannot be found. Will create it'.format(self.log_dir))
+                os.mkdir(log_dir)
+        else:
+            log_dir = self.log_dir
 
         job = StimelaJob(name, recipe=self, label=label,
-                         cpus=cpus, memory_limit=memory_limit, time_out=time_out)
+                         cpus=cpus, memory_limit=memory_limit, time_out=time_out,
+                         log_dir=log_dir or output)
 
         if callable(image):
             job.jtype = 'function'

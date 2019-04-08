@@ -239,7 +239,7 @@ class StimelaJob(object):
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass
-        cont.add_volume(self.logfile, "/scratch/logfile")
+        cont.add_volume(self.logs_dir, "/scratch/logs")
         cont.add_volume(output, od)
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
         
@@ -325,7 +325,7 @@ class StimelaJob(object):
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 
         if msdir:
-            md = '/home/%s/msdir'%USER
+            md = '/home/{0:s}/msdir'(USER)
             cont.add_volume(msdir, md)
             cont.add_environ('MSDIR', md)
             # Keep a record of the content of the
@@ -356,16 +356,18 @@ class StimelaJob(object):
         if not os.path.exists(output):
             os.mkdir(output)
 
-        od = '/home/%s/output'%USER
+        od = '/home/{0:s}/output'.format(USER)
         cont.add_environ('HOME', od)
         self.logfile = cont.logfile = '{0:s}/log-{1:s}.txt'.format(self.log_dir, name.split('-')[0])
         cont.add_volume(output, od)
-        if not os.path.exists(self.logfile):
-            with open(self.logfile, "w") as std:
+        if not os.path.exists(cont.logfile):
+            with open(cont.logfile, "w") as std:
                 pass
-        cont.add_volume(cont.logfile, '{0}/log-{1}.txt'.format(od, name.split('-')[0]), "rw")
+
+        logfile_cont = '/home/{0:s}/{1:s}/log-{2:s}.txt'.format(USER, self.log_dir, name.split('-')[0])
+        cont.add_volume(cont.logfile, logfile_cont, "rw")
         cont.add_environ('OUTPUT', od)
-        cont.add_environ('LOGFILE', '{0}/log-{1}.txt'.format(od, name.split('-')[0]))
+        cont.add_environ('LOGFILE',  logfile_cont)
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
         cont.image = '{0}_{1}'.format(build_label, image)
@@ -477,7 +479,7 @@ class Recipe(object):
 
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,
-                         log_dir=log_dir or output)
+                         log_dir=self.log_dir or output)
 
         if callable(image):
             job.jtype = 'function'

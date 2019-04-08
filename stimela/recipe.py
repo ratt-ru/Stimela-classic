@@ -239,7 +239,7 @@ class StimelaJob(object):
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass
-        cont.add_volume(self.logs_dir, "/scratch/logs")
+        cont.add_volume(self.log_dir, "/scratch/logs/logfile")
         cont.add_volume(output, od)
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
         

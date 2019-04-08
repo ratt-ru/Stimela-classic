@@ -14,7 +14,7 @@ RUN pip install numpy \
 
 RUN git clone https://github.com/SoFiA-Admin/SoFiA.git /sofia
 RUN cd /sofia && git fetch && git fetch --tags
-RUN cd /sofia && git checkout v1.2.0
+RUN cd /sofia && git checkout v1.3.0
 RUN cd /sofia && python setup.py  install
 ENV SOFIA_MODULE_PATH /sofia/build/lib.linux-x86_64-2.7
 ENV SOFIA_PIPELINE_PATH /sofia/sofia_pipeline.py

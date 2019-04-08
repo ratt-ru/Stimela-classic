@@ -135,7 +135,7 @@ class Container(object):
     
     
     def get_log(self):
-        stdout = open(self.logfile, 'a+')
+        stdout = open(self.logfile, 'w')
         exit_status = subprocess.call("docker logs {0}".format(self.name),
                             stdout=stdout, stderr=stdout, shell=True)
         if exit_status !=0:

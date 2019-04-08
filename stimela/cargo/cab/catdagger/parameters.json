@@ -32,14 +32,6 @@
             "required": false
         },
         {
-            "info": "Tigger LSM to recluster and tag. If this is not specified only DS9 regions will be written out", 
-            "dtype": "file", 
-            "check_io": true,
-            "name": "min-tiles-region",
-            "io": "input",
-            "required": false
-        },
-        {
             "info": "SAODS9 regions filename to write out", 
             "dtype": "file", 
             "check_io": false,

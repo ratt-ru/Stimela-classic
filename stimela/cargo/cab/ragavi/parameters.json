@@ -41,18 +41,14 @@
         {
             "info": "Field ID to plot", 
             "name": "field", 
-            "dtype": "list:str",
+            "dtype": ["list:str","list:int"],
             "required": true, 
         },
         {
-            "info": "The gain type of table(s) to be plotted", 
+            "info": "The gain type of table(s) to be plotted. Options: ['B', 'F', 'G', 'K']", 
             "name": "gaintype",
             "dtype": "list:str", 
-            "required": true, 
-            "choices": [
-                    "B", "F", 
-                    "G", "K"
-                ],
+            "required": true,
         },
         {
             "info": "Output html file name", 

@@ -325,7 +325,7 @@ class StimelaJob(object):
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 
         if msdir:
-            md = '/home/{0:s}/msdir'(USER)
+            md = '/home/{0:s}/msdir'.format(USER)
             cont.add_volume(msdir, md)
             cont.add_environ('MSDIR', md)
             # Keep a record of the content of the

@@ -1,7 +1,7 @@
 import subprocess
 import os
 import sys
-from cStringIO import StringIO as io
+from io import StringIO
 from stimela import utils
 import json
 import stimela
@@ -22,7 +22,7 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
     bdir = tempfile.mkdtemp()
     os.system('cp -r {0:s}/* {1:s}'.format(build_path, bdir))
     if build_args:
-        stdw = tempfile.NamedTemporaryFile(dir=bdir)
+        stdw = tempfile.NamedTemporaryFile(dir=bdir, mode='w')
         with open("{}/Dockerfile".format(bdir)) as std:
             dfile = std.readlines()
 
@@ -126,8 +126,8 @@ class Container(object):
 
     def info(self):
 
-        output = subprocess.check_output("docker inspect {}".format(self.name), shell=True)
-        output_file = io(output[3:-3])
+        output = subprocess.check_output("docker inspect {}".format(self.name), shell=True).decode()
+        output_file = StringIO(output[3:-3])
         jdict = json.load(output_file)
         output_file.close()
 

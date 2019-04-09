@@ -420,8 +420,8 @@ class Recipe(object):
         fh.setFormatter(formatter)
         # Add the handlers to logger
         
-        len(filter(lambda x: isinstance(x, logging.StreamHandler), self.log.handlers)) == 0 and self.log.addHandler(ch)
-        len(filter(lambda x: isinstance(x, logging.FileHandler), self.log.handlers)) == 0 and self.log.addHandler(fh)
+        len(list(filter(lambda x: isinstance(x, logging.StreamHandler), self.log.handlers))) == 0 and self.log.addHandler(ch)
+        len(list(filter(lambda x: isinstance(x, logging.FileHandler), self.log.handlers))) == 0 and self.log.addHandler(fh)
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -677,7 +677,7 @@ class Recipe(object):
                 #self.proc_logger.remove('processes', self.pid)
                 #self.proc_logger.write()
                 pe = PipelineException(e, self.completed, job, self.remaining)
-                raise pe, None, sys.exc_info()[2]
+                raise pe(sys.exc_info()[2]) from None
             except:
                 import traceback
                 traceback.print_exc()

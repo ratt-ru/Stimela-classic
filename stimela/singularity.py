@@ -1,7 +1,6 @@
 import subprocess
 import os
 import sys
-from cStringIO import StringIO as io
 from stimela import utils
 import json
 import stimela

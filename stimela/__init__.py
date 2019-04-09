@@ -11,8 +11,8 @@ import inspect
 import stimela
 from stimela import utils, cargo
 from stimela.cargo import cab
-from recipe import Recipe as Pipeline
-from recipe import Recipe, PipelineException
+from stimela.recipe import Recipe as Pipeline
+from stimela.recipe import Recipe, PipelineException
 from stimela import docker, singularity
 import pkg_resources
 
@@ -153,7 +153,7 @@ def build(argv):
         # Images that have been logged
         # This is crucial for making custom cabs
         logged_images = log.read().get('images', {})
-        for key,val in logged_images.iteritems():
+        for key,val in logged_images.items():
             if val['CAB']:
                 cabs.append(key)
                 dockerfiles.append(val['DIR'])
@@ -237,7 +237,7 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
         info(cabdir)
 
     elif args.list_summary:
-        for key,val in cabs_.iteritems():
+        for key,val in cabs_.items():
             if not val['CAB']:
                 continue
             cabdir = cabs_[key]['DIR']
@@ -311,7 +311,8 @@ def run(argv):
     if args.ncores:
         utils.CPUS = args.ncores
 
-    execfile(args.script, _globals)
+    with open(args.script, 'r') as stdr:
+        exec(stdr.read(), _globals)
 
 
 def pull(argv):
@@ -523,7 +524,6 @@ def clean(argv):
     if args.all_containers:
         containers = log.info['containers'].keys()
         for container in containers:
-            print container
             cont = docker.Container(log.info['containers'][container]['IMAGE'], container)
             try:
                 status = cont.info()['State']['Status'].lower()

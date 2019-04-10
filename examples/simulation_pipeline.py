@@ -6,7 +6,7 @@ INPUT = "input" # This folder must exist
 OUTPUT = "output"
 MSDIR = "msdir"
 PREFIX = "stimela-example"  # Prefix for output images
-SINGULARTITY_IMAGE_DIR = "/data/users/sphe/STIMELA_SINGULARITY_IMAGES"
+SINGULARTITY_IMAGE_DIR = "/home/sphe/work/github/Stimela/examples/IMAGES/"
 
 # MS name
 MS = "meerkat_simulation_example.ms"
@@ -108,3 +108,4 @@ pipeline.add("cab/casa_rmtables", "delete_ms", {
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added
 pipeline.run()
+

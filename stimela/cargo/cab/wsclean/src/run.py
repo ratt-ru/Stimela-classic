@@ -54,7 +54,10 @@ for param in params:
     value = param['value']
 
     if name == 'msname':
-        mslist = ' '.join(value)
+        if isinstance(value, str):
+            mslist = value
+        else:
+            mslist = ' '.join(value)
         continue
 
     if value in [None, False]:

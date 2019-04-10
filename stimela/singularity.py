@@ -1,7 +1,6 @@
 import subprocess
 import os
 import sys
-from cStringIO import StringIO as io
 from stimela import utils
 import json
 import stimela
@@ -32,7 +31,7 @@ class Container(object):
                  volumes=None,
                  logger=None,
                  time_out=-1,
-                 runscript=None):
+                 runscript=""):
         """
         Python wrapper to singularity tools for managing containers.
         """

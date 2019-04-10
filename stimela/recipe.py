@@ -11,6 +11,7 @@ from stimela.dismissable import dismissable
 from stimela_misc import version
 import string
 import random
+from future.utils import raise_
 
 USER = os.environ["USER"]
 UID = os.getuid()
@@ -420,8 +421,8 @@ class Recipe(object):
         fh.setFormatter(formatter)
         # Add the handlers to logger
         
-        len(filter(lambda x: isinstance(x, logging.StreamHandler), self.log.handlers)) == 0 and self.log.addHandler(ch)
-        len(filter(lambda x: isinstance(x, logging.FileHandler), self.log.handlers)) == 0 and self.log.addHandler(fh)
+        len(list(filter(lambda x: isinstance(x, logging.StreamHandler), self.log.handlers))) == 0 and self.log.addHandler(ch)
+        len(list(filter(lambda x: isinstance(x, logging.FileHandler), self.log.handlers))) == 0 and self.log.addHandler(fh)
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
@@ -674,10 +675,8 @@ class Recipe(object):
                 self.log.info('Saving pipeline information in {}'.format(self.resume_file))
                 utils.writeJson(self.resume_file, recipe)
 
-                #self.proc_logger.remove('processes', self.pid)
-                #self.proc_logger.write()
                 pe = PipelineException(e, self.completed, job, self.remaining)
-                raise pe, None, sys.exc_info()[2]
+                raise_(pe, None, sys.exc_info()[2])
             except:
                 import traceback
                 traceback.print_exc()
@@ -689,9 +688,6 @@ class Recipe(object):
                     job.job.remove()
                 if job.jtype == 'singularity' and job.created:
                     job.job.stop()
-
-        #self.proc_logger.remove('processes', self.pid)
-        #self.proc_logger.write()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)

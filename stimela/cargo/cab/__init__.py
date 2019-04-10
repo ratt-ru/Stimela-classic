@@ -36,7 +36,7 @@ class Parameter(object):
         self.io = io
         #self.delimiter = delimiter
         
-        if not hasattr(dtype,'__iter__'):
+        if isinstance(dtype, str):
             dtype = [dtype]
         self.dtype = []
         for item in dtype:
@@ -232,11 +232,11 @@ class CabDefinition(object):
     def update(self, options, saveconf):
         required = filter(lambda a: a.required, self.parameters)
         for param0 in required:
-            if not options.has_key(param0.name) and not options.has_key(param0.mapping):
+            if param0.name in options.keys() == False and param0.mapping in options.keys() == False:
                 raise RuntimeError("Parameter {} is required but has not been specified".format(param0.name))
 
         self.log.info("Validating parameters...       CAB = {0}".format(self.task))
-        for name,value in options.iteritems():
+        for name,value in options.items():
             found = False
             for param in self.parameters:
                 if name in [param.name, param.mapping]:
@@ -246,8 +246,12 @@ class CabDefinition(object):
                             continue
                         param.validate(value)
                         param.value = []
-                        if not hasattr(value, "__iter__"):
+                        if hasattr(value, "__iter__") and not isinstance(value, str):
+                            print(value)
+#                            pass
+                        else:
                             value = [value]
+                            print(value)
                         for _value in value:
                             val = _value.split(":")
                             if len(val)==2:

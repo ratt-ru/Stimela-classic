@@ -11,6 +11,7 @@ from stimela.dismissable import dismissable
 from stimela_misc import version
 import string
 import random
+from future.utils import raise_
 
 USER = os.environ["USER"]
 UID = os.getuid()
@@ -674,10 +675,8 @@ class Recipe(object):
                 self.log.info('Saving pipeline information in {}'.format(self.resume_file))
                 utils.writeJson(self.resume_file, recipe)
 
-                #self.proc_logger.remove('processes', self.pid)
-                #self.proc_logger.write()
                 pe = PipelineException(e, self.completed, job, self.remaining)
-                raise pe(sys.exc_info()[2]) from None
+                raise_(pe, None, sys.exc_info()[2])
             except:
                 import traceback
                 traceback.print_exc()
@@ -689,9 +688,6 @@ class Recipe(object):
                     job.job.remove()
                 if job.jtype == 'singularity' and job.created:
                     job.job.stop()
-
-        #self.proc_logger.remove('processes', self.pid)
-        #self.proc_logger.write()
 
         self.log.info('Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)

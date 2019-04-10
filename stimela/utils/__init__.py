@@ -109,65 +109,6 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         if (process is not None) and process.returncode:
             raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
 
-
-
-def pper(iterable, command, cpus=None, stagger=2, logger=None):
-    """
-       Run command in parallel.
-       
-       iterable :  argument(s) to iterate over
-       command : callable command to run
-       cpus : number of cpus to use
-       stagger : stagger jobs (in seconds)
-       logger : logging instance
-    """
-
-    cpus = cpus or CPUS
-    manager = Manager()
-
-    if not hasattr(iterable, "__iter__"):
-        raise TypeError("Can not iterate over [%s]. Make its iterable"%iterable)
-
-    if not callable(command):
-        raise TypeError("command [%] is not callable"%(command.func_name))
-
-    message = "Iterating over :: %s"%repr(iterable)
-
-    if logger:
-        logger.info(message)
-    else:
-        print(message)
-
-    active = manager.Value("d", 0)
-    
-    def worker(*args):
-        command(*args)
-        active.value -= 1
-
-    nprocs = len(iterable)
-    counter = 0
-    procs = []
-
-    while counter <= nprocs-1:
-        if active.value >= cpus:
-            continue
-        
-        time.sleep(stagger)
-        active.value += 1
-        args = iterable[counter]
-
-        if not hasattr(args, "__iter__"):
-            args = (args,)
-
-        proc = Process(target=worker, args=args)
-        procs.append(proc)
-        proc.start()
-        counter += 1
-
-    for proc in procs:
-        proc.join()
-
-
 def readJson(conf):
     with open(conf) as _std:
         jdict = yaml.safe_load(_std)

@@ -3,6 +3,5 @@ RUN docker-apt-install python-pip
 ADD . /code
 ENV USER root
 WORKDIR /code
-RUN ls /code
 RUN pip install /code
 RUN python -c "import stimela"

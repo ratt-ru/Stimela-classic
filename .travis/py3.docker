@@ -1,5 +1,6 @@
 FROM kernsuite/base:4
 RUN docker-apt-install python3-pip
+ENV USER root
 ADD . /code
 WORKDIR /code
 RUN pip3 install .

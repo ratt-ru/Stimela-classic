@@ -42,7 +42,8 @@ BASE = os.listdir(cargo.BASE_PATH)
 # Get package cab images (user can add their own cab images)
 # All package cab images must be based on stimela base images.
 
-CAB = []
+CAB = list()
+    
 for item in os.listdir(cargo.CAB_PATH):
     try: 
         # These files must exist for a cab image to be valid
@@ -55,7 +56,9 @@ for item in os.listdir(cargo.CAB_PATH):
     if dockerfile and paramfile and srcdir:
         CAB.append(item)
 
-GLOBALS = {}
+GLOBALS = {'foo' : 'bar'}
+del GLOBALS['foo']
+
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):

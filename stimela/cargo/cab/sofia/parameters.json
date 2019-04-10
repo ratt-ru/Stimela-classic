@@ -766,6 +766,120 @@
             "name": "port2tigger",
             "info": null,
             "dtype": "bool"
+        },
+        {
+            "name" : "pipeline.trackMemory",
+            "dtype": "bool",
+            "info": null
+        },
+        {
+            "name": "steps.doFilterArtefacts",
+            "info": null,
+            "dtype": "bool"
+        },
+        {
+            "name": "import.invertData",
+            "info": null,
+            "dtype": "bool"
+        },
+        {
+            "name": "import.sources",
+            "info": null,
+            "dtype": "list:str"
+        },
+        {
+            "name": "scaleNoise.gridSpectral",
+            "info": null,
+            "dtype": "int",
+            "default": 0
+        },
+        {
+            "name": "filterArtefacts.threshold",
+            "info": null,
+            "dtype": "float",
+            "default": 4.0
+        },
+        {
+            "name": "filterArtefacts.dilation",
+            "info": null,
+            "dtype": "int",
+            "default": 3
+        },
+        {
+            "name": "merge.maxSizeX",
+            "info": null,
+            "dtype": "int",
+            "default": -1
+        },
+        {
+            "name": "merge.maxSizeY",
+            "info": null,
+            "dtype": "int",
+            "default": -1
+        },
+        {
+            "name": "merge.maxSizeZ",
+            "info": null,
+            "dtype": "int",
+            "default": -1
+        },
+        {
+            "name": "merge.minVoxels", 
+            "info": null,
+            "dtype": "int",
+            "default": 1
+        },
+        {
+            "name": "merge.maxVoxels", 
+            "info": null,
+            "dtype": "int",
+            "default": 1
+        },
+        {
+            "name" : "merge.minLoS",
+            "info": null,
+            "dtype": "int",
+            "default": 1
+        },
+        {
+            "name" : "merge.maxLoS",
+            "info": null,
+            "dtype": "int",
+            "default": -1
+        },
+        {
+            "name": "merge.minFill",
+            "info": null,
+            "dtype": "int",
+            "default": -1
+        },
+        {
+            "name": "merge.maxFill",
+            "info": null,
+            "dtype": "int",
+            "default": 2
+        },
+        {
+            "name": "merge.minIntens",
+            "info": null,
+            "dtype": "float",
+            "default": -9e30
+        },
+        {
+            "name": "merge.maxIntens",
+            "info": null,
+            "dtype": "float",
+            "default": 9e30
+        },
+        {
+            "name": "merge.positivity",
+            "info": null,
+            "dtype": "bool"
+        },
+        {
+            "name": "parameters.getUncertainties",
+            "info": null,
+            "dtype": "bool"
         }
     ]
 }

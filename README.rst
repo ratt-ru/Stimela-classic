@@ -1,3 +1,7 @@
+|Pypi Version|
+|Build Version|
+|Python Versions|
+
 # Stimela
 
 ### [Documentation](https://github.com/SpheMakh/Stimela/wiki)  

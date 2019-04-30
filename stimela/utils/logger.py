@@ -4,7 +4,7 @@ import json
 import yaml
 import time
 import subprocess
-from cStringIO import StringIO as io
+from io import StringIO
 import codecs
 from datetime import datetime
 
@@ -29,8 +29,8 @@ class StimelaLogger(object):
             self.write()
 
     def _inspect(self, name):
-        output = subprocess.check_output("docker inspect {}".format(name), shell=True)
-        output_file = io(output[3:-3])
+        output = subprocess.check_output("docker inspect {}".format(name), shell=True).decode()
+        output_file = StringIO(output[3:-3])
         jdict = yaml.safe_load(output_file)
         output_file.close()
 

@@ -8,112 +8,104 @@
     "msdir": false, 
     "parameters": [
         {
-            "info": "Gain table to plot", 
-            "dtype": "file", 
-            "required": true, 
-            "name": "table", 
-            "io": "output"
-        }, 
-        {
-            "info": "Field ID to plot", 
-            "default": 0, 
-            "required": false, 
-            "name": "field", 
-            "dtype": "int"
-        }, 
-        {
-            "info": "The gain type table to be plotted", 
+            "info": "Plot only this antenna, or comma-separated list of antennas. Default plots all", 
+            "name": "ant",
             "dtype": "str", 
+            "required": false,
+        },
+        {
+            "info": "Correlation index to plot (usually just 0 or 1)", 
+            "name": "corr",
+            "dtype": "int", 
             "required": false, 
-            "name": "gaintype"
+            "default": 0
+        }, 
+        {
+            "info": "Matplotlib colour map to use for antennas (default=coolwarm)", 
+            "name": "cmap",
+            "dtype": "str", 
+            "default": "coolwarm", 
+            "required": false
         }, 
         {
             "info": "Plot complex values as amp and phase (ap) or real and imag (ri)", 
             "name": "doplot", 
-            "default": "ap", 
             "dtype": "str", 
+            "default": "ap", 
             "required": false, 
             "choices": [
                 "ap", 
                 "ri"
             ]
-        }, 
+        },
         {
-            "info": "Plot only this antenna, or comma-separated list of antennas. Default plots all", 
+            "info": "Field ID to plot", 
+            "name": "field", 
+            "dtype": ["list:str","list:int"],
+            "required": true, 
+        },
+        {
+            "info": "The gain type of table(s) to be plotted. Options: ['B', 'F', 'G', 'K']", 
+            "name": "gaintype",
             "dtype": "list:str", 
-            "delimiter": ",", 
-            "required": false, 
-            "name": "ant"
-        }, 
+            "required": true,
+        },
         {
-            "info": "Correlation index to plot (usually just 0 or 1)", 
-            "dtype": "int", 
+            "info": "Output html file name", 
+            "name": "htmlname", 
+            "dtype": "str", 
             "required": false, 
-            "name": "corr"
+            "io": "output"
+        },
+        {
+            "info": "Output png/svg image file name", 
+            "name": "plotname", 
+            "dtype": "str", 
+            "required": false, 
+            "io": "output"
+        },
+        {
+            "info": "Gain table(s) to plot", 
+            "name": "table",
+            "dtype": "list:file", 
+            "required": true,              
+            "io": "input",
         }, 
         {
             "info": "Minimum time to plot (default = full range)", 
+            "name": "t0",
             "dtype": "float", 
-            "required": false, 
-            "name": "t0"
+            "required": false
         }, 
         {
             "info": "Maximum time to plot (default = full range)", 
+            "name": "t1",
             "dtype": "float", 
-            "required": false, 
-            "name": "t1"
-        }, 
-        {
-            "info": "Maximum y-value to plot for upper panel (default=full range)", 
-            "dtype": "float", 
-            "required": false, 
-            "name": "yu1"
+            "required": false
         }, 
         {
             "info": "Minimum y-value to plot for upper panel (default=full range)", 
+            "name": "yu0",
             "dtype": "float", 
-            "required": false, 
-            "name": "yu0"
+            "required": false
+        }, 
+        {
+            "info": "Maximum y-value to plot for upper panel (default=full range)", 
+            "name": "yu1",
+            "dtype": "float", 
+            "required": false
         }, 
         {
             "info": "Minimum y-value to plot for lower panel (default=full range)", 
+            "name": "yl0",
             "dtype": "float", 
-            "required": false, 
-            "name": "yl0"
+            "required": false
         }, 
         {
             "info": "Maximum y-value to plot for lower panel (default=full range)", 
+            "name": "yl1",
             "dtype": "float", 
-            "required": false, 
-            "name": "yl1"
-        }, 
-        {
-            "info": "Matplotlib colour map to use for antennas (default=coolwarm)", 
-            "dtype": "str", 
-            "default": "coolwarm", 
-            "required": false, 
-            "name": "cmap"
-        }, 
-        {
-            "info": "Measurement Set to consult for proper antenna names", 
-            "dtype": "file", 
-            "required": false, 
-            "name": "ms", 
-            "io": "msfile"
-        }, 
-        {
-            "info": "Output image file name", 
-            "dtype": "file", 
-            "required": false, 
-            "name": "imagename", 
-            "io": "output"
-        }, 
-        {
-            "info": "Output html file name", 
-            "dtype": "file", 
-            "required": false, 
-            "name": "htmlname", 
-            "io": "output"
-        }
+            "required": false
+        } 
     ]
 }

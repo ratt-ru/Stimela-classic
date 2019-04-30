@@ -12,7 +12,7 @@ import inspect
 import warnings
 import re
 import math
-import thread
+from threading import Thread
 import unicodedata
 import hashlib
 #from fcntl import fcntl, F_GETFL, F_SETFL
@@ -56,21 +56,21 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         Example: _run("ls", ["-lrt", "../"])
     """
     
-    cmd = " ".join([command]+ map(str, options) )
+    cmd = " ".join([command] + list(map(str, options)) )
 
     def _print_info(msg):
         if msg is None: return
         if log:
             log.info(msg)
         else:
-            print msg
+            print(msg)
 
     def _print_warn(msg):
         if msg is None: return
         if log:
             log.warn(msg)
         else:
-            print msg
+            print(msg)
     
     _print_info(u"Running: {0:s}".format(cmd))
 
@@ -78,7 +78,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     starttime = time.time()
     process = p = None
     try:
-        foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(hashlib.md5(cmd).hexdigest(), starttime))
+        foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(hashlib.md5(cmd.encode('utf-8')).hexdigest(), starttime))
         with open(foutname, "w+") as fout:
             p = process = subprocess.Popen(cmd,
                                             stderr=fout,
@@ -95,7 +95,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                         (kill_callback is not None) and kill_callback()
                     time.sleep(INTERRUPT_TIME)
 
-            t = thread.start_new_thread(clock_killer, tuple([p]))
+            Thread(target=clock_killer, args=tuple([p])).start()
 
             while (process.poll() is None):
                 currenttime = time.time()
@@ -108,65 +108,6 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     finally:
         if (process is not None) and process.returncode:
             raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
-
-
-
-def pper(iterable, command, cpus=None, stagger=2, logger=None):
-    """
-       Run command in parallel.
-       
-       iterable :  argument(s) to iterate over
-       command : callable command to run
-       cpus : number of cpus to use
-       stagger : stagger jobs (in seconds)
-       logger : logging instance
-    """
-
-    cpus = cpus or CPUS
-    manager = Manager()
-
-    if not hasattr(iterable, "__iter__"):
-        raise TypeError("Can not iterate over [%s]. Make its iterable"%iterable)
-
-    if not callable(command):
-        raise TypeError("command [%] is not callable"%(command.func_name))
-
-    message = "Iterating over :: %s"%repr(iterable)
-
-    if logger:
-        logger.info(message)
-    else:
-        print message
-
-    active = manager.Value("d", 0)
-    
-    def worker(*args):
-        command(*args)
-        active.value -= 1
-
-    nprocs = len(iterable)
-    counter = 0
-    procs = []
-
-    while counter <= nprocs-1:
-        if active.value >= cpus:
-            continue
-        
-        time.sleep(stagger)
-        active.value += 1
-        args = iterable[counter]
-
-        if not hasattr(args, "__iter__"):
-            args = (args,)
-
-        proc = Process(target=worker, args=args)
-        procs.append(proc)
-        proc.start()
-        counter += 1
-
-    for proc in procs:
-        proc.join()
-
 
 def readJson(conf):
     with open(conf) as _std:
@@ -282,7 +223,7 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
     run_cmd = """ """
     for kw in mult:
         task_cmds = []
-        for key,val in kw.iteritems():
+        for key,val in kw.items():
             if isinstance(val,(str, unicode)):
                  val = '"%s"'%val
             task_cmds .append('%s=%s'%(key,val))
@@ -499,7 +440,7 @@ def copycol(msname, fromcol, tocol):
 def cab_dict_update(dictionary, key=None, value=None, options=None):
     if options is None:
         options = {key:value}
-    for key, value in options.iteritems():
+    for key, value in options.items():
         dictionary[key] = dictionary.pop(key, None) or value
     return dictionary
 

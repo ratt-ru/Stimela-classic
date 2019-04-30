@@ -4,7 +4,7 @@
     "tag": "1.0.1", 
     "description": "DDFacet: a facet-based imager", 
     "prefix": "--", 
-    "binary": "DDF.py", 
+    "binary": "python2.7 /root/.local/bin/DDF.py", 
     "msdir": "true", 
     "parameters": [
         {
@@ -288,12 +288,7 @@
             "name": "Weight-ColName", 
             "default": "WEIGHT_SPECTRUM", 
             "dtype": "str", 
-            "required": false, 
-            "choices": [
-                "WEIGHT_SPECTRUM", 
-                "WEIGHT", 
-                "IMAGING_WEIGHT"
-            ]
+            "required": false,
         }, 
         {
             "info": "UV weighting mode", 
@@ -420,7 +415,7 @@
             "required": false, 
             "choices": [
                 "BDA-degrid", 
-                "Classic", 
+                "BDA-degrid-classic",
                 "Montblanc"
             ]
         }, 
@@ -502,7 +497,7 @@
             "info": "Maximum tolerated BDA decorrelation response factor for degridding", 
             "default": 0.02, 
             "required": false, 
-            "name": "Comp-GridDecorr", 
+            "name": "Comp-DegridDecorr", 
             "dtype": "float"
         }, 
         {

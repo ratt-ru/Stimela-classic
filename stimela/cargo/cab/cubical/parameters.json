@@ -76,11 +76,9 @@
         }, 
         {
             "info": "Predict model visibilities from given LSM (using Montblanc).", 
-            "check_io": false, 
             "name": "model-list", 
-            "io": "input", 
             "default": null, 
-            "dtype": "list:file"
+            "dtype": "str"
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
@@ -272,19 +270,19 @@
         }, 
         {
             "info": "Theshold for gain accuracy - gains which improve by less than this value\nare considered converged.", 
-            "dtype": "str", 
+            "dtype": "float", 
             "default": null, 
             "name": "sol-delta-g"
         }, 
         {
             "info": "Theshold for solution stagnancy - if the chi-squared is improving by less\nthan this value, the gain is considered stalled.", 
-            "dtype": "str", 
+            "dtype": "float", 
             "default": null, 
             "name": "sol-delta-chi"
         }, 
         {
             "info": "Number of iterations to perform between chi-suqared checks. This is done to\navoid computing the expensive chi-squared test evey iteration.", 
-            "dtype": "str", 
+            "dtype": "int", 
             "default": null, 
             "name": "sol-chi-int"
         }, 
@@ -296,13 +294,13 @@
         }, 
         {
             "info": "Minimum percentage of solutions which must have stalled before terminating\nthe solver.", 
-            "dtype": "str", 
+            "dtype": "float", 
             "default": null, 
             "name": "sol-stall-quorum"
         }, 
         {
             "info": "Number of iterations per Jones term. If empty, then each Jones\nterm is solved for once, up to convergence, or up to its -max-iter\nsetting.\nOtherwise, set to a list giving the number of iterations per Jones term.\nFor example, given two Jones terms and --sol-num-iter 10,20,10, it will\ndo 10 iterations on the first term, 20 on the second, and 10 again on the\nfirst.", 
-            "dtype": "str", 
+            "dtype": "list:int", 
             "default": null, 
             "name": "sol-term-iters"
         }, 
@@ -326,10 +324,9 @@
         }, 
         {
             "info": "Load and apply BBCs computed in a previous run. Apply with care! This will\ntend to suppress all unmodelled flux towards the centre of the field.", 
-            "dtype": "file", 
+            "dtype": "str", 
             "default": null, 
-            "name": "bbc-load-from", 
-            "io": "input"
+            "name": "bbc-load-from" 
         }, 
         {
             "info": "Compute full 2x2 BBCs (as opposed to diagonal-only). Only useful if you\nreally trust the polarisation information in your sky model.", 
@@ -346,7 +343,8 @@
         {
             "info": "Compute suggested BBCs at end of run,\nand save them to the given database. It can be useful to have this always\nenabled, since the BBCs provide useful diagnostics of the solution quality\n(and are not actually applied without a load-from setting).", 
             "dtype": "str", 
-            "default": "file", 
+            "dtype": "file", 
+            "default": null,
             "name": "bbc-save-to", 
             "io": "output"
         }, 
@@ -361,6 +359,131 @@
             "dtype": "bool", 
             "default": null, 
             "name": "bbc-plot"
+        },
+        {
+            "name": "bbc-solvable",
+            "default": null,
+            "dtype": "bool",
+            "info": "Undocumented"
+        },
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "bbc-dd-term"
+        },
+        {
+           "name": "dd-delta-chi",
+           "dtype": "float",
+           "default": null,
+           "info": "Undocumented"
+        },
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "bbc-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "bbc-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "bbc-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "bbc-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "bbc-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "bbc-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "bbc-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "bbc-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "bbc-type"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "bbc-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "bbc-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "bbc-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "bbc-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "bbc-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "bbc-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "bbc-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "bbc-prop-flags"
         }, 
         {
             "info": "Number of CPUs (processes) to use (0 or 1 disables parallelism).", 
@@ -400,6 +523,12 @@
             "default": null, 
             "name": "out-name", 
             "io": "output"
+        },
+        {
+            "info": "Overwrite log files", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "overwrite" 
         }, 
         {
             "info": "Operational mode.\n[so] solve only;\n[sc] solve and generate corrected visibilities;\n[sr] solve and generate corrected residuals;\n[ss] solve and generate uncorrected residuals;\n[ac] apply solutions, generate corrected visibilities;\n[ar] apply solutions, generate corrected residuals;\n[as] apply solutions, generate uncorrected residuals;", 

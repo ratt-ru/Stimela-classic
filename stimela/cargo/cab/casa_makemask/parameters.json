@@ -46,7 +46,7 @@
             "required": true
         }, 
         {
-            "info": "ist with 1 or 3 elements giving the tile shape of the disk data columns", 
+            "info": "overwrite output if exists",
             "name": "overwrite",
             "default": false, 
             "dtype": "bool",

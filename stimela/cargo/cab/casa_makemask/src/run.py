@@ -22,22 +22,27 @@ for param in cab['parameters']:
     if value is None:
         continue
 
-    if name in ['threshold', 'inpimage', 'outfile']:
+    if name in ['threshold', 'inpimage', 'output']:
         if name in ['threshold']:
-            value = ' iif( IM0 >={:f}, IM0, 0.0) '.format(value)
-            name = 'expr'
-        if name in ['outfile']:
-            value = '%s_thresh'.format(name)
-        immath_args[name] = value
+            im_value = ' iif( IM0 >=%s, IM0, 0.0) ' % value
+            im_name = 'expr'
+        if name in ['output']:
+            im_value = '%s_thresh' % value
+            im_name = 'outfile'
+        if name in ['inpimage']:
+            im_value = value
+            im_name = 'imagename'
+        immath_args[im_name] = im_value
 
     if name in ['mode', 'inpimage', 'inpmask', 'output', 'overwrite']:
     	makemask_args[name] = value
 
-task = crasa.CasaTask("immath", **immath_args)
-task.run()
+if 'expr' in immath_args:
+    task = crasa.CasaTask("immath", **immath_args)
+    task.run()
 
 if 'inpmask' not in makemask_args:
-    makemask_args['inputmask'] = immath_args['outfile']
+    makemask_args['inpmask'] = immath_args['outfile']
 
 task = crasa.CasaTask(cab["binary"], **makemask_args)
 task.run()

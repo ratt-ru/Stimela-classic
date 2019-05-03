@@ -117,7 +117,7 @@
             "info": "SPW ID", 
             "dtype": "int", 
             "name": "spw-id", 
-            "defaut": 0
+            "default": 0
         }, 
         {
             "info": "Noise to add to visibility data. In Jy", 

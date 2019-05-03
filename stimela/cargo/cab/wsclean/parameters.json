@@ -87,7 +87,7 @@
         {
             "info": "Calculate and apply the primary beam and save images for the Jones components, with weighting identical to the weighting as used by the imager. Only available for LOFAR.", 
             "dtype": "bool", 
-            "defualt": false, 
+            "default": false, 
             "name": "apply-primary-beam"
         }, 
         {

@@ -7,3 +7,4 @@ RUN docker-apt-install python-casacore \
 
 RUN pip install --upgrade pip
 RUN pip install rfinder -U
+RUN pip install pillow --upgrade

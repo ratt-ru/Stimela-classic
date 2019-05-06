@@ -52,6 +52,7 @@ RUN pip install -U "numpy<=1.16"
 RUN pip install "ddfacet==0.3.4.1"
 RUN pip install git+https://github.com/ska-sa/montblanc.git@ddfacet
 RUN pip install "pymoresane >= 0.3.0"
+RUN pip install pyyaml
 
 # Set MeqTrees Cattery path to virtualenv installation directory
 ENV MEQTREES_CATTERY_PATH /usr/lib/python2.7/dist-packages/Cattery/

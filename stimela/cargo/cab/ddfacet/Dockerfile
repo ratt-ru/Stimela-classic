@@ -1,6 +1,5 @@
-FROM stimela/ddfacet:1.0.1
+FROM stimela/ddfacet:1.0.3
 MAINTAINER <sphemakh@gmail.com>
-RUN pip install pyyaml
 ENV TERM xterm
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

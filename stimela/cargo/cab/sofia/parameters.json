@@ -833,7 +833,7 @@
             "name": "merge.maxVoxels", 
             "info": null,
             "dtype": "int",
-            "default": 1
+            "default": -1
         },
         {
             "name" : "merge.minLoS",

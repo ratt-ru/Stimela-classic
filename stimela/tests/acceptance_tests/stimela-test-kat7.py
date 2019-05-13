@@ -465,7 +465,7 @@ class kat7_reduce(unittest.TestCase):
                         input=INPUT,
                         output=OUTPUT,
                         label='casa_dirty_cube:: Make a dirty cube with CASA CLEAN',
-                        time_out=300) 
+                        time_out=600) 
 
                 recipe.add('cab/sofia', 'sofia',
                         {

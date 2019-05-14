@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import pyfits
 
 sys.path.append('/scratch/stimela')
 import utils
@@ -91,5 +92,30 @@ for param in params:
         arg = '{0}{1} {2}'.format(cab['prefix'], name, value)
 
     args.append(arg)
+
+if '{0}auto-threshold'.format(cab['prefix']) not in args:
+    removed = False
+    for item1 in args:
+        if 'noise-image' in item1:
+            noise_image = item1.split('{0}noise-image '.format(cab['prefix']))[-1]
+            args.remove('{0}noise-image {1}'.format(cab['prefix'], noise_image))
+            noise_hdu = pyfits.open(noise_image)
+            noise_data = noise_hdu[0].data
+            noise_std = noise_data.std()
+            noise_hdu.close()
+            for item2 in args:
+                if 'noise-sigma' in item2:
+                    noise_sigma = item2.split('{0}noise-sigma '.format(cab['prefix']))[-1]
+                    args.remove('{0}noise-sigma {1}'.format(cab['prefix'], noise_sigma))
+                    removed = True
+                    threshold = float(noise_sigma)*noise_std
+                    for item3 in args:
+                        if '{0}threshold'.format(cab['prefix']) in item3:
+                            args.remove(item3)
+                    args.append('{0}threshold {1}'.format(cab['prefix'], threshold))
+    if not removed:
+        args.remove('{0}noise-sigma 3'.format(cab['prefix']))
+else:
+    args.remove('{0}noise-sigma 3'.format(cab['prefix']))
 
 utils.xrun(cab['binary'], args + [mslist])

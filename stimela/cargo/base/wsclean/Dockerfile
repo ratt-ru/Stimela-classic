@@ -32,4 +32,5 @@ RUN cd wsclean-2.6/build && \
     cmake -DPORTABLE=Yes .. && \
     make -j 10 && \
     make install
+RUN pip install pyfits
 RUN ulimit -p 9000

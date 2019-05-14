@@ -133,7 +133,7 @@
             "info": "SPW ID", 
             "dtype": "int", 
             "name": "spw-id", 
-            "defaut": 0
+            "default": 0
         }, 
         {
             "info": "Write flags to MS", 

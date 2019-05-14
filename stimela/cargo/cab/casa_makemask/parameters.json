@@ -1,0 +1,64 @@
+{
+    "task": "casa_makemask", 
+    "base": "stimela/casa", 
+    "tag": "1.0.1", 
+    "description": "Makes and manipulates image masks", 
+    "prefix": "-", 
+    "binary": "makemask", 
+    "msdir": false, 
+    "parameters": [
+        {
+            "info": "Mask method", 
+            "name": "mode", 
+            "dtype": "str", 
+            "required": true, 
+            "default": "copy", 
+            "choices": [
+                "list",
+                "copy",
+                "expand",
+                "delete",
+                "setdefaultmask"
+            ]
+        }, 
+        {
+            "info": "Name of input image", 
+            "name": "inpimage", 
+            "io": "input", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
+        {
+            "info": "Mask(s) to be processed: image masks,T/F internal masks(Need to include parent image", 
+            "name": "inpmask",
+            "io": "input", 
+            "default": null, 
+            "dtype": "file", 
+            "required": false
+        }, 
+        {
+            "info": "Name of output mask (imagename or imagename:internal_maskname)", 
+            "name": "output", 
+            "io": "output", 
+            "default": null, 
+            "dtype": "str", 
+            "required": true
+        }, 
+        {
+            "info": "overwrite output if exists",
+            "name": "overwrite",
+            "default": false, 
+            "dtype": "bool",
+            "required": true
+           
+        }, 
+        {
+            "info": "Cut-off threshold to mask sources", 
+            "name": "threshold",
+            "dtype": "float", 
+            "default": null,
+            "required": false
+        } 
+    ]
+}

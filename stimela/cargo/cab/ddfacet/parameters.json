@@ -4,7 +4,7 @@
     "tag": "1.0.3", 
     "description": "DDFacet: a facet-based imager", 
     "prefix": "--", 
-    "binary": "python2.7 /root/.local/bin/DDF.py", 
+    "binary": "python2.7 /usr/local/bin/DDF.py", 
     "msdir": "true", 
     "parameters": [
         {

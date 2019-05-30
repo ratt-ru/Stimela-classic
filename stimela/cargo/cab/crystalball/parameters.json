@@ -42,7 +42,7 @@
             "info": "Optional. Invert UVW coordinates. Useful if we want compare our visibilities against MeqTrees",
             "dtype": "bool",
             "default": false,
-            "name": "invert-uwv"
+            "name": "invert-uvw"
         },
         {
             "info": "Optional. Model sources as non-flat spectra. The spectral coefficients and reference frequency must be present in the sky model.",

@@ -114,8 +114,8 @@ if '{0}auto-threshold'.format(cab['prefix']) not in args:
                             args.remove(item3)
                     args.append('{0}threshold {1}'.format(cab['prefix'], threshold))
     if not removed:
-        args.remove('{0}noise-sigma 3'.format(cab['prefix']))
+        args.remove('{0}noise-sigma 3.0'.format(cab['prefix']))
 else:
-    args.remove('{0}noise-sigma 3'.format(cab['prefix']))
+    args.remove('{0}noise-sigma 3.0'.format(cab['prefix']))
 
 utils.xrun(cab['binary'], args + [mslist])

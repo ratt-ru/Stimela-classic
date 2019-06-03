@@ -15,6 +15,7 @@ from stimela.recipe import Recipe as Pipeline
 from stimela.recipe import Recipe, PipelineException
 from stimela import docker, singularity
 import pkg_resources
+import warnings
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -233,29 +234,19 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
 
     if args.cab_doc:
         name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
-        try:
-            cabdir = cabs_[name]['DIR']
-        except KeyError:
-            raise RuntimeError('The cab you requested is not known to stimela, or has not been built. Run \'stimela cabs -l\' to see which cabs have been built')
+        cabdir = "{:s}/{:s}".format(cargo.CAB_PATH, args.cab_doc)
         info(cabdir)
 
     elif args.list_summary:
-        for key,val in cabs_.items():
-            if not val['CAB']:
-                continue
-            cabdir = cabs_[key]['DIR']
+        for val in CAB:
+            cabdir = "{:s}/{:s}".format(cargo.CAB_PATH, val)
             try:
                 info(cabdir, header=True)
             except IOError:
                 pass
     else:
-        _cabs = []
-        for cab in cabs_:
-            # strip away the label
-            name = cab.split('{}_'.format(args.build_label))[1].split('/')[1]
-            _cabs.append(name)
         # print them cabs
-        print( ', '.join(_cabs) )
+        print( ', '.join(CAB) )
 
 
 def run(argv):

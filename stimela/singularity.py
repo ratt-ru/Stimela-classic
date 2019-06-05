@@ -76,7 +76,7 @@ class Container(object):
         self._print("Instantiating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
         utils.xrun("singularity instance.start", 
                         list(args) + [volumes,
-#                        "-c",
+                        "-c",
                         self.image, self.name])
 
         self.status = "created"

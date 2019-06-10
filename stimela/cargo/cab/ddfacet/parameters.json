@@ -671,8 +671,8 @@
         {
             "info": "Normalize beam so that its amplitude at the centre is 1.", 
             "name": "Beam-CenterNorm", 
-            "default": "False", 
-            "dtype": "str", 
+            "default": 0, 
+            "dtype": "int", 
             "required": false, 
             "choices": [
                 0, 

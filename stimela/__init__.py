@@ -225,13 +225,6 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
     args = parser.parse_args(argv)
     logfile = '{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label)
 
-    cabs_ = get_cabs(logfile)
-    if cabs_:
-        pass
-    else:
-        print('No cab images found, did you run \'stimela build\'')
-        sys.exit(0)
-
     if args.cab_doc:
         name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
         cabdir = "{:s}/{:s}".format(cargo.CAB_PATH, args.cab_doc)

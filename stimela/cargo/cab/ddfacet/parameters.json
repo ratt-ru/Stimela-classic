@@ -1318,7 +1318,7 @@
         {
             "info": "Noise sigma for stopping deconvolution in the case where noise_image is provided (new thresh = sigma*noise_image.std())",
             "dtype": "float",
-            "default": 3,
+            "default": 3.0,
             "name": "Noise-Sigma"
         }
     ]

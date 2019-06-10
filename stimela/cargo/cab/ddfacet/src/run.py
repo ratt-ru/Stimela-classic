@@ -54,7 +54,7 @@ for item1 in args:
                         args.remove(item3)
                 args.append('{0}Deconv-FluxThreshold {1}'.format(cab['prefix'], threshold))
 if not removed:
-    args.remove('{0}Noise-Sigma 3'.format(cab['prefix']))
+    args.remove('{0}Noise-Sigma 3.0'.format(cab['prefix']))
 
 if parset is not None:
     args.insert(0, parset)

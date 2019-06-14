@@ -13,7 +13,7 @@ from stimela import utils, cargo
 from stimela.cargo import cab
 from stimela.recipe import Recipe as Pipeline
 from stimela.recipe import Recipe, PipelineException
-from stimela import docker, singularity
+from stimela import docker, singularity, udocker
 import pkg_resources
 
 try:
@@ -333,8 +333,11 @@ def pull(argv):
             help="Tag")
 
     add("-s", "--singularity", action="store_true",
-            help="Use singularity instead of docker."
+            help="Pull base images using singularity."
                  "Images will be pulled into the directory specified by the enviroment varaible, SINGULARITY_PULLFOLDER. $PWD by default")
+
+    add("-d", "--docker", action="store_true",
+            help="Pull base images using docker.")
 
     args = parser.parse_args(argv)
     log = logger.StimelaLogger(LOG_FILE)
@@ -347,8 +350,11 @@ def pull(argv):
             simage = simage.replace(":", "_") + ".img"
             if args.singularity:
                 singularity.pull(image, simage)
-            else:
+            elif args.docker:
                 docker.pull(image)
+                log.log_image(image, 'pulled')
+            else:
+                udocker.pull(image)
                 log.log_image(image, 'pulled')
     else:
 
@@ -360,14 +366,17 @@ def pull(argv):
         base = set(base)
 
         for image in base:
-            if image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
-                if args.singularity:
-                    simage = image.replace("/", "_")
-                    simage = simage.replace(":", "_") + ".img"
-                    singularity.pull(image, simage)
-                else:
-                    docker.pull(image)
-                    log.log_image(image, 'pulled')
+           if args.singularity:
+               simage = image.replace("/", "_")
+               simage = simage.replace(":", "_") + ".img"
+               singularity.pull(image, simage)
+           elif args.docker:
+               docker.pull(image)
+               log.log_image(image, 'pulled')
+           else:
+               udocker.pull(image)
+               log.log_image(image, 'pulled')
+
 
     log.write()
 

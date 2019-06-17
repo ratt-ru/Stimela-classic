@@ -323,7 +323,19 @@ def pull(argv):
     add("-d", "--docker", action="store_true",
             help="Pull base images using docker.")
 
+    add("-pf", "--pull-folder", help="Images will be placed in this folder. Else, if the environmnental variable 'SINGULARITY_PULLFOLDER' is set, then images will be placed there. "
+                                    "Else, images will be placed in the current directory")
+
     args = parser.parse_args(argv)
+
+    if args.pull_folder:
+        pull_folder = args.pull_folder
+    else:
+        try:
+            pull_folder = os.environ["SINGULARITY_PULLFOLDER"]
+        except KeyError:
+            pull_folder = "."
+
     log = logger.StimelaLogger(LOG_FILE)
     images = log.read()['images']
 
@@ -333,7 +345,7 @@ def pull(argv):
             simage = image.replace("/", "_")
             simage = simage.replace(":", "_") + ".img"
             if args.singularity:
-                singularity.pull(image, simage)
+                singularity.pull(image, simage, directory=pull_folder)
             elif args.docker:
                 docker.pull(image)
                 log.log_image(image, 'pulled')
@@ -350,17 +362,16 @@ def pull(argv):
         base = set(base)
 
         for image in base:
-           if args.singularity:
-               simage = image.replace("/", "_")
-               simage = simage.replace(":", "_") + ".img"
-               singularity.pull(image, simage)
-           elif args.docker:
-               docker.pull(image)
-               log.log_image(image, 'pulled')
-           else:
+            if args.singularity:
+                simage = image.replace("/", "_")
+                simage = simage.replace(":", "_") + ".img"
+                singularity.pull(image, simage, directory=pull_folder)
+            elif args.docker:
+                docker.pull(image)
+                log.log_image(image, 'pulled')
+            else:
                udocker.pull(image)
                log.log_image(image, 'pulled')
-
 
     log.write()
 

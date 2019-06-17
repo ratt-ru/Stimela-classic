@@ -75,8 +75,7 @@ class StimelaJob(object):
         function = self.job['function']
         options = self.job['parameters']
         function(**options)
-        return 0
-
+        return 0 
     def run_docker_job(self):
         if hasattr(self.job, '_cab'):
             self.job._cab.update(self.job.config,
@@ -621,7 +620,7 @@ class Recipe(object):
 
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,
-                         log_dir=self.log_dir or output)
+                         log_dir=self.log_dir or output, jtype=self.JOB_TYPE)
 
         if callable(image):
             job.jtype = 'function'

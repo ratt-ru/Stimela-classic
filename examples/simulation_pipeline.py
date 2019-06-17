@@ -22,6 +22,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                   singularity_image_dir=SINGULARTITY_IMAGE_DIR,
                   )
 
+pipeline.JOB_TYPE = "udocker"
 # 1: Make empty MS 
 pipeline.add("cab/simms",                   # Executor image to start container from 
              "simms_example",               # Container name

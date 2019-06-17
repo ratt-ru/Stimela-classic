@@ -1,8 +1,19 @@
 #!/usr/bin/env python
 
 import os
+import sys
 from setuptools import setup
 
+
+requirements = ["pyyaml", 
+                "nose>=1.3.7",
+                "future",
+               ],
+
+if sys.version_info <= (3, 0):
+    requirements += [
+                "udocker @ git+https://github.com/indigo-dc/udocker@master#egg=udocker=1.1.2",
+               ],
 
 PACKAGE_NAME = "stimela"
 __version__ = "1.0.7"
@@ -25,11 +36,7 @@ setup(name = PACKAGE_NAME,
                                    "cab/*/src/tdlconf.profiles",
                                    "cab/singularity_run",
                                    ]},
-    install_requires = ["pyyaml", 
-                        "nose>=1.3.7",
-                        "future",
-                        "udocker @ git+https://github.com/indigo-dc/udocker@master#egg=udocker=1.1.2",
-                        ],
+    install_requires = requirements,
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

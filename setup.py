@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 
 setup(name = PACKAGE_NAME,
     version = __version__,
@@ -28,8 +28,8 @@ setup(name = PACKAGE_NAME,
     install_requires = ["pyyaml", 
                         "nose>=1.3.7",
                         "future",
+                        "udocker @ git+https://github.com/indigo-dc/udocker@master#egg=udocker=1.1.2",
                         ],
-#    dependency_links = ["http://github.com/indigo-dc/udocker/tarball/master#egg=udocker-1.1.2"],
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

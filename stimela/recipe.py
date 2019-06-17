@@ -243,12 +243,14 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = '/scratch/output'
-        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(self.log_dir, name.split('-')[0])
+        logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
+        self.logfile = cont.logfile = '{0}/log-{1}'.format(self.log_dir, logfile_name)
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass
-        cont.add_volume(self.log_dir, "/scratch/logs/logfile")
-        cont.add_volume(output, od)
+        #cont.add_environ("LOGFILE", "/scratch/logs/{0:s}".format(logfile_name))
+        cont.add_volume(self.logfile, "/scratch/logfile", "rw")
+        cont.add_volume(output, od, "rw")
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
         
         simage = _cab.base.replace("/", "_")
@@ -371,7 +373,7 @@ class StimelaJob(object):
 
         od = '/scratch/output'
         logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
-        self.logfile = cont.logfile = '{0}/log-{1}.txt'.format(self.log_dir, logfile_name)
+        self.logfile = cont.logfile = '{0}/log-{1}'.format(self.log_dir, logfile_name)
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass

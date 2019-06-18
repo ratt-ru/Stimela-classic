@@ -6,6 +6,7 @@
     "prefix": " ", 
     "binary": "msutils", 
     "msdir": true, 
+    "use_graphics":true,
     "parameters": [
         {
             "info": "MSUtils command to execute", 

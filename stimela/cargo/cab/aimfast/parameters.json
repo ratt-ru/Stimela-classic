@@ -6,6 +6,7 @@
     "prefix": "--", 
     "binary": "aimfast", 
     "msdir": false, 
+    "use_graphics": true,
     "parameters": [
         {
             "info": "Residual image to extract the four (4) statistical moments of distribution", 

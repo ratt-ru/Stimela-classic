@@ -9,7 +9,7 @@ import codecs
 from datetime import datetime
 
 class StimelaLogger(object):
-    def __init__(self, lfile):
+    def __init__(self, lfile, jtype="udocker"):
 
         self.lfile = lfile
         # Create file if it does not exist
@@ -28,9 +28,16 @@ class StimelaLogger(object):
         if changed:
             self.write()
 
+
+        self.jtype = jtype
+
     def _inspect(self, name):
-        output = subprocess.check_output("docker inspect {}".format(name), shell=True).decode()
-        output_file = StringIO(output[3:-3])
+        
+        output = subprocess.check_output("{0:s} inspect {1:s}".format(self.jtype, name), shell=True).decode()
+        if self.jtype == "docker":
+            output_file = StringIO(output[3:-3])
+        else:
+            output_file = StringIO(output)
         jdict = yaml.safe_load(output_file)
         output_file.close()
 
@@ -38,16 +45,27 @@ class StimelaLogger(object):
 
     def log_image(self, name, image_dir, replace=False, cab=False):
         info = self._inspect(name)
-
-        if name not in self.info['images'].keys() or replace:
-            self.info['images'][name] = {
-                'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
-                'ID'        :   info['Id'].split(':')[1],
-                'CAB'       :   cab,
-                'DIR'       :   image_dir, 
-            }
+        if self.jtype == "docker":
+            if name not in self.info['images'].keys() or replace:
+                self.info['images'][name] = {
+                    'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
+                    'ID'        :   info['Id'].split(':')[1],
+                    'CAB'       :   cab,
+                    'DIR'       :   image_dir, 
+                }
+            else:
+                print('Image {0} has already been logged.'.format(name))
         else:
-            print('Image {0} has already been logged.'.format(name))
+            if name not in self.info['images'].keys() or replace:
+                self.info['images'][name] = {
+                    'TIME'      :   info['created'].split('.')[0].replace('Z', '0'),
+                    'ID'        :   info['id'],
+                    'CAB'       :   cab,
+                    'DIR'       :   image_dir, 
+                }
+            else:
+                print('Image {0} has already been logged.'.format(name))
+
 
     def log_container(self, name):
         info = self._inspect(name)

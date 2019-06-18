@@ -1,5 +1,5 @@
 {
-    "task": "rfinder",
+    "task": "crystalball",
     "base": "stimela/codex-africanus",
     "tag": "1.0.3",
     "description": "Distributed prediction of visibilities from a sky model",

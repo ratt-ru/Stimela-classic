@@ -1,12 +1,17 @@
 # import stimela package
 import stimela
+import os
 
 # Recipe I/O configuration
 INPUT = "input" # This folder must exist
 OUTPUT = "output"
 MSDIR = "msdir"
 PREFIX = "stimela-example"  # Prefix for output images
-SINGULARTITY_IMAGE_DIR = "/home/sphe/work/github/Stimela/examples/IMAGES/"
+try:
+    SINGULARTITY_IMAGE_DIR = os.environ["STIMELA_SINGULARTITY_IMAGE_DIR"]
+except KeyError:
+    pass
+    
 
 # MS name
 MS = "meerkat_simulation_example.ms"
@@ -21,6 +26,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
 #                  singularity_image_dir=SINGULARTITY_IMAGE_DIR,
                   )
 
+pipeline.JOB_TYPE = "udocker"
 # 1: Make empty MS 
 pipeline.add("cab/simms",                   # Executor image to start container from 
              "simms_example",               # Container name

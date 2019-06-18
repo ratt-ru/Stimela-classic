@@ -372,7 +372,7 @@
             "info": "Maximum number of time/freq data-chunks to load into memory simultaneously. If 0, then as many as possible will be loaded.", 
             "dtype": "int", 
             "default": 0, 
-            "name": "max-chunks"
+            "name": "dist-max-chunks"
         }, 
         {
             "info": "Number of OMP threads to use. 0: determine automatically.",

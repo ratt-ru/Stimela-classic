@@ -18,6 +18,26 @@ UID = os.getuid()
 GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 
+CONT_IO = {
+    "docker"    : { 
+        "input"     : "/input",
+        "output"    : "/home/{0:s}/output".format(USER),
+        "msfile"     : "/home/{0:s}/msdir".format(USER),
+        },
+    "udocker"    : { 
+        "input"     : "/scratch/input",
+        "output"    : "/scratch/output",
+        "msfile"     : "/scratch/msdir",
+        },
+    "singularity"    : { 
+        "input"     : "/scratch/input",
+        "output"    : "/scratch/output",
+        "msfile"     : "/scratch/msdir",
+        },
+}
+
+
+
 class StimelaCabParameterError(Exception): pass
 class StimelaRecipeExecutionError(Exception): pass
 class PipelineException(Exception):
@@ -70,6 +90,7 @@ class StimelaJob(object):
             self.args.append("--memory {0:s}".format(memory_limit)) 
         self.time_out = time_out
         self.log_dir = log_dir
+
         
     def run_python_job(self):
         function = self.job['function']
@@ -177,11 +198,8 @@ class StimelaJob(object):
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
 
-        cab.IODEST = {
-            "input"     : "/scratch/input",
-            "output"    : "/scratch/output",
-            "msfile"    : "/scratch/msdir",
-        }
+        cab.IODEST = CONT_IO["singularity"]
+        
         
         cont = singularity.Container(image, name, 
                     logger=self.log, time_out=self.time_out)
@@ -212,7 +230,7 @@ class StimelaJob(object):
                 _cab.task), "/singularity")
 
         if msdir:
-            md = '/scratch/msdir'
+            md = cab.IODEST["msfile"]
             cont.add_volume(msdir, md)
             # Keep a record of the content of the
             # volume
@@ -226,7 +244,7 @@ class StimelaJob(object):
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
 
         if input:
-            cont.add_volume( input,'/scratch/input', perm='ro')
+            cont.add_volume( input,cab.IODEST["input"], perm='ro')
             # Keep a record of the content of the
             # volume
             dirname, dirs, files = [a for a in next(os.walk(input))]
@@ -236,12 +254,12 @@ class StimelaJob(object):
                 "files"     :   files,
             }
 
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, '/scratch/input'))
+            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, cab.IODEST["input"]))
 
         if not os.path.exists(output):
             os.mkdir(output)
 
-        od = '/scratch/output'
+        od = cab.IODEST["output"]
         logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
         self.logfile = cont.logfile = '{0}/log-{1}'.format(self.log_dir, logfile_name)
         if not os.path.exists(self.logfile):
@@ -302,11 +320,7 @@ class StimelaJob(object):
         _cab = cab.CabDefinition(indir=input, outdir=output,
                     msdir=msdir, parameter_file=parameter_file)
 
-        cab.IODEST = {
-            "input"     : "/scratch/input",
-            "output"    : "/scratch/output",
-            "msfile"    : "/scratch/msdir",
-        }
+        cab.IODEST = CONT_IO["udocker"]
         
         cont = udocker.Container(image, name, 
                     logger=self.log, time_out=self.time_out, 
@@ -339,7 +353,7 @@ class StimelaJob(object):
         cont.add_environ('CONFIG', '/scratch/configfile'.format(name))
 
         if msdir:
-            md = '/scratch/msdir'
+            md = cab.IODEST["msfile"]
             cont.add_volume(msdir, md)
             cont.add_environ("MSDIR", md)
             # Keep a record of the content of the
@@ -354,8 +368,8 @@ class StimelaJob(object):
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
 
         if input:
-            cont.add_volume( input,'/scratch/input')
-            cont.add_environ("INPUT", "scratch/input")
+            cont.add_volume( input, cab.IODEST["input"])
+            cont.add_environ("INPUT", cab.IODEST["input"])
             # Keep a record of the content of the
             # volume
             dirname, dirs, files = [a for a in next(os.walk(input))]
@@ -365,12 +379,12 @@ class StimelaJob(object):
                 "files"     :   files,
             }
 
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, '/scratch/input'))
+            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, cab.IODEST["input"]))
 
         if not os.path.exists(output):
             os.mkdir(output)
 
-        od = '/scratch/output'
+        od = cab.IODEST["output"]
         logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
         self.logfile = cont.logfile = '{0}/log-{1}'.format(self.log_dir, logfile_name)
         if not os.path.exists(self.logfile):
@@ -382,6 +396,8 @@ class StimelaJob(object):
         cont.add_environ("OUTPUT", od)
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
         
+        if hasattr(cont._cab, "use_graphics") and cont._cab.use_graphics: 
+            cont.use_graphics = True
         cont.image = '{0:s}:{1:s}'.format(_cab.base, _cab.tag)
         # Added and ready for execution
         self.job = cont
@@ -462,8 +478,10 @@ class StimelaJob(object):
         cont.add_volume(self.recipe.parameter_file_dir, '/configs', perm='ro')
         cont.add_environ('CONFIG', '/configs/{}.json'.format(name))
 
+        cab.IODEST = CONT_IO["docker"]
+
         if msdir:
-            md = '/home/{0:s}/msdir'.format(USER)
+            md = cab.IODEST["msfile"]
             cont.add_volume(msdir, md)
             cont.add_environ('MSDIR', md)
             # Keep a record of the content of the
@@ -478,8 +496,8 @@ class StimelaJob(object):
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
 
         if input:
-            cont.add_volume( input,'/input', perm='ro')
-            cont.add_environ('INPUT', '/input')
+            cont.add_volume( input, cab.IODEST["input"], perm='ro')
+            cont.add_environ('INPUT', cab.IODEST["input"])
             # Keep a record of the content of the
             # volume
             dirname, dirs, files = [a for a in next(os.walk(input))]
@@ -489,12 +507,12 @@ class StimelaJob(object):
                 "files"     :   files,
             }
 
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, '/input'))
+            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(input, cab.IODEST["input"]))
 
         if not os.path.exists(output):
             os.mkdir(output)
 
-        od = '/home/{0:s}/output'.format(USER)
+        od = cab.IODEST["output"]
         cont.add_environ('HOME', od)
         self.logfile = cont.logfile = '{0:s}/log-{1:s}.txt'.format(self.log_dir, name.split('-')[0])
         cont.add_volume(output, od)

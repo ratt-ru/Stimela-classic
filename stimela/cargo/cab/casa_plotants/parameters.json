@@ -6,6 +6,7 @@
     "prefix": "", 
     "binary": "plotants", 
     "msdir": true, 
+    "use_graphics": true,
     "parameters": [
         {
             "info": "Name of measurement set", 

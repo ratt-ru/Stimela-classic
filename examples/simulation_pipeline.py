@@ -7,7 +7,11 @@ INPUT = "input" # This folder must exist
 OUTPUT = "output"
 MSDIR = "msdir"
 PREFIX = "stimela-example"  # Prefix for output images
-SINGULARTITY_IMAGE_DIR = os.environ["STIMELA_SINGULARTITY_IMAGE_DIR"]
+try:
+    SINGULARTITY_IMAGE_DIR = os.environ["STIMELA_SINGULARTITY_IMAGE_DIR"]
+except KeyError:
+    pass
+    
 
 # MS name
 MS = "meerkat_simulation_example.ms"
@@ -19,7 +23,7 @@ LSM = "nvss1deg.lsm.html"
 # Start stimela Recipe instance
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                   ms_dir=MSDIR,
-                  singularity_image_dir=SINGULARTITY_IMAGE_DIR,
+#                  singularity_image_dir=SINGULARTITY_IMAGE_DIR,
                   )
 
 pipeline.JOB_TYPE = "udocker"

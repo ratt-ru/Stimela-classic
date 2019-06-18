@@ -32,7 +32,8 @@ class Container(object):
                  shared_memory="1gb",
                  time_out=-1,
                  log_container=None,
-                 COMMAND=""):
+                 COMMAND="",
+                 use_graphics=False):
         """
         Python wrapper to docker engine tools for managing containers.
         """
@@ -49,6 +50,7 @@ class Container(object):
         self.PID = os.getpid()
         self.uptime = "00:00:00"
         self.time_out = time_out
+        self.use_graphics = use_graphics
         self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
 
 
@@ -85,7 +87,9 @@ class Container(object):
         tstart = time.time()
         utils.xrun("udocker run", ["=".join(args)] + [volumes, environs,
                         "--workdir=%s"%(self.WORKDIR) if self.WORKDIR else "",
-                        "--rm", self.name, self.COMMAND or ""], timeout=self.time_out)
+                        "--rm",
+                        "--dri" if self.use_graphics else "",
+                        self.name, self.COMMAND or ""], timeout=self.time_out)
 
         self.status = "running"
         uptime = seconds_hms(time.time() - tstart)

@@ -12,11 +12,11 @@ requirements = ["pyyaml",
 
 if sys.version_info <= (3, 0):
     requirements += [
-                "udocker @ git+https://github.com/indigo-dc/udocker@master#egg=udocker=1.1.2",
+                "udocker-stimela",
                ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 setup(name = PACKAGE_NAME,
     version = __version__,

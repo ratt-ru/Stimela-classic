@@ -1097,18 +1097,7 @@
             "required": false, 
             "name": "Hogbom-PolyFitOrder", 
             "dtype": "int"
-        }, 
-        {
-            "info": "HOGBOM_FREQMODE Poly or GPR", 
-            "name": "Hogbom-FreqMode", 
-            "default": "Poly", 
-            "dtype": "str", 
-            "required": false, 
-            "choices": [
-                "Poly", 
-                "GPR"
-            ]
-        }, 
+        },
         {
             "info": "HOGBOM_NUMBASISFUNCS The number of basis functions to use for the RR GPR", 
             "default": 12, 

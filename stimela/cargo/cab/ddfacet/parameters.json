@@ -1099,13 +1099,6 @@
             "dtype": "int"
         }, 
         {
-            "info": "HOGBOM_MAXLENGTHSCALE the value of L at which we specify bounary data (eg. phi(L) = 0)", 
-            "default": 5, 
-            "required": false, 
-            "name": "Hogbom-MaxLengthScale", 
-            "dtype": "float"
-        }, 
-        {
             "info": "HOGBOM_FREQMODE Poly or GPR", 
             "name": "Hogbom-FreqMode", 
             "default": "Poly", 

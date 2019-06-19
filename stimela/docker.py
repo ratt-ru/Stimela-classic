@@ -83,7 +83,7 @@ class Container(object):
         self.PID = os.getpid()
         self.uptime = "00:00:00"
         self.time_out = time_out
-        self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
+        self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE, jtype="docker")
 
 
     def  add_volume(self, host, container, perm="rw"):

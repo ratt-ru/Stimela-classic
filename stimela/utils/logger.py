@@ -70,14 +70,25 @@ class StimelaLogger(object):
     def log_container(self, name):
         info = self._inspect(name)
 
-        if name not in self.info['containers'].keys():
-            self.info['containers'][name] = {
-                'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
-                'IMAGE'     :   info['Config']['Image'],
-                'ID'        :   info['Id'],
-            }
+        if self.jtype == "docker":
+            if name not in self.info['containers'].keys():
+                self.info['containers'][name] = {
+                    'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
+                    'IMAGE'     :   info['Config']['Image'],
+                    'ID'        :   info['Id'],
+                }
+            else:
+                print('contaier {0} has already been logged.'.format(name))
         else:
-            print('contaier {0} has already been logged.'.format(name))
+            if name not in self.info['containers'].keys():
+                self.info['containers'][name] = {
+                    'TIME'      :   info['created'].split('.')[0].replace('Z', '0'),
+                    'IMAGE'     :   info['config']['Image'],
+                    'ID'        :   info['id'],
+                }
+            else:
+                print('contaier {0} has already been logged.'.format(name))
+
 
     def log_process(self, pid, name):
         pid = str(pid)

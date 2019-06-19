@@ -51,7 +51,7 @@ class Container(object):
         self.uptime = "00:00:00"
         self.time_out = time_out
         self.use_graphics = use_graphics
-        self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
+        self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE, jtype="udocker")
 
 
     def  add_volume(self, host, container, noverify=False):

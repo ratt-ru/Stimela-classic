@@ -1099,13 +1099,6 @@
             "dtype": "int"
         },
         {
-            "info": "HOGBOM_NUMBASISFUNCS The number of basis functions to use for the RR GPR", 
-            "default": 12, 
-            "required": false, 
-            "name": "Hogbom-NumBasisFuncs", 
-            "dtype": "int"
-        }, 
-        {
             "info": "URL for the TensorflowServer, e.g. grpc://tensorflow.server.com:8888/", 
             "default": "''", 
             "required": false, 

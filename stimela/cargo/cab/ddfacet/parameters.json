@@ -1,7 +1,7 @@
 {
     "task": "ddfacet", 
     "base": "stimela/ddfacet", 
-    "tag": "ddf0.4.1", 
+    "tag": "1.1.0", 
     "description": "DDFacet: a facet-based imager", 
     "prefix": "--", 
     "binary": "DDF.py", 

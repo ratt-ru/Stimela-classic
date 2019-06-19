@@ -12,7 +12,7 @@ class SingularityError(Exception):
     pass
 
 
-def pull(image, store_path, docker=True):
+def pull(image, store_path, docker=True, directory="."):
     """ 
         pull an image
     """
@@ -21,7 +21,10 @@ def pull(image, store_path, docker=True):
         fp = "docker://{0:s}".format(image)
     else:
         fp = image
-    utils.xrun("singularity", ["pull", "--force", "--name", store_path, fp])
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+    utils.xrun("cd", [directory, "&&", "singularity", "pull", "--force", "--name", store_path, fp])
+
 
     return 0
 
@@ -76,7 +79,7 @@ class Container(object):
         self._print("Instantiating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
         utils.xrun("singularity instance.start", 
                         list(args) + [volumes,
-#                        "-c",
+                        "-c",
                         self.image, self.name])
 
         self.status = "created"

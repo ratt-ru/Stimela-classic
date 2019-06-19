@@ -180,7 +180,7 @@
             "name": "chanstart"
         }, 
         {
-            "info": "fre`iquency channel step per each spw. Comma separated string", 
+            "info": "frequency channel step per each spw. Comma separated string", 
             "dtype": [
                 "str", 
                 "int"

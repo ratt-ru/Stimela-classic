@@ -1,11 +1,22 @@
 #!/usr/bin/env python
 
 import os
+import sys
 from setuptools import setup
 
 
+requirements = ["pyyaml", 
+                "nose>=1.3.7",
+                "future",
+               ],
+
+if sys.version_info <= (3, 0):
+    requirements += [
+                "udocker-stimela",
+               ],
+
 PACKAGE_NAME = "stimela"
-__version__ = "1.0.3"
+__version__ = "1.0.8"
 
 setup(name = PACKAGE_NAME,
     version = __version__,
@@ -25,9 +36,7 @@ setup(name = PACKAGE_NAME,
                                    "cab/*/src/tdlconf.profiles",
                                    "cab/singularity_run",
                                    ]},
-    install_requires = ["pyyaml", 
-                        "nose>=1.3.7",
-                        "future"],
+    install_requires = requirements,
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

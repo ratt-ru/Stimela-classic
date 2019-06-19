@@ -1,5 +1,5 @@
 {
-    "task": "rfinder",
+    "task": "crystalball",
     "base": "stimela/codex-africanus",
     "tag": "1.0.3",
     "description": "Distributed prediction of visibilities from a sky model",
@@ -42,7 +42,7 @@
             "info": "Optional. Invert UVW coordinates. Useful if we want compare our visibilities against MeqTrees",
             "dtype": "bool",
             "default": false,
-            "name": "invert-uwv"
+            "name": "invert-uvw"
         },
         {
             "info": "Optional. Model sources as non-flat spectra. The spectral coefficients and reference frequency must be present in the sky model.",

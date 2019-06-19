@@ -13,8 +13,9 @@ from stimela import utils, cargo
 from stimela.cargo import cab
 from stimela.recipe import Recipe as Pipeline
 from stimela.recipe import Recipe, PipelineException
-from stimela import docker, singularity
+from stimela import docker, singularity, udocker
 import pkg_resources
+import warnings
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -224,38 +225,21 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
     args = parser.parse_args(argv)
     logfile = '{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label)
 
-    cabs_ = get_cabs(logfile)
-    if cabs_:
-        pass
-    else:
-        print('No cab images found, did you run \'stimela build\'')
-        sys.exit(0)
-
     if args.cab_doc:
         name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
-        try:
-            cabdir = cabs_[name]['DIR']
-        except KeyError:
-            raise RuntimeError('The cab you requested is not known to stimela, or has not been built. Run \'stimela cabs -l\' to see which cabs have been built')
+        cabdir = "{:s}/{:s}".format(cargo.CAB_PATH, args.cab_doc)
         info(cabdir)
 
     elif args.list_summary:
-        for key,val in cabs_.items():
-            if not val['CAB']:
-                continue
-            cabdir = cabs_[key]['DIR']
+        for val in CAB:
+            cabdir = "{:s}/{:s}".format(cargo.CAB_PATH, val)
             try:
                 info(cabdir, header=True)
             except IOError:
                 pass
     else:
-        _cabs = []
-        for cab in cabs_:
-            # strip away the label
-            name = cab.split('{}_'.format(args.build_label))[1].split('/')[1]
-            _cabs.append(name)
         # print them cabs
-        print( ', '.join(_cabs) )
+        print( ', '.join(CAB) )
 
 
 def run(argv):
@@ -333,10 +317,25 @@ def pull(argv):
             help="Tag")
 
     add("-s", "--singularity", action="store_true",
-            help="Use singularity instead of docker."
+            help="Pull base images using singularity."
                  "Images will be pulled into the directory specified by the enviroment varaible, SINGULARITY_PULLFOLDER. $PWD by default")
 
+    add("-d", "--docker", action="store_true",
+            help="Pull base images using docker.")
+
+    add("-pf", "--pull-folder", help="Images will be placed in this folder. Else, if the environmnental variable 'SINGULARITY_PULLFOLDER' is set, then images will be placed there. "
+                                    "Else, images will be placed in the current directory")
+
     args = parser.parse_args(argv)
+
+    if args.pull_folder:
+        pull_folder = args.pull_folder
+    else:
+        try:
+            pull_folder = os.environ["SINGULARITY_PULLFOLDER"]
+        except KeyError:
+            pull_folder = "."
+
     log = logger.StimelaLogger(LOG_FILE)
     images = log.read()['images']
 
@@ -346,9 +345,12 @@ def pull(argv):
             simage = image.replace("/", "_")
             simage = simage.replace(":", "_") + ".img"
             if args.singularity:
-                singularity.pull(image, simage)
-            else:
+                singularity.pull(image, simage, directory=pull_folder)
+            elif args.docker:
                 docker.pull(image)
+                log.log_image(image, 'pulled')
+            else:
+                udocker.pull(image)
                 log.log_image(image, 'pulled')
     else:
 
@@ -360,14 +362,16 @@ def pull(argv):
         base = set(base)
 
         for image in base:
-            if image not in ["stimela/ddfacet", "radioastro/ddfacet"]:
-                if args.singularity:
-                    simage = image.replace("/", "_")
-                    simage = simage.replace(":", "_") + ".img"
-                    singularity.pull(image, simage)
-                else:
-                    docker.pull(image)
-                    log.log_image(image, 'pulled')
+            if args.singularity:
+                simage = image.replace("/", "_")
+                simage = simage.replace(":", "_") + ".img"
+                singularity.pull(image, simage, directory=pull_folder)
+            elif args.docker:
+                docker.pull(image)
+                log.log_image(image, 'pulled')
+            else:
+               udocker.pull(image)
+               log.log_image(image, 'pulled')
 
     log.write()
 

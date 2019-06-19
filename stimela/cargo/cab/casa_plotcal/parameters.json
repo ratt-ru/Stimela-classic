@@ -6,6 +6,7 @@
     "prefix": "-", 
     "binary": "plotcal", 
     "msdir": false, 
+    "use_graphics": true,
     "parameters": [
         {
             "info": "Name of input calibration table", 

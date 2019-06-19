@@ -25,14 +25,13 @@ for param in cab['parameters']:
     elif name == 'parset':
        parset = [value]
        continue
-#   this is no longer valid - model list can be a more complex pattern
-#    elif name == 'model-list':
-#        if isinstance(value, str):
-#            value = [value]
-#        for i,val in enumerate(value):
-#            if not os.path.exists(val.split("@")[0]):
-#                value[i] = os.path.basename(val)
-#        value = ':'.join(value)
+    elif name == 'model-list':
+        if isinstance(value, str):
+            value = [value]
+        for i,val in enumerate(value):
+            if not os.path.exists(val.split("@")[0]):
+                value[i] = os.path.basename(val)
+        value = ':'.join(value)
     elif isinstance(value, list):
         value = ",".join( map(str, value) )
 

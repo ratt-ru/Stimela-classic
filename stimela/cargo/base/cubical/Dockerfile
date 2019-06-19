@@ -8,6 +8,7 @@ ENV GIT_LFS_SKIP_SMUDGE 1
 RUN pip install -U pip setuptools wheel
 RUN docker-apt-install wget git-all
 RUN git clone https://github.com/ratt-ru/CubiCal
-RUN cd CubiCal && git checkout 1.2.3
-RUN pip install ./CubiCal[lsm-support]
+WORKDIR CubiCal
+RUN git checkout 1.2.3
+RUN pip install ".[lsm-support]"
 ENV NUMBA_CACHE_DIR /tmp

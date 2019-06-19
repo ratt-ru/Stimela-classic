@@ -6,12 +6,13 @@
     "prefix": "--", 
     "binary": "ragavi", 
     "msdir": false, 
+    "use_graphics": true,
     "parameters": [
         {
             "info": "Plot only this antenna, or comma-separated list of antennas. Default plots all", 
             "name": "ant",
             "dtype": "str", 
-            "required": false,
+            "required": false
         },
         {
             "info": "Correlation index to plot (usually just 0 or 1)", 
@@ -42,13 +43,13 @@
             "info": "Field ID to plot", 
             "name": "field", 
             "dtype": ["list:str","list:int"],
-            "required": true, 
+            "required": true 
         },
         {
             "info": "The gain type of table(s) to be plotted. Options: ['B', 'F', 'G', 'K']", 
             "name": "gaintype",
             "dtype": "list:str", 
-            "required": true,
+            "required": true
         },
         {
             "info": "Output html file name", 
@@ -69,7 +70,7 @@
             "name": "table",
             "dtype": "list:file", 
             "required": true,              
-            "io": "input",
+            "io": "input"
         }, 
         {
             "info": "Minimum time to plot (default = full range)", 

@@ -10,8 +10,8 @@
         {
             "info": "State 'continuum' or 'spectral' as the type of mosaic to be made.", 
             "name": "mosaic_type", 
-            "default": null, 
-            "dtype": "string", 
+           "default": null, 
+            "dtype": "str", 
             "required": true
         }, 
         {
@@ -22,7 +22,7 @@
             "required": false 
         }, 
         {
-            "info": "The cutoff in the primary beam to use (assuming a Gaussian at the moment). E.g. The default of 0.1 means going down to the 10\% level for each pointing.", 
+            "info": "The cutoff in the primary beam to use (assuming a Gaussian at the moment). E.g. The default of 0.1 means going down to the 10 percent level for each pointing.", 
             "name": "cutoff",
             "default": 0.1, 
             "dtype": "float",
@@ -32,7 +32,7 @@
             "info": "The prefix to be used for output files.", 
             "name": "outname",  
             "default": "mymosaic", 
-            "dtype": "string", 
+            "dtype": "str", 
             "required": false
         },  
         {

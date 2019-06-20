@@ -80,7 +80,7 @@ class StimelaJob(object):
         self.label = label or '{0}_{1}'.format(name, id(name))
         self.log = recipe.log
         self.active = False
-        self.jtype = 'docker' # ['docker', 'python', or 'singularity', 'udocker']
+        self.jtype = 'udocker' # ['docker', 'python', singularity', 'udocker']
         self.job = None
         self.created = False
         self.args = ['--user {}:{}'.format(UID, GID)]
@@ -260,12 +260,17 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = cab.IODEST["output"]
+
+
+        self.log_dir = os.path.abspath(self.log_dir or output)
+        log_dir_name = os.path.basename(self.log_dir or output)
         logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
-        self.logfile = cont.logfile = '{0}/log-{1}'.format(self.log_dir, logfile_name)
+        self.logfile = cont.logfile = '{0:s}/{1:s}'.format(self.log_dir, logfile_name)
+
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass
-        #cont.add_environ("LOGFILE", "/scratch/logs/{0:s}".format(logfile_name))
+        
         cont.add_volume(self.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
@@ -385,13 +390,17 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = cab.IODEST["output"]
+        
+        self.log_dir = os.path.abspath(self.log_dir or output)
+        log_dir_name = os.path.basename(self.log_dir or output)
         logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
-        self.logfile = cont.logfile = '{0}/log-{1}'.format(self.log_dir, logfile_name)
+        self.logfile = cont.logfile = '{0:s}/{1:s}'.format(self.log_dir, logfile_name)
+
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass
-        cont.add_environ("LOGFILE", "/scratch/logs/{0:s}".format(logfile_name))
-        cont.add_volume(self.log_dir, "/scratch/logs")
+        cont.add_environ("LOGFILE", "/scratch/logfile".format(logfile_name))
+        cont.add_volume(self.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
         cont.add_environ("OUTPUT", od)
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
@@ -434,6 +443,7 @@ class StimelaJob(object):
         script_context = self.recipe.stimela_context
         input = script_context.get('_STIMELA_INPUT', None) or input
         output = script_context.get('_STIMELA_OUTPUT', None) or output
+        output = os.path.abspath(output)
         msdir = script_context.get('_STIMELA_MSDIR', None) or msdir
         build_label = script_context.get('_STIMELA_BUILD_LABEL', None) or build_label
 
@@ -514,16 +524,19 @@ class StimelaJob(object):
 
         od = cab.IODEST["output"]
         cont.add_environ('HOME', od)
-        self.logfile = cont.logfile = '{0:s}/log-{1:s}.txt'.format(self.log_dir, name.split('-')[0])
-        cont.add_volume(output, od)
-        if not os.path.exists(cont.logfile):
-            with open(cont.logfile, "w") as std:
-                pass
-
-        logfile_cont = '/home/{0:s}/{1:s}/log-{2:s}.txt'.format(USER, self.log_dir, name.split('-')[0])
-        cont.add_volume(cont.logfile, logfile_cont, "rw")
         cont.add_environ('OUTPUT', od)
-        cont.add_environ('LOGFILE',  logfile_cont)
+
+        self.log_dir = os.path.abspath(self.log_dir or output)
+        log_dir_name = os.path.basename(self.log_dir or output)
+        logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
+        self.logfile = cont.logfile = '{0:s}/{1:s}'.format(self.log_dir, logfile_name)
+        cont.add_volume(output, od, "rw")
+
+        if not os.path.exists(self.logfile):
+            with open(self.logfile, "w") as std:
+                pass
+        cont.add_volume(self.logfile, "{0:s}/logfile".format(self.log_dir), "rw")
+        cont.add_environ('LOGFILE',  "{0:}/logfile".format(self.log_dir))
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
         cont.image = '{0}_{1}'.format(build_label, image)
@@ -542,7 +555,6 @@ class Recipe(object):
         Deifine and manage a stimela recipe instance.        
 
         name    :   Name of stimela recipe
-        data    :   Path of stimela data. The data is assumed to be at Stimela/stimela/cargo/data
         msdir   :   Path of MSs to be used during the execution of the recipe
         tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
@@ -558,10 +570,10 @@ class Recipe(object):
         if self.log_dir:
             if not os.path.exists(self.log_dir):
                 self.log.info('The Log directory \'{0:s}\' cannot be found. Will create it'.format(self.log_dir))
-                os.mkdir(self.log_dir)
-            self.logfile = '{0:s}/log-{1:s}.txt'.format(log_dir, name_)
-        else:
-            self.logfile = 'log-{}.txt'.format(name_)
+                os.makedirs(self.log_dir)
+
+        logfile_name = 'log-{0:s}.txt'.format(name_.split('-')[0])
+        self.logfile = '{0}/log-{1}'.format(self.log_dir or ".", logfile_name)
 
         # Create file handler which logs even debug
         # messages

@@ -100,7 +100,7 @@ def build(argv):
             help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
-    log = logger.StimelaLogger('{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label))
+    log = logger.StimelaLogger('{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label), jtype="docker")
 
     if args.base:
         # Build base and meqtrees images first
@@ -336,7 +336,7 @@ def pull(argv):
         except KeyError:
             pull_folder = "."
 
-    log = logger.StimelaLogger(LOG_FILE)
+    log = logger.StimelaLogger(LOG_FILE, jtype="docker" if args.docker else "udocker")
     images = log.read()['images']
 
     if args.image:

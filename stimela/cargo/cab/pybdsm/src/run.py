@@ -71,12 +71,12 @@ if spi_do and multi_chan_beam:
     img_opts['beam_spectrum'] = beams
 
 image = img_opts.pop('filename')
-img_opts["indir"] = os.path.dirname(image) + "/"
+#img_opts["indir"] = os.path.dirname(image) + "/"
 filename = os.path.basename(image)
  
 outfile = write_opts.pop('outfile')
 
-img = bdsm.process_image(filename, **img_opts)
+img = bdsm.process_image(image, **img_opts)
 
 port2tigger = write_opts.pop('port2tigger', True)
 

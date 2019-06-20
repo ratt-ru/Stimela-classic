@@ -573,7 +573,7 @@ class Recipe(object):
                 os.makedirs(self.log_dir)
 
         logfile_name = 'log-{0:s}.txt'.format(name_.split('-')[0])
-        self.logfile = '{0}/log-{1}'.format(self.log_dir, logfile_name)
+        self.logfile = '{0}/log-{1}'.format(self.log_dir or ".", logfile_name)
 
         # Create file handler which logs even debug
         # messages

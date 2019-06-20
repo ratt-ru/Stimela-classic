@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 import Crasa.Crasa as crasa
+import pyfits
 
 sys.path.append("/scratch/stimela")
 import utils
@@ -23,6 +24,16 @@ for param in cab['parameters']:
 
     args[name] = value
 
+noise_image = args.pop('noise_image', False)
+if noise_image:
+    noise_sigma = args.pop('noise_sigma')
+    noise_hdu = pyfits.open(noise_image)
+    noise_data = noise_hdu[0].data
+    noise_std = noise_data.std()
+    threshold = noise_sigma*noise_std
+    args['threshold'] = '{}Jy'.format(threshold)
+else:
+    args.pop('noise_sigma')
 
 prefix = args['imagename']
 port2fits = args.pop('port2fits', True)
@@ -33,7 +44,7 @@ task = crasa.CasaTask(cab["binary"], **args)
 task.run()
 
 nterms = args.get("nterms", 1)
-images = ["flux", "model", "residual", "psf", "image"]
+images = ["flux", "model", "residual", "psf", "image", "mask", "pb", "sumwt"]
 STD_IMAGES = images[:4]
 
 convert = []

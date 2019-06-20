@@ -257,6 +257,19 @@
             "name": "threshold"
         }, 
         {
+            "info": "Noise image to compute sigma for stopping threshold (in case specified it will replace threshold)",
+            "dtype": "file",
+            "default": null,
+            "name": "noise_image",
+            "io": "input"
+        },
+        {
+            "info": "Noise sigma for stopping deconvolution in the case where noise_image is provided (new thresh = sigma*noise_image.std())",
+            "dtype": "float",
+            "default": 3,
+            "name": "noise_sigma"
+        },
+        {
             "info": "Target flux for maximum entropy", 
             "dtype": [
                 "float", 

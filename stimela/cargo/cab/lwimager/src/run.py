@@ -156,9 +156,18 @@ for param in params:
     elif name in ['threshold', 'targetflux']:
         if isinstance(value, float):
             value = '{}arcsec'.format(value)
-
     options[name] = value
 
+noise_image = options.pop('noise_image', False)
+if noise_image:
+    noise_sigma = options.pop('noise_sigma')
+    noise_hdu = pyfits.open(noise_image)
+    noise_data = noise_hdu[0].data
+    noise_std = noise_data.std()
+    threshold = noise_sigma*noise_std
+    options['threshold'] = '{}Jy'.format(threshold)
+else:
+    options.pop('noise_sigma')
 
 predict = options.pop('simulate_fits', False)
 if predict:

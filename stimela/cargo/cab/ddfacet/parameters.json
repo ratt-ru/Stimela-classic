@@ -1282,6 +1282,19 @@
             "required": false, 
             "name": "Misc-RandomSeed", 
             "dtype": "int"
+        },
+        {
+            "info": "Noise image to compute sigma for stopping threshold (in case specified it will replace Deconv-FluxThreshold)",
+            "dtype": "file",
+            "default": null,
+            "name": "Noise-Image",
+            "io": "input"
+        },
+        {
+            "info": "Noise sigma for stopping deconvolution in the case where noise_image is provided (new thresh = sigma*noise_image.std())",
+            "dtype": "float",
+            "default": 3.0,
+            "name": "Noise-Sigma"
         }
     ]
 }

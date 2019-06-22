@@ -35,7 +35,7 @@
         },
         {
             "info": "Which coefficients to use: mh for MeerKAT holography, me for MeerKAT EM simulation and vh for VLA holography?", 
-            "dtype": "file",
+            "dtype": "str",
             "required": true, 
             "name": "coeff",
             "choices": [

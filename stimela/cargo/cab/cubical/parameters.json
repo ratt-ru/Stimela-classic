@@ -260,9 +260,69 @@
             "name": "sol-jones"
         }, 
         {
-            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
+            "info": "Use diagonal (i.e. parallel hand) correlations only. Off-diagonals will be null in the outputs. See also --JONES-diag-only.",
             "dtype": "bool",
-            "name": "sol-diag-only"
+            "name": "sel-diag"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "g-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "g1-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "g2-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "g3-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "b-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "b1-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "b2-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "b3-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "dd-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "dd1-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "dd2-diag-only"
+        },
+        {
+            "info": "Use only diagonal (parallel-hand) data and model terms for the solution. Note that gains are still applied to the full 2x2 data (unless --sel-diag is also set).",
+            "dtype": "bool",
+            "name": "dd3-diag-only"
         },
         {
             "info": "Solve in single or double precision", 

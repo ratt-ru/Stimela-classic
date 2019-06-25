@@ -28,10 +28,6 @@ for param in cab['parameters']:
     elif name == 'model-list':
         if isinstance(value, str):
             value = [value]
-        for i,val in enumerate(value):
-            if not os.path.exists(val.split("@")[0]):
-                value[i] = os.path.basename(val)
-        value = ':'.join(value)
     elif isinstance(value, list):
         value = ",".join( map(str, value) )
 

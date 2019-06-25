@@ -78,9 +78,8 @@
             "info": "Predict model visibilities from given LSM (using Montblanc).", 
             "check_io": false, 
             "name": "model-list", 
-            "io": "input", 
             "default": null, 
-            "dtype": "list:file"
+            "dtype": "str"
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 

@@ -23,7 +23,7 @@ for param in cab['parameters']:
     elif value is True:
         value = ''
     elif name == 'msname':
-        if isinstance(name, str):
+        if isinstance(value, str):
             msname = value
         else:
             msname = ' '.join(value)

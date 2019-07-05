@@ -138,13 +138,13 @@
         {
             "info": "Write flags to MS", 
             "dtype": "bool", 
-            "defalt": true, 
+            "default": true,
             "name": "write-flags-to-ms"
         }, 
         {
             "info": "name of flagset to write new flags to", 
             "dtype": "str", 
-            "defalt": null, 
+            "default": null,
             "name": "write-flagset"
         }, 
         {

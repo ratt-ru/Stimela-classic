@@ -22,11 +22,8 @@ for param in cab['parameters']:
         continue
     elif value is True:
         value = ''
-    elif name == 'msname':
-        if isinstance(value, str):
-            msname = value
-        else:
-            msname = ' '.join(value)
+    elif name == 'ms':
+        msname = value
         continue
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]

@@ -1,7 +1,7 @@
 {
     "task": "sharpener",
     "base": "stimela/sharpener",
-    "tag": "test",
+    "tag": "1.1.3",
     "description": "A tool to extract a spectrum from continuum sources in a cube.",
     "prefix": "",
     "binary": "run_sharpener",

@@ -17,7 +17,7 @@
         },
         {
             "name": "config",
-            "info": "YAML config file containing parameters for the flagger in the ‘sum_threshold’ key.",
+            "info": "YAML config file containing parameters for the flagger in the 'sum_threshold' key.",
             "io": "input",
             "dtype": "file"
         },
@@ -28,7 +28,7 @@
         },
         {
             "name": "flagging-strategy",
-            "info": "Flagging Strategy. If ‘standard’ all correlations in the visibility are flagged independently. If ‘polarisation’ the polarised intensity sqrt(Q^2 + U^2 + V^2) is calculated and used to flag all correlations in the visibility",
+            "info": "Flagging Strategy. If 'standard' all correlations in the visibility are flagged independently. If 'polarisation' the polarised intensity sqrt(Q^2 + U^2 + V^2) is calculated and used to flag all correlations in the visibility",
             "dtype" : "str",
             "choices" : ["standard", "polarisation"]
         },
@@ -65,7 +65,7 @@
         {
             "name":"field-names",
             "info": "Name(s) of fields to flag. Defaults to flagging all",
-            "dtype": "list:string"
+            "dtype": "list:str"
         },
         {
             "name": "-dpm, --disable-post-mortem",

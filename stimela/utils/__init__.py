@@ -59,6 +59,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     cmd = " ".join([command] + list(map(str, options)) )
 
     def _print_info(msg):
+        msg = msg.encode("utf-8")
         if msg is None: return
         if log:
             log.info(msg)

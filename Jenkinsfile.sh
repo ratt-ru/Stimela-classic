@@ -1,3 +1,6 @@
+set -e
+set -u
+
 WORKSPACE_ROOT="$WORKSPACE/$BUILD_NUMBER"
 TEST_OUTPUT_DIR="$WORKSPACE_ROOT/test-output"
 TEST_DATA_DIR="$WORKSPACE/../../../test-data"

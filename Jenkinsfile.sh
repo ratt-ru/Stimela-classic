@@ -9,6 +9,7 @@ mkdir $TEST_OUTPUT_DIR
 #Custom home for this run's temporary stuff
 HOME=$WORKSPACE_ROOT
 export HOME
+ls $WORKSPACE/../../../
 ln -s $WORKSPACE/../../../.udocker .udocker
 ln -s $WORKSPACE/../../../.singularity .singularity
 # Install Stimela into a virtual env

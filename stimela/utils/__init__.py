@@ -84,6 +84,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                                             stderr=fout,
                                             stdout=fout,
                                             shell=True)
+            kill_callback = kill_callback or p.kill
 
             def clock_killer(p):
                 while process.poll() is None and (timeout >= 0):
@@ -92,7 +93,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                         DEBUG and _print_warn(u"Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
                     else:
                         _print_warn(u"Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
-                        (kill_callback is not None) and kill_callback()
+                        kill_callback()
                     time.sleep(INTERRUPT_TIME)
 
             Thread(target=clock_killer, args=tuple([p])).start()

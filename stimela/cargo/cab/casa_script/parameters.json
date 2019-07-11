@@ -1,5 +1,5 @@
 {
-    "task": "casa", 
+    "task": "casa_script", 
     "base": "stimela/casa", 
     "tag": "1.0.1", 
     "description": "Runs a user defined script within CASA", 

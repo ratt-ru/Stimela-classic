@@ -1,14 +1,14 @@
 {
     "task": "pycasacore", 
-    "base": "stimela/casacore", 
+    "base": "stimela/meqtrees", 
     "tag": "1.0.1", 
     "description": "Runs a user defined script in a python environment with python-casaore", 
     "prefix": "", 
-    "binary": "python-casacore", 
+    "binary": "python", 
     "msdir": true, 
     "parameters": [
         {
-            "name" : "ms",
+            "name" : "msname",
             "info": "MS to process",
             "dtype": "file",
             "io": "msfile",

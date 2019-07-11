@@ -1,5 +1,6 @@
 import os
 import sys
+import tempfile
 
 sys.path.append('/scratch/stimela')
 import utils
@@ -21,14 +22,8 @@ for param in cab['parameters']:
     if name == "script":
         custom_script = value
         continue
-    if value is None:
-        continue
-    elif value is False:
-        continue
-    elif value is True:
-        value = ''
-    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-with open("casajob.py.last", "w") as f:
-    f.write(custom_script)
-utils.xrun(cab['binary'], ["-c", "casajob.py.last"] + args)
+with tempfile.NamedTemporaryFile(suffix=".py") as tfile:
+    tfile.write(custom_script)
+    tfile.flush()
+    utils.xrun(cab['binary'], [tfile.name])

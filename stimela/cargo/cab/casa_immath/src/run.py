@@ -1,7 +1,6 @@
 import os
 import sys
 import logging
-import pyrap.images as pyim
 import Crasa.Crasa as crasa
 
 sys.path.append("/scratch/stimela")
@@ -46,14 +45,15 @@ else:
            chan_num = str(i)
            outfile = '{:s}-{:s}.{:s}'.format(immath_args['outfile'], chan_num, ext) 
            run_immath_args = immath_args.copy()
+           run_immath_args['imagename'] = image
            run_immath_args['outfile'] = outfile
            run_immath_args['chans'] = chan_num
            task = crasa.CasaTask(cab["binary"], **run_immath_args) 
            task.run()
            if unstack_args['port2fits']:
-               print('Converting CASA iamges to FITS images')
+               print('Converting CASA images to FITS images')
                fits = outfile + '.fits'
-               im = pyim.image(outfile)
-               im.tofits(fits, overwrite=True, velocity=False)
+               task = crasa.CasaTask("exportfits", **dict(imagename=outfile, fitsimage=fits, overwrite=True))
+               task.run()
                if not unstack_args['keep_casa_images']:
                    rm_fr(outfile)

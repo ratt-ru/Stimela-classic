@@ -1,16 +1,16 @@
 {
     "task": "montage_mosaic", 
     "base": "stimela/montage", 
-    "tag": "1.1.0", 
+    "tag": "1.1.3", 
     "description": "A package that allows continuum (2D) images and spectral (3D) images to be mosaicked together, using montage commands.", 
     "prefix": "--", 
-    "binary": "montage_mosaic", 
+    "binary": "montage-mosaic", 
     "msdir": false, 
     "parameters": [
         {
             "info": "State 'continuum' or 'spectral' as the type of mosaic to be made.", 
-            "name": "mosaic_type", 
-           "default": null, 
+            "name": "mosaic-type", 
+            "default": null, 
             "dtype": "str", 
             "required": true
         }, 
@@ -30,14 +30,14 @@
         }, 
         {
             "info": "The prefix to be used for output files.", 
-            "name": "outname",  
+            "name": "name",  
             "default": "mymosaic", 
             "dtype": "str", 
             "required": false
         },  
         {
-            "info": "The filenames of each target/pointing image to be mosaicked. A suffix of 'image.fits' is expected.", 
-            "name": "target_images", 
+            "info": "The filenames of each target/pointing image to be mosaicked. A suffix of 'image.fits' is expected, and this is replaced by 'pb.fits' in order to locate the corresponding beams (which are also required as input).", 
+            "name": "target-images", 
             "io": "input", 
             "default": null, 
             "dtype": "list:file", 

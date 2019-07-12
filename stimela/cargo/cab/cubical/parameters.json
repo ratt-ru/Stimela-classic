@@ -1,7 +1,7 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "1.0.1", 
+    "tag": "cu1.2.3", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--", 
     "binary": "gocubical", 
@@ -262,7 +262,7 @@
         {
             "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
             "dtype": "bool",
-            "name": "sol-diag-diag"
+            "name": "sol-diag-only"
         },
         {
             "info": "Solve in single or double precision", 

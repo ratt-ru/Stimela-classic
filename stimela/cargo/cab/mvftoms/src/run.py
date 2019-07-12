@@ -29,13 +29,16 @@ for param in cab['parameters']:
     elif name == 'mvffiles':
         files = value
         continue
+    elif name == "output-ms":
+        ms = value
     elif name == "credentials_dir" and value:
         os.system("cp -rf {0:s} {1:s}/.aws".format(value, HOME))
         continue 
+
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
 
 if overwrite:
-    os.system("rm -fr {0:s}".format(" ".join(files)))
+    os.system("rm -fr {0:s}".format(ms))
 
 utils.xrun(cab["binary"], args+files )

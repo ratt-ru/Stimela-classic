@@ -22,16 +22,19 @@ for param in cab['parameters']:
         continue
     elif value is True:
         value = ''
-    elif name == 'msname':
+    elif name == 'ms':
+        msname = value
+        continue
+    elif name == "field-names":
         if isinstance(value, str):
-            msname = value
+            fields = "--field-names " + value
         else:
-            msname = ' '.join(value)
+            fields = "--field-names " + " --field-names ".join(value)
         continue
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
 if msname:
-    utils.xrun(cab['binary'], args+[msname])
+    utils.xrun(cab['binary'], args+[fields, msname])
 else:
     raise RuntimeError('MS name has not be specified')

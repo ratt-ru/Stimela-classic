@@ -1,0 +1,23 @@
+{
+    "task": "casa_script", 
+    "base": "stimela/casa", 
+    "tag": "1.0.1", 
+    "description": "Runs a user defined script within CASA", 
+    "prefix": "", 
+    "binary": "casa", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "name" : "vis",
+            "info": "MS to process",
+            "dtype": "file",
+            "io": "msfile"
+        },
+        {
+            "info": "Custom script (string) to run within CASA", 
+            "name": "script",
+            "default": "print(\"Hello CASA!\")",
+            "dtype": "str"
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 {
-    "task": "dagger", 
+    "task": "catdagger", 
     "base": "stimela/catdagger", 
     "tag": "1.0.1", 
     "description": "CATDagger - An automatic differential gain catalog tagger", 

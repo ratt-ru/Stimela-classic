@@ -129,8 +129,7 @@ class Container(object):
         #self.cont_logger.log_container(self.name)
         #self.cont_logger.write()
         self._print("Creating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
-        utils.xrun("udocker", ["create", "--name={0:s}".format(self.name), self.image],
-                       timeout=self.time_out)
+        utils.xrun("udocker", ["create", "--name={0:s}".format(self.name), self.image])
 
     def stop(self):
         dinfo = self.info()

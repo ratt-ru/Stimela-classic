@@ -10,10 +10,10 @@ requirements = ["pyyaml",
                 "future",
                ],
 
-if sys.version_info <= (3, 0):
-    requirements += [
-                "udocker-stimela",
-               ],
+# if sys.version_info <= (3, 0):
+#     requirements += [
+#                 "udocker-stimela",
+#                ],
 
 PACKAGE_NAME = "stimela"
 __version__ = "1.1.3"

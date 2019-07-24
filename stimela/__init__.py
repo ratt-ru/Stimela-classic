@@ -13,7 +13,7 @@ from stimela import utils, cargo
 from stimela.cargo import cab
 from stimela.recipe import Recipe as Pipeline
 from stimela.recipe import Recipe, PipelineException
-from stimela import docker, singularity, udocker
+from stimela import docker, singularity#, udocker
 import pkg_resources
 import warnings
 
@@ -336,7 +336,7 @@ def pull(argv):
         except KeyError:
             pull_folder = "."
 
-    log = logger.StimelaLogger(LOG_FILE, jtype="docker" if args.docker else "udocker")
+    log = logger.StimelaLogger(LOG_FILE, jtype="docker")# if args.docker else "udocker")
     images = log.read()['images']
 
     if args.image:
@@ -350,8 +350,9 @@ def pull(argv):
                 docker.pull(image)
                 log.log_image(image, 'pulled')
             else:
-                udocker.pull(image)
-                log.log_image(image, 'pulled')
+                raise ValueError("Undefined container platform")
+                #udocker.pull(image)
+                #log.log_image(image, 'pulled')
     else:
 
         base = []
@@ -370,8 +371,9 @@ def pull(argv):
                 docker.pull(image)
                 log.log_image(image, 'pulled')
             else:
-               udocker.pull(image)
-               log.log_image(image, 'pulled')
+                raise ValueError("Undefined containerization platform")
+            #    udocker.pull(image)
+            #    log.log_image(image, 'pulled')
 
     log.write()
 

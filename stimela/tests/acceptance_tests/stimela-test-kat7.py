@@ -112,7 +112,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='listobs:: some stats',
-                time_out=30) 
+                time_out=300) 
 
                 # It is common for the array to require a small amount of time to settle down at the start of a scan. Consequently, it has
                 # become standard practice to flag the initial samples from the start of each scan. This is known as 'quack' flagging
@@ -125,7 +125,7 @@ class kat7_reduce(unittest.TestCase):
                 input = INPUT,
                 output = OUTPUT,
                 label = 'quack_flagging:: Quack flagging',
-                time_out=30) 
+                time_out=300) 
 
 
                 #Flag the autocorrelations
@@ -138,7 +138,7 @@ class kat7_reduce(unittest.TestCase):
                 input = INPUT,
                 output = OUTPUT,
                 label = 'autocorr_flagging:: Autocorrelations flagging',
-                time_out=30) 
+                time_out=300) 
 
 
                 #Flag bad channels
@@ -151,7 +151,7 @@ class kat7_reduce(unittest.TestCase):
                 input = INPUT,
                 output = OUTPUT,
                 label = 'badchan_flagging:: Bad Channel flagging',
-                time_out=30) 
+                time_out=300) 
 
                 recipe.add('cab/casa_clearcal', 'clearcal',
                 {
@@ -161,7 +161,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='clearcal:: casa clearcal',
-                time_out=30)
+                time_out=300)
 
                 recipe.add('cab/casa_setjy', 'set_flux_scaling', {
                         "vis"           :   MS,
@@ -173,7 +173,7 @@ class kat7_reduce(unittest.TestCase):
                 input = INPUT,
                 output = OUTPUT,
                 label = 'set_flux_scaling:: Set flux density value for the amplitude calibrator',
-                time_out=30) 
+                time_out=300) 
 
                 recipe.add('cab/casa_bandpass', 'bandpass_cal', {
                         "vis"       : MS,
@@ -189,7 +189,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label = 'bandpass_cal:: Bandpass calibration',
-                time_out=30) 
+                time_out=300) 
 
                 # display the bandpass solutions. Note that in the plotcal inputs below, the amplitudes are being displayed as a function of
                 # frequency channel. The parameter subplot=221 is used to display multiple plots per page (2 plots per page in the y
@@ -209,7 +209,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='plot_bandpass_amp_R:: Plot bandpass table. AMP, R',
-                time_out=30) 
+                time_out=300) 
 
                 # Gain calibration - amplitude and phase - first for BPCAL.
                 recipe.add('cab/casa_gaincal', 'gaincal_bp', {
@@ -228,7 +228,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label="gaincal:: Gain calibration",
-                time_out=30) 
+                time_out=300) 
 
                 # Set fluxscale
                 recipe.add('cab/casa_fluxscale', 'fluxscale', {
@@ -242,7 +242,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='fluxscale:: Set fluxscale',
-                time_out=30) 
+                time_out=300) 
 
                 # Apply calibration to BPCAL
                 recipe.add('cab/casa_applycal', 'applycal_bp', {
@@ -258,7 +258,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='applycal_bp:: Apply calibration to Bandpass Calibrator',
-                time_out=30) 
+                time_out=300) 
 
                 recipe.run()
 
@@ -272,7 +272,7 @@ class kat7_reduce(unittest.TestCase):
                 },
                         input=INPUT, output=OUTPUT,
                         label="move_corrdata_to_data::msutils",
-                        time_out=30) 
+                        time_out=300) 
                 
                 os.system("rm -rf {}/{}-corr.ms".format(MSDIR, MS[:-3]))
                 recipe.add('cab/casa_split', 'split_corr_data',
@@ -286,7 +286,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='split_corr_data:: Split corrected data from MS',
-                time_out=30) 
+                time_out=300) 
 
                 MS = MS[:-3]+'-corr.ms'
 
@@ -298,7 +298,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label='prep_split_data:: Prep split data with casa clearcal',
-                time_out=30) 
+                time_out=300) 
 
                 ## Clean-Mask-Clean 
                 imname0=PREFIX+'image0'
@@ -324,7 +324,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label="image_target_field_r1:: Image target field second round",
-                time_out=30) 
+                time_out=300) 
 
                 recipe.add('cab/cleanmask', 'mask0', {
                         "image"  : '%s-image.fits:output' %(imname1),
@@ -335,7 +335,7 @@ class kat7_reduce(unittest.TestCase):
                     input=INPUT,
                     output=OUTPUT,
                     label='mask0:: Make mask',
-                    time_out=30) 
+                    time_out=300) 
 
 
                 lsm0 = PREFIX+'-LSM0'
@@ -349,7 +349,7 @@ class kat7_reduce(unittest.TestCase):
                 },
                         input=INPUT, output=OUTPUT,
                         label="extract_init_model:: Make initial model from preselfcal image",
-                        time_out=30) 
+                        time_out=300) 
 
                 #Add bitflag column. To keep track of flagsets. 
                 recipe.add("cab/msutils", "msutils", {
@@ -358,7 +358,7 @@ class kat7_reduce(unittest.TestCase):
                 },
                 input=INPUT, output=OUTPUT,
                 label="prepms::Adds flagsets",
-                time_out=30) 
+                time_out=300) 
 
                 #Not used currently.
                 recipe.add("cab/flagms", "backup_initial_flags", {
@@ -369,7 +369,7 @@ class kat7_reduce(unittest.TestCase):
                 },
                         input=INPUT, output=OUTPUT,
                         label="backup_initial_flags:: Backup selfcal flags",
-                        time_out=30) 
+                        time_out=300) 
 
                 #First selfcal round
                 recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
@@ -386,7 +386,7 @@ class kat7_reduce(unittest.TestCase):
                 },
                         input=INPUT, output=OUTPUT,
                         label="calibrator_Gjones_subtract_lsm0:: Calibrate and subtract LSM0",
-                        time_out=30) 
+                        time_out=300) 
 
                 # Diversity is a good thing... lets add some DDFacet to this soup bowl
                 imname=PREFIX+'ddfacet'
@@ -409,7 +409,7 @@ class kat7_reduce(unittest.TestCase):
                        },
                        input=INPUT, output=OUTPUT, shared_memory="200gb",
                        label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
-                       time_out=30) 
+                       time_out=300) 
 
                 lsm1 = PREFIX+'-LSM0'
                 #Source finding for initial model
@@ -422,7 +422,7 @@ class kat7_reduce(unittest.TestCase):
                 },
                         input=INPUT, output=OUTPUT,
                         label="extract_init_model:: Make initial model from preselfcal image",
-                        time_out=30) 
+                        time_out=300) 
 
                 #Stitch LSMs together
                 lsm2=PREFIX+'-LSM2'
@@ -435,7 +435,7 @@ class kat7_reduce(unittest.TestCase):
                 },
                         input=INPUT, output=OUTPUT,
                         label="stitch_lsms1::Create master lsm file",
-                        time_out=30) 
+                        time_out=300) 
 
                 recipe.add('cab/casa_uvcontsub','uvcontsub',
                         {
@@ -446,7 +446,7 @@ class kat7_reduce(unittest.TestCase):
                         input=INPUT,
                         output=OUTPUT,
                         label='uvcontsub:: Subtract continuum in the UV plane',
-                        time_out=30) 
+                        time_out=300) 
 
 
                 #Image HI

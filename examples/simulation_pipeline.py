@@ -46,7 +46,7 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              output=OUTPUT,                             # Output folder
              label="Creating MS",                       # Process label
              cpus=2.5,
-             memory_limit="2gb") 
+             memory_limit="2gb")
 
 
 # 2: Simulate visibilities into it

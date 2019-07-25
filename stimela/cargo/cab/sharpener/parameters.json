@@ -1,0 +1,258 @@
+{
+    "task": "sharpener",
+    "base": "stimela/sharpener",
+    "tag": "1.1.3",
+    "description": "A tool to extract a spectrum from continuum sources in a cube.",
+    "prefix": "",
+    "binary": "run_sharpener",
+    "msdir": false,
+    "use_graphics": true,
+    "parameters": [
+        {
+            "info": "Name of continuum image to extract sources",
+            "dtype": "file",
+            "default": null,
+            "name": "contname",
+            "required": false,
+            "io": "input"
+        },
+        {
+            "info": "Name of cube image to extract spectrum of sources",
+            "dtype": "file",
+            "default": null,
+            "name": "cubename",
+            "required": true,
+            "io": "input"
+        },
+        {
+            "info": "Prefix in the plots title",
+            "dtype": "str",
+            "default": "SHARP",
+            "name": "label",
+            "required": false
+        },
+        {
+            "info": "Name of catalog file used to locate sources in a cube",
+            "dtype": "file",
+            "default": null,
+            "name": "catalog_file",
+            "required": false,
+            "io": "input"
+        },
+        {
+            "info": "Name of working directory",
+            "dtype": "str",
+            "default": null,
+            "required": true,
+            "name": "workdir"
+        },
+        {
+            "info": "Format of plots produced",
+            "dtype": "str",
+            "default": "pdf",
+            "required": false,
+            "name": "plot_format"
+        },
+        {
+            "info": "Merge all the plots",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "merge_plots"
+        },
+        {
+            "info": "plot spectra from folder plot in workdir/sharpOut/plot/",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "enable_abs_plot"
+        },
+        {
+            "info": "Detail plot showing specified number of channels per plot",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "detailed_plot"
+        },
+        {
+            "info": "Number of channels per plot",
+            "dtype": "int",
+            "default": 50,
+            "required": false,
+            "name": "channels_per_plot"
+        },
+        {
+            "info": "Enable hanning for smoothing spectrum",
+            "dtype": "bool",
+            "default": false,
+            "required": false,
+            "name": "enable_hanning"
+        },
+        {
+            "info": "Hanning window",
+            "dtype": "int",
+            "default": 3,
+            "required": false,
+            "name": "window"
+        },
+        {
+            "info": "Subtract polynomial from spectrum to improve continuum subtraction",
+            "dtype": "bool",
+            "default": false,
+            "required": false,
+            "name": "enable_polynomial_subtraction"
+        }, 
+        {
+            "info": "Degree of polynomial",
+            "dtype": "bool",
+            "default": false,
+            "required": false,
+            "name": "degree_pol"
+        },
+        {
+            "info": "Enable sdss source matching",
+            "dtype": "bool",
+            "default": false,
+            "required": false,
+            "name": "enable_sdss_match"
+        }, 
+        {
+            "info": "Minimum frequency",
+            "dtype": "float",
+            "default": 1130.0,
+            "required": false,
+            "name": "freq_min"
+        }, 
+        {
+            "info": "Maximum frequency",
+            "dtype": "float",
+            "default": 1430.0,
+            "required": false,
+            "name": "freq_max"
+        }, 
+        {
+            "info": "Plot image",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "plot_image"
+        }, 
+        {
+            "info": "Match catalog",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "match_cat"
+        }, 
+        {
+            "info": "Maximum separation",
+            "dtype": "float",
+            "default": 30.0,
+            "required": false,
+            "name": "max_sep"
+        }, 
+        {
+            "info": "Minimum radio flux",
+            "dtype": "float",
+            "default": 0.0,
+            "required": false,
+            "name": "min_radio_flux"
+        }, 
+        {
+            "info": "SDSS query timeout",
+            "dtype": "int",
+            "default": 300,
+            "required": false,
+            "name": "sdss_query_timeout"
+        }, 
+        {
+            "info": "Simulate continuum from source catalog output",
+            "dtype": "bool",
+            "default": false,
+            "required": false,
+            "name": "enable_simulate_continuum"
+        }, 
+        {
+            "info": "Find sources in a f.o.v. from source_catalog",
+            "dtype": "bool",
+            "default": false,
+            "required": false,
+            "name": "enable_source_catalog"
+        }, 
+        {
+            "info": "Type of catalog",
+            "dtype": "str",
+            "default": null,
+            "required": true,
+            "name": "catalog",
+            "choices": [
+                "FIRST", 
+                "NVSS", 
+                "PYBDSF"
+            ]
+        }, 
+        {
+            "info": "Threshold to select sources (mJy)",
+            "dtype": "float",
+            "default": 50.0,
+            "required": false,
+            "name": "thresh"
+        }, 
+        {
+            "info": "Field of view width (e.g. 5.5d)",
+            "dtype": "str",
+            "default": null,
+            "required": false,
+            "name": "width"
+        }, 
+        {
+            "info": "Find sources in continuum image using miriad imsad",
+            "dtype": "bool",
+            "default": false,
+            "required": false,
+            "name": "enable_source_finder"
+        }, 
+        {
+            "info": "Source finding clip",
+            "dtype": "float",
+            "default": null,
+            "required": false,
+            "name": "clip"
+        }, 
+        {
+            "info": "Plot image",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "plot_image"
+        }, 
+        {
+            "info": "Extract spectra from datacube",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "enable_spec_ex"
+        }, 
+        {
+            "info": "Chromatic aberration",
+            "dtype": "bool",
+            "default": true,
+            "required": false,
+            "name": "chrom_aberration"
+        }, 
+        {
+            "info": "Number of channels to flag",
+            "dtype": "int",
+            "default": null,
+            "required": false,
+            "name": "flag_chans"
+        }, 
+        {
+            "info": "Red shift units",
+            "dtype": "str",
+            "default": null,
+            "required": false,
+            "name": "zunit"
+        }
+    ]
+}

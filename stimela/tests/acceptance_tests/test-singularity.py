@@ -124,6 +124,7 @@ class singularity_test(unittest.TestCase):
                                 "npix"              :   2048,                   # Image size in pixels
                                 "cellsize"          :   2,                      # Size of each square pixel
                                 "clean_iterations"  :   1000,                   # Perform 1000 iterarions of clean (Deconvolution)
+                                "temp-dir"          :   "/tmp"
                              },
                              input=INPUT, 
                              output=OUTPUT, 

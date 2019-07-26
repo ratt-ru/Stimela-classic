@@ -323,6 +323,7 @@ class kat7_reduce(unittest.TestCase):
                         "stokes"        :   "I",
                         "auto-threshold":   3,                      #Since it is masked
                         "prefix"        :   '%s:output' %(imname1),
+                        "temp-dir"      :   "/tmp"
                 },
                 input=INPUT,
                 output=OUTPUT,

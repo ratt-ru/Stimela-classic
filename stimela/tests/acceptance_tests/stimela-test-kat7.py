@@ -3,6 +3,7 @@ import os
 import unittest
 import subprocess
 from nose.tools import timed
+import shutil
 
 class kat7_reduce(unittest.TestCase):
         @classmethod
@@ -47,7 +48,7 @@ class kat7_reduce(unittest.TestCase):
                 global LABEL
                 LABEL = "test_reduction"
                 global OUTPUT
-                OUTPUT = "output_%s" % LABEL
+                OUTPUT = "/tmp/output_%s" % LABEL
                 global MSCONTSUB
                 MSCONTSUB = MS+'.contsub'
                 
@@ -88,6 +89,8 @@ class kat7_reduce(unittest.TestCase):
         @classmethod
         def tearDownClass(cls):
                 unittest.TestCase.tearDownClass()
+                global OUTPUT
+                shutil.rmtree(OUTPUT)
 
         def tearDown(self):
                 unittest.TestCase.tearDown(self)

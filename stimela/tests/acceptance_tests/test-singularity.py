@@ -4,6 +4,7 @@ import sys
 import unittest
 import subprocess
 from nose.tools import timed
+import shutil
 
 class singularity_test(unittest.TestCase):
         @classmethod
@@ -12,7 +13,8 @@ class singularity_test(unittest.TestCase):
                 global INPUT, MSDIR, OUTPUT, MS, PREFIX, LSM
                 INPUT=os.path.join(os.path.dirname(__file__), "input")
                 MSDIR="msdir"
-                OUTPUT="output"
+                global OUTPUT
+                OUTPUT="/tmp/output_singularity"
                 # MS name
                 MS = "meerkat_simulation_example.ms"
 
@@ -26,6 +28,8 @@ class singularity_test(unittest.TestCase):
         @classmethod
         def tearDownClass(cls):
                 unittest.TestCase.tearDownClass()
+                global OUTPUT
+                shutil.rmtree(OUTPUT)
 
         def tearDown(self):
                 unittest.TestCase.tearDown(self)

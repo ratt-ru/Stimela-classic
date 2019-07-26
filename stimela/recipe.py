@@ -80,7 +80,7 @@ class StimelaJob(object):
         self.label = label or '{0}_{1}'.format(name, id(name))
         self.log = recipe.log
         self.active = False
-        self.jtype = 'docker' # ['docker', 'python', singularity', 'udocker']
+        self.jtype = jtype # ['docker', 'python', singularity', 'udocker']
         self.job = None
         self.created = False
         self.args = ['--user {}:{}'.format(UID, GID)]

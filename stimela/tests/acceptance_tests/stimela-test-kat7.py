@@ -102,7 +102,7 @@ class kat7_reduce(unittest.TestCase):
                 global MSCONTSUB, SPW, LSM0, SELFCAL_TABLE1, corr_ms, lsm0
                 global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
                 
-                recipe = stimela.Recipe('Test reduction script', ms_dir=MSDIR)
+                recipe = stimela.Recipe('Test reduction script', ms_dir=MSDIR, JOB_TYPE="docker")
 
 
  
@@ -262,7 +262,7 @@ class kat7_reduce(unittest.TestCase):
 
                 recipe.run()
 
-                recipe = stimela.Recipe('KAT reduction script 2', ms_dir=MSDIR)
+                recipe = stimela.Recipe('KAT reduction script 2', ms_dir=MSDIR, JOB_TYPE="docker")
                 # Copy CORRECTED_DATA to DATA, so we can start uv_contsub
                 recipe.add("cab/msutils", "move_corrdata_to_data", {
                         "command"           : "copycol",
@@ -307,27 +307,28 @@ class kat7_reduce(unittest.TestCase):
                 imname1=PREFIX+'image1'
 
                 
-                recipe.add('cab/wsclean', 'image_target_field_r1', {
-                        "msname"        :   MS,
-                        "field"         :   0,
-                        "channelrange"  :   [21,235],               #Other channels don't have any data   
-                        "weight"        :   "briggs 0",               # Use Briggs weighting to weigh visibilities for imaging
-                        "npix"          :   256,                   # Image size in pixels
-                        "padding"       :   1.3,                    # To avoid aliasing
-                        "cellsize"      :   30,                      # Size of each square pixel
-                        "clean_iterations"  :   1000,
-                        "mgain"         :   0.95,
+                recipe.add('cab/casa_tclean', 'image_target_field_r1', {
+                        "vis"           :   MS,
+                        "datacolumn"    :  "corrected",
+                        "field"         :   "0",
+                        "start"         :   21,               #Other channels don't have any data   
+                        "nchan"         :   235 - 21,
+                        "width"         :   1,
+                        "weighting"     :   "briggs",               # Use Briggs weighting to weigh visibilities for imaging
+                        "robust"        :   0,
+                        "imsize"        :   256,                   # Image size in pixels
+                        "cellsize"      :   "30arcsec",                      # Size of each square pixel
+                        "niter"         :   100,
                         "stokes"        :   "I",
-                        "auto-threshold":   3,                      #Since it is masked
                         "prefix"        :   '%s:output' %(imname1),
                 },
                 input=INPUT,
                 output=OUTPUT,
                 label="image_target_field_r1:: Image target field second round",
-                time_out=30) 
+                time_out=90) 
 
                 recipe.add('cab/cleanmask', 'mask0', {
-                        "image"  : '%s-image.fits:output' %(imname1),
+                        "image"  : '%s.image.fits:output' %(imname1),
                         "output" : '%s:output' %(maskname0),
                         "dilate" : False,
                         "sigma"  : 20,
@@ -341,7 +342,7 @@ class kat7_reduce(unittest.TestCase):
                 lsm0 = PREFIX+'-LSM0'
                 #Source finding for initial model
                 recipe.add("cab/pybdsm", "extract_init_model", {
-                        "image"             :  '%s-image.fits:output' %(imname1),
+                        "image"             :  '%s.image.fits:output' %(imname1),
                         "outfile"           :  '%s:output'%(lsm0),
                         "thresh_pix"        :  25,
                         "thresh_isl"        :  15,
@@ -365,6 +366,7 @@ class kat7_reduce(unittest.TestCase):
                         "msname"        : MS,
                         "create"        : True,
                         "nan"           : True,
+                        "flagged-any"   : "+L",
                         "flag"          : "legacy",
                 },
                         input=INPUT, output=OUTPUT,
@@ -405,11 +407,11 @@ class kat7_reduce(unittest.TestCase):
                                "Data-Sort": True,
                                "Log-Boring": True,
                                "Deconv-MaxMajorIter": 1,
-                               "Deconv-MaxMinorIter": 500,
+                               "Deconv-MaxMinorIter": 20,
                        },
                        input=INPUT, output=OUTPUT, shared_memory="200gb",
                        label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
-                       time_out=30) 
+                       time_out=120) 
 
                 lsm1 = PREFIX+'-LSM0'
                 #Source finding for initial model

@@ -24,8 +24,10 @@ LSM = "nvss1deg.lsm.html"
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                   ms_dir=MSDIR,
                   singularity_image_dir=SINGULARTITY_IMAGE_DIR,
-                  log_dir = os.path.join(OUTPUT, "logs"),
-                  JOB_TYPE="udocker")
+                  log_dir = os.path.join(OUTPUT, "logs")
+                  )
+
+pipeline.JOB_TYPE = "udocker"
 
 # 1: Make empty MS 
 pipeline.add("cab/simms",                   # Executor image to start container from 

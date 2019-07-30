@@ -9,7 +9,7 @@ import codecs
 from datetime import datetime
 
 class StimelaLogger(object):
-    def __init__(self, lfile, jtype="udocker"):
+    def __init__(self, lfile, jtype="docker"):
 
         self.lfile = lfile
         # Create file if it does not exist

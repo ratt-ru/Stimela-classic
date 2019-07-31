@@ -329,11 +329,7 @@ class kat7_reduce(unittest.TestCase):
                 input=INPUT,
                 output=OUTPUT,
                 label="image_target_field_r1:: Image target field second round",
-<<<<<<< HEAD
                 time_out=90) 
-=======
-                time_out=1800) 
->>>>>>> 38080089cf02ce94fd1ba4f23a468ed2c9587d6d
 
                 recipe.add('cab/cleanmask', 'mask0', {
                         "image"  : '%s.image.fits:output' %(imname1),
@@ -419,11 +415,7 @@ class kat7_reduce(unittest.TestCase):
                        },
                        input=INPUT, output=OUTPUT, shared_memory="200gb",
                        label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
-<<<<<<< HEAD
                        time_out=120) 
-=======
-                       time_out=1800) 
->>>>>>> 38080089cf02ce94fd1ba4f23a468ed2c9587d6d
 
                 lsm1 = PREFIX+'-LSM0'
                 #Source finding for initial model

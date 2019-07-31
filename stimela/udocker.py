@@ -13,12 +13,12 @@ import tempfile
 class DockerError(Exception):
     pass
 
-def pull(image, tag=None):
+def pull(image, tag=None, force=False):
     """ pull a docker image """
     if tag:
         image = ":".join([image, tag])
 
-    utils.xrun("udocker pull", [image])
+    utils.xrun("udocker", ["pull", image])
 
 
 def seconds_hms(seconds):

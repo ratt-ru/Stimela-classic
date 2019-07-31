@@ -1,4 +1,4 @@
-FROM stimela/meqtrees:1.1.3
+FROM stimela/montage:1.1.3
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

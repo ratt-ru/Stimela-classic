@@ -12,11 +12,11 @@ requirements = ["pyyaml",
 
 if sys.version_info <= (3, 0):
     requirements += [
-                "udocker-stimela",
+                "udocker",
                ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 
 setup(name = PACKAGE_NAME,
     version = __version__,

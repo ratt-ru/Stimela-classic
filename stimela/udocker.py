@@ -9,16 +9,16 @@ import time
 import datetime
 import tempfile
 
+
 class DockerError(Exception):
     pass
 
-
-def pull(image, tag=None):
+def pull(image, tag=None, force=False):
     """ pull a docker image """
     if tag:
         image = ":".join([image, tag])
 
-    utils.xrun("udocker pull", [image])
+    utils.xrun("udocker", ["pull", image])
 
 
 def seconds_hms(seconds):
@@ -37,7 +37,7 @@ class Container(object):
         """
         Python wrapper to docker engine tools for managing containers.
         """
-    
+  
         self.image = image
         self.name = name
         self.label = label
@@ -62,7 +62,7 @@ class Container(object):
             host = os.path.abspath(host)
         else:
             raise IOError("Directory {0} cannot be mounted on container: File doesn't exist".format(host))
-        
+      
         self.volumes.append(":".join([host,container]))
 
 
@@ -82,7 +82,7 @@ class Container(object):
             environs = environs = " --env="+" --env=".join(self.environs)
         else:
             environs = ""
-        
+      
         self._print("Running container [{}]".format(self.name))
         tstart = time.time()
         utils.xrun("udocker run", ["=".join(args)] + [volumes, environs,
@@ -105,8 +105,8 @@ class Container(object):
         output_file.close()
 
         return jdict
-    
-    
+  
+  
     def get_log(self):
         stdout = open(self.logfile, 'w')
         exit_status = subprocess.call("docker logs {0}".format(self.name),
@@ -121,11 +121,11 @@ class Container(object):
         stdout.close()
         return output
 
-        
+      
     def create(self):
         running = True
         self.status = "created"
-        
+      
         #self.cont_logger.log_container(self.name)
         #self.cont_logger.write()
         self._print("Creating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(self.name, self.time_out))
@@ -159,7 +159,7 @@ class Container(object):
                 killed = True
             if killed:
                 raise KeyboardInterrupt
-           
+         
         else:
             raise DockerError("Container [{}] has not been stopped, cannot remove".format(self.name))
 

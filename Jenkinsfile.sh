@@ -30,7 +30,6 @@ singularity -v
 docker -v
 export SINGULARITY_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
 mkdir $SINGULARITY_PULLFOLDER
-stimela pull
 stimela pull -s
 # fresh build
 stimela build -nc

@@ -92,56 +92,6 @@ class singularity_test(unittest.TestCase):
                         time_out=600) 
 
 
-#           pipeline.add('cab/casa_plotms', 
-#                       'plot_vis',
-#                       {
-#                           "vis"           :   MS,
-#                           "xaxis"         :   'uvdist',
-#                           "yaxis"         :   'amp',
-#                           "xdatacolumn"   :   'corrected',
-#                           "ydatacolumn"   :   'corrected',
-#                           "plotfile"      :   PREFIX+'-amp_uvdist.png',
-#                           "overwrite"     :   True,
-#                       },
-#                       input=INPUT,
-#                       output=OUTPUT,
-#                       label='plot_amp_uvdist:: Plot amplitude vs uv-distance',
-#                       time_out=600) 
-
-            ## Image
-            # Make things a bit interesting by imaging with different weights 
-            # Briggs robust values to use for each image
-            briggs_robust = [2]
-
-            for i, robust in enumerate(briggs_robust):
-
-                pipeline.add("cab/wsclean",
-                             "imager_example_robust_{:d}".format(i), 
-                             {
-                                "msname"            :   MS,
-                                "weight"            :   "briggs {:d}".format(i),
-                                "prefix"            :   "{:s}_robust-{:d}".format(PREFIX, robust),
-                                "npix"              :   2048,                   # Image size in pixels
-                                "cellsize"          :   2,                      # Size of each square pixel
-                                "clean_iterations"  :   1000,                   # Perform 1000 iterarions of clean (Deconvolution)
-                                "temp-dir"          :   "/tmp"
-                             },
-                             input=INPUT, 
-                             output=OUTPUT, 
-                             label="Imaging MS, robust={:d}".format(robust), 
-                             cpus=2,
-                             memory_limit="2gb",
-                             time_out=600) 
-
-            pipeline.add("cab/casa_rmtables", "delete_ms", {
-                    "tablenames"    : MS + ":msfile",
-                    },
-                    input=INPUT,
-                    output=OUTPUT,
-                    label="Remove MS",
-                    time_out=300) 
-
-
 
             # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
             # executed in the sequence that they were added

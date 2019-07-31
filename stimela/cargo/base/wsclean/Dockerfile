@@ -28,8 +28,8 @@ RUN docker-apt-install cmake \
 RUN wget https://tenet.dl.sourceforge.net/project/wsclean/wsclean-2.7/wsclean-2.7.tar.bz2
 RUN tar xvf wsclean-2.7.tar.bz2
 RUN mkdir wsclean-2.7/build
-RUN cd wsclean-2.6/build && \
-    cmake -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \
+RUN cd wsclean-2.7/build && \
+    cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \
     make -j 10 && \
     make install
 RUN pip install pyfits

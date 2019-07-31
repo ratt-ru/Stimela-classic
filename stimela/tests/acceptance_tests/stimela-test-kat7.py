@@ -324,7 +324,6 @@ class kat7_reduce(unittest.TestCase):
                         "niter"         :   100,
                         "stokes"        :   "I",
                         "prefix"        :   '%s:output' %(imname1),
-                        "temp-dir"      :   "/tmp"
                 },
                 input=INPUT,
                 output=OUTPUT,

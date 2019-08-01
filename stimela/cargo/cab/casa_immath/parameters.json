@@ -1,0 +1,144 @@
+{
+    "task": "casa_immath",
+    "base": "stimela/casa",
+    "tag": "1.0.1",
+    "description": "Perform math operations on images",
+    "prefix": "-",
+    "binary": "immath",
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "Mode for math operation",
+            "name": "mode",
+            "dtype": "str",
+            "required": true,
+            "default": "evalexpr",
+            "choices": [
+                "evalexpr",
+                "spix",
+                "pola",
+                "poli"
+            ]
+        },
+        {
+            "info": "A list of input images",
+            "name": "imagename",
+            "io": "input",
+            "default": null,
+            "dtype": "list:file",
+            "required": true
+        },
+        {
+            "info": "Mask to use",
+            "name": "mask",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "Prefix of output (Extension will be same as imagename)",
+            "name": "outfile",
+            "io": "output",
+            "default": null,
+            "dtype": "str",
+            "required": true
+        },
+        {
+            "info": "Mathematical expression using images",
+            "name": "expr",
+            "default": "IM0",
+            "dtype": "str",
+            "required": true
+        },
+        {
+            "info": "A list of variable names to use with the image file",
+            "name": "varnames",
+            "default": null,
+            "dtype": "list:str",
+            "required": false
+        },
+        {
+            "info": "Threshold in linear polarization intensity image below which to mask pixels",
+            "name": "polithresh",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Region selection",
+            "name": "region",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Rectangular region to select in direction plane. Default is to use the entire direction",
+            "name": "box",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Channels to use",
+            "name": "chans",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Stokes planes to use",
+            "name": "stokes",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Stretch the mask if necessary and possible?",
+            "name": "stretch",
+            "default": false,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "Channels to use",
+            "name": "chans",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "An image name from which metadata should be copied. The input can be either an image listed under imagename or any other image on disk. Leaving this parameter unset may copy header metadata from any of the input images, which one is not guaranteed",
+            "name": "imagemd",
+            "default": null,
+            "dtype": "str",
+            "required": false
+        },
+        {
+            "info": "Number of channels to ustack in cube (not to be confused with chan)",
+            "name": "nchans",
+            "default": null,
+            "dtype": "int",
+            "required": false
+        },
+        {
+            "info": "Unstack a casa image cube into [nchans] chunks along the freq axis.", 
+            "name": "unstack",
+            "dtype": "str",
+            "default": null,
+            "required": false
+        },
+        {
+            "info": "Convert output images to FITS files", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "port2fits"
+        },
+        {
+            "info": "Keep casa images when 'port2fits' is enabled", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "keep_casa_images"
+        }
+    ]
+}

@@ -390,6 +390,18 @@
             "dtype": "int", 
             "default": null, 
             "name": "stoppointmode"
+        },
+        {
+            "info": "Convert output images to FITS files",
+            "dtype": "bool",
+            "default": true,
+            "name": "port2fits"
+        },
+        {
+            "info": "Keep casa images when 'port2fits' is enabled",
+            "dtype": "bool",
+            "default": false,
+            "name": "keep_casa_images"
         }
     ]
 }

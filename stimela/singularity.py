@@ -7,12 +7,13 @@ import stimela
 import time
 import datetime
 import tempfile
+import hashlib
 
 class SingularityError(Exception):
     pass
 
 
-def pull(image, store_path, docker=True, directory="."):
+def pull(image, store_path, docker=True, directory=".", force=False):
     """ 
         pull an image
     """
@@ -23,7 +24,8 @@ def pull(image, store_path, docker=True, directory="."):
         fp = image
     if not os.path.exists(directory):
         os.mkdir(directory)
-    utils.xrun("cd", [directory, "&&", "singularity", "pull", "--force", "--name", store_path, fp])
+    utils.xrun("cd", [directory, "&&", "singularity", "pull", "--force" if force else "", 
+               "--name", store_path, fp])
 
 
     return 0
@@ -40,7 +42,7 @@ class Container(object):
         """
     
         self.image = image
-        self.name = name
+        self.name = hashlib.md5(name).hexdigest()[:3]
         self.volumes = volumes or []
         self.logger = logger
         self.status = None

@@ -486,7 +486,15 @@
             "required": false, 
             "name": "Comp-GridDecorr", 
             "dtype": "float"
+        },
+        {
+            "info": "Maximum tolerated BDA decorrelation response factor for degridding", 
+            "default": 0.02, 
+            "required": false, 
+            "name": "Comp-DegridDecorr", 
+            "dtype": "float"
         }, 
+
         {
             "info": "FoV over which gridding decorrelation factor is computed", 
             "name": "Comp-GridFoV", 

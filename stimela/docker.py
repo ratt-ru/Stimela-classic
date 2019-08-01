@@ -36,7 +36,7 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
             else:
                 stdw.write(line)
         stdw.flush()
-        utils.xrun("docker build", args+["--force-rm","-f", stdw.name, 
+        utils.xrun("docker build", args+["--force-rm", "-f", stdw.name, 
                    "-t", image, 
                     bdir])
 
@@ -47,12 +47,12 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
 
     os.system('rm -rf {:s}'.format(bdir))
     
-def pull(image, tag=None):
+def pull(image, tag=None, force=False):
     """ pull a docker image """
     if tag:
         image = ":".join([image, tag])
 
-    utils.xrun("docker pull", [image])
+    utils.xrun("docker", ["pull", image])
 
 
 def seconds_hms(seconds):

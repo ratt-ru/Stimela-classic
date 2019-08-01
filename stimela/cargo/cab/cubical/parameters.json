@@ -78,9 +78,8 @@
             "info": "Predict model visibilities from given LSM (using Montblanc).", 
             "check_io": false, 
             "name": "model-list", 
-            "io": "input", 
             "default": null, 
-            "dtype": "list:file"
+            "dtype": "str"
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
@@ -262,8 +261,19 @@
         {
             "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
             "dtype": "bool",
-            "name": "sol-diag-only"
+            "name": "sel-diag"
         },
+        {
+            "info": "if true, then data, model and gains are taken to be diagonal. off-diagonal terms in data and model are ignored. this option is then enforced on all jones terms.",
+            "dtype": "bool",
+            "name": "g-diag-only"
+        },
+        {
+            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
+            "dtype": "bool",
+            "name": "dd-diag-only"
+        },
+
         {
             "info": "Solve in single or double precision", 
             "dtype": "str", 
@@ -296,13 +306,13 @@
         }, 
         {
             "info": "Minimum percentage of solutions which must have stalled before terminating\nthe solver.", 
-            "dtype": "str", 
+            "dtype": "float", 
             "default": null, 
             "name": "sol-stall-quorum"
         }, 
         {
             "info": "Number of iterations per Jones term. If empty, then each Jones\nterm is solved for once, up to convergence, or up to its -max-iter\nsetting.\nOtherwise, set to a list giving the number of iterations per Jones term.\nFor example, given two Jones terms and --sol-num-iter 10,20,10, it will\ndo 10 iterations on the first term, 20 on the second, and 10 again on the\nfirst.", 
-            "dtype": "str", 
+            "dtype": "int", 
             "default": null, 
             "name": "sol-term-iters"
         }, 

@@ -13,7 +13,7 @@ from stimela import utils, cargo
 from stimela.cargo import cab
 from stimela.recipe import Recipe as Pipeline
 from stimela.recipe import Recipe, PipelineException
-from stimela import docker, singularity, udocker
+from stimela import docker, singularity#, udocker
 import pkg_resources
 import warnings
 
@@ -316,6 +316,9 @@ def pull(argv):
     add("-t", "--tag",
             help="Tag")
 
+    add("-f", "--force", action="store_true",
+            help="force pull if image already exists")
+
     add("-s", "--singularity", action="store_true",
             help="Pull base images using singularity."
                  "Images will be pulled into the directory specified by the enviroment varaible, SINGULARITY_PULLFOLDER. $PWD by default")
@@ -345,11 +348,12 @@ def pull(argv):
             simage = image.replace("/", "_")
             simage = simage.replace(":", "_") + ".img"
             if args.singularity:
-                singularity.pull(image, simage, directory=pull_folder)
+                singularity.pull(image, simage, directory=pull_folder, force=args.force)
             elif args.docker:
                 docker.pull(image)
                 log.log_image(image, 'pulled')
             else:
+                raise ValueError("Undefined container platform")
                 udocker.pull(image)
                 log.log_image(image, 'pulled')
     else:
@@ -365,13 +369,14 @@ def pull(argv):
             if args.singularity:
                 simage = image.replace("/", "_")
                 simage = simage.replace(":", "_") + ".img"
-                singularity.pull(image, simage, directory=pull_folder)
+                singularity.pull(image, simage, directory=pull_folder, force=args.force)
             elif args.docker:
-                docker.pull(image)
+                docker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
             else:
-               udocker.pull(image)
-               log.log_image(image, 'pulled')
+                raise ValueError("Undefined containerization platform")
+                udocker.pull(image, force=args.force)
+                log.log_image(image, 'pulled')
 
     log.write()
 

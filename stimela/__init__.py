@@ -316,12 +316,15 @@ def pull(argv):
     add("-t", "--tag",
             help="Tag")
 
+    add("-f", "--force", action="store_true",
+            help="force pull if image already exists")
+
     add("-s", "--singularity", action="store_true",
             help="Pull base images using singularity."
                  "Images will be pulled into the directory specified by the enviroment varaible, SINGULARITY_PULLFOLDER. $PWD by default")
 
-    # add("-d", "--docker", action="store_true",
-    #         help="Pull base images using docker.")
+    add("-d", "--docker", action="store_true",
+            help="Pull base images using docker.")
 
     add("-pf", "--pull-folder", help="Images will be placed in this folder. Else, if the environmnental variable 'SINGULARITY_PULLFOLDER' is set, then images will be placed there. "
                                     "Else, images will be placed in the current directory")
@@ -336,7 +339,7 @@ def pull(argv):
         except KeyError:
             pull_folder = "."
 
-    log = logger.StimelaLogger(LOG_FILE, jtype="docker")# if args.docker else "udocker")
+    log = logger.StimelaLogger(LOG_FILE, jtype="docker" if args.docker else "udocker")
     images = log.read()['images']
 
     if args.image:
@@ -345,14 +348,14 @@ def pull(argv):
             simage = image.replace("/", "_")
             simage = simage.replace(":", "_") + ".img"
             if args.singularity:
-                singularity.pull(image, simage, directory=pull_folder)
-            else: #elif args.docker:
+                singularity.pull(image, simage, directory=pull_folder, force=args.force)
+            elif args.docker:
                 docker.pull(image)
                 log.log_image(image, 'pulled')
-            # else:
-            #     raise ValueError("Undefined container platform")
-            #     #udocker.pull(image)
-            #     #log.log_image(image, 'pulled')
+            else:
+                raise ValueError("Undefined container platform")
+                udocker.pull(image)
+                log.log_image(image, 'pulled')
     else:
 
         base = []
@@ -366,14 +369,14 @@ def pull(argv):
             if args.singularity:
                 simage = image.replace("/", "_")
                 simage = simage.replace(":", "_") + ".img"
-                singularity.pull(image, simage, directory=pull_folder)
-            else: #elif args.docker:
-                docker.pull(image)
+                singularity.pull(image, simage, directory=pull_folder, force=args.force)
+            elif args.docker:
+                docker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
-            # else:
-            #     raise ValueError("Undefined containerization platform")
-            # #    udocker.pull(image)
-            # #    log.log_image(image, 'pulled')
+            else:
+                raise ValueError("Undefined containerization platform")
+                udocker.pull(image, force=args.force)
+                log.log_image(image, 'pulled')
 
     log.write()
 

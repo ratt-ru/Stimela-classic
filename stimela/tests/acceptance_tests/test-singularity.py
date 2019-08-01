@@ -89,9 +89,7 @@ class singularity_test(unittest.TestCase):
                          },
                         input=INPUT, output=OUTPUT,
                         label="Simulating visibilities",
-                        time_out=600) 
-
-
+                        time_out=200) 
 
             # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
             # executed in the sequence that they were added

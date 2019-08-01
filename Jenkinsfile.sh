@@ -26,9 +26,10 @@ cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 
 which stimela
 stimela --version
+singularity -v
+docker -v
 export SINGULARITY_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
 mkdir $SINGULARITY_PULLFOLDER
-#stimela pull
 stimela pull -s
 # fresh build
 stimela build -nc

@@ -75,24 +75,6 @@ class singularity_test(unittest.TestCase):
                          label="Some obs details",
                          time_out=100) 
 
-            pipeline.add("cab/simulator", 
-                         "simulator_example",
-                         {
-                            "msname"    :   MS,
-                            "skymodel"  :   LSM,                    # Sky model to simulate into MS
-                            "addnoise"  :   True,                   # Add thermal noise to visibilities
-                            "column"    :   "CORRECTED_DATA",       # Simulated data will be saved in this column
-                            "sefd"      :   831,                    # Compute noise from this SEFD
-                            "recenter"  :   True,                    # Recentre sky model to phase tracking centre of MS
-                            "tile-size" : 64,
-                            "threads"   : 4,
-                         },
-                        input=INPUT, output=OUTPUT,
-                        label="Simulating visibilities",
-                        time_out=600) 
-
-
-
             # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
             # executed in the sequence that they were added
             pipeline.run()

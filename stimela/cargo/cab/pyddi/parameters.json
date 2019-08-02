@@ -2,7 +2,7 @@
     "task": "pyddi", 
     "base": "stimela/pyddi", 
     "tag": "1.1.3", 
-    "description": "An Astronomical Image Fidelity Assessment Tool", 
+    "description": "A tool designed to identify regions in an image that require direction-dependent calibration",
     "prefix": "--", 
     "binary": "pyddi", 
     "msdir": false, 

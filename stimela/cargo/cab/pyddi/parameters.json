@@ -10,7 +10,7 @@
     "parameters": [
         {
             "info": "Image of interest.",
-            "name": "img",
+            "name": "image",
             "io": "input",
             "default": null,
             "dtype": "file",
@@ -18,7 +18,7 @@
         }, 
         {
             "info": "The psf image.",
-            "name": "psf",
+            "name": "psf-image",
             "io": "input",
             "default": null,
             "dtype": "file",
@@ -26,7 +26,7 @@
         }, 
         {
             "info": "Sky model as LSM/txt. Must be in Tigger format: #format:name, ra_d, dec_d, i",
-            "name": "cat",
+            "name": "catalog",
             "io": "input",
             "default": null,
             "dtype": "file",
@@ -48,7 +48,7 @@
         }, 
         {
             "info": "The size of the region to compute the local variance. E.g vsize=10, gives a region of size = 10 * resolution. The resolution is in pixels.",
-            "name": "var-size",
+            "name": "variance-size",
             "default": 10,
             "dtype": "int",
             "required": false
@@ -62,30 +62,30 @@
         }, 
         {
             "info": "The size of the region to compute correlation. see vsize.",
-            "default": 5,
+            "default": 10,
             "required": false,
-            "name": "corr-size",
+            "name": "correlation-size",
             "dtype": "int"
         }, 
         {
             "info": "The size of the region to group the pixels, in terms of psf-size. The psf is in degrees. e.g gpix=20, gives 20xpsf.",
             "default": 20.0,
             "required": false,
-            "name": "group-pix",
+            "name": "group-pixels",
             "dtype": "float"
         },
         {
-            "info": "Use -cat for the identification and not only -i.",
+            "info": "Use -catalog for the identification instead of -image.",
             "default": false,
             "required": false,
-            "name": "use-cat",
+            "name": "use-catalog",
             "dtype": "bool"
         },
         {
-            "info": "The prefix for the output file containing directions in RA, DEC both in degrees, and peak flux of the pixels.",
+            "info": "The prefix for the output catalog useful when -use-catalog=False. It returns pixel RA, DEC dnd flux of the brightest pixels.",
             "default": null,
             "required": false,
-            "name": "outpref",
+            "name": "prefix",
             "dtype": "str"
         }
     ]

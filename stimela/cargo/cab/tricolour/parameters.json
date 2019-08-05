@@ -8,7 +8,7 @@
     "msdir": true, 
     "parameters": [
         {
-            "info": "MS name(s) to be flagged", 
+            "info": "MS to be flagged (single MS)", 
             "name": "ms", 
             "io": "msfile", 
             "default": false, 
@@ -30,7 +30,7 @@
             "name": "flagging-strategy",
             "info": "Flagging Strategy. If 'standard' all correlations in the visibility are flagged independently. If 'polarisation' the polarised intensity sqrt(Q^2 + U^2 + V^2) is calculated and used to flag all correlations in the visibility",
             "dtype" : "str",
-            "choices" : ["standard", "polarisation"]
+            "choices" : ["standard", "polarisation", "total_power"]
         },
         {
             "name": "row-chunks",
@@ -60,6 +60,11 @@
         {
             "name": "scan-numbers",
             "info": "Scan numbers to flag",
+            "dtype": "str"
+        },
+        {
+            "name": "subtract-model-column",
+            "info": "Columns to subtract from 'data-column' to form residuals to flag on",
             "dtype": "str"
         },
         {

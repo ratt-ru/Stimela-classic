@@ -23,6 +23,9 @@ def rm_fr(item):
 
 def _run (prefix=None, predict=False, **kw):
 
+    port2fits = kw.pop('port2fits', True)
+    keep_casa_images = kw.pop('keep_casa_images', False)
+
     if predict:
         args = [ '{0}={1}'.format(a, b) for a,b in kw.iteritems() ]
         utils.xrun(cab['binary'], args)
@@ -50,11 +53,13 @@ def _run (prefix=None, predict=False, **kw):
     args = [ '{0}={1}'.format(a, b) for a,b in kw.iteritems() ]
     utils.xrun(cab['binary'], args)
 
-    print('Converting CASA iamges to FITS images')
-    for fits,img in images.itervalues():
-        im = pyrap.images.image(img)
-        im.tofits(fits, overwrite=True, velocity=kw.get('prefervelocity', False))
-        rm_fr(img)
+    if port2fits:
+        print('Converting CASA iamges to FITS images')
+        for fits,img in images.itervalues():
+            im = pyrap.images.image(img)
+            im.tofits(fits, overwrite=True, velocity=kw.get('prefervelocity', False))
+            if not keep_casa_images:
+                rm_fr(img)
 
 
 

@@ -80,7 +80,7 @@ class StimelaJob(object):
         self.label = label or '{0}_{1}'.format(name, id(name))
         self.log = recipe.log
         self.active = False
-        self.jtype = 'udocker' # ['docker', 'python', singularity', 'udocker']
+        self.jtype = jtype # ['docker', 'python', singularity', 'udocker']
         self.job = None
         self.created = False
         self.args = ['--user {}:{}'.format(UID, GID)]
@@ -282,14 +282,14 @@ class StimelaJob(object):
 
         return 0
 
-
+    
     def udocker_job(self, image, config,
             input=None, output=None, msdir=None,
             **kw):
-        
+      
         """
             Run task using udocker
-            
+          
         image   :   stimela cab name, e.g. 'cab/simms'
         name    :   This name will be part of the name of the contaier that will 
                     execute the task (now optional)
@@ -326,7 +326,7 @@ class StimelaJob(object):
                     msdir=msdir, parameter_file=parameter_file)
 
         cab.IODEST = CONT_IO["udocker"]
-        
+      
         cont = udocker.Container(image, name, 
                     logger=self.log, time_out=self.time_out, 
                     COMMAND="/bin/sh -c /scratch/code/run.sh")
@@ -390,7 +390,7 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = cab.IODEST["output"]
-        
+      
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
         logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
@@ -404,7 +404,7 @@ class StimelaJob(object):
         cont.add_volume(output, od)
         cont.add_environ("OUTPUT", od)
         self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
-        
+      
         if hasattr(cont._cab, "use_graphics") and cont._cab.use_graphics: 
             cont.use_graphics = True
         cont.image = '{0:s}:{1:s}'.format(_cab.base, _cab.tag)
@@ -550,7 +550,7 @@ class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
                  tag=None, build_label=None, loglevel='INFO',
-                 loggername='STIMELA', singularity_image_dir=None, log_dir=None, JOB_TYPE='udocker'):
+                 loggername='STIMELA', singularity_image_dir=None, log_dir=None, JOB_TYPE='docker'):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -674,7 +674,7 @@ class Recipe(object):
 
     def log2recipe(self, job, recipe, num, status):
 
-        if job.jtype in ['docker', 'singularity', "udocker"]:
+        if job.jtype in ['docker', 'singularity', 'udocker']:
             cont = job.job
             step = {
                 "name"          :   cont.name,

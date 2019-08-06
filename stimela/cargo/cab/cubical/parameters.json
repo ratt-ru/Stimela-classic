@@ -312,7 +312,7 @@
         }, 
         {
             "info": "Number of iterations per Jones term. If empty, then each Jones\nterm is solved for once, up to convergence, or up to its -max-iter\nsetting.\nOtherwise, set to a list giving the number of iterations per Jones term.\nFor example, given two Jones terms and --sol-num-iter 10,20,10, it will\ndo 10 iterations on the first term, 20 on the second, and 10 again on the\nfirst.", 
-            "dtype": "int", 
+            "dtype": ["int","str"], 
             "default": null, 
             "name": "sol-term-iters"
         }, 
@@ -551,13 +551,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["float", "int"], 
             "default": null, 
             "name": "g-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "g-freq-int"
         }, 
@@ -671,13 +671,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "g1-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "g1-freq-int"
         }, 
@@ -791,13 +791,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "g2-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "g2-freq-int"
         }, 
@@ -911,13 +911,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int",  "float"],
             "default": null, 
             "name": "g3-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "g3-freq-int"
         }, 
@@ -1031,13 +1031,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b-freq-int"
         }, 
@@ -1151,13 +1151,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b1-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b1-freq-int"
         }, 
@@ -1271,13 +1271,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b2-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b2-freq-int"
         }, 
@@ -1391,13 +1391,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b3-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "b3-freq-int"
         }, 
@@ -1511,13 +1511,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd-freq-int"
         }, 
@@ -1622,13 +1622,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd1-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd1-freq-int"
         }, 
@@ -1733,13 +1733,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd2-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd2-freq-int"
         }, 
@@ -1844,13 +1844,13 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd3-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": "int", 
+            "dtype": ["int", "float"],
             "default": null, 
             "name": "dd3-freq-int"
         }, 

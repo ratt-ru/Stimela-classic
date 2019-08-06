@@ -36,13 +36,13 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
             else:
                 stdw.write(line)
         stdw.flush()
-        utils.xrun("docker build", args+["--force-rm", "-f", stdw.name, 
+        utils.xrun("docker build", args+["--force-rm", "--no-cache", "-f", stdw.name, 
                    "-t", image, 
                     bdir])
 
         stdw.close()
     else:
-        utils.xrun("docker build", args+["--force-rm", "-t", image, 
+        utils.xrun("docker build", args+["--force-rm", "--no-cache", "-t", image, 
                     bdir])
 
     os.system('rm -rf {:s}'.format(bdir))

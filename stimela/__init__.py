@@ -13,7 +13,7 @@ from stimela import utils, cargo
 from stimela.cargo import cab
 from stimela.recipe import Recipe as Pipeline
 from stimela.recipe import Recipe, PipelineException
-from stimela import docker, singularity#, udocker
+from stimela import docker, singularity, udocker
 import pkg_resources
 import warnings
 

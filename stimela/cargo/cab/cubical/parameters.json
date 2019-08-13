@@ -418,6 +418,12 @@
             "io": "output"
         }, 
         {
+            "name": "out-overwrite",
+            "info": "Allow overwriting of existing output files. If this is set, and the output parset file exists, will raise an exception",
+            "dtype": "bool",
+            "default": true
+        },
+        {
             "info": "Operational mode.\n[so] solve only;\n[sc] solve and generate corrected visibilities;\n[sr] solve and generate corrected residuals;\n[ss] solve and generate uncorrected residuals;\n[ac] apply solutions, generate corrected visibilities;\n[ar] apply solutions, generate corrected residuals;\n[as] apply solutions, generate uncorrected residuals;", 
             "dtype": "str", 
             "default": null, 

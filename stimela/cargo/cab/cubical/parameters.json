@@ -424,18 +424,6 @@
             "default": true
         },
         {
-            "name": "out-backup",
-            "info": "Allow automatic backup of existing output directories. Automatic backup is only used when OUTDIR is used (i.e. OUTNAME doesn't contain any slashes),and it ends with .cc-out (implicitly or explicitly). In this case, existing output directories are renamed to .cc.out.0, .1, etc. ",
-            "dtype": "bool",
-            "default": true
-        },
-        {
-            "name": "out-dir",
-            "info": "Base name of directory for output files. The suffix .cc-out will be implicitly appended, unless OUTDIR ends with a slash. #metavar:OUTDIR #type:str",
-            "dtype": "str",
-            "default": "cubical"
-        },
-        {
             "info": "Operational mode.\n[so] solve only;\n[sc] solve and generate corrected visibilities;\n[sr] solve and generate corrected residuals;\n[ss] solve and generate uncorrected residuals;\n[ac] apply solutions, generate corrected visibilities;\n[ar] apply solutions, generate corrected residuals;\n[as] apply solutions, generate uncorrected residuals;", 
             "dtype": "str", 
             "default": null, 

@@ -1,0 +1,231 @@
+{
+    "task": "casa_bandpass", 
+    "base": "stimela/casa", 
+    "tag": "1.0.1", 
+    "description": "Calculates a bandpass calibration solution", 
+    "prefix": "-", 
+    "binary": "bandpass", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input visibility file", 
+            "name": "msname", 
+            "io": "msfile", 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Name of output gain calibration table", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "caltable", 
+            "io": "output"
+        }, 
+        {
+            "info": "Field Name or id", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
+        {
+            "info": "Spectral windows e.g. '0~3', '' is all", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
+        {
+            "info": "Other data selection parameters", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "selectdata"
+        }, 
+        {
+            "info": "Range of time to select from data, e.g. timerange = 'YYYY/MM/DD/hh:mm:ss~YYYY/MM/DD/hh:mm:ss'", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
+        {
+            "info": "Select data within uvrange", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "uvrange"
+        }, 
+        {
+            "info": "Select data based on antenna/baseline", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
+        {
+            "info": "Scan number range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
+        {
+            "info": "Observation ID range", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "observation"
+        }, 
+        {
+            "info": "Optional complex data selection (ignore for now)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "msselect"
+        }, 
+        {
+            "info": "Solution interval in time[,freq]", 
+            "dtype": [
+                "str", 
+                "int", 
+                "float"
+            ], 
+            "default": "inf", 
+            "name": "solint"
+        }, 
+        {
+            "info": "Data axes which to combine for solve (obs, scan, spw, and/or field)", 
+            "dtype": "str", 
+            "default": "scan", 
+            "name": "combine"
+        }, 
+        {
+            "info": "Reference antenna name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "refant"
+        }, 
+        {
+            "info": "Minimum baselines _per antenna_ required for solve", 
+            "dtype": "int", 
+            "default": 4, 
+            "name": "minblperant"
+        }, 
+        {
+            "info": "Reject solutions below this SNR (only applies for bandtype = B)", 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "minsnr"
+        }, 
+        {
+            "info": "Normalize average solution amplitudes to 1.0", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "solnorm"
+        }, 
+        {
+            "info": "Type of bandpass solution (B or BPOLY)", 
+            "dtype": "str", 
+            "default": "B", 
+            "name": "bandtype", 
+            "choices": [
+                "B", 
+                "BPOLY"
+            ]
+        }, 
+        {
+            "info": "Fill flagged solution channels by interpolation", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "fillgaps"
+        }, 
+        {
+            "info": "Polynomial degree for BPOLY amplitude solution", 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "degamp"
+        }, 
+        {
+            "info": "Polynomial degree for BPOLY phase solution", 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "degphase"
+        }, 
+        {
+            "info": "Normalize data prior to BPOLY solution", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "visnorm"
+        }, 
+        {
+            "info": "Number of channels to avoid in center of each band", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "maskcenter"
+        }, 
+        {
+            "info": "Fraction of channels to avoid at each band edge (in %)", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "maskedge"
+        }, 
+        {
+            "info": "Point source Stokes parameters for source model.", 
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "smodel"
+        }, 
+        {
+            "info": "Append solutions to the (existing) table", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "append"
+        }, 
+        {
+            "info": "Use callib or traditional cal apply parameters", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "docallib"
+        }, 
+        {
+            "info": "Gain calibration table(s) to apply on the fly", 
+            "dtype": "list:file", 
+            "default": null, 
+            "name": "gaintable", 
+            "io": "input"
+        }, 
+        {
+            "info": "Select a subset of calibrators from gaintable(s)", 
+            "dtype": [
+                "list:int", 
+                "list:str"
+            ], 
+            "default": null, 
+            "name": "gainfield"
+        }, 
+        {
+            "info": "Interpolation mode (in time) to use for each gaintable", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "interp"
+        }, 
+        {
+            "info": "Spectral windows combinations to form for gaintables(s)", 
+            "dtype": "list:list", 
+            "default": null, 
+            "name": "spwmap"
+        }, 
+        {
+            "info": "Cal Library filename", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "callib", 
+            "io": "input"
+        }, 
+        {
+            "info": "Reject solutions below this SNR (only applies for bandtype = B)", 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "minsnr"
+        }, 
+        {
+            "info": "Apply parallactic angle correction", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "parang"
+        }
+    ]
+}

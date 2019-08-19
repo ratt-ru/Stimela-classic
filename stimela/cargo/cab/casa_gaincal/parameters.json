@@ -1,0 +1,229 @@
+{
+    "task": "casa_gaincal", 
+    "base": "stimela/casa", 
+    "tag": "1.0.1", 
+    "description": "Specify Calibration Values of Various Types", 
+    "prefix": "-", 
+    "binary": "gaincal", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input visibility file", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Name of output gain calibration table", 
+            "name": "caltable", 
+            "io": "output", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
+        {
+            "info": "Select field using field id(s) or field name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
+        {
+            "info": "Select spectral window/channels", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
+        {
+            "info": "Other data selection parameters", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "selectdata"
+        }, 
+        {
+            "info": "Select data based on time range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
+        {
+            "info": "Select data within uvrange (default units meters)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "uvrange"
+        }, 
+        {
+            "info": "Select data based on antenna/baseline", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
+        {
+            "info": "Scan number range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
+        {
+            "info": "Select by observation ID(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
+        {
+            "info": "Optional complex data selection (ignore for now)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "msselect"
+        }, 
+        {
+            "info": "Solution interval: egs. 'inf', '60s' (see help)", 
+            "dtype": [
+                "str", 
+                "float", 
+                "int"
+            ], 
+            "default": "inf", 
+            "name": "solint"
+        }, 
+        {
+            "info": "Data axes which to combine for solve (obs, scan, spw, and/or, field)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "combine"
+        }, 
+        {
+            "info": "Pre-averaging interval (sec) (rarely needed)", 
+            "dtype": "float", 
+            "default": -1.0, 
+            "name": "preavg"
+        }, 
+        {
+            "info": "Reference antenna name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "refant"
+        }, 
+        {
+            "info": "Minimum baselines _per antenna_ required for solve", 
+            "dtype": "int", 
+            "default": 4, 
+            "name": "minblperant"
+        }, 
+        {
+            "info": "Reject solutions below this SNR", 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "minsnr"
+        }, 
+        {
+            "info": "Normalize average solution amplitudes to 1.0 (G, T only)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "solnorm"
+        }, 
+        {
+            "info": "Type of gain solution (G,T,GSPLINE,K,KCROSS)", 
+            "dtype": "str", 
+            "default": "G", 
+            "name": "gaintype", 
+            "choices": [
+                "G", 
+                "T", 
+                "GSPLINE", 
+                "K", 
+                "KCROSS"
+            ]
+        }, 
+        {
+            "info": "Spline timescale(sec); All spw's are first averaged.", 
+            "dtype": "float", 
+            "default": 3600.0, 
+            "name": "splinetime"
+        }, 
+        {
+            "info": "The phase-unwrapping algorithm", 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "npointaver"
+        }, 
+        {
+            "info": "Wrap the phase for jumps greater than this value (degrees)", 
+            "dtype": "float", 
+            "default": 180.0, 
+            "name": "phasewrap"
+        }, 
+        {
+            "info": "Point source Stokes parameters for source model.", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "smodel"
+        }, 
+        {
+            "info": "Type of solution: ('ap', 'p', 'a')", 
+            "dtype": "str", 
+            "default": "ap", 
+            "name": "calmode", 
+            "choices": [
+                "ap", 
+                "p", 
+                "a"
+            ]
+        }, 
+        {
+            "info": "Append solutions to the (existing) table", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "append"
+        }, 
+        {
+            "info": "Use callib or traditional cal apply parameters", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "docallib"
+        }, 
+        {
+            "info": "Cal Library filename", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "callib", 
+            "io": "input"
+        }, 
+        {
+            "info": "Gain calibration table(s) to apply on the fly", 
+            "dtype": "list:file", 
+            "default": null, 
+            "name": "gaintable", 
+            "io": "input"
+        }, 
+        {
+            "info": "Select a subset of calibrators from gaintable(s)", 
+            "dtype": [
+                "list:str", 
+                "list:int"
+            ], 
+            "default": null, 
+            "name": "gainfield"
+        }, 
+        {
+            "info": "Temporal interpolation for each gaintable (=linear)", 
+            "dtype": "list", 
+            "default": null, 
+            "name": "interp"
+        }, 
+        {
+            "info": "Spectral windows combinations to form for gaintables(s)", 
+            "dtype": "list:list", 
+            "default": null, 
+            "name": "spwmap"
+        }, 
+        {
+            "info": "Apply parallactic angle correction on the fly", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "parang"
+        }
+    ]
+}

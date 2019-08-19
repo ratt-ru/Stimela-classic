@@ -1,0 +1,153 @@
+{
+    "task": "casa_applycal", 
+    "base": "stimela/casa", 
+    "tag": "1.0.1", 
+    "description": "Apply calibrations solutions(s) to data", 
+    "prefix": "-", 
+    "binary": "applycal", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input visibility file", 
+            "name": "msname", 
+            "io": "msfile", 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Select field using field id(s) or field name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
+        {
+            "info": "Select spectral window/channels", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
+        {
+            "info": "Select observing intent", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "intent"
+        }, 
+        {
+            "info": "Other data selection parameters", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "selectdata"
+        }, 
+        {
+            "info": "Select data based on time range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
+        {
+            "info": "Select data within uvrange (default units meters)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "uvrange"
+        }, 
+        {
+            "info": "Select data based on antenna/baseline", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
+        {
+            "info": "Scan number range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
+        {
+            "info": "Select by observation ID(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
+        {
+            "info": "Optional complex data selection (ignore for now)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "msselect"
+        }, 
+        {
+            "info": "Use callib or traditional cal apply parameters", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "docallib"
+        }, 
+        {
+            "info": "Cal Library filename", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "callib", 
+            "io": "input"
+        }, 
+        {
+            "info": "Gain calibration table(s) to apply on the fly", 
+            "dtype": "list:file", 
+            "default": null, 
+            "name": "gaintable", 
+            "io": "input"
+        }, 
+        {
+            "info": "Select a subset of calibrators from gaintable(s)", 
+            "dtype": [
+                "list:str"
+            ], 
+            "default": null, 
+            "name": "gainfield"
+        }, 
+        {
+            "info": "Temporal interpolation for each gaintable (=linear)", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "interp"
+        }, 
+        {
+            "info": "Spectral windows combinations to form for gaintables(s)", 
+            "dtype": "list:list", 
+            "default": null, 
+            "name": "spwmap"
+        }, 
+        {
+            "info": "Calibrate data weights per gaintable.", 
+            "dtype": "list:bool", 
+            "default": [
+                true
+            ], 
+            "name": "calwt"
+        }, 
+        {
+            "info": "Apply parallactic angle correction on the fly", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "parang"
+        }, 
+        {
+            "info": "Calibration mode: '' = 'calflag','calflagstrict','trial','flagonly','flagonlystrict', or 'calonly'", 
+            "dtype": "str", 
+            "default": "", 
+            "name": "applymode", 
+            "choices": [
+                "calflag", 
+                "calflagstrict", 
+                "trial", 
+                "flagonly", 
+                "flagonlystrict", 
+                "calonly"
+            ]
+        }, 
+        {
+            "info": "Automatically back up the state of flags before the run?", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "flagbackup"
+        }
+    ]
+}

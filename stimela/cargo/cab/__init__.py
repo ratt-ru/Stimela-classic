@@ -14,13 +14,11 @@ TYPES = {
     "list"  :   list,
    }
 
-
 IODEST = {
     "input"     :   "/input",
     "output"    :   "/home/{}/output".format(USER),
     "msfile"    :   "/home/{}/msdir".format(USER),
 }
-
 
 class Parameter(object):
     def __init__(self, name, dtype, info, 
@@ -36,7 +34,7 @@ class Parameter(object):
         self.io = io
         #self.delimiter = delimiter
         
-        if isinstance(dtype, str):
+        if not hasattr(dtype,'__iter__'):
             dtype = [dtype]
         self.dtype = []
         for item in dtype:
@@ -63,11 +61,8 @@ class Parameter(object):
                     return True
                 if isinstance(value, t):
                     return True
-                elif isinstance(value, list):
-                    if value == []:
-                        return True
-                    elif isinstance(value[0], tuple([t]+[int] if t is float else [t])):
-                        return True
+                elif isinstance(value, list) and isinstance(value[0], tuple([t]+[int] if t is float else [t])):
+                    return True
             elif item is "file":
                 return True
             elif isinstance(value, tuple([item]+[int] if item is float else [item])):
@@ -232,11 +227,11 @@ class CabDefinition(object):
     def update(self, options, saveconf):
         required = filter(lambda a: a.required, self.parameters)
         for param0 in required:
-            if param0.name in options.keys() == False and param0.mapping in options.keys() == False:
+            if not options.has_key(param0.name) and not options.has_key(param0.mapping):
                 raise RuntimeError("Parameter {} is required but has not been specified".format(param0.name))
 
         self.log.info("Validating parameters...       CAB = {0}".format(self.task))
-        for name,value in options.items():
+        for name,value in options.iteritems():
             found = False
             for param in self.parameters:
                 if name in [param.name, param.mapping]:
@@ -246,12 +241,8 @@ class CabDefinition(object):
                             continue
                         param.validate(value)
                         param.value = []
-                        if hasattr(value, "__iter__") and not isinstance(value, str):
-                            print(value)
-#                            pass
-                        else:
+                        if not hasattr(value, "__iter__"):
                             value = [value]
-                            print(value)
                         for _value in value:
                             val = _value.split(":")
                             if len(val)==2:

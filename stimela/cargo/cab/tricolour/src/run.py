@@ -12,6 +12,7 @@ MSDIR = os.environ["MSDIR"]
 cab = utils.readJson(CONFIG)
 args = []
 msname = None
+fields = ""
 for param in cab['parameters']:
     name = param['name']
     value = param['value']

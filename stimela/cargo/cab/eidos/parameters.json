@@ -1,7 +1,7 @@
 {
     "task": "eidos", 
     "base": "stimela/eidos", 
-    "tag": "1.1.1", 
+    "tag": "1.1.4", 
     "description": "Create primary beam model of MeerKAT", 
     "prefix": "--", 
     "binary": "eidos", 

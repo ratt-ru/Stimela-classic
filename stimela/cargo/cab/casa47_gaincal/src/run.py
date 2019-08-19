@@ -1,6 +1,5 @@
 import os
 import sys
-import logging
 import drivecasa
 import logging
 casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600*10)

@@ -1,4 +1,4 @@
-FROM stimela/casa:0.3.2
+FROM stimela/casa:0.3.0
 MAINTAINER <sphemakh@gmail.com>
 #This task needs xvfb to be installed
 # @sphemakh I'm placing the fix in this 
@@ -9,6 +9,6 @@ COPY xvfb.init.d /etc/init.d/xvfb
 RUN chmod 755 /etc/init.d/xvfb
 RUN chmod 777 /var/run
 ENV DISPLAY :99
-ADD src /code
+ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt
-CMD /code/run.sh
+CMD /scratch/code/run.sh

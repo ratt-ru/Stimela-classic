@@ -1,12 +1,11 @@
 {
     "task": "casa_plotants", 
     "base": "stimela/casa", 
-    "tag": "1.0.1", 
+    "tag": "0.3.0", 
     "description": "Plot the antenna distribution in the local reference frame", 
     "prefix": "", 
     "binary": "plotants", 
     "msdir": true, 
-    "use_graphics": true,
     "parameters": [
         {
             "info": "Name of measurement set", 

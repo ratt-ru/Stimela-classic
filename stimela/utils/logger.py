@@ -28,13 +28,12 @@ class StimelaLogger(object):
         if changed:
             self.write()
 
-
         self.jtype = jtype
 
     def _inspect(self, name):
         
         output = subprocess.check_output("{0:s} inspect {1:s}".format(self.jtype, name), shell=True).decode()
-        if self.jtype == "docker":
+        if self.jtype in ["docker", "podman"]:
             output_file = StringIO(output[3:-3])
         else:
             output_file = StringIO(output)
@@ -45,11 +44,11 @@ class StimelaLogger(object):
 
     def log_image(self, name, image_dir, replace=False, cab=False):
         info = self._inspect(name)
-        if self.jtype == "docker":
+        if self.jtype in ["docker", "podman"]:
             if name not in self.info['images'].keys() or replace:
                 self.info['images'][name] = {
                     'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
-                    'ID'        :   info['Id'].split(':')[1],
+                    'ID'        :   info['Id'].split(':')[-1],
                     'CAB'       :   cab,
                     'DIR'       :   image_dir, 
                 }
@@ -70,7 +69,7 @@ class StimelaLogger(object):
     def log_container(self, name):
         info = self._inspect(name)
 
-        if self.jtype == "docker":
+        if self.jtype in ["docker", "podman"]:
             if name not in self.info['containers'].keys():
                 self.info['containers'][name] = {
                     'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),

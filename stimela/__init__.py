@@ -13,7 +13,7 @@ from stimela import utils, cargo
 from stimela.cargo import cab
 from stimela.recipe import Recipe as Pipeline
 from stimela.recipe import Recipe, PipelineException
-from stimela import docker, singularity#, udocker
+from stimela import docker, singularity, udocker, podman
 import pkg_resources
 import warnings
 
@@ -326,6 +326,9 @@ def pull(argv):
     add("-d", "--docker", action="store_true",
             help="Pull base images using docker.")
 
+    add("-p", "--podman", action="store_true",
+            help="Pull base images using podman.")
+
     add("-pf", "--pull-folder", help="Images will be placed in this folder. Else, if the environmnental variable 'SINGULARITY_PULLFOLDER' is set, then images will be placed there. "
                                     "Else, images will be placed in the current directory")
 
@@ -339,7 +342,16 @@ def pull(argv):
         except KeyError:
             pull_folder = "."
 
-    log = logger.StimelaLogger(LOG_FILE, jtype="docker" if args.docker else "udocker")
+    if args.docker:
+        jtype = "docker"
+    elif args.podman:
+        jtype = "podman"
+    elif args.singularity:
+        jtype = "singularity"
+    else:
+        jtype = "udocker"
+        
+    log = logger.StimelaLogger(LOG_FILE, jtype=jtype)
     images = log.read()['images']
 
     if args.image:
@@ -351,6 +363,9 @@ def pull(argv):
                 singularity.pull(image, simage, directory=pull_folder, force=args.force)
             elif args.docker:
                 docker.pull(image)
+                log.log_image(image, 'pulled')
+            elif args.podman:
+                podman.pull(image)
                 log.log_image(image, 'pulled')
             else:
                 udocker.pull(image)
@@ -372,6 +387,9 @@ def pull(argv):
             elif args.docker:
                 docker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
+            elif args.pdman:
+                podman.pull(image)
+                log.log_image(image, 'pulled', force=args.force)
             else:
                 udocker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')

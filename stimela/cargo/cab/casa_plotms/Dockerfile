@@ -1,4 +1,4 @@
-FROM stimela/casa:1.0.1
+FROM stimela/casa:1.2.0
 MAINTAINER <sphemakh@gmail.com>
 COPY xvfb.init.d /etc/init.d/xvfb
 RUN chmod 755 /etc/init.d/xvfb

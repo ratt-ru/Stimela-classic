@@ -1,7 +1,7 @@
 {
     "task": "casa_importfits", 
     "base": "stimela/casa", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "Convert aFITS image to a CASA file", 
     "prefix": " ", 
     "binary": "importfits", 

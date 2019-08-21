@@ -1,4 +1,4 @@
-FROM stimela/rfimasker:1.0.1
+FROM stimela/rfimasker:1.2.0
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

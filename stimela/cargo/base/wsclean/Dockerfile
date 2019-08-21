@@ -1,4 +1,4 @@
-FROM stimela/base:1.0.1
+FROM stimela/base:1.2.0
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \
     wget \

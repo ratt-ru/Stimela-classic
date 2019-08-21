@@ -1,4 +1,4 @@
-FROM stimela/base:1.0.0
+FROM stimela/base:1.2.0
 
 RUN docker-apt-install python \
         qt5-qmake \

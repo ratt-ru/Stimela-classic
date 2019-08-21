@@ -1,7 +1,7 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "cu1.2.3", 
+    "tag": "1.2.0", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--", 
     "binary": "gocubical", 
@@ -76,9 +76,9 @@
         }, 
         {
             "info": "Predict model visibilities from given LSM (using Montblanc).", 
+            "default": null, 
             "check_io": false, 
             "name": "model-list", 
-            "default": null, 
             "dtype": "str"
         }, 
         {
@@ -259,21 +259,20 @@
             "name": "sol-jones"
         }, 
         {
-            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
-            "dtype": "bool",
+            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.", 
+            "dtype": "bool", 
             "name": "sel-diag"
-        },
+        }, 
         {
-            "info": "if true, then data, model and gains are taken to be diagonal. off-diagonal terms in data and model are ignored. this option is then enforced on all jones terms.",
-            "dtype": "bool",
+            "info": "if true, then data, model and gains are taken to be diagonal. off-diagonal terms in data and model are ignored. this option is then enforced on all jones terms.", 
+            "dtype": "bool", 
             "name": "g-diag-only"
-        },
+        }, 
         {
-            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.",
-            "dtype": "bool",
+            "info": "If true, then data, model and gains are taken to be diagonal. Off-diagonal terms in data and model are ignored. This option is then enforced on all Jones terms.", 
+            "dtype": "bool", 
             "name": "dd-diag-only"
-        },
-
+        }, 
         {
             "info": "Solve in single or double precision", 
             "dtype": "str", 
@@ -312,7 +311,10 @@
         }, 
         {
             "info": "Number of iterations per Jones term. If empty, then each Jones\nterm is solved for once, up to convergence, or up to its -max-iter\nsetting.\nOtherwise, set to a list giving the number of iterations per Jones term.\nFor example, given two Jones terms and --sol-num-iter 10,20,10, it will\ndo 10 iterations on the first term, 20 on the second, and 10 again on the\nfirst.", 
-            "dtype": ["int","str"], 
+            "dtype": [
+                "int", 
+                "str"
+            ], 
             "default": null, 
             "name": "sol-term-iters"
         }, 
@@ -385,25 +387,28 @@
             "name": "dist-max-chunks"
         }, 
         {
-            "info": "Number of OMP threads to use. 0: determine automatically.",
-            "name" : "dist-nthread",
-            "dtype": "int"
-        },
+            "info": "Number of OMP threads to use. 0: determine automatically.", 
+            "dtype": "int", 
+            "name": "dist-nthread"
+        }, 
         {
-          "info":"If empty or None, processes will not be pinned to cores. Otherwise, set to the starting core number, or 'N:K' to start with N and step by K",
-            "name": "dist-pin",
-            "dtype" : "int"
-        },
+            "info": "If empty or None, processes will not be pinned to cores. Otherwise, set to the starting core number, or 'N:K' to start with N and step by K", 
+            "dtype": "int", 
+            "name": "dist-pin"
+        }, 
         {
-            "info": "If not 0, pins the I/O & Montblanc process to a separate core, or cores if --montblanc-threads is specified). Ignored if --dist-pin is not set",
-            "name" : "dist-pin-io",
-            "dtype" : "bool"
-        },
+            "info": "If not 0, pins the I/O & Montblanc process to a separate core, or cores if --montblanc-threads is specified). Ignored if --dist-pin is not set", 
+            "dtype": "bool", 
+            "name": "dist-pin-io"
+        }, 
         {
-            "info" : "If set, pins the main process to a separate core. If set to, pins it to the same core as the I/O process, if I/O process is pinned. Ignored if --dist-pin is not set",
-            "name" : "pin-main",
-            "dtype": ["bool", "str"]
-        },
+            "info": "If set, pins the main process to a separate core. If set to, pins it to the same core as the I/O process, if I/O process is pinned. Ignored if --dist-pin is not set", 
+            "dtype": [
+                "bool", 
+                "str"
+            ], 
+            "name": "pin-main"
+        }, 
         {
             "info": "Minimum number of time/freq data-chunks to load into memory\nsimultaneously. This number should be divisible by ncpu-1 for optimal\nperformance.", 
             "dtype": "str", 
@@ -416,6 +421,12 @@
             "default": null, 
             "name": "out-name", 
             "io": "output"
+        }, 
+        {
+            "info": "Allow overwriting of existing output files. If this is set, and the output parset file exists, will raise an exception", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "out-overwrite"
         }, 
         {
             "info": "Operational mode.\n[so] solve only;\n[sc] solve and generate corrected visibilities;\n[sr] solve and generate corrected residuals;\n[ss] solve and generate uncorrected residuals;\n[ac] apply solutions, generate corrected visibilities;\n[ar] apply solutions, generate corrected residuals;\n[as] apply solutions, generate uncorrected residuals;", 
@@ -478,11 +489,11 @@
             "name": "out-plots"
         }, 
         {
-            "info": "Number of processes",
-            "dtype" : "int",
-            "default": 0,
-            "name" : "dist-nworker",
-        },
+            "info": "Number of processes", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "dist-nworker"
+        }, 
         {
             "info": "Log memory usage.", 
             "dtype": "bool", 
@@ -551,13 +562,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["float", "int"], 
+            "dtype": [
+                "float", 
+                "int"
+            ], 
             "default": null, 
             "name": "g-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "g-freq-int"
         }, 
@@ -671,13 +688,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "g1-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "g1-freq-int"
         }, 
@@ -782,7 +805,7 @@
             "dtype": "str", 
             "default": null, 
             "name": "g1-prop-flags"
-        },
+        }, 
         {
             "info": "Determines whether this term is direction dependent. --model-ddes must", 
             "dtype": "bool", 
@@ -791,13 +814,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "g2-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "g2-freq-int"
         }, 
@@ -911,13 +940,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int",  "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "g3-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "g3-freq-int"
         }, 
@@ -1031,13 +1066,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b-freq-int"
         }, 
@@ -1151,13 +1192,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b1-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b1-freq-int"
         }, 
@@ -1271,13 +1318,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b2-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b2-freq-int"
         }, 
@@ -1391,13 +1444,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b3-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "b3-freq-int"
         }, 
@@ -1511,13 +1570,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd-freq-int"
         }, 
@@ -1622,13 +1687,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd1-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd1-freq-int"
         }, 
@@ -1733,13 +1804,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd2-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd2-freq-int"
         }, 
@@ -1844,13 +1921,19 @@
         }, 
         {
             "info": "Time solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd3-time-int"
         }, 
         {
             "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
-            "dtype": ["int", "float"],
+            "dtype": [
+                "int", 
+                "float"
+            ], 
             "default": null, 
             "name": "dd3-freq-int"
         }, 

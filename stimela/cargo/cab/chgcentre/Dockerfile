@@ -1,4 +1,4 @@
-FROM stimela/chgcentre:1.0.1
+FROM stimela/chgcentre:1.2.0
 MAINTAINER <sphemakh@gmial.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

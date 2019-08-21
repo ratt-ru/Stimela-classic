@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 import Crasa.Crasa as crasa
-import pyfits
+import astropy.io.fits as pyfits
 
 sys.path.append("/scratch/stimela")
 import utils

@@ -32,5 +32,5 @@ RUN cd wsclean-2.7/build && \
     cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \
     make -j 10 && \
     make install
-RUN pip install pyfits
+RUN pip install astropy
 RUN ulimit -p 9000

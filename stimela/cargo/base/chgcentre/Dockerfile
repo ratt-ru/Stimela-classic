@@ -25,7 +25,7 @@ RUN docker-apt-install cmake \
     casacore-dev \
     curl
 ENV CHGCENTRE_NAME chgcentre-1.6
-ENV CHGCENTRE_URL https://liquidtelecom.dl.sourceforge.net/project/wsclean/chgcentre-1.6/chgcentre-1.6.tar.bz2
+ENV CHGCENTRE_URL https://ayera.dl.sourceforge.net/project/wsclean/${CHGCENTRE_NAME}/${CHGCENTRE_NAME}.tar.bz2
 RUN curl -o ${CHGCENTRE_NAME}.tar.bz2 ${CHGCENTRE_URL}
 RUN mkdir /builds && tar xjf ${CHGCENTRE_NAME}.tar.bz2 -C /builds
 RUN mkdir /builds/chgcentre/build

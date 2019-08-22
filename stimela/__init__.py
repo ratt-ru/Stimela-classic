@@ -102,6 +102,8 @@ def build(argv):
     args = parser.parse_args(argv)
     log = logger.StimelaLogger('{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label), jtype="docker")
 
+    no_cache = ["--no-cache"] if args.no_cache else []
+
     if args.base:
         # Build base and meqtrees images first
         BASE.remove("base")
@@ -112,7 +114,7 @@ def build(argv):
             dockerfile = "{:s}/{:s}".format(cargo.BASE_PATH, image)
             image = "stimela/{0}:{1}".format(image, __version__)
             docker.build(image,
-                         dockerfile)
+                         dockerfile, args=no_cache)
 
         log.log_image(image, dockerfile, replace=True)
         log.write()
@@ -126,7 +128,6 @@ def build(argv):
                   "USER {0:s}".format(USER),
                   ]
 
-    no_cache = ["--no-cache"] if args.no_cache else []
 
 
     if args.cab:

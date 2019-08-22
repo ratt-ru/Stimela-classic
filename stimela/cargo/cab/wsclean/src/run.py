@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-import pyfits
+import astropy.io.fits as pyfits
 
 sys.path.append('/scratch/stimela')
 import utils

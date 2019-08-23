@@ -1,17 +1,17 @@
 FROM stimela/base:1.2.0
-
 RUN docker-apt-install python \
         qt5-qmake \
         qt5-default \
         gfortran \
-        libgfortran3 
-
-RUN pip install numpy \
-        scipy \
-        matplotlib \
-        astropy \
+        libgfortran3 \
+        gcc \
+        zlib1g \
+        zlib1g-dev
+RUN pip install -U numpy>=1.8 \
+        scipy>=0.7 \
+        matplotlib>=1.1 \
+        astropy>=0.2.5 \
         astro-tigger-lsm
-
 RUN git clone https://github.com/SoFiA-Admin/SoFiA.git /sofia
 RUN cd /sofia && git fetch && git fetch --tags
 RUN cd /sofia && git checkout v1.3.0

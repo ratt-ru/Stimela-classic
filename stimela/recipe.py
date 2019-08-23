@@ -219,7 +219,6 @@ class StimelaJob(object):
         
         cont = podman.Container(image, name, 
                     logger=self.log, time_out=self.time_out)
-        cont.COMMAND = "/bin/sh -c /scratch/code/run.sh"
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -243,6 +242,9 @@ class StimelaJob(object):
         cont.add_volume(cont.parameter_file_name, '/scratch/configfile', perm='ro', noverify=True)
         cont.add_volume("{0:s}/cargo/cab/{1:s}/src/".format( 
                 self.recipe.stimela_path, _cab.task), "/scratch/code", "ro")
+        cont.add_volume("{0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path), 
+                        "/scratch/code/podman_run", perm="ro")
+        cont.COMMAND = "/bin/sh -c /scratch/code/docker_run"
 
         cont.add_environ('CONFIG', '/scratch/configfile'.format(name))
 
@@ -477,8 +479,9 @@ class StimelaJob(object):
         cab.IODEST = CONT_IO["udocker"]
       
         cont = udocker.Container(image, name, 
-                    logger=self.log, time_out=self.time_out, 
-                    COMMAND="/bin/sh -c /scratch/code/run.sh")
+                    logger=self.log, time_out=self.time_out)
+
+        cont.COMMAND = "/bin/sh -c {0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -631,6 +634,8 @@ class StimelaJob(object):
                 config[op] = arg
         cont.config = config
 
+        cont.add_volume("{0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path), "/scratch/code/docker_run", perm="ro")
+        cont.COMMAND = "/bin/sh -c /scratch/code/docker_run"
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container

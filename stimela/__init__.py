@@ -109,8 +109,9 @@ def build(argv):
         BASE.remove("base")
         BASE.remove("meqtrees")
         BASE.remove("casa")
+        BASE.remove("astropy")
         
-        for image in ["base", "meqtrees", "casa"] + BASE:
+        for image in ["base", "meqtrees", "casa", "astropy"] + BASE:
             dockerfile = "{:s}/{:s}".format(cargo.BASE_PATH, image)
             image = "stimela/{0}:{1}".format(image, __version__)
             docker.build(image,
@@ -186,7 +187,8 @@ def get_cabs(logfile):
     cabs_ = log.read()['images']
     
     # Remove images that are not cabs
-    for key in cabs_.keys():
+    keys = list(cabs_.keys())
+    for key in keys:
         if not cabs_[key]['CAB']:
             del cabs_[key]
 

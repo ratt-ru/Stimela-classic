@@ -27,14 +27,12 @@ class Parameter(object):
         choices=None, 
         io=None,
         mapping=None,
-        #delimiter=None, 
         check_io=True):
 
         self.name = name
         self.io = io
-        #self.delimiter = delimiter
         
-        if not hasattr(dtype,'__iter__'):
+        if not isinstance(dtype, (list, tuple)):
             dtype = [dtype]
         self.dtype = []
         for item in dtype:
@@ -201,7 +199,7 @@ class CabDefinition(object):
         for param in self.parameters:
         
             if isinstance(param.dtype[0], tuple):
-                if not hasattr(param.value, '__iter__') and param.value is not None:
+                if not isinstance(param.value, (list,tuple)) and param.value is not None:
                     param.value = [param.value]
 
             _types = ""
@@ -227,11 +225,11 @@ class CabDefinition(object):
     def update(self, options, saveconf):
         required = filter(lambda a: a.required, self.parameters)
         for param0 in required:
-            if not options.has_key(param0.name) and not options.has_key(param0.mapping):
+            if not options.get(param0.name, False) and not options.get(param0.mapping, False):
                 raise RuntimeError("Parameter {} is required but has not been specified".format(param0.name))
 
         self.log.info("Validating parameters...       CAB = {0}".format(self.task))
-        for name,value in options.iteritems():
+        for name,value in options.items():
             found = False
             for param in self.parameters:
                 if name in [param.name, param.mapping]:
@@ -241,7 +239,7 @@ class CabDefinition(object):
                             continue
                         param.validate(value)
                         param.value = []
-                        if not hasattr(value, "__iter__"):
+                        if not isinstance(value, (list,tuple)):
                             value = [value]
                         for _value in value:
                             val = _value.split(":")

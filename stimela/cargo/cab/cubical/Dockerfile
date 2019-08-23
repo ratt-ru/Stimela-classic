@@ -1,4 +1,4 @@
-FROM stimela/cubical:cu1.4.0
+FROM stimela/cubical:1.2.0
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

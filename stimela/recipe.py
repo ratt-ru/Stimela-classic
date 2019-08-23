@@ -481,7 +481,8 @@ class StimelaJob(object):
         cont = udocker.Container(image, name, 
                     logger=self.log, time_out=self.time_out)
 
-        cont.COMMAND = "/bin/sh -c {0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path)
+        cont.add_volume("{0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path), "/scratch/code/udocker_run")
+        cont.COMMAND = "/bin/sh -c {0:s}/cargo/cab/udocker_run".format(self.recipe.stimela_path)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab

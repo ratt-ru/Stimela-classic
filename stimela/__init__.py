@@ -390,7 +390,7 @@ def pull(argv):
             elif args.docker:
                 docker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
-            elif args.pdman:
+            elif args.podman:
                 podman.pull(image)
                 log.log_image(image, 'pulled', force=args.force)
             else:

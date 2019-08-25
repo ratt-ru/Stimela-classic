@@ -391,8 +391,8 @@ def pull(argv):
                 docker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
             elif args.podman:
-                podman.pull(image)
-                log.log_image(image, 'pulled', force=args.force)
+                podman.pull(image, force=args.force)
+                log.log_image(image, 'pulled')
             else:
                 udocker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')

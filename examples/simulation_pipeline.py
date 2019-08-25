@@ -92,7 +92,7 @@ for i, robust in enumerate(briggs_robust):
                  "imager_example_robust_{:d}".format(i), 
                  {
                     "msname"            :   MS,
-                    "weight"            :   "briggs {:d}".format(i),
+                    "weight"            :   "briggs {:d}".format(robust),
                     "prefix"            :   "{:s}_robust-{:d}".format(PREFIX, robust),
                     "npix"              :   2048,                   # Image size in pixels
                     "cellsize"          :   2,                      # Size of each square pixel
@@ -116,4 +116,3 @@ pipeline.add("cab/casa_rmtables", "delete_ms", {
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added
 pipeline.run()
-

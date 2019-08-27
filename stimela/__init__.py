@@ -313,11 +313,8 @@ def pull(argv):
 
     add = parser.add_argument
 
-    add("-im", "--image", action="append", metavar="IMAGE[:TAG]",
+    add("-im", "--image", nargs="+", metavar="IMAGE[:TAG]",
             help="Pull base image along with its tag (or version). Can be called multiple times")
-
-    add("-t", "--tag",
-            help="Tag")
 
     add("-f", "--force", action="store_true",
             help="force pull if image already exists")
@@ -332,7 +329,11 @@ def pull(argv):
     add("-p", "--podman", action="store_true",
             help="Pull base images using podman.")
 
-    add("-pf", "--pull-folder", help="Images will be placed in this folder. Else, if the environmnental variable 'SINGULARITY_PULLFOLDER' is set, then images will be placed there. "
+    add("-cb", "--cab-base", nargs="+",
+            help="Pull base image for specified cab")
+
+    add("-pf", "--pull-folder", 
+            help="Images will be placed in this folder. Else, if the environmnental variable 'SINGULARITY_PULLFOLDER' is set, then images will be placed there. "
                                     "Else, images will be placed in the current directory")
 
     args = parser.parse_args(argv)
@@ -357,9 +358,16 @@ def pull(argv):
     log = logger.StimelaLogger(LOG_FILE, jtype=jtype)
     images = log.read()['images']
 
+    images_ = []
+    for cab in args.cab_base:
+        if cab in CAB:
+            filename = "/".join([cargo.CAB_PATH, cab, "parameters.json"])
+            param = utils.readJson(filename)
+            images_.append( ":".join([param["base"], param["tag"]]))
+
+    args.image = images_ or args.image
     if args.image:
         for image in args.image:
-
             simage = image.replace("/", "_")
             simage = simage.replace(":", "_") + ".img"
             if args.singularity:

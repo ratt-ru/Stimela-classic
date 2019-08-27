@@ -42,7 +42,7 @@ class Container(object):
         """
     
         self.image = image
-        self.name = hashlib.md5(name).hexdigest()[:3]
+        self.name = hashlib.md5(name.encode('utf-8')).hexdigest()[:3]
         self.volumes = volumes or []
         self.logger = logger
         self.status = None

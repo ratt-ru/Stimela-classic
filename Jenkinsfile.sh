@@ -8,12 +8,12 @@ mkdir $TEST_OUTPUT_DIR
 #Custom home for this run's temporary stuff
 HOME=$WORKSPACE_ROOT
 export HOME
-SINGULARITY_STORAGE=${WORKSPACE}/../../../.singularity
+SINGULARITY_STORAGE="${WORKSPACE}/../../../.singularity"
 ln -s $WORKSPACE/../../../.udocker ${WORKSPACE_ROOT}/.udocker
 ln -s ${SINGULARITY_STORAGE} ${WORKSPACE_ROOT}/.singularity
 
 # setup podman image storage. Using .singularity volume
-POD_STORAGE=${WORKSPACE_ROOT}/.local/share/containers/storage
+POD_STORAGE="${WORKSPACE_ROOT}/.local/share/containers/storage"
 mkdir -p ${POD_STORAGE} ${SINGULARITY_STORAGE}/podman
 ln -s ${SINGULARITY_STORAGE}/podman ${POD_STORAGE}
 

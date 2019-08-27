@@ -39,7 +39,7 @@ export SINGULARITY_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
 mkdir $SINGULARITY_PULLFOLDER
 stimela pull -s -cb simms
 stimela pull -cb tricolour
-stimela pull -p -cb casa_listobs
+#stimela pull -p -cb casa_listobs
 # fresh build
 stimela build -nc
 

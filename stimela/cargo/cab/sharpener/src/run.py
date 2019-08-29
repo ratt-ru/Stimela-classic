@@ -1,10 +1,10 @@
+import utils
 import os
 import sys
 import yaml
 import sharpener
 
 sys.path.append('/scratch/stimela')
-import utils
 
 
 CONFIG = os.environ["CONFIG"]
@@ -37,7 +37,6 @@ for param in cab['parameters']:
     if name in ['catalog_file']:
         list_doc['source_catalog'][name] = value.split('/')[-1]
         continue
-         
 
     for key, val in list_doc.items():
         if type(val) == dict:

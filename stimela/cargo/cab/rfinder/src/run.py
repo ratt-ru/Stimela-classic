@@ -1,10 +1,10 @@
+import utils
 import os
 import sys
 import yaml
 import rfinder
 
 sys.path.append('/scratch/stimela')
-import utils
 
 
 CONFIG = os.environ["CONFIG"]

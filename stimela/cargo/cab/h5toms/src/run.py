@@ -1,8 +1,8 @@
+import utils
 import os
 import sys
 
 sys.path.append("/scratch/stimela")
-import utils
 
 
 CONFIG = os.environ["CONFIG"]
@@ -26,4 +26,4 @@ for param in cab['parameters']:
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-utils.xrun("h5toms.py", args+files )
+utils.xrun("h5toms.py", args+files)

@@ -10,4 +10,3 @@ CAB_PATH = "{:s}/cab".format(ekhaya)
 
 # Path to config templates
 CONFIG_TEMPLATES = "{:s}/configs".format(ekhaya)
-

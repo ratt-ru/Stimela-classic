@@ -1,9 +1,9 @@
+import utils
 import inner_taper as taper
 import os
 import sys
 
 sys.path.append("/scratch/stimela")
-import utils
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -33,11 +33,10 @@ for param in cab['parameters']:
         msname = value
     elif name == 'save-figure':
         savefig = value
-        
+
 
 if reset:
     taper.reset(msname)
     sys.exit(0)
 
 taper.taper(msname, res=res, freq=freq, savefig=savefig)
-

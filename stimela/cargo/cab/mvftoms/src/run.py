@@ -1,8 +1,8 @@
+import utils
 import os
 import sys
 
 sys.path.append("/scratch/stimela")
-import utils
 
 
 CONFIG = os.environ["CONFIG"]
@@ -33,7 +33,7 @@ for param in cab['parameters']:
         ms = value
     elif name == "credentials_dir" and value:
         os.system("cp -rf {0:s} {1:s}/.aws".format(value, HOME))
-        continue 
+        continue
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
@@ -41,4 +41,4 @@ for param in cab['parameters']:
 if overwrite:
     os.system("rm -fr {0:s}".format(ms))
 
-utils.xrun(cab["binary"], args+files )
+utils.xrun(cab["binary"], args+files)

@@ -1,10 +1,10 @@
+import utils
 import os
 import sys
 import logging
 import Crasa.Crasa as crasa
 
 sys.path.append("/scratch/stimela")
-import utils
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -35,7 +35,7 @@ for param in cab['parameters']:
         immath_args[im_name] = im_value
 
     if name in ['mode', 'inpimage', 'inpmask', 'output', 'overwrite']:
-    	makemask_args[name] = value
+        makemask_args[name] = value
 
 if 'expr' in immath_args:
     task = crasa.CasaTask("immath", **immath_args)

@@ -1,3 +1,4 @@
+from multiprocessing import Process, Manager, Lock
 import subprocess
 import signal
 import os
@@ -19,12 +20,15 @@ import hashlib
 #from os import O_NONBLOCK, read
 
 DEBUG = False
-INTERRUPT_TIME = 1.0 # seconds -- do not want to constantly interrupt the child process
-class StimelaCabRuntimeError(RuntimeError): pass
+INTERRUPT_TIME = 1.0  # seconds -- do not want to constantly interrupt the child process
 
-from multiprocessing import Process, Manager, Lock
+
+class StimelaCabRuntimeError(RuntimeError):
+    pass
+
 
 CPUS = 1
+
 
 def _logger(level=0, logfile=None):
 
@@ -55,44 +59,49 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
 
         Example: _run("ls", ["-lrt", "../"])
     """
-    
-    cmd = " ".join([command] + list(map(str, options)) )
+
+    cmd = " ".join([command] + list(map(str, options)))
 
     def _print_info(msg):
-        if msg is None: return
+        if msg is None:
+            return
         if log:
             log.info(msg)
         else:
             print(msg)
 
     def _print_warn(msg):
-        if msg is None: return
+        if msg is None:
+            return
         if log:
             log.warn(msg)
         else:
             print(msg)
-    
+
     _print_info(u"Running: {0:s}".format(cmd))
 
     sys.stdout.flush()
     starttime = time.time()
     process = p = None
     try:
-        foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(hashlib.md5(cmd.encode('utf-8')).hexdigest(), starttime))
+        foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(
+            hashlib.md5(cmd.encode('utf-8')).hexdigest(), starttime))
         with open(foutname, "w+") as fout:
             p = process = subprocess.Popen(cmd,
-                                            stderr=fout,
-                                            stdout=fout,
-                                            shell=True)
+                                           stderr=fout,
+                                           stdout=fout,
+                                           shell=True)
             kill_callback = kill_callback or p.kill
 
             def clock_killer(p):
                 while process.poll() is None and (timeout >= 0):
                     currenttime = time.time()
                     if (currenttime - starttime < timeout):
-                        DEBUG and _print_warn(u"Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(currenttime - starttime, timeout))
+                        DEBUG and _print_warn(u"Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(
+                            currenttime - starttime, timeout))
                     else:
-                        _print_warn(u"Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
+                        _print_warn(
+                            u"Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
                         kill_callback()
                     time.sleep(INTERRUPT_TIME)
 
@@ -100,15 +109,20 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
 
             while (process.poll() is None):
                 currenttime = time.time()
-                DEBUG and _print_info(u"God mode on: has been running for {0:f}".format(currenttime - starttime))
-                time.sleep(INTERRUPT_TIME) # this is probably not ideal as it interrupts the process every few seconds, 
-                #check whether there is an alternative with a callback
-            assert hasattr(process, "returncode"), "No returncode after termination!"
+                DEBUG and _print_info(
+                    u"God mode on: has been running for {0:f}".format(currenttime - starttime))
+                # this is probably not ideal as it interrupts the process every few seconds,
+                time.sleep(INTERRUPT_TIME)
+                # check whether there is an alternative with a callback
+            assert hasattr(
+                process, "returncode"), "No returncode after termination!"
         with open(foutname, "r") as fout:
             _print_info(fout.read())
     finally:
         if (process is not None) and process.returncode:
-            raise StimelaCabRuntimeError('%s: returns errr code %d' % (command, process.returncode))
+            raise StimelaCabRuntimeError(
+                '%s: returns errr code %d' % (command, process.returncode))
+
 
 def readJson(conf):
     with open(conf) as _std:
@@ -129,11 +143,11 @@ def get_Dockerfile_base_image(image):
         dockerfile = "{:s}/Dockerfile".format(image)
 
     with open(dockerfile, "r") as std:
-        _from = "" 
+        _from = ""
         for line in std.readlines():
             if line.startswith("FROM"):
                 _from = line
-        
+
     return _from
 
 
@@ -151,8 +165,10 @@ def change_Dockerfile_base_image(path, _from, label, destdir="."):
             if line.startswith("FROM"):
                 lines.remove(line)
 
-    temp_dir = tempfile.mkdtemp(prefix="tmp-stimela-{:s}-".format(label), dir=destdir)
-    xrun("cp", ["-r", "{:s}/Dockerfile {:s}/src".format(dirname, dirname), temp_dir])
+    temp_dir = tempfile.mkdtemp(
+        prefix="tmp-stimela-{:s}-".format(label), dir=destdir)
+    xrun(
+        "cp", ["-r", "{:s}/Dockerfile {:s}/src".format(dirname, dirname), temp_dir])
 
     dockerfile = "{:s}/Dockerfile".format(temp_dir)
 
@@ -166,7 +182,7 @@ def change_Dockerfile_base_image(path, _from, label, destdir="."):
 
 
 def get_base_images(logfile, index=1):
-    
+
     with open(logfile) as std:
         string = std.read()
 
@@ -177,15 +193,15 @@ def get_base_images(logfile, index=1):
     images = []
 
     for line in log.split("\n"):
-        if line.find("<=BASE_IMAGE=>")>0:
+        if line.find("<=BASE_IMAGE=>") > 0:
             tmp = line.split("<=BASE_IMAGE=>")[-1]
             image, base = tmp.split("=")
             images.append((image.strip(), base))
-    
+
     return images
 
 
-def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
+def icasa(taskname, mult=None, clearstart=False, loadthese=[], **kw0):
     """ 
       runs a CASA task given a list of options.
       A given task can be run multiple times with a different options, 
@@ -205,14 +221,15 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
         loadthese.append("os")
 
     if loadthese:
-        exclude = filter(lambda line: line.startswith("import") or line.startswith("from"), loadthese)
+        exclude = filter(lambda line: line.startswith("import")
+                         or line.startswith("from"), loadthese)
         for line in loadthese:
             if line not in exclude:
-                line = "import %s"%line
-            _load += "%s\n"%line
+                line = "import %s" % line
+            _load += "%s\n" % line
 
     if mult:
-        if isinstance(mult,(tuple,list)):
+        if isinstance(mult, (tuple, list)):
             for opts in mult:
                 opts.update(kw0)
         else:
@@ -224,10 +241,10 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
     run_cmd = """ """
     for kw in mult:
         task_cmds = []
-        for key,val in kw.items():
-            if isinstance(val,(str, unicode)):
-                 val = '"%s"'%val
-            task_cmds .append('%s=%s'%(key,val))
+        for key, val in kw.items():
+            if isinstance(val, (str, unicode)):
+                val = '"%s"' % val
+            task_cmds .append('%s=%s' % (key, val))
 
         task_cmds = ", ".join(task_cmds)
         run_cmd += """ 
@@ -235,21 +252,21 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
 os.chdir('%s')
 %s
 %s(%s)
-"""%(_load, cdir,"clearstart()" if clearstart else "", taskname, task_cmds)
+""" % (_load, cdir, "clearstart()" if clearstart else "", taskname, task_cmds)
 
     tf = tempfile.NamedTemporaryFile(suffix='.py')
     tf.write(run_cmd)
     tf.flush()
     t0 = time.time()
-    # all logging information will be in the pyxis log files 
+    # all logging information will be in the pyxis log files
     print("Running {}".format(run_cmd))
     xrun("cd", [td, "&& casa --nologger --log2term --nologfile -c", tf.name])
 
-    # log taskname.last 
-    task_last = '%s.last'%taskname
+    # log taskname.last
+    task_last = '%s.last' % taskname
     if os.path.exists(task_last):
-        with open(task_last,'r') as last:
-            print('%s.last is: \n %s'%(taskname, last.read()))
+        with open(task_last, 'r') as last:
+            print('%s.last is: \n %s' % (taskname, last.read()))
 
     # remove temp directory. This also gets rid of the casa log files; so long suckers!
     xrun("rm", ["-fr ", td, task_last])
@@ -258,7 +275,7 @@ os.chdir('%s')
 
 def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False):
     """ Stack a list of fits files along a given axiis.
-       
+
        fitslist: list of fits file to combine
        outname: output file name
        axis: axis along which to combine the files
@@ -270,7 +287,8 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
     try:
         import pyfits
     except ImportError:
-        warnings.warn("Could not find pyfits on this system. FITS files will not be stacked")
+        warnings.warn(
+            "Could not find pyfits on this system. FITS files will not be stacked")
         sys.exit(0)
 
     hdu = pyfits.open(fitslist[0])[0]
@@ -279,44 +297,44 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
 
     # find axis via CTYPE key
     if ctype is not None:
-        for i in range(1,naxis+1):
-            if hdr['CTYPE%d'%i].lower().startswith(ctype.lower()):
-                axis = naxis - i # fits to numpy convention
+        for i in range(1, naxis+1):
+            if hdr['CTYPE%d' % i].lower().startswith(ctype.lower()):
+                axis = naxis - i  # fits to numpy convention
     elif fits:
-      axis = naxis - axis
+        axis = naxis - axis
 
     fits_ind = abs(axis-naxis)
-    crval = hdr['CRVAL%d'%fits_ind]
+    crval = hdr['CRVAL%d' % fits_ind]
 
     imslice = [slice(None)]*naxis
     _sorted = sorted([pyfits.open(fits) for fits in fitslist],
-                    key=lambda a: a[0].header['CRVAL%d'%(naxis-axis)])
+                     key=lambda a: a[0].header['CRVAL%d' % (naxis-axis)])
 
     # define structure of new FITS file
-    nn = [ hd[0].header['NAXIS%d'%(naxis-axis)] for hd in _sorted]
+    nn = [hd[0].header['NAXIS%d' % (naxis-axis)] for hd in _sorted]
     shape = list(hdu.data.shape)
     shape[axis] = sum(nn)
-    data = numpy.zeros(shape,dtype=float)
+    data = numpy.zeros(shape, dtype=float)
 
     for i, hdu0 in enumerate(_sorted):
         h = hdu0[0].header
         d = hdu0[0].data
-        imslice[axis] = range(sum(nn[:i]),sum(nn[:i+1]) )
-        data[imslice] = d 
-        if crval > h['CRVAL%d'%fits_ind]:
-            crval =  h['CRVAL%d'%fits_ind]
+        imslice[axis] = range(sum(nn[:i]), sum(nn[:i+1]))
+        data[imslice] = d
+        if crval > h['CRVAL%d' % fits_ind]:
+            crval = h['CRVAL%d' % fits_ind]
 
     # update header
-    hdr['CRVAL%d'%fits_ind] = crval
-    hdr['CRPIX%d'%fits_ind] = 1 
+    hdr['CRVAL%d' % fits_ind] = crval
+    hdr['CRPIX%d' % fits_ind] = 1
 
     pyfits.writeto(outname, data, hdr, clobber=True)
-    print("Successfully stacked images. Output image is %s"%outname)
+    print("Successfully stacked images. Output image is %s" % outname)
 
     # remove old files
     if not keep_old:
         for fits in fitslist:
-            os.system('rm -f %s'%fits)
+            os.system('rm -f %s' % fits)
 
 
 def substitute_globals(string, globs=None):
@@ -324,7 +342,7 @@ def substitute_globals(string, globs=None):
     globs = globs or inspect.currentframe().f_back.f_globals
     if sub:
         for item in map(str, sub):
-            string = string.replace("${%s}"%item, globs[item])
+            string = string.replace("${%s}" % item, globs[item])
         return string
     else:
         return False
@@ -333,7 +351,7 @@ def substitute_globals(string, globs=None):
 def get_imslice(ndim):
     imslice = []
     for i in xrange(ndim):
-        if i<ndim-2:
+        if i < ndim-2:
             imslice.append(0)
         else:
             imslice.append(slice(None))
@@ -353,33 +371,36 @@ def addcol(msname, colname=None, shape=None,
     """
     import numpy
     import pyrap.tables
-    tab = pyrap.tables.table(msname,readonly=False)
+    tab = pyrap.tables.table(msname, readonly=False)
 
-    try: 
+    try:
         tab.getcol(colname)
         print('Column already exists')
 
     except RuntimeError:
-        print('Attempting to add %s column to %s'%(colname,msname))
+        print('Attempting to add %s column to %s' % (colname, msname))
 
         from pyrap.tables import maketabdesc
         valuetype = valuetype or 'complex'
 
-        if shape is None: 
+        if shape is None:
             dshape = list(tab.getcol('DATA').shape)
             shape = dshape[1:]
 
-        if data_desc_type=='array':
+        if data_desc_type == 'array':
             from pyrap.tables import makearrcoldesc
-            coldmi = tab.getdminfo('DATA') # God forbid this (or the TIME) column doesn't exist
+            # God forbid this (or the TIME) column doesn't exist
+            coldmi = tab.getdminfo('DATA')
             coldmi['NAME'] = colname.lower()
-            tab.addcols(maketabdesc(makearrcoldesc(colname,init_with,shape=shape,valuetype=valuetype)),coldmi)
+            tab.addcols(maketabdesc(makearrcoldesc(
+                colname, init_with, shape=shape, valuetype=valuetype)), coldmi)
 
-        elif data_desc_type=='scalar':
+        elif data_desc_type == 'scalar':
             from pyrap.tables import makescacoldesc
             coldmi = tab.getdminfo('TIME')
             coldmi['NAME'] = colname.lower()
-            tab.addcols(maketabdesc(makescacoldesc(colname,init_with,valuetype=valuetype)),coldmi)
+            tab.addcols(maketabdesc(makescacoldesc(
+                colname, init_with, valuetype=valuetype)), coldmi)
 
         print('Column added successfuly.')
 
@@ -387,10 +408,11 @@ def addcol(msname, colname=None, shape=None,
             nrows = dshape[0]
 
             rowchunk = nrows//10 if nrows > 1000 else nrows
-            for row0 in range(0,nrows,rowchunk):
-                nr = min(rowchunk,nrows-row0)
+            for row0 in range(0, nrows, rowchunk):
+                nr = min(rowchunk, nrows-row0)
                 dshape[0] = nr
-                tab.putcol(colname,numpy.ones(dshape,dtype=valuetype)*init_with,row0,nr)
+                tab.putcol(colname, numpy.ones(
+                    dshape, dtype=valuetype)*init_with, row0, nr)
 
     tab.close()
 
@@ -411,7 +433,6 @@ def sumcols(msname, col1=None, col2=None, outcol=None, cols=None, suntract=False
             data = tab.getcol(col1) - tab.getcol(col2)
         else:
             data = tab.getcol(col1) + tab.getcol(col2)
-
 
     rowchunk = nrows//10 if nrows > 1000 else nrows
     for row0 in range(0, nrows, rowchunk):
@@ -440,7 +461,7 @@ def copycol(msname, fromcol, tocol):
 
 def cab_dict_update(dictionary, key=None, value=None, options=None):
     if options is None:
-        options = {key:value}
+        options = {key: value}
     for key, value in options.items():
         dictionary[key] = dictionary.pop(key, None) or value
     return dictionary
@@ -463,8 +484,10 @@ def compute_vis_noise(msname, sefd, spw_id=0):
     tab.close()
     spwtab.close()
 
-    print(">>> %s freq %.2f MHz (lambda=%.2fm), bandwidth %.2g kHz, %.2fs integrations, %.2fh synthesis"%(msname, freq0*1e-6, wavelength, bw*1e-3, dt, dtf/3600))
+    print(">>> %s freq %.2f MHz (lambda=%.2fm), bandwidth %.2g kHz, %.2fs integrations, %.2fh synthesis" % (
+        msname, freq0*1e-6, wavelength, bw*1e-3, dt, dtf/3600))
     noise = sefd/math.sqrt(abs(2*bw*dt))
-    print(">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy"%(sefd, noise*1000))
+    print(">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy" %
+          (sefd, noise*1000))
 
-    return noise 
+    return noise

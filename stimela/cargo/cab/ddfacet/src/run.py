@@ -1,10 +1,10 @@
+import utils
 import sys
 import os
 import json
 import astropy.io.fits as pyfits
 
 sys.path.append("/scratch/stimela")
-import utils
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -45,14 +45,17 @@ for item1 in args:
         noise_hdu.close()
         for item2 in args:
             if 'Noise-Sigma' in item2:
-                noise_sigma = item2.split('{0}Noise-Sigma '.format(cab['prefix']))[-1]
-                args.remove('{0}Noise-Sigma {1}'.format(cab['prefix'], noise_sigma))
+                noise_sigma = item2.split(
+                    '{0}Noise-Sigma '.format(cab['prefix']))[-1]
+                args.remove(
+                    '{0}Noise-Sigma {1}'.format(cab['prefix'], noise_sigma))
                 removed = True
                 threshold = float(noise_sigma)*noise_std
                 for item3 in args:
                     if '{0}Deconv-FluxThreshold'.format(cab['prefix']) in item3:
                         args.remove(item3)
-                args.append('{0}Deconv-FluxThreshold {1}'.format(cab['prefix'], threshold))
+                args.append(
+                    '{0}Deconv-FluxThreshold {1}'.format(cab['prefix'], threshold))
 if not removed:
     args.remove('{0}Noise-Sigma 3.0'.format(cab['prefix']))
 

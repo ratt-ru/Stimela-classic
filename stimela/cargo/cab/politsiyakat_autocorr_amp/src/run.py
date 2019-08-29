@@ -1,9 +1,9 @@
+import utils
 import sys
 import os
 import json
 
 sys.path.append("/scratch/stimela")
-import utils
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]

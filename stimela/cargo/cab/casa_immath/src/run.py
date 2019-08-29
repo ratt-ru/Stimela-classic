@@ -1,10 +1,10 @@
+import utils
 import os
 import sys
 import logging
 import Crasa.Crasa as crasa
 
 sys.path.append("/scratch/stimela")
-import utils
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -17,8 +17,10 @@ unstack_params = ['unstack', 'nchans', 'keep_casa_images', 'port2fits']
 unstack_args = {}
 immath_args = {}
 
+
 def rm_fr(item):
     os.system('rm -fr {}'.format(item))
+
 
 for param in cab['parameters']:
     name = param['name']
@@ -40,20 +42,22 @@ if not unstack:
 else:
     images = immath_args['imagename']
     for image in images:
-       for i in range(unstack_args['nchans']):
-           ext = image.split('.')[-1]
-           chan_num = str(i)
-           outfile = '{:s}-{:s}.{:s}'.format(immath_args['outfile'], chan_num, ext) 
-           run_immath_args = immath_args.copy()
-           run_immath_args['imagename'] = image
-           run_immath_args['outfile'] = outfile
-           run_immath_args['chans'] = chan_num
-           task = crasa.CasaTask(cab["binary"], **run_immath_args) 
-           task.run()
-           if unstack_args['port2fits']:
-               print('Converting CASA images to FITS images')
-               fits = outfile + '.fits'
-               task = crasa.CasaTask("exportfits", **dict(imagename=outfile, fitsimage=fits, overwrite=True))
-               task.run()
-               if not unstack_args['keep_casa_images']:
-                   rm_fr(outfile)
+        for i in range(unstack_args['nchans']):
+            ext = image.split('.')[-1]
+            chan_num = str(i)
+            outfile = '{:s}-{:s}.{:s}'.format(
+                immath_args['outfile'], chan_num, ext)
+            run_immath_args = immath_args.copy()
+            run_immath_args['imagename'] = image
+            run_immath_args['outfile'] = outfile
+            run_immath_args['chans'] = chan_num
+            task = crasa.CasaTask(cab["binary"], **run_immath_args)
+            task.run()
+            if unstack_args['port2fits']:
+                print('Converting CASA images to FITS images')
+                fits = outfile + '.fits'
+                task = crasa.CasaTask(
+                    "exportfits", **dict(imagename=outfile, fitsimage=fits, overwrite=True))
+                task.run()
+                if not unstack_args['keep_casa_images']:
+                    rm_fr(outfile)

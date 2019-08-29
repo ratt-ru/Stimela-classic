@@ -1,7 +1,8 @@
+import utils
 import os
 import sys
 import re
-import bdsf as bdsm #bdsm it is and bdsm it shall remain
+import bdsf as bdsm  # bdsm it is and bdsm it shall remain
 import numpy
 import Tigger
 import tempfile
@@ -12,7 +13,6 @@ from Tigger.Models import SkyModel, ModelClasses
 
 
 sys.path.append('/scratch/stimela')
-import utils
 
 CONFIG = os.environ['CONFIG']
 INPUT = os.environ['INPUT']
@@ -22,8 +22,8 @@ MSDIR = os.environ['MSDIR']
 cab = utils.readJson(CONFIG)
 
 write_catalog = ['bbs_patches', 'bbs_patches_mask',
-            'catalog_type', 'clobber', 'correct_proj', 'format',
-            'incl_chan', 'incl_empty', 'srcroot', 'port2tigger', 'outfile']
+                 'catalog_type', 'clobber', 'correct_proj', 'format',
+                 'incl_chan', 'incl_empty', 'srcroot', 'port2tigger', 'outfile']
 
 img_opts = {}
 write_opts = {}
@@ -62,10 +62,12 @@ if spi_do and multi_chan_beam:
         hdr = hdu[0].header
     beams = []
     # Get a sequence of BMAJ with digit suffix from the image header keys
-    bmaj_ind = filter(lambda a: a.startswith('BMAJ') and a[-1].isdigit(), hdr.keys())
+    bmaj_ind = filter(lambda a: a.startswith('BMAJ')
+                      and a[-1].isdigit(), hdr.keys())
     for bmaj in bmaj_ind:
         ind = bmaj.split('BMAJ')[-1]
-        beam = [hdr['{0:s}{1:s}'.format(b, ind)] for b in 'BMAJ BMIN BPA'.split()]
+        beam = [hdr['{0:s}{1:s}'.format(b, ind)]
+                for b in 'BMAJ BMIN BPA'.split()]
         beams.append(tuple(beam))
     # parse beam info to pybdsm
     img_opts['beam_spectrum'] = beams
@@ -73,7 +75,7 @@ if spi_do and multi_chan_beam:
 image = img_opts.pop('filename')
 #img_opts["indir"] = os.path.dirname(image) + "/"
 filename = os.path.basename(image)
- 
+
 outfile = write_opts.pop('outfile')
 
 img = bdsm.process_image(image, **img_opts)
@@ -101,20 +103,23 @@ with open(tfile.name, "w") as stdw:
 model = Tigger.load(tfile.name)
 tfile.close()
 
+
 def tigger_src(src, idx):
 
-    name = "SRC%d"%idx
+    name = "SRC%d" % idx
 
-    flux = ModelClasses.Polarization(src["Total_flux"], 0, 0, 0, I_err=src["E_Total_flux"])
-    ra, ra_err = map(numpy.deg2rad, (src["RA"], src["E_RA"]) )
-    dec, dec_err = map(numpy.deg2rad, (src["DEC"], src["E_DEC"]) )
+    flux = ModelClasses.Polarization(
+        src["Total_flux"], 0, 0, 0, I_err=src["E_Total_flux"])
+    ra, ra_err = map(numpy.deg2rad, (src["RA"], src["E_RA"]))
+    dec, dec_err = map(numpy.deg2rad, (src["DEC"], src["E_DEC"]))
     pos = ModelClasses.Position(ra, dec, ra_err=ra_err, dec_err=dec_err)
-    ex, ex_err = map(numpy.deg2rad, (src["DC_Maj"], src["E_DC_Maj"]) )
-    ey, ey_err = map(numpy.deg2rad, (src["DC_Min"], src["E_DC_Min"]) )
-    pa, pa_err = map(numpy.deg2rad, (src["PA"], src["E_PA"]) )
+    ex, ex_err = map(numpy.deg2rad, (src["DC_Maj"], src["E_DC_Maj"]))
+    ey, ey_err = map(numpy.deg2rad, (src["DC_Min"], src["E_DC_Min"]))
+    pa, pa_err = map(numpy.deg2rad, (src["PA"], src["E_PA"]))
 
     if ex and ey:
-        shape = ModelClasses.Gaussian(ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
+        shape = ModelClasses.Gaussian(
+            ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
     else:
         shape = None
     source = SkyModel.Source(name, pos, flux, shape=shape)

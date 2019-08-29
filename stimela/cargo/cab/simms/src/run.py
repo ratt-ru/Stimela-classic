@@ -1,8 +1,8 @@
+import utils
 import os
 import sys
 
 sys.path.append("/scratch/stimela")
-import utils
 
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]
@@ -15,7 +15,7 @@ params = cab["parameters"]
 _positional = ['antenna-file']
 positional = []
 for item in _positional:
-    param = filter( lambda a: a['name']==item, params)[0]
+    param = filter(lambda a: a['name'] == item, params)[0]
     value = param['value']
     params.remove(param)
 
@@ -31,7 +31,8 @@ for param in params:
     if value is True:
         arg = '{0}{1}'.format(cab['prefix'], key)
     elif hasattr(value, '__iter__'):
-        arg = ' '.join(['{0}{1} {2}'.format(cab['prefix'], key, val) for val in value])
+        arg = ' '.join(['{0}{1} {2}'.format(cab['prefix'], key, val)
+                        for val in value])
     else:
         if isinstance(value, str):
             value = '"{}"'.format(value)

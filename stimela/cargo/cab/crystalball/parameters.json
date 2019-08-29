@@ -52,7 +52,9 @@
         }, 
         {
             "info": "Optional. Give JS9 region file. Only sources within those regions will be included.", 
-            "dtype": "str", 
+            "dtype": "file",
+            "io": "input",
+            "required": false,
             "name": "within"
         }, 
         {

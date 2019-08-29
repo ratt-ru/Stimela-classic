@@ -12,7 +12,7 @@ OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
 cab = utils.readJson(CONFIG)
-
+overwrite = False
 args = {}
 for param in cab['parameters']:
     name = param['name']
@@ -20,8 +20,13 @@ for param in cab['parameters']:
 
     if value is None:
         continue
+    if name == "overwrite":
+        overwrite = value
+        continue
 
     args[name] = value
 
+if overwrite:
+    os.system("rm -rf {0:s}".format(args["fluxtable"]))
 task = crasa.CasaTask(cab["binary"], **args)
 task.run()

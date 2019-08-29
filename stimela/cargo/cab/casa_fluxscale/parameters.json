@@ -71,6 +71,12 @@
             "dtype": "int", 
             "default": 1, 
             "name": "fitorder"
+        },
+        {
+            "info": "overwrite fluxtable",
+            "name": "overwrite",
+            "default": true,
+            "dtype": "bool"
         }
     ]
 }

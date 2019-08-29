@@ -1,9 +1,10 @@
-import utils
 import os
 import sys
 import tempfile
 
 sys.path.append('/scratch/stimela')
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]

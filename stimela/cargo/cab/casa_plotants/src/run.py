@@ -1,4 +1,3 @@
-import utils
 import os
 import sys
 import logging
@@ -7,6 +6,8 @@ import logging
 casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600*10)
 
 sys.path.append("/scratch/stimela")
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]

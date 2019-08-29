@@ -1,4 +1,3 @@
-import utils
 import os
 import sys
 import Tigger
@@ -9,6 +8,8 @@ from astLib.astWCS import WCS
 from Tigger.Models import SkyModel, ModelClasses
 
 sys.path.append('/scratch/stimela')
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]

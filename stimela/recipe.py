@@ -298,6 +298,7 @@ class StimelaJob(object):
             with open(self.logfile, 'w') as std:
                 pass
 
+        cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(self.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
         cont.add_environ("OUTPUT", od)
@@ -568,7 +569,7 @@ class StimelaJob(object):
         if not os.path.exists(self.logfile):
             with open(self.logfile, 'w') as std:
                 pass
-        cont.add_environ("LOGFILE", "/scratch/logfile".format(logfile_name))
+        cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(self.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
         cont.add_environ("OUTPUT", od)

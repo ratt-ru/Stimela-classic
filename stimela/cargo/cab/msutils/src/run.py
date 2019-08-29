@@ -1,4 +1,3 @@
-import utils
 import sys
 import os
 from MSUtils import msutils
@@ -7,6 +6,8 @@ import inspect
 from MSUtils.imp_plotter import gain_plotter
 
 sys.path.append("/scratch/stimela")
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]

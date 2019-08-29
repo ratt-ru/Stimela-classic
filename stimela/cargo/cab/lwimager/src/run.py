@@ -1,4 +1,3 @@
-import utils
 import pyrap.images
 import os
 import sys
@@ -8,6 +7,8 @@ import tempfile
 import pyfits
 
 sys.path.append('/scratch/stimela')
+
+utils = __import__('utils')
 
 CONFIG = os.environ['CONFIG']
 OUTPUT = os.environ['OUTPUT']

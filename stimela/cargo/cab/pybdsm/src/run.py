@@ -1,4 +1,3 @@
-import utils
 import os
 import sys
 import re
@@ -13,6 +12,8 @@ from Tigger.Models import SkyModel, ModelClasses
 
 
 sys.path.append('/scratch/stimela')
+
+utils = __import__('utils')
 
 CONFIG = os.environ['CONFIG']
 INPUT = os.environ['INPUT']

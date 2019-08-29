@@ -1,10 +1,11 @@
-import utils
 import os
 import sys
 import re
 import astropy.io.fits as pyfits
 
 sys.path.append('/scratch/stimela')
+
+utils = __import__('utils')
 
 CONFIG = os.environ['CONFIG']
 INPUT = os.environ['INPUT']

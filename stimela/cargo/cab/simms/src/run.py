@@ -1,8 +1,9 @@
-import utils
 import os
 import sys
 
 sys.path.append("/scratch/stimela")
+
+utils = __import__("utils")
 
 CONFIG = os.environ["CONFIG"]
 INDIR = os.environ["INPUT"]

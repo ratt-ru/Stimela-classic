@@ -1,10 +1,11 @@
-import utils
 import sys
 import os
 from sunblocker.sunblocker import Sunblocker
 import inspect
 
 sys.path.append("/scratch/stimela")
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]

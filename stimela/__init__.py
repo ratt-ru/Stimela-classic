@@ -359,7 +359,7 @@ def pull(argv):
     images = log.read()['images']
 
     images_ = []
-    for cab in args.cab_base:
+    for cab in args.cab_base or []:
         if cab in CAB:
             filename = "/".join([cargo.CAB_PATH, cab, "parameters.json"])
             param = utils.readJson(filename)

@@ -4,10 +4,11 @@ import os
 import sys
 
 import stimela
+import stimela.main as main
 
 # Ensure that logging infrastructure exists
 
 if not os.path.exists(stimela.LOG_HOME):
     os.mkdir(stimela.LOG_HOME)
 
-stimela.main([a for a in sys.argv[1:]])
+main.main([a for a in sys.argv[1:]])

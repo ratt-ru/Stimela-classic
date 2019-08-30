@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]
@@ -30,7 +31,7 @@ for param in cab['parameters']:
 
     # Positional arguments
     if name == 'input-image':
-        inim= value
+        inim = value
         continue
 
     elif name == 'input-skymodel':
@@ -41,6 +42,6 @@ for param in cab['parameters']:
         outim = value
         continue
 
-    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
+    args.append('{0}{1} {2}'.format(cab['prefix'], name, value))
 
 utils.xrun(cab['binary'], args+[inim, inlsm, outim])

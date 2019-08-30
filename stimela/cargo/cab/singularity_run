@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -e
+set -u
 export INPUT=/scratch/input
 export OUTPUT=/scratch/output
 export CONFIG=/scratch/configfile

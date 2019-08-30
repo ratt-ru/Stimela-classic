@@ -43,3 +43,7 @@
 - Add DDFacet cab!!
 - Fix --us-only option in 'stimela build'
 - Upgrade to kern-2 (wsclean is using kern-dev)
+
+# 1.2.0
+- add support for podman
+- upgrade CASA to 5.6.0

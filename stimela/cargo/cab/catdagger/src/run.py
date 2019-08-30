@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -15,7 +16,7 @@ args = []
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
-    if name == "noise-map": 
+    if name == "noise-map":
         args += [value]
         continue
     if value is None:

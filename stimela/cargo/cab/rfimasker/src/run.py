@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append("/scratch/stimela")
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -19,7 +20,7 @@ for param in cab['parameters']:
         mslist = ' '.join(value)
         continue
     if value in [None, False]:
-       continue
+        continue
     if value is True:
         value = ""
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]

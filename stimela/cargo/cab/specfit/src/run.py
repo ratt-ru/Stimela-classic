@@ -5,7 +5,8 @@ import pyfits
 from pyrap.tables import table
 
 sys.path.append("/scratch/stimela")
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -27,13 +28,13 @@ lsmname = params.pop("input-skymodel", None)
 outlsm = params.pop("output-skymodel", None)
 sigma = params.pop("sigma-level", 20) or 20
 freq0 = params.pop("freq0", 0)
-tol = params.pop("tolerance-range", None) or (-10,10)
+tol = params.pop("tolerance-range", None) or (-10, 10)
 
 if out_spi_image:
     import specfit
     specfit.spifit(image, mask=mask, sigma=sigma,
-                  spi_image=out_spi_image,
-                  spi_err_image=out_spi_err)
+                   spi_image=out_spi_image,
+                   spi_err_image=out_spi_err)
     spi_image = out_spi_image
     spi_err = out_spi_err
 else:

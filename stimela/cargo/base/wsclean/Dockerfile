@@ -1,4 +1,4 @@
-FROM stimela/base:1.0.1
+FROM stimela/base:1.2.0
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \
     wget \
@@ -32,5 +32,5 @@ RUN cd wsclean-2.7/build && \
     cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \
     make -j 10 && \
     make install
-RUN pip install pyfits
+RUN pip install astropy
 RUN ulimit -p 9000

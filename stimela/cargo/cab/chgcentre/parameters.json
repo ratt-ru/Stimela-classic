@@ -1,7 +1,7 @@
 {
     "task": "chgcentre", 
     "base": "stimela/chgcentre", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "Tool used to change the phase centre of a measurement set", 
     "prefix": "-", 
     "binary": "chgcentre", 

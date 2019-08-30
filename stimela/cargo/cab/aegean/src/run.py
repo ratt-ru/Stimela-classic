@@ -10,7 +10,8 @@ from astropy.table import Table
 from Tigger.Models import SkyModel, ModelClasses
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -83,7 +84,8 @@ def tigger_src(src, idx):
     pa, pa_err = map(numpy.deg2rad, (float(src["pa"]), float(src["err_pa"])))
 
     if ex and ey:
-        shape = ModelClasses.Gaussian(ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
+        shape = ModelClasses.Gaussian(
+            ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
     else:
         shape = None
     source = SkyModel.Source(name, pos, flux, shape=shape)
@@ -97,6 +99,7 @@ def tigger_src(src, idx):
         source.setAttribute("I_peak_err", float(src["err_int_flux"]))
 
     return source
+
 
 data = Table.read('{0}_comp.{1}'.format(outfile.split('.')[0], outfile.split('.')[-1]),
                   format=outfile.split('.')[-1])

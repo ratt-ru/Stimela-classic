@@ -1,4 +1,4 @@
-FROM stimela/base:1.0.1
+FROM stimela/base:1.2.0
 RUN docker-apt-install texmaker \
                        dvipng \
                        python-tk \

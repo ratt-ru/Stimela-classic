@@ -1,112 +1,114 @@
 {
     "task": "ragavi", 
     "base": "stimela/ragavi", 
-    "tag": "1.1.3", 
+    "tag": "1.2.0", 
     "description": "Radio Astronomy Gain and Visibility Inspector", 
     "prefix": "--", 
     "binary": "ragavi", 
     "msdir": false, 
-    "use_graphics": true,
     "parameters": [
         {
             "info": "Plot only this antenna, or comma-separated list of antennas. Default plots all", 
-            "name": "ant",
             "dtype": "str", 
-            "required": false
-        },
+            "required": false, 
+            "name": "ant"
+        }, 
         {
             "info": "Correlation index to plot (usually just 0 or 1)", 
-            "name": "corr",
             "dtype": "int", 
+            "default": 0, 
             "required": false, 
-            "default": 0
+            "name": "corr"
         }, 
         {
             "info": "Matplotlib colour map to use for antennas (default=coolwarm)", 
-            "name": "cmap",
             "dtype": "str", 
             "default": "coolwarm", 
-            "required": false
+            "required": false, 
+            "name": "cmap"
         }, 
         {
             "info": "Plot complex values as amp and phase (ap) or real and imag (ri)", 
             "name": "doplot", 
-            "dtype": "str", 
             "default": "ap", 
+            "dtype": "str", 
             "required": false, 
             "choices": [
                 "ap", 
                 "ri"
             ]
-        },
+        }, 
         {
             "info": "Field ID to plot", 
-            "name": "field", 
-            "dtype": ["list:str","list:int"],
-            "required": true 
-        },
+            "dtype": [
+                "list:str", 
+                "list:int"
+            ], 
+            "required": true, 
+            "name": "field"
+        }, 
         {
             "info": "The gain type of table(s) to be plotted. Options: ['B', 'F', 'G', 'K']", 
-            "name": "gaintype",
             "dtype": "list:str", 
-            "required": true
-        },
+            "required": true, 
+            "name": "gaintype"
+        }, 
         {
             "info": "Output html file name", 
-            "name": "htmlname", 
             "dtype": "str", 
             "required": false, 
+            "name": "htmlname", 
             "io": "output"
-        },
+        }, 
         {
             "info": "Output png/svg image file name", 
-            "name": "plotname", 
             "dtype": "str", 
             "required": false, 
+            "name": "plotname", 
             "io": "output"
-        },
+        }, 
         {
             "info": "Gain table(s) to plot", 
-            "name": "table",
             "dtype": "list:file", 
-            "required": true,              
+            "required": true, 
+            "name": "table", 
             "io": "input"
         }, 
         {
             "info": "Minimum time to plot (default = full range)", 
-            "name": "t0",
             "dtype": "float", 
-            "required": false
+            "required": false, 
+            "name": "t0"
         }, 
         {
             "info": "Maximum time to plot (default = full range)", 
-            "name": "t1",
             "dtype": "float", 
-            "required": false
+            "required": false, 
+            "name": "t1"
         }, 
         {
             "info": "Minimum y-value to plot for upper panel (default=full range)", 
-            "name": "yu0",
             "dtype": "float", 
-            "required": false
+            "required": false, 
+            "name": "yu0"
         }, 
         {
             "info": "Maximum y-value to plot for upper panel (default=full range)", 
-            "name": "yu1",
             "dtype": "float", 
-            "required": false
+            "required": false, 
+            "name": "yu1"
         }, 
         {
             "info": "Minimum y-value to plot for lower panel (default=full range)", 
-            "name": "yl0",
             "dtype": "float", 
-            "required": false
+            "required": false, 
+            "name": "yl0"
         }, 
         {
             "info": "Maximum y-value to plot for lower panel (default=full range)", 
-            "name": "yl1",
             "dtype": "float", 
-            "required": false
-        } 
+            "required": false, 
+            "name": "yl1"
+        }
     ]
 }

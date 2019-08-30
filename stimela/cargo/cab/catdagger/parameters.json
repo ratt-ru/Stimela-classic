@@ -1,7 +1,7 @@
 {
     "task": "catdagger", 
     "base": "stimela/catdagger", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "CATDagger - An automatic differential gain catalog tagger", 
     "prefix": "--", 
     "binary": "dagger", 
@@ -9,137 +9,137 @@
     "parameters": [
         {
             "info": "Residual / noise FITS map to use for estimating local RMS", 
-            "dtype": "file",    
-            "check_io": true,          
-            "name": "noise-map",
-            "required": true,
+            "map": "noise_map", 
+            "check_io": true, 
+            "name": "noise-map", 
             "default": null, 
-            "io": "output",
-            "map": "noise_map"
-        },
+            "dtype": "file", 
+            "required": true, 
+            "io": "output"
+        }, 
         {
             "info": "Stokes to consider when computing global noise estimates. Ideally this should be 'V', if available", 
             "dtype": "str", 
             "default": "I", 
-            "name": "stokes",
-            "required": false
-        },
+            "required": false, 
+            "name": "stokes"
+        }, 
         {
             "info": "Minimum number of tiles per region. Regions with fewer tiles will not be tagged as dE", 
             "dtype": "int", 
             "default": 3, 
-            "name": "min-tiles-region",
-            "required": false
-        },
+            "required": false, 
+            "name": "min-tiles-region"
+        }, 
         {
             "info": "SAODS9 regions filename to write out", 
-            "dtype": "file", 
-            "check_io": false,
+            "check_io": false, 
+            "name": "ds9-reg-file", 
+            "io": "output", 
             "default": "dE.reg", 
-            "name": "ds9-reg-file",
-            "required": false,
-            "io": "output"
-        },
+            "dtype": "file", 
+            "required": false
+        }, 
         {
             "info": "SAODS9 regions filename to contain tagged cluster leads as circles", 
-            "dtype": "file", 
-            "check_io": false,
+            "check_io": false, 
+            "name": "ds9-tag-reg-file", 
+            "io": "output", 
             "default": "dE.clusterleads.reg", 
-            "name": "ds9-tag-reg-file",
-            "required": false,
-            "io": "output"
-        },
+            "dtype": "file", 
+            "required": false
+        }, 
         {
             "info": "Threshold to use in detecting outlier regions", 
             "dtype": "float", 
             "default": 4.5, 
-            "name": "sigma",
-            "required": false
-        },
+            "required": false, 
+            "name": "sigma"
+        }, 
         {
             "info": "Number of pixels per region tile axis", 
             "dtype": "int", 
             "default": 80, 
-            "name": "tile-size",
-            "required": false
-        },
+            "required": false, 
+            "name": "tile-size"
+        }, 
         {
             "info": "Percentile tiles to consider for global rms calculations", 
             "dtype": "float", 
             "default": 20.0, 
-            "name": "global-rms-percentile",
-            "required": false
-        },
+            "required": false, 
+            "name": "global-rms-percentile"
+        }, 
         {
             "info": "Tag name to use for tagged sources in tigger LSM", 
             "dtype": "str", 
             "default": "dE", 
-            "name": "de-tag-name",
-            "required": false
-        },
+            "required": false, 
+            "name": "de-tag-name"
+        }, 
         {
             "info": "Cutoff distance from phase centre in which no tags be raised. This can be used to effectively exclude the FWHM of an parabolic reflector-based interferometer.", 
             "dtype": "int", 
             "default": 0, 
-            "name": "min-distance-from-tracking-centre",
-            "required": false
-        },
+            "required": false, 
+            "name": "min-distance-from-tracking-centre"
+        }, 
         {
             "info": "Add manual exclusion zone to which no dE tags shall be added. Expects a tripple of centre X, Y pixel and radius.", 
             "dtype": "list:int", 
-            "name": "add-custom-exclusion-zone",
-            "required": false
-        },
+            "required": false, 
+            "name": "add-custom-exclusion-zone"
+        }, 
         {
             "info": "The maximum tolerance for right skewness of a pixel distribution within a region.A large value (tailed distribution) indicates significant uncleaned flux remaining in the residual. This can be used to effectively control detection sensitivity to uncleaned extended emission, but should be set to 0 if residuals other than stokes I are used", 
             "dtype": "float", 
-            "name": "max-region-right-skewness",
-            "default": 2,
-            "required": false
-        },
+            "default": 2, 
+            "required": false, 
+            "name": "max-region-right-skewness"
+        }, 
         {
             "info": "PSF image from which BPA, BMAJ and BMIN may be extracted", 
+            "check_io": true, 
+            "name": "psf-image", 
+            "io": "output", 
             "dtype": "file", 
-            "check_io": true,
-            "name": "psf-image",
-            "required": false,
-            "io": "output"
-        },
+            "required": false
+        }, 
         {
             "info": "Tigger LSM to recluster and tag. If this is not specified only DS9 regions will be written out", 
+            "check_io": true, 
+            "name": "input-lsm", 
+            "io": "output", 
             "dtype": "file", 
-            "check_io": true,
-            "name": "input-lsm",
-            "required": false,
-            "io": "output"
-        },
+            "required": false
+        }, 
         {
             "info": "Blank out model images within resolution of tagged LSM components. Expects list of model FITS files. This option is useful for hybrid DFT-CLEAN component modelling as onlyextended / faint clean components contributes to model.", 
+            "check_io": true, 
+            "name": "remove-tagged-dE-components-from-model-images", 
+            "io": "output", 
             "dtype": "file", 
-            "check_io": true,
-            "name": "remove-tagged-dE-components-from-model-images",
-            "required": false,
-            "io": "output"
-        },
+            "required": false
+        }, 
         {
             "info": "Only store dE tagged sources in lsm. This option is useful for hybrid DFT-CLEAN component modelling, as only bright compact gaussian emission contributes to dE solutions", 
             "dtype": "bool", 
-            "name": "only-dEs-in-lsm",
-            "required": false
-        },
+            "required": false, 
+            "name": "only-dEs-in-lsm"
+        }, 
         {
             "info": "The maximum tolerance for the ratio of positive to negative flux. Only to be used with stokes I", 
             "dtype": "float", 
-            "default": 1.1,
-            "name": "max-positive-to-negative-flux",
-            "required": false
-        },
+            "default": 1.1, 
+            "required": false, 
+            "name": "max-positive-to-negative-flux"
+        }, 
         {
             "info": "The maximum tolerance for absolute skewness of a pixel distribution within a region.A large value (tailed distribution) indicates significant uncleaned flux remaining in the residual. This can be used to effectively control detection sensitivity to uncleaned extended emission, but should be set to 0 if residuals other than stokes Q,U or V are used", 
             "dtype": "float", 
-            "name": "max-region-abs-skewness",
-            "required": false,
-            "default": 99999999999999
+            "default": 99999999999999, 
+            "required": false, 
+            "name": "max-region-abs-skewness"
         }
     ]
 }

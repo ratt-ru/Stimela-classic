@@ -4,11 +4,10 @@ import pyfits
 import scipy.stats as stats
 
 
-
 def get_imslice(ndim):
     imslice = []
     for i in xrange(ndim):
-        if i<ndim-2:
+        if i < ndim-2:
             imslice.append(0)
         else:
             imslice.append(slice(None))
@@ -18,7 +17,7 @@ def get_imslice(ndim):
 
 def fitsFreqInd(hdr):
     ndim = hdr["naxis"]
-    keys = [hdr["CTYPE%d"%d].strip().lower() for d in xrange(1,ndim+1)]
+    keys = [hdr["CTYPE%d" % d].strip().lower() for d in xrange(1, ndim+1)]
 
     if "freq" not in keys:
         return False
@@ -34,10 +33,10 @@ def freqInfo(fits):
         ndim = hdr["NAXIS"]
 
     ind = fitsFreqInd(hdr)
-    ref_freq = hdr["CRVAL%d"%ind]
-    dfreq = hdr["CDELT%d"%ind]
-    nchan = hdr["NAXIS%d"%ind]
-    ref_chan = hdr["CRPIX%d"%ind]
+    ref_freq = hdr["CRVAL%d" % ind]
+    dfreq = hdr["CDELT%d" % ind]
+    nchan = hdr["NAXIS%d" % ind]
+    ref_chan = hdr["CRPIX%d" % ind]
 
     cnt_freq = ref_freq + (nchan/2 - ref_chan) * dfreq
     bw = dfreq*nchan
@@ -63,8 +62,8 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
                 hdu_data = hdu[0].data
                 ndim = hdr["NAXIS"]
                 ind = fitsFreqInd(hdr)
-                freqs.append( hdr["CRVAL%d"%ind])
-                ims.append( hdu_data[get_imslice(ndim)]  )
+                freqs.append(hdr["CRVAL%d" % ind])
+                ims.append(hdu_data[get_imslice(ndim)])
 
         data = numpy.dstack(ims).T
         ndim = data.ndim
@@ -97,28 +96,29 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
             mndim = mdata.ndim
             mask = mdata[get_imslice(mndim)]
 
-        ind = numpy.where(numpy.logical_and(mask>1e-33, mfs>1e-8))
+        ind = numpy.where(numpy.logical_and(mask > 1e-33, mfs > 1e-8))
     else:
         if thresh in [None, 0]:
-            noise = numpy.median( abs(mfs - numpy.median(mfs))  )/0.667
+            noise = numpy.median(abs(mfs - numpy.median(mfs)))/0.667
             thresh = sigma*noise
-        ind = numpy.where(mfs>thresh)
+        ind = numpy.where(mfs > thresh)
 
     if len(ind) < 1:
-        raise RunTimeError("No pixels above set threshold, or outside masked region")
+        raise RunTimeError(
+            "No pixels above set threshold, or outside masked region")
 
-    for i,j in zip(ind[0], ind[1]):
+    for i, j in zip(ind[0], ind[1]):
         x = numpy.log(numpy.array(freqs)/cnt_freq)
-        val = data[:,i,j]
+        val = data[:, i, j]
         if val.any() <= 0:
             continue
 
-        y = numpy.log( val )
+        y = numpy.log(val)
 
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+        slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
 
-        alpha[i,j] = slope
-        err[i,j] = std_err
+        alpha[i, j] = slope
+        err[i, j] = std_err
 
     #    aa.append(intercept)
     #    bb.append(std_err)
@@ -127,6 +127,7 @@ def spifit(cube, prefix=None, mask=None, thresh=None,
     nans = numpy.isnan(alpha)
     alpha[nans] = 0.0
     err[nans] = 1e99
-    
+
     pyfits.writeto(spi_image or prefix+".alpha.fits", alpha, hdr, clobber=True)
-    pyfits.writeto(spi_err_image or prefix+".alpha.err.fits", err, hdr, clobber=True)
+    pyfits.writeto(spi_err_image or prefix +
+                   ".alpha.err.fits", err, hdr, clobber=True)

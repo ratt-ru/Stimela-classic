@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]
@@ -34,9 +35,10 @@ target_names = map(os.path.basename, targets)
 target_images = "--target-images " + " --target-images ".join(target_names)
 
 args += ["--input {0:s} {1:s} --output {2:s}".format(indir, target_images,
-    OUTPUT)]
+                                                     OUTPUT)]
 
 if target_images:
     utils.xrun(cab['binary'], args)
 else:
-    raise RuntimeError('Filenames of the images to be mosaicked have not been specified.')
+    raise RuntimeError(
+        'Filenames of the images to be mosaicked have not been specified.')

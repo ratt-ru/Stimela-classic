@@ -1,4 +1,4 @@
-FROM stimela/sharpener:1.1.3
+FROM stimela/sharpener:1.2.0
 MAINTAINER <sphemakh@gmial.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

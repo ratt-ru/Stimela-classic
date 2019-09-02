@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -23,10 +24,10 @@ for param in cab['parameters']:
     elif value is True:
         value = 1
     elif name == 'parset':
-       parset = [value]
-       continue
+        parset = [value]
+        continue
     elif isinstance(value, list):
-        value = ",".join( map(str, value) )
+        value = ",".join(map(str, value))
 
     args[name] = value
 
@@ -36,11 +37,13 @@ soljones = args.pop("sol-jones")
 
 for jones in joneses:
     if jones.lower() not in soljones.lower():
-        jopts = filter(lambda a: a.startswith("{0:s}-".format(jones)), args.keys())
+        jopts = filter(lambda a: a.startswith(
+            "{0:s}-".format(jones)), args.keys())
         for item in jopts:
             del args[item]
 
-opts =  ["{0:s}sol-jones {1:s}".format(cab["prefix"], soljones)] + \
-        ['{0}{1} {2}'.format(cab['prefix'], name, value) for name,value in args.iteritems()]
+opts = ["{0:s}sol-jones {1:s}".format(cab["prefix"], soljones)] + \
+    ['{0}{1} {2}'.format(cab['prefix'], name, value)
+     for name, value in args.iteritems()]
 
 utils.xrun(cab['binary'], parset+opts)

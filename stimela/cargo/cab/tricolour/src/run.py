@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]
@@ -12,6 +13,7 @@ MSDIR = os.environ["MSDIR"]
 cab = utils.readJson(CONFIG)
 args = []
 msname = None
+fields = ""
 for param in cab['parameters']:
     name = param['name']
     value = param['value']

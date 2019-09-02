@@ -1,10 +1,10 @@
 {
     "task": "tricolour", 
     "base": "stimela/tricolour", 
-    "tag": "1.1.3", 
+    "tag": "1.2.0", 
     "description": "A variant of the Science Data Processing flagging code, wrapped in dask, operating on Measurement Sets", 
     "prefix": "--", 
-    "binary": "tricolour", 
+    "binary": "/opt/code/dist/tricolourexe/tricolourexe", 
     "msdir": true, 
     "parameters": [
         {
@@ -14,74 +14,84 @@
             "default": false, 
             "dtype": "file", 
             "required": true
-        },
+        }, 
         {
-            "name": "config",
-            "info": "YAML config file containing parameters for the flagger in the 'sum_threshold' key.",
-            "io": "input",
-            "dtype": "file"
-        },
+            "info": "YAML config file containing parameters for the flagger in the 'sum_threshold' key.", 
+            "dtype": "file", 
+            "name": "config", 
+            "io": "input"
+        }, 
         {
-            "name": "ignore-flags",
-            "info": " Ingnore existing flags",
-            "dtype" : "bool"
-        },
+            "info": " Ingnore existing flags", 
+            "dtype": "bool", 
+            "name": "ignore-flags"
+        }, 
         {
-            "name": "flagging-strategy",
-            "info": "Flagging Strategy. If 'standard' all correlations in the visibility are flagged independently. If 'polarisation' the polarised intensity sqrt(Q^2 + U^2 + V^2) is calculated and used to flag all correlations in the visibility",
-            "dtype" : "str",
-            "choices" : ["standard", "polarisation", "total_power"]
-        },
+            "info": "Flagging Strategy. If 'standard' all correlations in the visibility are flagged independently. If 'polarisation' the polarised intensity sqrt(Q^2 + U^2 + V^2) is calculated and used to flag all correlations in the visibility", 
+            "dtype": "str", 
+            "name": "flagging-strategy", 
+            "choices": [
+                "standard", 
+                "polarisation", 
+                "total_power"
+            ]
+        }, 
         {
-            "name": "row-chunks",
-            "info": "Hint indicating the number of Measurement Set rows to read in a single chunk. Smaller and larger numbers will tend to respectively decrease or increase both memory usage and computational efficiency",
-            "dtype": "int"
-        },
+            "info": "Hint indicating the number of Measurement Set rows to read in a single chunk. Smaller and larger numbers will tend to respectively decrease or increase both memory usage and computational efficiency", 
+            "dtype": "int", 
+            "name": "row-chunks"
+        }, 
         {
-            "name": "baseline-chunks",
-            "info": "Number of baselines in a window chunk",
-            "dtype": "int"
-        },
+            "info": "Number of baselines in a window chunk", 
+            "dtype": "int", 
+            "name": "baseline-chunks"
+        }, 
         {
-            "name": "nworkers",
-            "info": "Number of workers (threads) to use. By default, set to twice the number of logical CPUs on the system. Many workers can also affect memory usage on systems with many cores.",
-            "dtype": "int"
-        },
+            "info": "Number of workers (threads) to use. By default, set to twice the number of logical CPUs on the system. Many workers can also affect memory usage on systems with many cores.", 
+            "dtype": "int", 
+            "name": "nworkers"
+        }, 
         {
-            "name": "dilate-masks",
-            "info": "Number of channels to dilate as int or string with units",
-            "dtype": ["int", "str"]
-        },
+            "info": "Number of channels to dilate as int or string with units", 
+            "dtype": [
+                "int", 
+                "str"
+            ], 
+            "name": "dilate-masks"
+        }, 
         {
-            "name": "data-column",
-            "info": "Name of visibility data column to flag",
-            "dtype": "str"
-        },
+            "info": "Name of visibility data column to flag", 
+            "dtype": "str", 
+            "name": "data-column"
+        }, 
         {
-            "name": "scan-numbers",
-            "info": "Scan numbers to flag",
-            "dtype": "str"
-        },
+            "info": "Scan numbers to flag", 
+            "dtype": "str", 
+            "name": "scan-numbers"
+        }, 
         {
-            "name": "subtract-model-column",
-            "info": "Columns to subtract from 'data-column' to form residuals to flag on",
-            "dtype": "str"
-        },
+            "info": "Columns to subtract from 'data-column' to form residuals to flag on", 
+            "dtype": "str", 
+            "name": "subtract-model-column"
+        }, 
         {
-            "name":"field-names",
-            "info": "Name(s) of fields to flag. Defaults to flagging all",
-            "dtype": "list:str"
-        },
+            "info": "Name(s) of fields to flag. Defaults to flagging all", 
+            "dtype": "list:str", 
+            "name": "field-names"
+        }, 
         {
-            "name": "-dpm, --disable-post-mortem",
-            "info": "Disable the default behaviour of starting the Interactive Python Debugger upon an unhandled exception. This may be necessary for batch pipelining",
-            "dtype": "bool"
-        },
+            "info": "Disable the default behaviour of starting the Interactive Python Debugger upon an unhandled exception. This may be necessary for batch pipelining", 
+            "dtype": "bool", 
+            "name": "-dpm, --disable-post-mortem"
+        }, 
         {
-            "name": "window-backend",
-            "info": "Visibility and flag data is re-ordered from a MS row ordering into time-frequency windows ordered by baseline. For smaller problems, it may be possible to pack a couple of scans worth of visibility data  into memory, but for larger problem sizes, it is necessary to reorder the data on disk",
-            "dtype" : "str",
-            "choices": ["numpy", "zarr-disk"]
+            "info": "Visibility and flag data is re-ordered from a MS row ordering into time-frequency windows ordered by baseline. For smaller problems, it may be possible to pack a couple of scans worth of visibility data  into memory, but for larger problem sizes, it is necessary to reorder the data on disk", 
+            "dtype": "str", 
+            "name": "window-backend", 
+            "choices": [
+                "numpy", 
+                "zarr-disk"
+            ]
         }
     ]
 }

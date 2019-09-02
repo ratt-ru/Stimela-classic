@@ -5,38 +5,42 @@ import sys
 from setuptools import setup
 
 
-requirements = ["pyyaml", 
+requirements = ["pyyaml",
                 "nose>=1.3.7",
                 "future",
-               ],
+                ],
 
 if sys.version_info <= (3, 0):
     requirements += [
-                "udocker",
-               ],
+        "udocker",
+    ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.1.4"
+__version__ = "1.2.0"
 
-setup(name = PACKAGE_NAME,
-    version = __version__,
-    description = "Dockerized radio interferometry scripting framework",
-    author = "Sphesihle Makhathini",
-    author_email = "sphemakh@gmail.com",
-    url = "https://github.com/sphemakh/Stimela",
-    packages = ["stimela","stimela_misc", "stimela/cargo","stimela/utils", "stimela/cargo/cab"],
-    package_data = { "stimela/cargo" : [
-                                   "cab/*/Dockerfile",
-                                   "base/*/Dockerfile",
-                                   "cab/*/src/*.py",
-                                   "cab/*/src/*.sh",
-                                   "cab/*/src/*.json",
-                                   "cab/*/xvfb.init.d",
-                                   "cab/*/parameters.json",
-                                   "cab/*/src/tdlconf.profiles",
-                                   "cab/singularity_run",
-                                   ]},
-    install_requires = requirements,
-    scripts = ["bin/" + i for i in os.listdir("bin")],
-    classifiers = [],
-     )
+setup(name=PACKAGE_NAME,
+      version=__version__,
+      description="Dockerized radio interferometry scripting framework",
+      author="Sphesihle Makhathini",
+      author_email="sphemakh@gmail.com",
+      url="https://github.com/sphemakh/Stimela",
+      packages=["stimela", "stimela_misc", "stimela/cargo",
+                "stimela/utils", "stimela/cargo/cab"],
+      include_package_data = True,
+      package_data={"stimela/cargo": [
+          "cab/*/Dockerfile",
+          "base/*/Dockerfile",
+          "cab/*/src/*.py",
+          "cab/*/src/*.sh",
+          "cab/*/src/*.json",
+          "base/*/xvfb.init.d",
+          "cab/*/xvfb.init.d",
+          "cab/*/parameters.json",
+          "cab/*/src/tdlconf.profiles",
+          "cab/singularity_run",
+          "cab/docker_run",
+      ]},
+      install_requires=requirements,
+      scripts=["bin/" + i for i in os.listdir("bin")],
+      classifiers=[],
+      )

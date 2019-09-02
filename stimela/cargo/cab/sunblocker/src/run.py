@@ -4,7 +4,8 @@ from sunblocker.sunblocker import Sunblocker
 import inspect
 
 sys.path.append("/scratch/stimela")
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -29,9 +30,10 @@ for param in cab['parameters']:
 args['showdir'] = OUTPUT
 run_func = getattr(Sunblocker(), function, None)
 if run_func is None:
-    raise RuntimeError("Function '{}' is not part of Sunblocker()".format(function))
+    raise RuntimeError(
+        "Function '{}' is not part of Sunblocker()".format(function))
 
-## Reove default parameters that are not part of this particular function
+# Reove default parameters that are not part of this particular function
 sys.stdout.write(repr(args))
 func_args = inspect.getargspec(run_func)[0]
 for arg in args.keys():

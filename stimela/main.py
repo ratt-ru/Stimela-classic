@@ -6,6 +6,7 @@ import signal
 import stimela
 from stimela import docker, singularity, udocker, podman, utils
 from stimela.utils import logger
+from stimela.cargo import cab
 
 BASE = stimela.BASE
 CAB = stimela.CAB

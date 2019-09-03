@@ -19,7 +19,7 @@ ln -s ${SINGULARITY_STORAGE}/podman ${POD_STORAGE}
 
 
 # Install Stimela into a virtual env
-virtualenv ${WORKSPACE_ROOT}/projects/pyenv
+virtualenv ${WORKSPACE_ROOT}/projects/pyenv -p python3.6
 . ${WORKSPACE_ROOT}/projects/pyenv/bin/activate
 pip install pip setuptools -U
 PATH=${WORKSPACE}/projects/pyenv/bin:$PATH

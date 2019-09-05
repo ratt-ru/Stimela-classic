@@ -3,6 +3,4 @@ set -e
 set -u
 /etc/init.d/xvfb start || echo "Virtual frame buffer not installed. You may not be able to plot with this cab" 
 python /scratch/code/run.py 2>&1 | tee -a $LOGFILE 
-EXIT_STAT=${PIPESTATUS[0]}
-/etc/init.d/xvfb stop || echo ""
-exit $EXIT_STAT
+/etc/init.d/xvfb stop || echo "Virtual frame buffer not started initially, because it is not installed. If you had plotting in this cab it may not have worked correctly"

@@ -1,7 +1,7 @@
 {
     "task": "tricolour", 
     "base": "stimela/tricolour", 
-    "tag": "1.1.3", 
+    "tag": "1.2.1", 
     "description": "A variant of the Science Data Processing flagging code, wrapped in dask, operating on Measurement Sets", 
     "prefix": "--", 
     "binary": "/opt/code/dist/tricolourexe/tricolourexe", 

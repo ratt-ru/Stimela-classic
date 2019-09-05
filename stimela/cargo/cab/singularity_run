@@ -7,4 +7,6 @@ export CONFIG=/scratch/configfile
 export MSDIR=/scratch/msdir
 /etc/init.d/xvfb start || echo "Virtual frame buffer not installed. You may not be able to plot with this cab" 
 python /scratch/code/run.py 2>&1 | tee -a /scratch/logfile 
-/etc/init.d/xvfb stop || echo "Virtual frame buffer not started because it is not installed, if you had plots in this cab it may not have worked correctly."
+EXIT_STAT=${PIPESTATUS[0]}
+/etc/init.d/xvfb stop || echo ""
+exit $EXIT_STAT

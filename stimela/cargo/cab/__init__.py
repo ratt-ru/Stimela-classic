@@ -229,7 +229,7 @@ class CabDefinition(object):
     def update(self, options, saveconf):
         required = filter(lambda a: a.required, self.parameters)
         for param0 in required:
-            if not options.get(param0.name, False) and not options.get(param0.mapping, False):
+            if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise RuntimeError(
                     "Parameter {} is required but has not been specified".format(param0.name))
 

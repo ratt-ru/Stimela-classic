@@ -15,6 +15,7 @@ UID = stimela.UID
 GID = stimela.GID
 LOG_HOME = stimela.LOG_HOME
 LOG_FILE = stimela.LOG_FILE
+GLOBALS = stimela.GLOBALS
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):

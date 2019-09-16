@@ -23,20 +23,11 @@ sharpener_file = '{:s}/sharpener_default.yml'.format(pkg_path)
 with open(sharpener_file) as f:
     list_doc = yaml.load(f)
 
-list_doc['general']['workdir'] = '{:s}/'.format(OUTPUT)
-
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
 
     if value is None:
-        continue
-
-    if name in ['contname', 'cubename']:
-        list_doc['general'][name] = value.split('/')[-1]
-        continue
-    if name in ['catalog_file']:
-        list_doc['source_catalog'][name] = value.split('/')[-1]
         continue
 
     for key, val in list_doc.items():

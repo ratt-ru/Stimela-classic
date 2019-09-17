@@ -42,6 +42,14 @@ for param in cab['parameters']:
             if key == name:
                 list_doc[key] = value
 
+# Get the relative path from workdir
+list_doc['general']['contname'] = os.path.relpath(
+        list_doc['general']['contname'], list_doc['general']['workdir'])
+list_doc['general']['cubename'] = os.path.relpath(
+        list_doc['general']['cubename'], list_doc['general']['workdir'])
+list_doc['source_catalog']['catalog_file'] = os.path.relpath(
+        list_doc['source_catalog']['catalog_file'], list_doc['general']['workdir'])
+
 edited_file = 'sharpener_default.yml'
 with open(edited_file, "w") as f:
     yaml.dump(list_doc, f)

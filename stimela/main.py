@@ -6,6 +6,7 @@ import signal
 import stimela
 from stimela import docker, singularity, udocker, podman, utils
 from stimela.utils import logger
+from stimela.cargo import cab
 
 BASE = stimela.BASE
 CAB = stimela.CAB
@@ -14,6 +15,7 @@ UID = stimela.UID
 GID = stimela.GID
 LOG_HOME = stimela.LOG_HOME
 LOG_FILE = stimela.LOG_FILE
+GLOBALS = stimela.GLOBALS
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):

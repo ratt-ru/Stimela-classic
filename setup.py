@@ -16,7 +16,7 @@ if sys.version_info <= (3, 0):
     ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.2.0"
+__version__ = "1.2.3"
 
 setup(name=PACKAGE_NAME,
       version=__version__,
@@ -25,8 +25,8 @@ setup(name=PACKAGE_NAME,
       author_email="sphemakh@gmail.com",
       url="https://github.com/sphemakh/Stimela",
       packages=["stimela", "stimela_misc", "stimela/cargo",
-                "stimela/utils", "stimela/cargo/cab"],
-      include_package_data = True,
+                "stimela/utils", "stimela/cargo/cab",
+                "stimela/cargo/base"],
       package_data={"stimela/cargo": [
           "cab/*/Dockerfile",
           "base/*/Dockerfile",

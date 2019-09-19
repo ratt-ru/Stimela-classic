@@ -1,0 +1,10 @@
+include LICENSE
+include README.rst
+include CHANGES.md
+
+recursive-include Dockerfile
+recursive-include src run.py run.py
+recursive-exclude cargo/base/* Dockerfile xvfb.init.d
+recursive-exclude cargo/cab/* Dockerfile xvfb.init.d
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

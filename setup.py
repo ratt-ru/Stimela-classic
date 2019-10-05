@@ -2,13 +2,10 @@
 
 import os
 
-try:
-  from setuptools import setup
-except ImportError as e:
-  from distutils.core import setup
+from setuptools import setup
 
 setup(name = "stimela",
-    version = "1.1.0",
+    version = "1.4.0",
     description = "Dockerized radio interferometry scripting framework",
     author = "Sphesihle Makhathini",
     author_email = "sphemakh@gmail.com",
@@ -20,7 +17,10 @@ setup(name = "stimela",
                                    "cab//types/*.yml",
                                    ]
                    },
-    install_requires = ["pyyaml", "scriptcwl", "toil"],
+    install_requires = ["pyyaml", 
+    "scriptcwl", 
+    "toil",
+    "cwltool"],
     scripts = ["bin/" + i for i in os.listdir("bin")],
     classifiers = [],
      )

@@ -1,23 +1,24 @@
 ## Auto generated cwl file
-cwlVersion: v1.0
+cwlVersion: v1.1
 class: CommandLineTool
 
 requirements:
-  - class: DockerRequirement
-    dockerImageId: ska-sa/den
-  - class: InlineJavascriptRequirement
-  - class: InitialWorkDirRequirement
+ DockerRequirement:
+    dockerImageId: stimela/tigger:1.2.0
+  InitialWorkDirRequirement:
     listing:
     - entry: $(inputs.input-image)
-      writable: false
+      writable: true
     listing:
     - entry: $(inputs.input-skymodel)
-      writable: false
+      writable: true
     listing:
     - entry: $(inputs.psf-file)
-      writable: false
+      writable: true
+    InplaceUpdateRequirement:
+    inplaceUpdate: true
+
 baseCommand: tigger-restore
-stdout: log-tigger_restore.txt
 
 inputs:
   f:

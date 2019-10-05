@@ -1,11 +1,11 @@
-cwlVersion: v1.0
+cwlVersion: v1.1
 class: CommandLineTool
 
 requirements:
-  - class: DockerRequirement
-    dockerPull: sphemakh/den
-  - class: InlineJavascriptRequirement
-  - class: InitialWorkDirRequirement
+  DockerRequirement:
+    dockerPull: stimela/aoflagger:1.2.0
+  InlineJavascriptRequirement:
+  InitialWorkDirRequirement:
     listing:
     - entry: $(inputs.ms)
       writable: true
@@ -80,4 +80,4 @@ outputs:
   ms_out:
     type: Directory
     outputBinding:
-       glob: $( inputs.ms.basename )
+       outputEval: $(inputs.ms)

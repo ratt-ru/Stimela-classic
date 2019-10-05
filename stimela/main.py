@@ -155,7 +155,7 @@ def cabs(argv):
 
     if args.list:
         cabfiles = os.listdir("{0:s}/cargo/cab".format(pckgdir))
-        print( ", ".join( [ a[:-4] for a in cabfiles] ))
+        print(( ", ".join( [ a[:-4] for a in cabfiles] )))
     elif args.list_summary:
         cabfiles = glob.glob("{0:s}/cargo/cab".format(pckgdir))
     elif args.info:
@@ -233,8 +233,8 @@ def run(argv):
 
                 GLOBALS[key] = eval("{:s}('{:s}')".format(_type, value))
 
-    execfile(args.script, _globals)
-
+    with open(args.script, "r") as stdr:
+        exec(stdr.read(), _globals)
 
 
 def main(argv):

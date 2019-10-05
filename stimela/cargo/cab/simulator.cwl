@@ -1,25 +1,25 @@
-cwlVersion: v1.0
+cwlVersion: v1.1
 class: CommandLineTool
 
-baseCommand: meqtree-pipeliner.py
-
-hints:
-  DockerRequirement:
-      dockerPull: gijzelaerr/spiel
-
 requirements:
-  - class: InlineJavascriptRequirement
-  - class: InitialWorkDirRequirement
+  DockerRequirement:
+    dockerPull: stimela/meqtrees:1.2.0
+  InlineJavascriptRequirement: {}
+  InitialWorkDirRequirement:
     listing:
-      - entry: $(inputs.ms)
+      - entry: $(inputs.msname)
         writable: true
+  InplaceUpdateRequirement:
+    inplaceUpdate: true
+
+baseCommand: meqtree-pipeliner.py
 
 arguments: ['--mt', '$( runtime.cores )',
     '-c', '$( inputs.config.path )',
     '[sim]',
     'ms_sel.input_column=$( inputs.input_column )',
     'ms_sel.field_index=$( inputs.field_index )',
-    'ms_sel.msname=$( inputs.ms.path )',
+    'ms_sel.msname=$( inputs.msname.path )',
     'me.use_smearing=$( inputs.use_smearing )',
     'sim_mode=$( inputs.sim_mode )',
     'noise_stddev=$( inputs.sefd /  Math.sqrt( 2 * inputs.dtime * inputs.dfreq ) )',
@@ -41,7 +41,7 @@ arguments: ['--mt', '$( runtime.cores )',
     '=_simulate_MS']
 
 inputs:
-  ms:
+  msname:
     type: Directory
 
   config:
@@ -69,7 +69,7 @@ inputs:
 
   sim_mode:
     type: string?
-    default: sim only
+    default: "sim only"
 
   sefd:
     type: float?
@@ -92,7 +92,7 @@ inputs:
 
   gain_errors:
     type: int?
-    default: 1
+    default: 0
 
   gainamp_max_period:
     type: float?
@@ -126,9 +126,8 @@ inputs:
     type: float?
     default: 5
 
-
 outputs:
-   ms_out:
+   msname_out:
      type: Directory
      outputBinding:
-       glob: "*.ms"
+       outputEval: $(inputs.msname)

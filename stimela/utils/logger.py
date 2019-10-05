@@ -4,7 +4,7 @@ import json
 import yaml
 import time
 import subprocess
-from cStringIO import StringIO as io
+from io import StringIO as io
 import codecs
 from datetime import datetime
 
@@ -39,7 +39,7 @@ class StimelaLogger(object):
     def log_image(self, name, image_dir, replace=False, cab=False):
         info = self._inspect(name)
 
-        if name not in self.info['images'].keys() or replace:
+        if name not in list(self.info['images'].keys()) or replace:
             self.info['images'][name] = {
                 'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
                 'ID'        :   info['Id'].split(':')[1],
@@ -47,37 +47,37 @@ class StimelaLogger(object):
                 'DIR'       :   image_dir, 
             }
         else:
-            print('Image {0} has already been logged.'.format(name))
+            print(('Image {0} has already been logged.'.format(name)))
 
     def log_container(self, name):
         info = self._inspect(name)
 
-        if name not in self.info['containers'].keys():
+        if name not in list(self.info['containers'].keys()):
             self.info['containers'][name] = {
                 'TIME'      :   info['Created'].split('.')[0].replace('Z', '0'),
                 'IMAGE'     :   info['Config']['Image'],
                 'ID'        :   info['Id'],
             }
         else:
-            print('contaier {0} has already been logged.'.format(name))
+            print(('contaier {0} has already been logged.'.format(name)))
 
     def log_process(self, pid, name):
         pid = str(pid)
         timestamp = time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime())
-        if pid not in self.info['processes'].keys():
+        if pid not in list(self.info['processes'].keys()):
             self.info['processes'][pid] = {
                 'NAME'  :   name,
                 'TIME'  :   timestamp,
             }
         else:
-            print('PID {0} has already been logged.'.format(pid))
+            print(('PID {0} has already been logged.'.format(pid)))
 
 
     def remove(self, ltype, name):
         try:
             self.info[ltype].pop(str(name))
         except:
-            print('WARNING:: Could not remove object \'{0}:{1}\' from logger'.format(ltype, name))
+            print(('WARNING:: Could not remove object \'{0}:{1}\' from logger'.format(ltype, name)))
     
     
     def read(self, lfile=None):
@@ -100,14 +100,14 @@ class StimelaLogger(object):
 
 
     def display(self, ltype):
-        things = sorted(self.info[ltype].items(), key=lambda a: a[1]['TIME'])
+        things = sorted(list(self.info[ltype].items()), key=lambda a: a[1]['TIME'])
         if ltype == 'images':
-            print('{0:<36}      {1:<24}     {2:<24}'.format('IMAGE', 'ID', 'CREATED/PULLED'))
+            print(('{0:<36}      {1:<24}     {2:<24}'.format('IMAGE', 'ID', 'CREATED/PULLED')))
             for name, thing in things:
-                print('{0:<36}      {1:<24}     {2:<24}'.format(name, thing['ID'][:8], thing['TIME']))
+                print(('{0:<36}      {1:<24}     {2:<24}'.format(name, thing['ID'][:8], thing['TIME'])))
 
         if ltype == 'containers':
-            print('{0:<36}      {1:<24}     {2:<24}     {3:<24}      {4:<24}'.format('CONTAINER','CAB IMAGE', 'ID', 'STARTED', 'UPTIME'))
+            print(('{0:<36}      {1:<24}     {2:<24}     {3:<24}      {4:<24}'.format('CONTAINER','CAB IMAGE', 'ID', 'STARTED', 'UPTIME')))
             for name, thing in things:
                 started = datetime.strptime(thing['TIME'], '%Y-%m-%dT%H:%M:%S')
                 finished = datetime.utcnow()
@@ -116,10 +116,10 @@ class StimelaLogger(object):
                 mins, secs = divmod(mins*60, 60)
 
                 uptime = '{0:d}:{1:d}:{2:.2f}'.format(int(hours), int(mins), secs)
-                print('{0:<36}      {1:<24}     {2:<24}     {3:<24}      {4:<24}'.format(name, thing['IMAGE'], thing['ID'][:8], thing['TIME'], uptime))
+                print(('{0:<36}      {1:<24}     {2:<24}     {3:<24}      {4:<24}'.format(name, thing['IMAGE'], thing['ID'][:8], thing['TIME'], uptime)))
 
         if ltype == 'processes':
-            print('{0:<36}      {1:<24}     {2:<24}     {3:24}'.format('PID','NAME', 'STARTED', 'UPTIME'))
+            print(('{0:<36}      {1:<24}     {2:<24}     {3:24}'.format('PID','NAME', 'STARTED', 'UPTIME')))
             for name, thing in things:
                 started = datetime.strptime(thing['TIME'], '%Y-%m-%dT%H:%M:%S')
                 finished = datetime.utcnow()
@@ -128,4 +128,4 @@ class StimelaLogger(object):
                 mins, secs = divmod(mins*60, 60)
 
                 uptime = '{0:d}:{1:d}:{2:.2f}'.format(int(hours), int(mins), secs)
-                print('{0:<36}      {1:<24}     {2:<24}     {3:24}'.format(name,thing['NAME'], thing['TIME'], uptime))
+                print(('{0:<36}      {1:<24}     {2:<24}     {3:24}'.format(name,thing['NAME'], thing['TIME'], uptime)))

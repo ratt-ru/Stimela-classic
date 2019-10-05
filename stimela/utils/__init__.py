@@ -48,7 +48,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         Example: _run("ls", ["-lrt", "../"])
     """
 
-    cmd = " ".join([command]+ map(str, options) )
+    cmd = " ".join([command]+ list(map(str, options)) )
 
     if log:
         log.info("Running: %s"%cmd)
@@ -92,14 +92,14 @@ def pper(iterable, command, cpus=None, stagger=2, logger=None):
         raise TypeError("Can not iterate over [%s]. Make its iterable"%iterable)
 
     if not callable(command):
-        raise TypeError("command [%] is not callable"%(command.func_name))
+        raise TypeError("command [%] is not callable"%(command.__name__))
 
     message = "Iterating over :: %s"%repr(iterable)
 
     if logger:
         logger.info(message)
     else:
-        print message
+        print(message)
 
     active = manager.Value("d", 0)
     
@@ -226,7 +226,7 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
         loadthese.append("os")
 
     if loadthese:
-        exclude = filter(lambda line: line.startswith("import") or line.startswith("from"), loadthese)
+        exclude = [line for line in loadthese if line.startswith("import") or line.startswith("from")]
         for line in loadthese:
             if line not in exclude:
                 line = "import %s"%line
@@ -245,8 +245,8 @@ def icasa(taskname, mult=None, clearstart=False, loadthese=[],**kw0):
     run_cmd = """ """
     for kw in mult:
         task_cmds = []
-        for key,val in kw.iteritems():
-            if isinstance(val,(str, unicode)):
+        for key,val in list(kw.items()):
+            if isinstance(val,str):
                  val = '"%s"'%val
             task_cmds .append('%s=%s'%(key,val))
 
@@ -263,14 +263,14 @@ os.chdir('%s')
     tf.flush()
     t0 = time.time()
     # all logging information will be in the pyxis log files 
-    print("Running {}".format(run_cmd))
+    print(("Running {}".format(run_cmd)))
     xrun("cd", [td, "&& casa --nologger --log2term --nologfile -c", tf.name])
 
     # log taskname.last 
     task_last = '%s.last'%taskname
     if os.path.exists(task_last):
         with open(task_last,'r') as last:
-            print('%s.last is: \n %s'%(taskname, last.read()))
+            print(('%s.last is: \n %s'%(taskname, last.read())))
 
     # remove temp directory. This also gets rid of the casa log files; so long suckers!
     xrun("rm", ["-fr ", td, task_last])
@@ -322,7 +322,7 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
     for i, hdu0 in enumerate(_sorted):
         h = hdu0[0].header
         d = hdu0[0].data
-        imslice[axis] = range(sum(nn[:i]),sum(nn[:i+1]) )
+        imslice[axis] = list(range(sum(nn[:i]),sum(nn[:i+1])))
         data[imslice] = d 
         if crval > h['CRVAL%d'%fits_ind]:
             crval =  h['CRVAL%d'%fits_ind]
@@ -332,7 +332,7 @@ def stack_fits(fitslist, outname, axis=0, ctype=None, keep_old=False, fits=False
     hdr['CRPIX%d'%fits_ind] = 1 
 
     pyfits.writeto(outname, data, hdr, clobber=True)
-    print("Successfully stacked images. Output image is %s"%outname)
+    print(("Successfully stacked images. Output image is %s"%outname))
 
     # remove old files
     if not keep_old:
@@ -353,7 +353,7 @@ def substitute_globals(string, globs=None):
 
 def get_imslice(ndim):
     imslice = []
-    for i in xrange(ndim):
+    for i in range(ndim):
         if i<ndim-2:
             imslice.append(0)
         else:
@@ -381,7 +381,7 @@ def addcol(msname, colname=None, shape=None,
         print('Column already exists')
 
     except RuntimeError:
-        print('Attempting to add %s column to %s'%(colname,msname))
+        print(('Attempting to add %s column to %s'%(colname,msname)))
 
         from pyrap.tables import maketabdesc
         valuetype = valuetype or 'complex'
@@ -462,7 +462,7 @@ def copycol(msname, fromcol, tocol):
 def cab_dict_update(dictionary, key=None, value=None, options=None):
     if options is None:
         options = {key:value}
-    for key, value in options.iteritems():
+    for key, value in list(options.items()):
         dictionary[key] = dictionary.pop(key, None) or value
     return dictionary
 
@@ -484,8 +484,8 @@ def compute_vis_noise(msname, sefd, spw_id=0):
     tab.close()
     spwtab.close()
 
-    print(">>> %s freq %.2f MHz (lambda=%.2fm), bandwidth %.2g kHz, %.2fs integrations, %.2fh synthesis"%(msname, freq0*1e-6, wavelength, bw*1e-3, dt, dtf/3600))
+    print((">>> %s freq %.2f MHz (lambda=%.2fm), bandwidth %.2g kHz, %.2fs integrations, %.2fh synthesis"%(msname, freq0*1e-6, wavelength, bw*1e-3, dt, dtf/3600)))
     noise = sefd/math.sqrt(abs(2*bw*dt))
-    print(">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy"%(sefd, noise*1000))
+    print((">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy"%(sefd, noise*1000)))
 
     return noise 

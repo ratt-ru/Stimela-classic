@@ -1,20 +1,17 @@
-cwlVersion: v1.0
+cwlVersion: v1.1
 class: CommandLineTool
 
 baseCommand: simms
 
 requirements:
-    - class: EnvVarRequirement
-      envDef:
-        USER: root
-
-hints:
   DockerRequirement:
-      dockerPull: gijzelaerr/spiel
-
+    dockerImageId: stimela/simms:1.2.0
+  InlineJavascriptRequirement: {}
+  EnvVarRequirement:
+    envDef:
+      USER: root
 
 inputs:
-
   msname:
     type: string?
     doc: Name out simulated MS file
@@ -65,7 +62,7 @@ inputs:
       prefix: --nchan
 
 outputs:
-   ms:
-     type: Directory
-     outputBinding:
-       glob: "*.ms"
+  msname_out:
+    type: Directory
+    outputBinding:
+      glob: $(inputs.msname)

@@ -1,11 +1,11 @@
-cwlVersion: v1.0
+cwlVersion: v1.1
 class: CommandLineTool
 
 requirements:
-  - class: DockerRequirement
-    dockerImageId: ska-sa/den
-  - class: InlineJavascriptRequirement
-  - class: InitialWorkDirRequirement
+  DockerRequirement:
+    dockerImageId: stimela/rfimasker:1.2.0
+  InlineJavascriptRequirement: {}
+  InitialWorkDirRequirement:
     listing:
     - entry: $(inputs.ms)
       writable: true

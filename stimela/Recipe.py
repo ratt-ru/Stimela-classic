@@ -135,6 +135,7 @@ class Recipe(object):
         if self.toil:
             subprocess.check_call([
                 "cwltoil",
+                "--enable-ext",
                 "--logFile", self.logfile,
                 "--outdir", self.outdir,
                 self.workflow.workflow_file,
@@ -147,6 +148,7 @@ class Recipe(object):
                 cache = []
             subprocess.check_call([
                 "cwltool",
+                "--enable-ext",
                 "--outdir", self.outdir,
             ] + cache + [
                 self.workflow.workflow_file,

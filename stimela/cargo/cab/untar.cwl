@@ -1,11 +1,7 @@
-cwlVersion: v1.0
+cwlVersion: v1.1
 class: CommandLineTool
 
 baseCommand: tar
-
-hints:
-  DockerRequirement:
-      dockerPull: sphemakh/den 
 
 arguments: 
   - xvf

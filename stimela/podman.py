@@ -128,7 +128,7 @@ class Container(object):
 
         self._print(
             "Instantiating container [{}]. The container ID is printed below.".format(self.name))
-        utils.xrun("podman create", args + [volumes, environs,
+        utils.xrun("podman create", args + [volumes, environs, "--rm",
                                             "-w %s" % (self.WORKDIR) if self.WORKDIR else "",
                                             "--name", self.name, "--shm-size", self.shared_memory,
                                             self.image,
@@ -168,15 +168,12 @@ class Container(object):
 
         self.cont_logger.log_container(self.name)
         self.cont_logger.write()
-        try:
-            self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
-                self.name, self.time_out))
-            utils.xrun("podman", ["start", "-a", self.name],
-                       timeout=self.time_out,
-                       kill_callback=lambda: utils.xrun("podman", ["kill", self.name]))
-        except KeyboardInterrupt:
-            utils.xrun("podman", ["kill", self.name])
-            raise
+        self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
+            self.name, self.time_out))
+
+        utils.xrun("podman", ["start", "-a", self.name],
+                   timeout=self.time_out,
+                   kill_callback=lambda: utils.xrun("podman", ["kill", self.name]))
 
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime

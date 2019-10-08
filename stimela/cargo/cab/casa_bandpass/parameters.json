@@ -204,7 +204,7 @@
         }, 
         {
             "info": "Spectral windows combinations to form for gaintables(s)", 
-            "dtype": "list:list", 
+            "dtype": "list:str", 
             "default": null, 
             "name": "spwmap"
         }, 

@@ -41,7 +41,7 @@
         {
             "info": "Optional. Invert UVW coordinates. Useful if we want compare our visibilities against MeqTrees", 
             "dtype": "bool", 
-            "default": false, 
+            "default": true, 
             "name": "invert-uvw"
         }, 
         {

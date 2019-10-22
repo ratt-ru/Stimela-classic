@@ -1059,10 +1059,7 @@ class Recipe(object):
                     "An unhandled exception has occured. This is a bug, please report")
 
             finally:
-                if job.jtype == 'docker' and job.created:
-                    job.job.stop()
-                    job.job.remove()
-                elif job.jtype == 'singularity' and job.created:
+                if job.jtype == 'singularity' and job.created:
                     job.job.stop()
 
         self.log.info(

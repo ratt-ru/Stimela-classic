@@ -1,5 +1,5 @@
 {
-    "task": "casa_plotuv", 
+    "task": "casa47_plotuv", 
     "base": "stimela/casa", 
     "tag": "0.3.0", 
     "description": "Plot the uv distribution", 

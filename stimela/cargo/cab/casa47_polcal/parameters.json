@@ -1,5 +1,5 @@
 {
-    "task": "casa_polcal", 
+    "task": "casa47_polcal", 
     "base": "stimela/casa", 
     "tag": "0.3.0", 
     "description": "Specify Calibration Values of Various Types", 

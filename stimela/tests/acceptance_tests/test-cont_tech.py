@@ -97,24 +97,24 @@ class singularity_test(unittest.TestCase):
 #           pipeline.run()
 
 
-#       def testPodman(self):
-#           global INPUT, MSDIR, OUTPUT, MS
+        def testPodman(self):
+            global INPUT, MSDIR, OUTPUT, MS
 
-#           pipeline = stimela.Recipe("Podman Test",
-#                             ms_dir=MSDIR,
-#                             JOB_TYPE="podman",
-#                             )
+            pipeline = stimela.Recipe("Podman Test",
+                              ms_dir=MSDIR,
+                              JOB_TYPE="podman",
+                              )
 
-#           pipeline.add("cab/casa_listobs",
-#                        "simms_example",
-#                        {
-#                           "vis"       :   MS,
-#                           "listfile"  :   "obsinfo.txt",
-#                        },
-#                        input=INPUT,
-#                        output=OUTPUT,
-#                        cpus=2.5,
-#                        memory_limit="2gb",
-#                        time_out=300)
+            pipeline.add("cab/casa_listobs",
+                         "simms_example",
+                         {
+                            "vis"       :   MS,
+                            "listfile"  :   "obsinfo.txt",
+                         },
+                         input=INPUT,
+                         output=OUTPUT,
+                         cpus=2.5,
+                         memory_limit="2gb",
+                         time_out=300)
 
-#           pipeline.run()
+            pipeline.run()

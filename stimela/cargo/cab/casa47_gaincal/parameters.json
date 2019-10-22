@@ -1,5 +1,5 @@
 {
-    "task": "casa_gaincal", 
+    "task": "casa47_gaincal", 
     "base": "stimela/casa", 
     "tag": "0.3.0", 
     "description": "Specify Calibration Values of Various Types", 

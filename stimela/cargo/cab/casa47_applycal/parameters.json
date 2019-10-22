@@ -1,5 +1,5 @@
 {
-    "task": "casa_applycal", 
+    "task": "casa47_applycal", 
     "base": "stimela/casa", 
     "tag": "0.3.0", 
     "description": "Apply calibrations solutions(s) to data", 

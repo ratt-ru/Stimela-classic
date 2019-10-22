@@ -120,7 +120,7 @@ class Container(object):
 
         self._print(
             "Instantiating container [{}]. The container ID is printed below.".format(self.name))
-        utils.xrun("docker create", list(args) + [volumes, environs,
+        utils.xrun("docker create", list(args) + [volumes, environs, "--rm",
                                                   "-w %s" % (self.WORKDIR) if self.WORKDIR else "",
                                                   "--name", self.name, "--shm-size", self.shared_memory,
                                                   self.image,
@@ -160,16 +160,11 @@ class Container(object):
 
         self.cont_logger.log_container(self.name)
         self.cont_logger.write()
-        try:
-            self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
-                self.name, self.time_out))
-            utils.xrun("docker", ["start", "-a", self.name],
+        self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
+            self.name, self.time_out))
+        utils.xrun("docker", ["start", "-a", self.name],
                        timeout=self.time_out,
                        kill_callback=lambda: utils.xrun("docker", ["kill", self.name]))
-        except KeyboardInterrupt:
-            utils.xrun("docker", ["kill", self.name])
-            raise
-
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime
         self._print(

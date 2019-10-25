@@ -92,7 +92,9 @@ class Container(object):
                                                           self.WORKDIR) if self.WORKDIR else "",
                                                       "--rm",
                                                       "--dri" if self.use_graphics else "",
-                                                      self.name, self.COMMAND or ""], timeout=self.time_out)
+                                                      self.name, self.COMMAND or ""], 
+                   logfile=list(filter(lambda x: "log" in x, self.volumes))[0].split(":")[0],
+                   timeout=self.time_out)
 
         self.status = "running"
         uptime = seconds_hms(time.time() - tstart)

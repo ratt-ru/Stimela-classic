@@ -13,9 +13,9 @@ ln -s $WORKSPACE/../../../.udocker ${WORKSPACE_ROOT}/.udocker
 ln -s ${SINGULARITY_STORAGE} ${WORKSPACE_ROOT}/.singularity
 
 # setup podman image storage. Using .singularity volume
-POD_STORAGE="${WORKSPACE_ROOT}/.local/share/containers/storage"
-mkdir -p ${POD_STORAGE} ${SINGULARITY_STORAGE}/podman
-ln -s ${SINGULARITY_STORAGE}/podman ${POD_STORAGE}
+POD_STORAGE="${WORKSPACE}/../../../.local"
+#mkdir -p ${POD_STORAGE} ${SINGULARITY_STORAGE}/podman
+ln -s ${POD_STORAGE} ${WORKSPACE_ROOT}/.local
 
 
 # Install Stimela into a virtual env

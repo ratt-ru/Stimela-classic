@@ -102,6 +102,7 @@ class Container(object):
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
         utils.xrun("singularity run", ["instance://{0:s} {1:s}".format(self.name, self.RUNSCRIPT)],
+                   logfile=list(filter(lambda x: "log" in x, self.volumes))[0].split(":")[0],
                    timeout=self.time_out, kill_callback=self.stop)
 
         self.status = "running"

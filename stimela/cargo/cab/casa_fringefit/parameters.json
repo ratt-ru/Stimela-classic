@@ -1,10 +1,10 @@
 {
     "task": "casa_fringefit", 
     "base": "stimela/casa", 
-    "tag": "1.2.0", 
+    "tag": "1.2.3", 
     "description": "Phase offsets, groups delays and delay rates are calculated with respect to a specified referance antenna by a two-dimensional FFT and subsequent least-squares optimisation.",
     "prefix": "-", 
-    "binary": "gaincal", 
+    "binary": "fringefit", 
     "msdir": true, 
     "parameters": [
         {
@@ -39,7 +39,7 @@
         {
             "info": "Other data selection parameters", 
             "dtype": "bool", 
-            "default": true, 
+            "default": null, 
             "name": "selectdata"
         }, 
         {
@@ -47,12 +47,6 @@
             "dtype": "str", 
             "default": null, 
             "name": "timerange"
-        }, 
-        {
-            "info": "Select data within uvrange (default units meters)", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "uvrange"
         }, 
         {
             "info": "Select data based on antenna/baseline", 
@@ -82,7 +76,7 @@
             "name": "zerorates",
             "info" : "Zero delay-rates in solution tabl",
             "dtype" : "bool",
-            "default" : false
+            "default" : null
         },
         {
             "info": "Solution interval: egs. 'inf', '60s' (see help)", 
@@ -107,45 +101,45 @@
             "name": "refant"
         }, 
         {
-            "info": "Minimum baselines _per antenna_ required for solve", 
-            "dtype": "int", 
-            "default": 4, 
-            "name": "minblperant"
-        }, 
-        {
             "info": "Reject solutions below this SNR", 
             "dtype": "float", 
             "default": 3.0, 
             "name": "minsnr"
         }, 
         {
-            "info": "Spline timescale(sec); All spw's are first averaged.", 
-            "dtype": "float", 
-            "default": 3600.0, 
-            "name": "splinetime"
+            "info": "Constrain FFT delay search to a window; a two-element list, units of nanoseconds",
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "delaywindow"
         }, 
         {
-            "info": "The phase-unwrapping algorithm", 
+            "info": "Constrain FFT rate search to a window; a two-element list, units of nanoseconds",
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "ratewindow"
+        }, 
+        {
+            "info": "Maximum number of iterations for least-squares solver", 
             "dtype": "int", 
-            "default": 3, 
-            "name": "npointaver"
+            "default": null, 
+            "name": "niter"
         }, 
         {
-            "info": "Wrap the phase for jumps greater than this value (degrees)", 
-            "dtype": "float", 
-            "default": 180.0, 
-            "name": "phasewrap"
-        }, 
+            "info": "Refine estimates of delay and rate with global least-squares solver", 
+            "dtype": "bool",
+            "default": true, 
+            "name": "globalsolve"
+        },
         {
             "info": "Append solutions to the (existing) table", 
             "dtype": "bool", 
-            "default": false, 
+            "default": null, 
             "name": "append"
         }, 
         {
             "info": "Use callib or traditional cal apply parameters", 
             "dtype": "bool", 
-            "default": false, 
+            "default": null, 
             "name": "docallib"
         }, 
         {
@@ -186,8 +180,8 @@
         {
             "info": "Apply parallactic angle correction on the fly", 
             "dtype": "bool", 
-            "default": false, 
-            "name": "parang"
+            "default": null, 
+            "name": "paran"
         }
     ]
 }

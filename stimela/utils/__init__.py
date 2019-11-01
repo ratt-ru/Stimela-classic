@@ -19,6 +19,12 @@ import hashlib
 #from fcntl import fcntl, F_GETFL, F_SETFL
 #from os import O_NONBLOCK, read
 
+
+if sys.version_info >= (3, 0):
+    opEn = lambda f, mode: open(f, mode, encoding="utf-8")
+else:
+    opEn = open
+
 DEBUG = False
 INTERRUPT_TIME = 0.1  # seconds -- do not want to constantly interrupt the child process
 
@@ -114,7 +120,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             DEBUG and _print_info(
                 u"God mode on: has been running for {0:f}".format(currenttime - starttime))
             if logfile is not None and os.path.exists(logfile) and foutlog is None:
-                foutlog = open(logfile, "r")
+                foutlog = opEn(logfile, "r")
             if foutlog is not None:
                 out = foutlog.read()
                 (out != "") and _print_info(out) # read and advance pointer to the current end of file
@@ -124,7 +130,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
 
         # read whatever remains in the log file and advance pointer to the end of logfile
         if logfile is not None and os.path.exists(logfile) and foutlog is None:
-            foutlog = open(logfile, "r")
+            foutlog = opEn(logfile, "r")
         if foutlog is not None:
             out = foutlog.read()
             (out != "") and _print_info(out)
@@ -139,7 +145,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
 
 
 def readJson(conf):
-    with open(conf) as _std:
+    with open(conf, "r") as _std:
         jdict = yaml.safe_load(_std)
         return jdict
 
@@ -197,7 +203,7 @@ def change_Dockerfile_base_image(path, _from, label, destdir="."):
 
 def get_base_images(logfile, index=1):
 
-    with open(logfile) as std:
+    with opEn(logfile, "r") as std:
         string = std.read()
 
     separator = "[================================DONE==========================]"
@@ -279,7 +285,7 @@ os.chdir('%s')
     # log taskname.last
     task_last = '%s.last' % taskname
     if os.path.exists(task_last):
-        with open(task_last, 'r') as last:
+        with opEn(task_last, 'r') as last:
             print('%s.last is: \n %s' % (taskname, last.read()))
 
     # remove temp directory. This also gets rid of the casa log files; so long suckers!

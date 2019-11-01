@@ -4,7 +4,8 @@ import yaml
 import sharpener
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]
@@ -22,22 +23,12 @@ sharpener_file = '{:s}/sharpener_default.yml'.format(pkg_path)
 with open(sharpener_file) as f:
     list_doc = yaml.load(f)
 
-list_doc['general']['workdir'] = '{:s}/'.format(OUTPUT)
-
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
 
     if value is None:
         continue
-
-    if name in ['contname', 'cubename']:
-        list_doc['general'][name] = value.split('/')[-1]
-        continue
-    if name in ['catalog_file']:
-        list_doc['source_catalog'][name] = value.split('/')[-1]
-        continue
-         
 
     for key, val in list_doc.items():
         if type(val) == dict:
@@ -50,6 +41,14 @@ for param in cab['parameters']:
         else:
             if key == name:
                 list_doc[key] = value
+
+# Get the relative path from workdir
+list_doc['general']['contname'] = os.path.relpath(
+        list_doc['general']['contname'], list_doc['general']['workdir'])
+list_doc['general']['cubename'] = os.path.relpath(
+        list_doc['general']['cubename'], list_doc['general']['workdir'])
+list_doc['source_catalog']['catalog_file'] = os.path.relpath(
+        list_doc['source_catalog']['catalog_file'], list_doc['general']['workdir'])
 
 edited_file = 'sharpener_default.yml'
 with open(edited_file, "w") as f:

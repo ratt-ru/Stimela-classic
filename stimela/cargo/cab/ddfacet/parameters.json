@@ -1,7 +1,7 @@
 {
     "task": "ddfacet", 
     "base": "stimela/ddfacet", 
-    "tag": "1.1.0", 
+    "tag": "1.2.0", 
     "description": "DDFacet: a facet-based imager", 
     "prefix": "--", 
     "binary": "DDF.py", 
@@ -486,7 +486,7 @@
             "required": false, 
             "name": "Comp-GridDecorr", 
             "dtype": "float"
-        },
+        }, 
         {
             "info": "Maximum tolerated BDA decorrelation response factor for degridding", 
             "default": 0.02, 
@@ -494,7 +494,6 @@
             "name": "Comp-DegridDecorr", 
             "dtype": "float"
         }, 
-
         {
             "info": "FoV over which gridding decorrelation factor is computed", 
             "name": "Comp-GridFoV", 
@@ -1105,7 +1104,7 @@
             "required": false, 
             "name": "Hogbom-PolyFitOrder", 
             "dtype": "int"
-        },
+        }, 
         {
             "info": "URL for the TensorflowServer, e.g. grpc://tensorflow.server.com:8888/", 
             "default": "''", 
@@ -1290,18 +1289,18 @@
             "required": false, 
             "name": "Misc-RandomSeed", 
             "dtype": "int"
-        },
+        }, 
         {
-            "info": "Noise image to compute sigma for stopping threshold (in case specified it will replace Deconv-FluxThreshold)",
-            "dtype": "file",
-            "default": null,
-            "name": "Noise-Image",
+            "info": "Noise image to compute sigma for stopping threshold (in case specified it will replace Deconv-FluxThreshold)", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "Noise-Image", 
             "io": "input"
-        },
+        }, 
         {
-            "info": "Noise sigma for stopping deconvolution in the case where noise_image is provided (new thresh = sigma*noise_image.std())",
-            "dtype": "float",
-            "default": 3.0,
+            "info": "Noise sigma for stopping deconvolution in the case where noise_image is provided (new thresh = sigma*noise_image.std())", 
+            "dtype": "float", 
+            "default": 3.0, 
             "name": "Noise-Sigma"
         }
     ]

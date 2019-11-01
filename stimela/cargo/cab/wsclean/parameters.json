@@ -1,7 +1,7 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": "1.1.4", 
+    "tag": "1.2.0", 
     "description": "WSClean imaging software", 
     "prefix": "-", 
     "binary": "wsclean", 
@@ -633,25 +633,25 @@
             "default": false, 
             "name": "savesourcelist", 
             "mapping": "-save-source-list"
-        },
+        }, 
         {
-            "info": "list of model components from wsclean",
-            "dtype": "bool",
-            "default": false,
-            "name": "predict",
+            "info": "list of model components from wsclean", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "predict", 
             "mapping": "-predict"
-        },
+        }, 
         {
-            "info": "Noise image to compute sigma for stopping threshold (in case specified it will replace threshold)",
-            "dtype": "file",
-            "default": null,
-            "name": "noise-image",
+            "info": "Noise image to compute sigma for stopping threshold (in case specified it will replace threshold)", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "noise-image", 
             "io": "input"
-        },
+        }, 
         {
-            "info": "Noise sigma for stopping deconvolution in the case where noise-image is provided (new thresh = sigma*noise_image.std())",
-            "dtype": "float",
-            "default": 3.0,
+            "info": "Noise sigma for stopping deconvolution in the case where noise-image is provided (new thresh = sigma*noise_image.std())", 
+            "dtype": "float", 
+            "default": 3.0, 
             "name": "noise-sigma"
         }
     ]

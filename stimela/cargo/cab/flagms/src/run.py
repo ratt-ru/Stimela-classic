@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -26,17 +27,17 @@ for param in cab['parameters']:
             value = ','.join(value)
     if value is True:
         value = ""
-    
+
     if name == 'msname':
         msname = value
         if isinstance(msname, str):
             msname = [msname]
         continue
 
-    if name=='flagged-any':
+    if name == 'flagged-any':
         args += ['{0}flagged-any {1}'.format(cab['prefix'], a) for a in value]
         continue
 
-    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
+    args.append('{0}{1} {2}'.format(cab['prefix'], name, value))
 
 utils.xrun(cab['binary'], args+msname)

@@ -1,7 +1,7 @@
 {
     "task": "casa_gaincal", 
     "base": "stimela/casa", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "Specify Calibration Values of Various Types", 
     "prefix": "-", 
     "binary": "gaincal", 
@@ -209,13 +209,13 @@
         }, 
         {
             "info": "Temporal interpolation for each gaintable (=linear)", 
-            "dtype": "list", 
+            "dtype": "list:str", 
             "default": null, 
             "name": "interp"
         }, 
         {
             "info": "Spectral windows combinations to form for gaintables(s)", 
-            "dtype": "list:list", 
+            "dtype": "list:str", 
             "default": null, 
             "name": "spwmap"
         }, 

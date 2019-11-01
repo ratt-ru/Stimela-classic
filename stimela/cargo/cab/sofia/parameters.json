@@ -1,7 +1,7 @@
 {
     "task": "sofia", 
     "base": "stimela/sofia", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "SoFiA, the Source Finding Application, is a new HI source finding pipeline intended to detect and parameterise galaxies in HI data cubes. While the software is still under development, several stable versions of SoFiA have already been released. This wiki contains user documentation and technical information on SoFiA and its individual modules.", 
     "prefix": "--", 
     "binary": "sofia_pipeline.py", 
@@ -761,125 +761,125 @@
                 "negative", 
                 "all"
             ]
-        },
+        }, 
         {
-            "name": "port2tigger",
-            "info": null,
-            "dtype": "bool"
-        },
+            "info": null, 
+            "dtype": "bool", 
+            "name": "port2tigger"
+        }, 
         {
-            "name" : "pipeline.trackMemory",
-            "dtype": "bool",
-            "info": null
-        },
+            "info": null, 
+            "dtype": "bool", 
+            "name": "pipeline.trackMemory"
+        }, 
         {
-            "name": "steps.doFilterArtefacts",
-            "info": null,
-            "dtype": "bool"
-        },
+            "info": null, 
+            "dtype": "bool", 
+            "name": "steps.doFilterArtefacts"
+        }, 
         {
-            "name": "import.invertData",
-            "info": null,
-            "dtype": "bool"
-        },
+            "info": null, 
+            "dtype": "bool", 
+            "name": "import.invertData"
+        }, 
         {
-            "name": "import.sources",
-            "info": null,
-            "dtype": "list:str"
-        },
+            "info": null, 
+            "dtype": "list:str", 
+            "name": "import.sources"
+        }, 
         {
-            "name": "scaleNoise.gridSpectral",
-            "info": null,
-            "dtype": "int",
-            "default": 0
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "scaleNoise.gridSpectral"
+        }, 
         {
-            "name": "filterArtefacts.threshold",
-            "info": null,
-            "dtype": "float",
-            "default": 4.0
-        },
+            "info": null, 
+            "dtype": "float", 
+            "default": 4.0, 
+            "name": "filterArtefacts.threshold"
+        }, 
         {
-            "name": "filterArtefacts.dilation",
-            "info": null,
-            "dtype": "int",
-            "default": 3
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "filterArtefacts.dilation"
+        }, 
         {
-            "name": "merge.maxSizeX",
-            "info": null,
-            "dtype": "int",
-            "default": -1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "merge.maxSizeX"
+        }, 
         {
-            "name": "merge.maxSizeY",
-            "info": null,
-            "dtype": "int",
-            "default": -1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "merge.maxSizeY"
+        }, 
         {
-            "name": "merge.maxSizeZ",
-            "info": null,
-            "dtype": "int",
-            "default": -1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "merge.maxSizeZ"
+        }, 
         {
-            "name": "merge.minVoxels", 
-            "info": null,
-            "dtype": "int",
-            "default": 1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "merge.minVoxels"
+        }, 
         {
-            "name": "merge.maxVoxels", 
-            "info": null,
-            "dtype": "int",
-            "default": -1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "merge.maxVoxels"
+        }, 
         {
-            "name" : "merge.minLoS",
-            "info": null,
-            "dtype": "int",
-            "default": 1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": 1, 
+            "name": "merge.minLoS"
+        }, 
         {
-            "name" : "merge.maxLoS",
-            "info": null,
-            "dtype": "int",
-            "default": -1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "merge.maxLoS"
+        }, 
         {
-            "name": "merge.minFill",
-            "info": null,
-            "dtype": "int",
-            "default": -1
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": -1, 
+            "name": "merge.minFill"
+        }, 
         {
-            "name": "merge.maxFill",
-            "info": null,
-            "dtype": "int",
-            "default": 2
-        },
+            "info": null, 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "merge.maxFill"
+        }, 
         {
-            "name": "merge.minIntens",
-            "info": null,
-            "dtype": "float",
-            "default": -9e30
-        },
+            "info": null, 
+            "dtype": "float", 
+            "default": "-9e30", 
+            "name": "merge.minIntens"
+        }, 
         {
-            "name": "merge.maxIntens",
-            "info": null,
-            "dtype": "float",
-            "default": 9e30
-        },
+            "info": null, 
+            "dtype": "float", 
+            "default": "9e30", 
+            "name": "merge.maxIntens"
+        }, 
         {
-            "name": "merge.positivity",
-            "info": null,
-            "dtype": "bool"
-        },
+            "info": null, 
+            "dtype": "bool", 
+            "name": "merge.positivity"
+        }, 
         {
-            "name": "parameters.getUncertainties",
-            "info": null,
-            "dtype": "bool"
+            "info": null, 
+            "dtype": "bool", 
+            "name": "parameters.getUncertainties"
         }
     ]
 }

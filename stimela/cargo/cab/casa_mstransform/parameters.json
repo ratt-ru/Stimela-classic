@@ -1,7 +1,7 @@
 {
     "task": "casa_mstransform", 
     "base": "stimela/casa", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "Split the MS, combine/separate/regrid spws and do channel and time averaging", 
     "prefix": "-", 
     "binary": "mstransform", 
@@ -249,9 +249,9 @@
         }, 
         {
             "info": "Path to calibration library file", 
-            "dtype": "file",
-            "io": "input",
-            "name": "callib"
+            "dtype": "file", 
+            "name": "callib", 
+            "io": "input"
         }, 
         {
             "info": "Enable continuum subtraction as in task uvcontsub", 

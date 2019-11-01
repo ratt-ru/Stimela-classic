@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append("/scratch/stimela")
-import utils
+
+utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -25,7 +26,7 @@ for param in cab['parameters']:
 
     if value in [None, False]:
         continue
-    
+
     if name == 'image':
         inimage = ' '.join(value)
         continue
@@ -48,13 +49,14 @@ for param in cab['parameters']:
     elif value is True:
         value = ""
 
-    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
+    args.append('{0}{1} {2}'.format(cab['prefix'], name, value))
 
 if stack and axis:
-    args.append( '{0}stack {1}:{2}'.format(cab['prefix'], outimage, axis))
+    args.append('{0}stack {1}:{2}'.format(cab['prefix'], outimage, axis))
     outimage = None
 elif unstack and axis:
-    args.append( '{0}unstack {1}:{2}:{3}'.format(cab['prefix'], outimage, axis, chunk))
+    args.append('{0}unstack {1}:{2}:{3}'.format(
+        cab['prefix'], outimage, axis, chunk))
     outimage = None
 else:
     outimage = '{0}output {1}'.format(cab['prefix'], outimage)

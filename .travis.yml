@@ -4,6 +4,7 @@ matrix:
   - env: TARGET=py2
   - env: TARGET=py3
   - env: TARGET=mypy
+  - env: TARGET=pep8
   allow_failures:
   - env: TARGET=pep8
   - env: TARGET=mypy

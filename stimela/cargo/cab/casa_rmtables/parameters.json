@@ -1,7 +1,7 @@
 {
     "task": "casa_rmtables", 
     "base": "stimela/casa", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "This task removes tables if they are not being currently accessed via the casapy process. Note: if you have multiple sessions running bad things could happen if you remove a table being accessed by another process.", 
     "prefix": "-", 
     "binary": "rmtables", 

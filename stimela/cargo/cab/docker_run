@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+set -u
+/etc/init.d/xvfb start || echo "Virtual frame buffer not installed. You may not be able to plot with this cab" 
+python /scratch/code/run.py > $LOGFILE 2>&1
+EXIT_STAT=${PIPESTATUS[0]}
+/etc/init.d/xvfb stop || echo ""
+exit $EXIT_STAT

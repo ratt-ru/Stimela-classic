@@ -1,7 +1,7 @@
 {
     "task": "pybdsm", 
     "base": "stimela/pybdsf", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "Source finding in radio images", 
     "prefix": " ", 
     "binary": "python", 
@@ -10,9 +10,9 @@
         {
             "info": "Input image file name", 
             "name": "image", 
-            "default": null,
-            "dtype": "file",
             "io": "input", 
+            "default": null, 
+            "dtype": "file", 
             "mapping": "filename"
         }, 
         {
@@ -21,21 +21,18 @@
             "default": false, 
             "name": "adaptive_rms_box"
         }, 
-        
         {
-            "info": "Sources with pixels above adaptive_thresh*clipped_rms will be considered as bright sources. Minimum is 10.0.",
-            "dtype": "float",
-            "default": null,
+            "info": "Sources with pixels above adaptive_thresh*clipped_rms will be considered as bright sources. Minimum is 10.0.", 
+            "dtype": "float", 
+            "default": null, 
             "name": "adaptive_thresh"
-        },
+        }, 
         {
-            "info": "Box size, step size for rms/mean map calculation near bright sources. Specify as (box, step) in pixels.",
-            "dtype": "list:int",
-            "default": null,
+            "info": "Box size, step size for rms/mean map calculation near bright sources. Specify as (box, step) in pixels.", 
+            "dtype": "list:int", 
+            "default": null, 
             "name": "rms_box_bright"
-        },
-
-
+        }, 
         {
             "info": "Decompose Gaussian residual image into multiple scales", 
             "dtype": "bool", 
@@ -93,61 +90,55 @@
             "dtype": "bool", 
             "default": false, 
             "name": "flagging_opts"
-        },
-
+        }, 
         {
-            "info": "Flag Gaussian if centre is outside border - flag_bordersize pixels",
-            "dtype": "int",
-            "default": null,
+            "info": "Flag Gaussian if centre is outside border - flag_bordersize pixels", 
+            "dtype": "int", 
+            "default": null, 
             "name": "flag_bordersize"
-        },
+        }, 
         {
-            "info": "Flag Gaussian if area greater than flag_maxsize_bm times beam area",
-            "dtype": "float",
-            "default": 25,
+            "info": "Flag Gaussian if area greater than flag_maxsize_bm times beam area", 
+            "dtype": "float", 
+            "default": 25, 
             "name": "flag_maxsize_bm"
-        },
-
+        }, 
         {
-            "info": "Flag Gaussian if fwhm-contour times factor extends beyond island",
-            "dtype": "float",
-            "default": 0.5,
+            "info": "Flag Gaussian if fwhm-contour times factor extends beyond island", 
+            "dtype": "float", 
+            "default": 0.5, 
             "name": "flag_maxsize_fwhm"
-        },
+        }, 
         {
-            "info": "Flag Gaussian if x, y bounding box around sigma-contour is factor times island bbox",
-            "dtype": "float",
-            "default": 2.0,
+            "info": "Flag Gaussian if x, y bounding box around sigma-contour is factor times island bbox", 
+            "dtype": "float", 
+            "default": 2.0, 
             "name": "flag_maxsize_isl"
-        },
+        }, 
         {
-            "info": "Flag Gaussian if peak is greater than flag_maxsnr times image value at the peak",
-            "dtype": "float",
-            "default": 1.5,
+            "info": "Flag Gaussian if peak is greater than flag_maxsnr times image value at the peak", 
+            "dtype": "float", 
+            "default": 1.5, 
             "name": "flag_maxsnr"
-        },
-
+        }, 
         {
-            "info": "Flag Gaussian if peak is greater than flag_maxsnr times image value at the peak",
-            "dtype": "float",
-            "default": 0.7,
+            "info": "Flag Gaussian if peak is greater than flag_maxsnr times image value at the peak", 
+            "dtype": "float", 
+            "default": 0.7, 
             "name": "flag_minsize_bm"
-        },
+        }, 
         {
-            "info": "Flag Gaussian if peak is less than flag_minsnr times thresh_pix times local rms",
-            "dtype": "float",
-            "default": 0.6,
+            "info": "Flag Gaussian if peak is less than flag_minsnr times thresh_pix times local rms", 
+            "dtype": "float", 
+            "default": 0.6, 
             "name": "flag_minsnr"
-        },
+        }, 
         {
-            "info": "Flag sources smaller than flag_minsize_bm times beam area",
-            "dtype": "bool",
-            "default": false,
+            "info": "Flag sources smaller than flag_minsize_bm times beam area", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "flag_smallsrc"
-        },
-
-
-
+        }, 
         {
             "info": "Frequency in Hz of input image. E.g., frequency = 74e6. None => get from header.", 
             "dtype": "float", 
@@ -205,14 +196,13 @@
                 "average", 
                 "single"
             ]
-        },
+        }, 
         {
-            "info": "Weighting: 'unity' or 'rms'. Average channels with weights = 1 or 1/rms_clip^2 if collapse_mode = 'average'",
-            "dtype": "str",
-            "default": "unity",
+            "info": "Weighting: 'unity' or 'rms'. Average channels with weights = 1 or 1/rms_clip^2 if collapse_mode = 'average'", 
+            "dtype": "str", 
+            "default": "unity", 
             "name": "collapse_wt"
-        },
- 
+        }, 
         {
             "info": "Frequency in Hz of channels in input image when more than one channel is present. E.g., frequency_sp = [74e6, 153e6]. None => get from header", 
             "dtype": "list:float", 
@@ -226,228 +216,210 @@
             "name": "rms_box"
         }, 
         {
-            "info": "Show output options",
-            "dtype": "bool",
-            "default": false,
+            "info": "Show output options", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "output_opts"
-        },
-
-
+        }, 
         {
-            "info": "Directory of input FITS files. If not set, get from filename",
-            "dtype": "file",
-            "default": null,
-            "name": "indir",
-            "io" : "input"
-        },
+            "info": "Directory of input FITS files. If not set, get from filename", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "indir", 
+            "io": "input"
+        }, 
         {
-            "info": "'overwrite'/'append': If output_all=True, delete existing files or append a new directory",
-            "dtype": "str",
-            "default": "overwrite",
+            "info": "'overwrite'/'append': If output_all=True, delete existing files or append a new directory", 
+            "dtype": "str", 
+            "default": "overwrite", 
             "name": "opdir_overwrite"
-        },
+        }, 
         {
-            "info": "Write out all files automatically to directory 'filename_pybdsm'",
-            "dtype": "bool",
-            "default": false,
+            "info": "Write out all files automatically to directory 'filename_pybdsm'", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "output_all"
-        },
-      
+        }, 
         {
-            "info": "Print basic timing information",
-            "dtype": "bool",
-            "default": false,
+            "info": "Print basic timing information", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "print_timing"
-        },
+        }, 
         {
-            "info": "Suppress text output to screen. Output is still sent to the log file as usual",
-            "dtype": "bool",
-            "default": false,
+            "info": "Suppress text output to screen. Output is still sent to the log file as usual", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "quiet"
-        },
+        }, 
         {
-            "info": "Save background mean image as fits file",
-            "dtype": "bool",
-            "default": false,
+            "info": "Save background mean image as fits file", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "savefits_meanim"
-        },
+        }, 
         {
-            "info": "Save norm image as fits file",
-            "dtype": "bool",
-            "default": false,
+            "info": "Save norm image as fits file", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "savefits_normim"
-        },
+        }, 
         {
-            "info": "Save island rank image as fits file",
-            "dtype": "bool",
-            "default": false,
+            "info": "Save island rank image as fits file", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "savefits_rankim"
-        },
+        }, 
         {
-            "info": "Save residual image as fits file",
-            "dtype": "bool",
-            "default": false,
+            "info": "Save residual image as fits file", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "savefits_residim"
-        },
+        }, 
         {
-            "info": "Save background rms image as fits file",
-            "dtype": "bool",
-            "default": false,
+            "info": "Save background rms image as fits file", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "savefits_rmsim"
-        },
+        }, 
         {
-            "info": "Name of the run, to be prepended to the name of the output directory. E.g., solname='Run_1'",
-            "dtype": "str",
-            "default": null,
+            "info": "Name of the run, to be prepended to the name of the output directory. E.g., solname='Run_1'", 
+            "dtype": "str", 
+            "default": null, 
             "name": "solnname"
-        },
+        }, 
         {
-            "info": "Print out extra information during fitting",
-            "dtype": "bool",
-            "default": false,
+            "info": "Print out extra information during fitting", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "verbose_fitting"
-        },
-
+        }, 
         {
-            "info": "Find polarisation properties",
-            "dtype": "bool",
-            "default": false,
+            "info": "Find polarisation properties", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "polarisation_do"
-        },
+        }, 
         {
-            "info": "Check the polarized intesity (PI) image for sources not found in Stokes I",
-            "dtype": "bool",
-            "default": false,
+            "info": "Check the polarized intesity (PI) image for sources not found in Stokes I", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "pi_fit"
-        },
-
+        }, 
         {
-            "info": "Threshold for PI island boundary in number of sigma above the mean. Uses thresh_isl if not set.",
-            "dtype": "float",
-            "default": null,
+            "info": "Threshold for PI island boundary in number of sigma above the mean. Uses thresh_isl if not set.", 
+            "dtype": "float", 
+            "default": null, 
             "name": "pi_thresh_isl"
-        },
-       {
-            "info": "Source detection threshold for PI image: threshold for the island peak in number of sigma above the mean. Uses thresh_pix if not set.",
-            "dtype": "float",
-            "default": null,
+        }, 
+        {
+            "info": "Source detection threshold for PI image: threshold for the island peak in number of sigma above the mean. Uses thresh_pix if not set.", 
+            "dtype": "float", 
+            "default": null, 
             "name": "pi_thresh_pix"
-        },
-
+        }, 
         {
-            "info": "Calculate PSF variation across image",
-            "dtype": "bool",
-            "default": false,
+            "info": "Calculate PSF variation across image", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "psf_vary_do"
-        },
-
+        }, 
         {
-            "info": "FWHM of the PSF. Specify as (maj, min, pos ang E of N) in degrees. E.g., psf_fwhm = (0.06, 0.02, 13.3). Estimates from the image if not set",
-            "dtype": "list:float",
-            "default": null,
+            "info": "FWHM of the PSF. Specify as (maj, min, pos ang E of N) in degrees. E.g., psf_fwhm = (0.06, 0.02, 13.3). Estimates from the image if not set", 
+            "dtype": "list:float", 
+            "default": null, 
             "name": "psf_fwhm"
-        },
- 
+        }, 
         {
-            "info": "SNR above which all sources are taken to be unresolved. E.g., psf_high_snr = 20.0. If unset, no such selection is made",
-            "dtype": "float",
-            "default": null,
+            "info": "SNR above which all sources are taken to be unresolved. E.g., psf_high_snr = 20.0. If unset, no such selection is made", 
+            "dtype": "float", 
+            "default": null, 
             "name": "psf_high_snr"
-        },
+        }, 
         {
-            "info": "0 = normal, 1 = 0 + round, 2 = LogSNR, 3 =SqrtLogSNR",
-            "dtype": "int",
-            "default": 0,
+            "info": "0 = normal, 1 = 0 + round, 2 = LogSNR, 3 =SqrtLogSNR", 
+            "dtype": "int", 
+            "default": 0, 
             "name": "psf_itess_method"
-        },
+        }, 
         {
-            "info": "Kappa for clipping for analytic fit",
-            "dtype": "float",
-            "default": 2.0,
+            "info": "Kappa for clipping for analytic fit", 
+            "dtype": "float", 
+            "default": 2.0, 
             "name": "psf_kappa2"
-        },
+        }, 
         {
-            "info": "Kappa for clipping within each bin",
-            "dtype": "float",
-            "default": 3.0,
+            "info": "Kappa for clipping within each bin", 
+            "dtype": "float", 
+            "default": 3.0, 
             "name": "psf_nsig"
-        },
+        }, 
         {
-            "info": "Factor of nyquist sample for binning bmaj, etc. vs SNR",
-            "dtype": "int",
-            "default": 2,
+            "info": "Factor of nyquist sample for binning bmaj, etc. vs SNR", 
+            "dtype": "int", 
+            "default": 2, 
             "name": "psf_over"
-        },
-
+        }, 
         {
-            "info": "Size of Gaussian to use for smoothing of interpolated images in arcsec. If not set, no smoothing.",
-            "dtype": "float",
-            "default": null,
+            "info": "Size of Gaussian to use for smoothing of interpolated images in arcsec. If not set, no smoothing.", 
+            "dtype": "float", 
+            "default": null, 
             "name": "psf_smooth"
-        },
+        }, 
         {
-            "info": "Minimum SNR for statistics",
-            "dtype": "float",
-            "default": 10.0,
+            "info": "Minimum SNR for statistics", 
+            "dtype": "float", 
+            "default": 10.0, 
             "name": "psf_snrcut"
-        },
+        }, 
         {
-            "info": "Unresolved sources with higher SNR taken for stacked psfs",
-            "dtype": "float",
-            "default": 15.0,
+            "info": "Unresolved sources with higher SNR taken for stacked psfs", 
+            "dtype": "float", 
+            "default": 15.0, 
             "name": "psf_snrcutstack"
-        },
+        }, 
         {
-            "info": "Fraction of SNR > snrcut as primary generators",
-            "dtype": "float",
-            "default": 0.15,
+            "info": "Fraction of SNR > snrcut as primary generators", 
+            "dtype": "float", 
+            "default": 0.15, 
             "name": "psf_snrtop"
-        },
-
+        }, 
         {
-            "info": "Restrict sources to be only of type 'S' ",
-            "dtype": "bool",
-            "default": true,
+            "info": "Restrict sources to be only of type 'S' ", 
+            "dtype": "bool", 
+            "default": true, 
             "name": "psf_stype_only"
-        },
-
-        
-      
+        }, 
         {
             "info": "Background rms map: True => use 2-D rms map; False => use constant rms; None => calculate inside program", 
             "dtype": "bool", 
             "default": null, 
             "name": "rms_map"
-        },
+        }, 
         {
-            "info": "Decompose islands into shapelets",
-            "dtype": "bool",
-            "default": false,
+            "info": "Decompose islands into shapelets", 
+            "dtype": "bool", 
+            "default": false, 
             "name": "shapelet_do"
-        },
-
-       {
-            "info": "Basis set for shapelet decomposition: 'cartesian' or 'polar'. Fair warning - polar mode was not implemented at the time of writing this info, use at your own risk.",
-            "dtype": "str",
-            "default": "cartesian",
+        }, 
+        {
+            "info": "Basis set for shapelet decomposition: 'cartesian' or 'polar'. Fair warning - polar mode was not implemented at the time of writing this info, use at your own risk.", 
+            "dtype": "str", 
+            "default": "cartesian", 
             "name": "shapelet_basis"
-        },
-
+        }, 
         {
-            "info": "Calculate shapelet coeff's by fitting ('fit') or integrating (None). WARNING: the default is 'fit', not none, so to run in default mode, explicitely set this to 'fit', else leave as is.",
-            "dtype": "str",
-            "default": null,
+            "info": "Calculate shapelet coeff's by fitting ('fit') or integrating (None). WARNING: the default is 'fit', not none, so to run in default mode, explicitely set this to 'fit', else leave as is.", 
+            "dtype": "str", 
+            "default": null, 
             "name": "shapelet_fitmode"
-        },
+        }, 
         {
-            "info": "Use Gaussian residual image for shapelet decomposition?",
-            "dtype": "bool",
-            "default": "false",
+            "info": "Use Gaussian residual image for shapelet decomposition?", 
+            "dtype": "bool", 
+            "default": "false", 
             "name": "shapelet_gresid"
-        },
-       
-
-        
+        }, 
         {
             "info": "Type of thresholding: None => calculate inside program, 'fdr' => use false detection rate algorithm, 'hard' => use sigma clipping", 
             "dtype": "str", 
@@ -771,35 +743,31 @@
             "dtype": "bool", 
             "default": false, 
             "name": "spectralindex_do"
-        },
+        }, 
         {
-            "info": "Flag channels before (averaging and) extracting spectral index, if their rms is more than 5 (clipped) sigma outside the median rms over all channels, but only if <= 10% of channels",
-            "dtype": "bool",
-            "default": true,
+            "info": "Flag channels before (averaging and) extracting spectral index, if their rms is more than 5 (clipped) sigma outside the median rms over all channels, but only if <= 10% of channels", 
+            "dtype": "bool", 
+            "default": true, 
             "name": "flagchan_rms"
-        },
+        }, 
         {
-            "info": "Flag channels that do not meet SNR criterion set by specind_snr",
-            "dtype": "bool",
-            "default": true,
+            "info": "Flag channels that do not meet SNR criterion set by specind_snr", 
+            "dtype": "bool", 
+            "default": true, 
             "name": "flagchan_snr"
-        },
+        }, 
         {
-            "info": "Maximum number of channels to average for a given source when when attempting to meet target SNR. 1 => no averaging; 0 => no maximum",
-            "dtype": "int",
-            "default": 0,
+            "info": "Maximum number of channels to average for a given source when when attempting to meet target SNR. 1 => no averaging; 0 => no maximum", 
+            "dtype": "int", 
+            "default": 0, 
             "name": "specind_maxchan"
-        },
-
+        }, 
         {
-            "info": "Target SNR to use when fitting power law. If there is insufficient SNR, neighboring channels are averaged to attempt to obtain the target SNR. Channels with SNRs below this will be flagged if flagchan_snr = True",
-            "dtype": "float",
-            "default": 3.0,
+            "info": "Target SNR to use when fitting power law. If there is insufficient SNR, neighboring channels are averaged to attempt to obtain the target SNR. Channels with SNRs below this will be flagged if flagchan_snr = True", 
+            "dtype": "float", 
+            "default": 3.0, 
             "name": "specind_snr"
-        },
-
-
- 
+        }, 
         {
             "info": "Start frequency (unit => Hz)", 
             "dtype": "float", 

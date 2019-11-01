@@ -1,7 +1,7 @@
 {
     "task": "calibrator", 
     "base": "stimela/meqtrees", 
-    "tag": "1.1.3", 
+    "tag": "1.2.0", 
     "description": "Uses MeqTrees to calibrate a measurement set, given a sky model (Gaussians and point sources, and/or visibility data in MODEL_DATA column)", 
     "prefix": " ", 
     "binary": "/usr/bin/meqtree-pipeliner.py", 
@@ -132,19 +132,19 @@
         {
             "info": "SPW ID", 
             "dtype": "int", 
-            "name": "spw-id", 
-            "default": 0
+            "default": 0, 
+            "name": "spw-id"
         }, 
         {
             "info": "Write flags to MS", 
             "dtype": "bool", 
-            "default": true,
+            "default": true, 
             "name": "write-flags-to-ms"
         }, 
         {
             "info": "name of flagset to write new flags to", 
             "dtype": "str", 
-            "default": null,
+            "default": null, 
             "name": "write-flagset"
         }, 
         {

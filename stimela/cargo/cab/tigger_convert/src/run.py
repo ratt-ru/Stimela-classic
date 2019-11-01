@@ -2,7 +2,8 @@ import os
 import sys
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]
@@ -42,12 +43,13 @@ for param in cab['parameters']:
         outlsm = value
         continue
 
-    args.append( '{0}{1} {2}'.format(cab['prefix'], name, value) )
+    args.append('{0}{1} {2}'.format(cab['prefix'], name, value))
 
 if mslist:
-    if len(field)==0:
+    if len(field) == 0:
         field = [0]*len(mslist)
-    pa_from_ms = ','.join(['{0}:{1}'.format(ms, i) for ms,i in zip(mslist, field)])
+    pa_from_ms = ','.join(['{0}:{1}'.format(ms, i)
+                           for ms, i in zip(mslist, field)])
     args.append('--pa-from-ms {}'.format(pa_from_ms))
 
 utils.xrun(cab['binary'], args + [inlsm, outlsm])

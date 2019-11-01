@@ -8,7 +8,8 @@ from astLib.astWCS import WCS
 from Tigger.Models import SkyModel, ModelClasses
 
 sys.path.append('/scratch/stimela')
-import utils
+
+utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]
@@ -32,7 +33,7 @@ parameterise = False
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
-    
+
     if value is None:
         continue
     if name == "port2tigger":
@@ -44,7 +45,7 @@ for param in cab['parameters']:
         parameterise = value
     if name == "import.inFile":
         image = value
-	
+
     wstd.write('{0}={1}\n'.format(name, value))
 
 wstd.close()
@@ -72,6 +73,7 @@ with open(tfile.name, "w") as stdw:
 model = Tigger.load(tfile.name)
 tfile.close()
 
+
 def tigger_src(src, idx):
 
     name = "SRC%d" % idx
@@ -94,13 +96,14 @@ def tigger_src(src, idx):
         source.setAttribute("I_peak", float(src["f_peak"]))
     else:
         source.setAttribute("I_peak", float(src["f_int"]))
-	
+
     return source
+
 
 with open('{0}_cat.ascii'.format(prefix)) as stdr:
     # Header
     stdr.readline()
-    # Column names 
+    # Column names
     names = stdr.readline().split("#")[1].strip().split()
     # Units
     stdr.readline()
@@ -108,7 +111,7 @@ with open('{0}_cat.ascii'.format(prefix)) as stdr:
     stdr.readline()
     sys.stdout.write(" ".join(names))
     data = numpy.genfromtxt(stdr,
-            names=names + ["col"])
+                            names=names + ["col"])
 
 for i, src in enumerate(data):
     model.sources.append(tigger_src(src, i))

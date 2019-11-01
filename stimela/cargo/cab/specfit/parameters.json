@@ -1,7 +1,7 @@
 {
     "task": "specfit", 
     "base": "stimela/tigger", 
-    "tag": "1.0.1", 
+    "tag": "1.2.0", 
     "description": "Tools for continuum spectral fitting. Only fits spectral indices", 
     "prefix": "", 
     "binary": "python", 

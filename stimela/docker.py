@@ -164,6 +164,7 @@ class Container(object):
             self.name, self.time_out))
         utils.xrun("docker", ["start", "-a", self.name],
                        timeout=self.time_out,
+                       logfile=list(filter(lambda x: "log" in x, self.volumes))[0].split(":")[0],
                        kill_callback=lambda: utils.xrun("docker", ["kill", self.name]))
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime

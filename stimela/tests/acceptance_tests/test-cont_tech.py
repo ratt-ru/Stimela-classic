@@ -72,29 +72,29 @@ class singularity_test(unittest.TestCase):
         # executed in the sequence that they were added
         pipeline.run()
 
-    def testUdocker(self):
-        global INPUT, MSDIR, OUTPUT, MS
+#   def testUdocker(self):
+#       global INPUT, MSDIR, OUTPUT, MS
 
-        if sys.version_info <= (3, 0):
+#       if sys.version_info <= (3, 0):
 
-            pipeline = stimela.Recipe("Udocker Test",
-                                      ms_dir=MSDIR,
-                                      JOB_TYPE="udocker",
-                                      )
+#           pipeline = stimela.Recipe("Udocker Test",
+#                                     ms_dir=MSDIR,
+#                                     JOB_TYPE="udocker",
+#                                     )
 
-            pipeline.add("cab/tricolour",
-                         "simms_example",
-                         {
-                             "ms": MS,
-                             "flagging-strategy": "standard",
-                         },
-                         input=INPUT,
-                         output=OUTPUT,
-                         cpus=2.5,
-                         memory_limit="2gb",
-                         time_out=300)
+#           pipeline.add("cab/tricolour",
+#                        "simms_example",
+#                        {
+#                            "ms": MS,
+#                            "flagging-strategy": "standard",
+#                        },
+#                        input=INPUT,
+#                        output=OUTPUT,
+#                        cpus=2.5,
+#                        memory_limit="2gb",
+#                        time_out=300)
 
-            pipeline.run()
+#           pipeline.run()
 
 
 #       def testPodman(self):

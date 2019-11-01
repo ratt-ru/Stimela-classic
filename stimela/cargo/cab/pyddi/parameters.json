@@ -1,0 +1,92 @@
+{
+    "task": "pyddi", 
+    "base": "stimela/pyddi", 
+    "tag": "1.1.3", 
+    "description": "A tool designed to identify regions in an image that require direction-dependent calibration",
+    "prefix": "--", 
+    "binary": "pyddi", 
+    "msdir": false, 
+    "use_graphics": true,
+    "parameters": [
+        {
+            "info": "Image of interest.",
+            "name": "image",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": true
+        }, 
+        {
+            "info": "The psf image.",
+            "name": "psf-image",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        }, 
+        {
+            "info": "Sky model as LSM/txt. Must be in Tigger format: #format:name, ra_d, dec_d, i",
+            "name": "catalog",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        }, 
+        {
+            "info": "Flux threshold. Regions in an image with flux > fth * noise are considered.", 
+            "default": 10.0,
+            "required": false, 
+            "name": "flux-thresh", 
+            "dtype": "float"
+        }, 
+        {
+            "info": "Local variance threshold. Sources with varinace > vth * noise are considered.",
+            "name": "variance-thresh",
+            "default": 5.0,
+            "dtype": "float",
+            "required": false
+        }, 
+        {
+            "info": "The size of the region to compute the local variance. E.g vsize=10, gives a region of size = 10 * resolution. The resolution is in pixels.",
+            "name": "variance-size",
+            "default": 10,
+            "dtype": "int",
+            "required": false
+        }, 
+        {
+            "info": "Correlation threshold. Sources with correlation factor > cth are considered.",
+            "dtype": "float",
+            "default": 0.5,
+            "name": "correlation-thresh",
+            "required": false
+        }, 
+        {
+            "info": "The size of the region to compute correlation. see vsize.",
+            "default": 10,
+            "required": false,
+            "name": "correlation-size",
+            "dtype": "int"
+        }, 
+        {
+            "info": "The size of the region to group the pixels, in terms of psf-size. The psf is in degrees. e.g gpix=20, gives 20xpsf.",
+            "default": 20.0,
+            "required": false,
+            "name": "group-pixels",
+            "dtype": "float"
+        },
+        {
+            "info": "Use -catalog for the identification instead of -image.",
+            "default": false,
+            "required": false,
+            "name": "use-catalog",
+            "dtype": "bool"
+        },
+        {
+            "info": "The prefix for the output catalog useful when -use-catalog=False. It returns pixel RA, DEC dnd flux of the brightest pixels.",
+            "default": null,
+            "required": false,
+            "name": "prefix",
+            "dtype": "str"
+        }
+    ]
+}

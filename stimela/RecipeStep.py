@@ -3,9 +3,10 @@ import sys
 import cwltool.factory
 import ruamel.yaml
 import tempfile
+import collections
 
 class StepParameter(object):
-    def __init__(self, value, owner, dtype, param):
+    def __init__(self, value, owner, dtype, param, scatter=False):
         self.value = value
         self.owner = owner
         #TODO: Need a better way to do this. It will certainly be a pain
@@ -15,16 +16,18 @@ class StepParameter(object):
         self.name = "_".join([self.owner, self.param])
         inthash = hash(frozenset(list({self.owner: param}.items())))
         self.hash = "h{}".format(abs(inthash))
-
+        self.scatter = scatter
+        if isinstance(value, list) and self.scatter and self.dtype.find("[]")<0:
+            print(self.param)
+            self.dtype = collections.OrderedDict([('type', 'array'), ('items', self.dtype)])
 
 class StepOutput(object):
     def __init__(self, owner, output):
         self.owner = owner
         self.output = output
 
-
 class Step(object):
-    def __init__(self, name, params, cwlfile, indir=None):
+    def __init__(self, name, params, cwlfile, indir=None, scatter=[]):
         """ 
             Recipe step class
 
@@ -35,6 +38,8 @@ class Step(object):
         self.params = params
         self.indir = indir
         self.cwlfile = cwlfile
+        self.optional_outputs = []
+        self.scatter = scatter
 
         ## Get version of file that does not have extensions so we can load it. This will also help when making the workflow with scriptcwl
         with open(self.cwlfile, "r") as stdr:
@@ -87,9 +92,11 @@ class Step(object):
                     else:
                         values.append(val)
                 if values:
-                    parameter = StepParameter(values, self.name, fields[index]["type"], key)
+                    parameter = StepParameter(values, self.name, fields[index]["type"],
+                            key, scatter=key in self.scatter)
             else:
-                parameter = StepParameter(value, self.name, fields[index]["type"], key)
+                parameter = StepParameter(value, self.name, fields[index]["type"], 
+                        key, scatter=key in self.scatter)
                 inputs[key] = parameter
 
         return inputs, depends
@@ -102,5 +109,9 @@ class Step(object):
         outputs = {}
         for field in fields:
             outputs[field["name"]] = StepOutput(self.name, field["name"])
+            dtype = field["type"]
+            if isinstance(dtype, list):
+                if dtype[0] == "null":
+                    self.optional_outputs.append(field["name"])
 
         return outputs

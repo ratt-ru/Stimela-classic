@@ -19,13 +19,13 @@ tag = stimela_params["tag"]
 
 ## Auto generated cwl file
 cwl_params_string = """
-cwlVersion: v1.0
+cwlVersion: v1.1
 class: CommandLineTool
 
 requirements:
-  - class: DockerRequirement
+  DockerRequirement:
     dockerPull: {0:s}:{1:s}
-  - class: InlineJavascriptRequirement
+  InlineJavascriptRequirement: {{}}
 """.format(base, tag)
 
 casa = taskname.startswith("casa_")
@@ -74,14 +74,12 @@ if stimela_params["msdir"]:
    if ms:
         ms = list(ms)[0]
         name = ms.get("mapping", None) or ms.get("name")
-        listing = {
-            "class" : "InitialWorkDirRequirement",
-            "listing" : [{ "entry" : "$(inputs.{0:s})".format(name),
+        cwl_params["requirements"]["InitialWorkDirRequirement"] = { "listing" : [
+                { "entry" : "$(inputs.{0:s})".format(name),
                            "writable" : True, 
             }]
         }
-        cwl_params["requirements"].append(listing)
-
+        
 TYPES = {
     "str"       : "string",
     "int"       : "int",
@@ -140,7 +138,7 @@ for param in stimela_params["parameters"]:
         if symbols:
             cwl_params["inputs"][name]["type"] = {"type" : "enum", "symbols": symbols}
         if not casa:
-            cwl_params["inputs"][name]["inputBindings"] = {
+            cwl_params["inputs"][name]["inputBinding"] = {
                     "prefix" : "{0:s}{1:s}".format(prefix, name),
                     }
 

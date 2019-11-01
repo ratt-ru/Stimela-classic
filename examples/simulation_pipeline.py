@@ -9,17 +9,17 @@ recipe.add("simms", "makems", {
     doc="Create Empty MS")
 
 recipe.add("simulator", "simsky", {
-    "ms"        : recipe.makems.outputs["ms"],
+    "msname"        : recipe.makems.outputs["msname_out"],
     "skymodel"  : "nvss1deg.lsm.html",
     "config"    : "tdlconf.profiles",
 },
     doc="Simulate sky model")
 
 recipe.add("wsclean", "makeimage", {
-    "ms"    : recipe.simsky.outputs["ms_out"],
+    "msname" : recipe.simsky.outputs["msname_out"],
     "name"  : "test",
     "scale" : "30asec",
-    "size"  : 512,
+    "size"  : [512, 512]
 },
     doc="Image data")
 

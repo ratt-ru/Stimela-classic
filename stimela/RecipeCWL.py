@@ -4,9 +4,9 @@ import os
 import yaml
 import ruamel.yaml
 
-
-class RecipeCWL(object):
-    def __init__(self, steps, collect=[], name=None, doc=None):
+class Workflow(object):
+    def __init__(self, steps, collect=[], name=None, doc=None,
+            scatter_inputs=None, scatter_cab=None):
         """
             Convert StimelaSteps into a CWL workflow
 
@@ -17,6 +17,8 @@ class RecipeCWL(object):
         self.inputs = {}
         self.name = name
         self.doc = doc
+        self.scatter_inputs = scatter_inputs
+        self.scatter_cab = scatter_cab
 
     def create_workflow(self):
         """
@@ -32,9 +34,8 @@ class RecipeCWL(object):
             # Add step inputs and outputs
             inputs = {}
             for inparam in list(step.inputs.values()):
-                # Check parameter depends on a preceding step
+                # Check if parameter depends on a preceding step
                 if not isinstance(inparam.value, StepOutput):
-                    # Add comment with input parameter name
                     inputs[inparam.param] = wf.add_input(**{inparam.name: inparam.dtype})
                     if inparam.dtype in ["File", "Directory"]:
                         self.inputs[inparam.name] = {
@@ -46,6 +47,8 @@ class RecipeCWL(object):
 
             # Start with steps that have no
             # workflow deps
+            if step.scatter:
+                inputs["scatter"] = step.scatter
             if not step.depends:
                 steps[step.name] = getattr(wf, stepname)(**inputs)
             else:
@@ -76,11 +79,18 @@ class RecipeCWL(object):
         self.workflow = wf
         # Add workfkow output products
         for item in self.collect:
-            if isinstance(steps[item], (list,tuple)):
-                for i,item_i in enumerate(steps[item]):
-                    wf.add_outputs(**{"{0:s}_{1:d}".format(item, i): item_i})
-                continue
-            wf.add_outputs(**{"{0:s}".format(item): steps[item]})
+            stepname = item.split("[")
+            if len(stepname) > 1:
+                stepname = stepname[0]
+                outs = stepname[:-1].split(",")
+            else:
+                stepname = stepname[0]
+                outs = "all"
+            if isinstance(steps[stepname], (list,tuple)):
+                for i,item_i in enumerate(steps[stepname]):
+                    wf.add_outputs(**{"{0:s}_{1:d}".format(stepname, i): item_i})
+            else:
+                wf.add_outputs(**{"{0:s}".format(stepname): steps[stepname]})
         return 0
 
     def write(self, name=None):

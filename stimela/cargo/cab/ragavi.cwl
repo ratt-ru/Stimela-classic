@@ -2,8 +2,14 @@ cwlVersion: v1.1
 class: CommandLineTool
 
 requirements:
-  - class: DockerRequirement
+  DockerRequirement:
     dockerPull: stimela/ragavi:1.2.0
+  InitialWorkDirRequirement:
+    listing:
+      - entry: $(inputs.table)
+        writable: true
+
+baseCommand: ragavi
 
 inputs:
   ant:
@@ -31,12 +37,12 @@ inputs:
     inputBinding:
       prefix: --doplot
   field:
-    type: string[]
+    type: int
     doc: Field ID to plot
     inputBinding:
       prefix: --field
   fieldint[]:
-    type: int[]
+    type: int[]?
     doc: Field ID to plot
     inputBinding:
       prefix: --fieldint[]
@@ -48,7 +54,7 @@ inputs:
     inputBinding:
       prefix: --gaintype
   table:
-    type: Directory[]
+    type: Directory
     doc: Gain table(s) to plot
     inputBinding:
       prefix: --table
@@ -99,6 +105,6 @@ outputs:
     outputBinding:
       glob: $(inputs.htmlname)*.html
   plotout:
-    type: File
+    type: File?
     outputBinding:
       glob: $(inputs.plotname)*.png

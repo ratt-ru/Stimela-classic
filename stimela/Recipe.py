@@ -6,8 +6,9 @@ import re
 import time
 from stimela.RecipeStep import Step
 import logging
-from stimela.RecipeCWL import RecipeCWL
+from stimela.RecipeCWL import Workflow
 import subprocess
+import warnings
 
 CWLDIR = os.path.join(os.path.dirname(__file__), "cargo/cab")
 
@@ -46,7 +47,6 @@ class Recipe(object):
         toil: bool
             Use toil runner instead of CWL reference runner
         """
-
         self.name = name
         self.name_ = name.lower().replace(' ', '_')
         self.indir = indir
@@ -58,7 +58,6 @@ class Recipe(object):
         self.msdir = msdir
         self.loglevel = loglevel
         self.logfile = logfile or "log-{0:s}.txt".format(self.name_)
-
         self.log = logging.getLogger(loggername)
         self.log.setLevel(getattr(logging, self.loglevel))
         fh = logging.FileHandler(self.logfile, 'w')
@@ -73,12 +72,13 @@ class Recipe(object):
         # Add the handlers to logger
         self.log.addHandler(ch)
         self.log.addHandler(fh)
+        self.TBC = "dummy_variable_that_no_one_will_ever_use_surely"
 
         self.steps = []
         self.toil = toil
 
 
-    def add(self, task, label, parameters, doc=None, cwlfile=None):
+    def add(self, task, label, parameters=None, doc=None, cwlfile=None, workflow=False, scatter=[]):
         """ Add task to recipe
         
         Parameters
@@ -97,15 +97,32 @@ class Recipe(object):
         cwlfile: str
             Path to cwlfile if not using a stimela cwlfile
         """
+        if workflow:
+            if not hasattr(task, 'workflow'):
+                warnings.warn("Recipe %s is not registered. Will register"
+                              " it before proceeding" % task.name)
+                task.init()
+            cwlfile = task.workflow.workflow_file
 
-        cwlfile = cwlfile or "{0:s}/{1:s}.cwl".format(CWLDIR, task)
-        self.log.info("Adding step [{:s}] to recipe".format(task))
-        step = Step(label, parameters, cwlfile, indir=self.indir)
+            # first update workflow parameters with workflow inputs
+            for param in parameters:
+                task.inputs[param] = parameters[param]
+            parameters = task.inputs
+            for param in parameters:
+                if isinstance(parameters[param], dict):
+                    parameters[param] = parameters[param]["path"]
+        else:
+            if parameters is None:
+                self.log.abort("No parameters were parsed into the %s. Please review your recipe." % label)
+            cwlfile = cwlfile or "{0:s}/{1:s}.cwl".format(CWLDIR, task)
+            self.log.info("Adding step [{:s}] to recipe".format(task))
+
+        step = Step(label, parameters, cwlfile, indir=self.indir, scatter=scatter)
+
         # add step as recipe attribute
         setattr(self, label, step)
 
         self.steps.append(step)
-
 
     def collect_outputs(self, outputs):
         """ Recipe outputs to save after execution. All other products will be deleted
@@ -121,16 +138,24 @@ class Recipe(object):
 
         """
         self.collect = outputs
- 
 
-    def run(self):
-        """ Run Recipe
+    def init(self):
         """
-
-        self.workflow = RecipeCWL(self.steps, collect=self.collect,
+        Initialise pipeline. This is useful if you plan on combining multiple workflows
+        """
+        self.workflow = Workflow(self.steps, collect=self.collect,
                                   name=self.name_, doc=self.name)
+
         self.workflow.create_workflow()
         self.workflow.write()
+        self.inputs = self.workflow.inputs
+
+    def run(self):
+        """
+        Run Recipe
+        """
+        if not hasattr(self, "workflow"):
+            self.init()
 
         if self.toil:
             subprocess.check_call([

@@ -1,0 +1,187 @@
+{
+    "task": "casa_fringefit", 
+    "base": "stimela/casa", 
+    "tag": "1.2.3", 
+    "description": "Phase offsets, groups delays and delay rates are calculated with respect to a specified referance antenna by a two-dimensional FFT and subsequent least-squares optimisation.",
+    "prefix": "-", 
+    "binary": "fringefit", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Name of input visibility file", 
+            "name": "msname", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true, 
+            "mapping": "vis"
+        }, 
+        {
+            "info": "Name of output gain calibration table", 
+            "name": "caltable", 
+            "io": "output", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
+        {
+            "info": "Select field using field id(s) or field name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "field"
+        }, 
+        {
+            "info": "Select spectral window/channels", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "spw"
+        }, 
+        {
+            "info": "Other data selection parameters", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "selectdata"
+        }, 
+        {
+            "info": "Select data based on time range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "timerange"
+        }, 
+        {
+            "info": "Select data based on antenna/baseline", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "antenna"
+        }, 
+        {
+            "info": "Scan number range", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "scan"
+        }, 
+        {
+            "info": "Select by observation ID(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "observation"
+        }, 
+        {
+            "info": "Optional complex data selection (ignore for now)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "msselect"
+        },
+        {
+            "name": "zerorates",
+            "info" : "Zero delay-rates in solution tabl",
+            "dtype" : "bool",
+            "default" : null
+        },
+        {
+            "info": "Solution interval: egs. 'inf', '60s' (see help)", 
+            "dtype": [
+                "str", 
+                "float", 
+                "int"
+            ], 
+            "default": "inf", 
+            "name": "solint"
+        }, 
+        {
+            "info": "Data axes which to combine for solve (obs, scan, spw, and/or, field)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "combine"
+        }, 
+        {
+            "info": "Reference antenna name(s)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "refant"
+        }, 
+        {
+            "info": "Reject solutions below this SNR", 
+            "dtype": "float", 
+            "default": 3.0, 
+            "name": "minsnr"
+        }, 
+        {
+            "info": "Constrain FFT delay search to a window; a two-element list, units of nanoseconds",
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "delaywindow"
+        }, 
+        {
+            "info": "Constrain FFT rate search to a window; a two-element list, units of nanoseconds",
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "ratewindow"
+        }, 
+        {
+            "info": "Maximum number of iterations for least-squares solver", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "niter"
+        }, 
+        {
+            "info": "Refine estimates of delay and rate with global least-squares solver", 
+            "dtype": "bool",
+            "default": true, 
+            "name": "globalsolve"
+        },
+        {
+            "info": "Append solutions to the (existing) table", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "append"
+        }, 
+        {
+            "info": "Use callib or traditional cal apply parameters", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "docallib"
+        }, 
+        {
+            "info": "Cal Library filename", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "callib", 
+            "io": "input"
+        }, 
+        {
+            "info": "Gain calibration table(s) to apply on the fly", 
+            "dtype": "list:file", 
+            "default": null, 
+            "name": "gaintable", 
+            "io": "input"
+        }, 
+        {
+            "info": "Select a subset of calibrators from gaintable(s)", 
+            "dtype": [
+                "list:str", 
+                "list:int"
+            ], 
+            "default": null, 
+            "name": "gainfield"
+        }, 
+        {
+            "info": "Temporal interpolation for each gaintable (=linear)", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "interp"
+        }, 
+        {
+            "info": "Spectral windows combinations to form for gaintables(s)", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "spwmap"
+        }, 
+        {
+            "info": "Apply parallactic angle correction on the fly", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "paran"
+        }
+    ]
+}

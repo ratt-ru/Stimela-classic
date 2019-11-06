@@ -26,7 +26,7 @@ else:
     opEn = open
 
 DEBUG = False
-INTERRUPT_TIME = 0.1  # seconds -- do not want to constantly interrupt the child process
+INTERRUPT_TIME = 1  # seconds -- do not want to constantly interrupt the child process
 
 
 class StimelaCabRuntimeError(RuntimeError):

@@ -23,8 +23,14 @@ import pty
 from select import select
 import click
 
+
+if sys.version_info >= (3, 0):
+    opEn = lambda f, mode: open(f, mode, encoding="utf-8")
+else:
+    opEn = open
+
 DEBUG = False
-INTERRUPT_TIME = 1.0  # seconds -- do not want to constantly interrupt the child process
+INTERRUPT_TIME = 0.1  # seconds -- do not want to constantly interrupt the child process
 
 
 class StimelaCabRuntimeError(RuntimeError):
@@ -117,6 +123,11 @@ def xrun_unstable(command, options, log=None, _log_container_as_started=False, l
 
         Example: _run("ls", ["-lrt", "../"])
     """
+    if "LOGFILE" in os.environ and logfile is None:
+        logfile = os.environ["LOGFILE"] # superceed if not set    
+    # clear logfile if it exists
+    if logfile is not None and os.path.exists(logfile):
+        open(logfile, "w").close()
 
     cmd = " ".join([command] + list(map(str, options)))
 
@@ -141,49 +152,58 @@ def xrun_unstable(command, options, log=None, _log_container_as_started=False, l
     sys.stdout.flush()
     starttime = time.time()
     process = p = None
+    foutlog = None
     try:
         foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(
             hashlib.md5(cmd.encode('utf-8')).hexdigest(), starttime))
-        with open(foutname, "w+") as fout:
-            p = process = subprocess.Popen(cmd,
-                                           stderr=fout,
-                                           stdout=fout,
-                                           shell=True)
-            kill_callback = kill_callback or p.kill
+        
+        p = process = subprocess.Popen(cmd, shell=True)
+        kill_callback = kill_callback or p.kill
 
-            def clock_killer(p):
-                while process.poll() is None and (timeout >= 0):
-                    currenttime = time.time()
-                    if (currenttime - starttime < timeout):
-                        DEBUG and _print_warn(u"Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(
-                            currenttime - starttime, timeout))
-                    else:
-                        _print_warn(
-                            u"Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
-                        kill_callback()
-                    time.sleep(INTERRUPT_TIME)
-
-            Thread(target=clock_killer, args=tuple([p])).start()
-
-            while (process.poll() is None):
+        def clock_killer(p):
+            while process.poll() is None and (timeout >= 0):
                 currenttime = time.time()
-                DEBUG and _print_info(
-                    u"God mode on: has been running for {0:f}".format(currenttime - starttime))
-                # this is probably not ideal as it interrupts the process every few seconds,
+                if (currenttime - starttime < timeout):
+                    DEBUG and _print_warn(u"Clock Reaper: has been running for {0:f}, must finish in {1:f}".format(
+                        currenttime - starttime, timeout))
+                else:
+                    _print_warn(
+                        u"Clock Reaper: Timeout reached for '{0:s}'... sending the KILL signal".format(cmd))
+                    kill_callback()
                 time.sleep(INTERRUPT_TIME)
-                # check whether there is an alternative with a callback
-            assert hasattr(
-                process, "returncode"), "No returncode after termination!"
-        with open(foutname, "r") as fout:
-            _print_info(fout.read())
+
+        Thread(target=clock_killer, args=tuple([p])).start()
+        while (process.poll() is None):
+            currenttime = time.time()
+            DEBUG and _print_info(
+                u"God mode on: has been running for {0:f}".format(currenttime - starttime))
+            if logfile is not None and os.path.exists(logfile) and foutlog is None:
+                foutlog = opEn(logfile, "r")
+            if foutlog is not None:
+                out = foutlog.read()
+                (out != "") and _print_info(out) # read and advance pointer to the current end of file
+            # this is probably not ideal as it interrupts the process every few seconds,
+            time.sleep(INTERRUPT_TIME)
+            # check whether there is an alternative with a callback
+
+        # read whatever remains in the log file and advance pointer to the end of logfile
+        if logfile is not None and os.path.exists(logfile) and foutlog is None:
+            foutlog = opEn(logfile, "r")
+        if foutlog is not None:
+            out = foutlog.read()
+            (out != "") and _print_info(out)
+        assert hasattr(
+            process, "returncode"), "No returncode after termination!"
     finally:
+        if foutlog is not None:
+            foutlog.close()
         if (process is not None) and process.returncode:
             raise StimelaCabRuntimeError(
                 '%s: returns errr code %d' % (command, process.returncode))
 
 
 def readJson(conf):
-    with open(conf) as _std:
+    with open(conf, "r") as _std:
         jdict = yaml.safe_load(_std)
         return jdict
 
@@ -241,7 +261,7 @@ def change_Dockerfile_base_image(path, _from, label, destdir="."):
 
 def get_base_images(logfile, index=1):
 
-    with open(logfile) as std:
+    with opEn(logfile, "r") as std:
         string = std.read()
 
     separator = "[================================DONE==========================]"
@@ -323,7 +343,7 @@ os.chdir('%s')
     # log taskname.last
     task_last = '%s.last' % taskname
     if os.path.exists(task_last):
-        with open(task_last, 'r') as last:
+        with opEn(task_last, 'r') as last:
             print('%s.last is: \n %s' % (taskname, last.read()))
 
     # remove temp directory. This also gets rid of the casa log files; so long suckers!

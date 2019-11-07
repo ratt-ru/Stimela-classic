@@ -18,14 +18,12 @@ import unicodedata
 import hashlib
 #from fcntl import fcntl, F_GETFL, F_SETFL
 #from os import O_NONBLOCK, read
-import errno
-import pty
-from select import select
-import click
+import codecs
 
 
 if sys.version_info >= (3, 0):
-    opEn = lambda f, mode: open(f, mode, encoding="utf-8")
+    opEn = lambda f, mode: codecs.open(f, mode, encoding='utf-8', 
+            errors='ignore')
 else:
     opEn = open
 
@@ -63,61 +61,7 @@ def assign(key, value):
     frame.f_globals[key] = value
 
 
-#def xrun(cmd, options, log, interactive=False):
-def xrun(command, options, log=None, timeout=-1, kill_callback=None):
-    masters, slaves = zip(pty.openpty(), pty.openpty())
-
-    cmd = " ".join([command] + list(map(str, options)))
-
-    def _print_info(msg):
-        if msg is None:
-            return
-        if log:
-            log.info(msg)
-        else:
-            print(msg)
-
-    def _print_warn(msg):
-        if msg is None:
-            return
-        if log:
-            log.warn(msg)
-        else:
-            print(msg)
-
-    _print_info(u"Running: {0:s}".format(cmd))
-    cmd = cmd.split()
-
-    with subprocess.Popen(cmd, stdin=slaves[0], stdout=slaves[0], stderr=slaves[1]) as p:
-        for fd in slaves:
-            os.close(fd) # no input
-            readable = {
-                masters[0]: sys.stdout.buffer, # store buffers seperately
-                masters[1]: sys.stderr.buffer,
-            }
-        while readable:
-            for fd in select(readable, [], [])[0]:
-                try:
-                    data = os.read(fd, 1024) # read available
-                except OSError as e:
-                    if e.errno != errno.EIO:
-                        raise #XXX cleanup
-                    del readable[fd] # EIO means EOF on some systems
-                else:
-                    if not data: # EOF
-                        del readable[fd]
-                    else:
-                        if fd == masters[0]: # We caught stdout
-                            click.echo(data.rstrip())
-                        else: # We caught stderr
-                            click.echo(data.rstrip(), err=True)
-                        readable[fd].flush()
-    for fd in masters:
-        os.close(fd)
-    return p.returncode
-
-
-def xrun_unstable(command, options, log=None, _log_container_as_started=False, logfile=None, timeout=-1, kill_callback=None):
+def xrun(command, options, log=None, _log_container_as_started=False, logfile=None, timeout=-1, kill_callback=None):
     """
         Run something on command line.
 

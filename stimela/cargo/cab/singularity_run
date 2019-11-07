@@ -5,6 +5,8 @@ export INPUT=/scratch/input
 export OUTPUT=/scratch/output
 export CONFIG=/scratch/configfile
 export MSDIR=/scratch/msdir
+ls $OUTPUT/.casa || cp -rf $HOME/.casa $OUTPUT
+export HOME=$OUTPUT
 /etc/init.d/xvfb start || echo "Virtual frame buffer not installed. You may not be able to plot with this cab" 
 python /scratch/code/run.py > /scratch/logfile 2>&1 #2>&1 | tee -a /scratch/logfile 
 EXIT_STAT=${PIPESTATUS[0]}

@@ -1,0 +1,142 @@
+{
+    "task": "shadems", 
+    "base": "stimela/shadems", 
+    "tag": "1.2.3", 
+    "description": "Rapid Measurement Set plotting with xarray-ms and datashader.", 
+    "prefix": "--", 
+    "binary": "shadems", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "Measurement set", 
+            "name": "ms", 
+            "io": "msfile", 
+            "default": null, 
+            "dtype": "file", 
+            "required": true
+        }, 
+        {
+            "info": "X axis: [t]ime (default), [f]requency, [c]hannels, [u], [uv]distance, [r]eal, [a]mplitude", 
+            "dtype": "str", 
+            "default": "t", 
+            "name": "xaxis",
+			"choices": ["t","f","c","u","uv","r","a"]
+        }, 
+        {
+            "info": "Y axis: [a]mplitude (default), [p]hase, [r]eal, [i]maginary, [v]", 
+            "dtype": "str", 
+            "default": "a", 
+            "name": "yaxis",
+			"choices": ["a","p","r","i","v"]
+        }, 
+        {
+            "info": "Measurement Set column to plot (default = DATA)", 
+            "dtype": "str", 
+            "default": "DATA", 
+            "name": "col"
+        }, 
+        {
+            "info": "Field ID(s) to plot (comma separated list, default = all)", 
+            "dtype": "list:str", 
+            "default": "all", 
+            "name": "field"
+        }, 
+        {
+            "info": "Spectral windows (DDIDs) to plot (comma separated list, default = all)", 
+            "dtype": "str", 
+            "default": "all", 
+            "name": "spws"
+        }, 
+        {
+            "info": "Correlation index to plot (default = 0)", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "corr"
+        }, 
+        {
+            "info": "Plot flagged data (default = False)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "noflags"
+        }, 
+        {
+            "info": "Do not show conjugate points in u,v plots (default = plot conjugates)", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "noconj"
+        }, 
+        {
+            "info": "Minimum x-axis value (default = data min)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "xmin"
+        }, 
+        {
+            "info": "Maximum x-axis value (default = data max)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "xmax"
+        },
+        {
+            "info": "Minimum y-axis value (default = data min)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "ymin"
+        },
+        {
+            "info": "Maximum y-axis value (default = data ymax)", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "ymax"
+        },
+        {
+            "info": "Canvas x-size in pixels (default = 1280)", 
+            "dtype": "int", 
+            "default": 1280, 
+            "name": "xcanvas"
+        }, 
+        {
+            "info": "Canvas y-size in pixels (default = 800)", 
+            "dtype": "int", 
+            "default": 800, 
+            "name": "ycanvas"
+        }, 
+        {
+            "info": "Pixel scale normalization: eq_hist (default), cbrt, log, linear", 
+            "dtype": "str", 
+            "default": "eq_hist", 
+            "name": "norm"
+        }, 
+        {
+            "info": "Colorcet map to use (default = bkr)", 
+            "dtype": "str", 
+            "default": "bkr", 
+            "name": "cmap" 
+        }, 
+        {
+            "info": "RGB hex code for background colour (default = FFFFFF)", 
+            "dtype": "str", 
+            "default": "FFFFFF", 
+            "name": "bgcol" 
+        }, 
+        {
+            "info": "Font size for all text elements (default = 20)", 
+            "dtype": "float", 
+            "default": 20, 
+            "name": "fontsize"
+        }, 
+        {
+            "info": "PNG name (default = something verbose)", 
+            "dtype": "str", 
+			"io": "output",
+            "default": null, 
+            "name": "png"
+        }, 
+        {
+            "info": "Add timestamp to default PNG name", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "stamp"
+        }
+    ]
+}

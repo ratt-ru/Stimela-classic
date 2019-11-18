@@ -14,7 +14,7 @@
             "name": "ant"
         },
         {
-            "info": "Correlation index to plot (usually just 0 or 1)",
+            "info": "Correlation index to plot (Defaults to all)",
             "dtype": "int",
             "required": false,
             "name": "corr"

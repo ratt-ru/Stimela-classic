@@ -27,7 +27,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           log_dir=os.path.join(OUTPUT, "logs")
                           )
 
-pipeline.JOB_TYPE = "podman"
+pipeline.JOB_TYPE = "udocker"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
@@ -67,16 +67,14 @@ pipeline.add("cab/simulator",
              label="Simulating visibilities")
 
 
-pipeline.add('cab/casa_plotms',
+pipeline.add('cab/shadems',
              'plot_vis',
              {
-                 "vis":   MS,
-                 "xaxis":   'uvdist',
-                 "yaxis":   'amp',
-                 "xdatacolumn":   'corrected',
-                 "ydatacolumn":   'corrected',
-                 "plotfile":   PREFIX+'-amp_uvdist.png',
-                 "overwrite":   True,
+                 "ms":   MS,
+                 "xaxis":   'uv',
+                 "yaxis":   'a',
+                 "col":   'CORRECTED_DATA',
+                 "png":   PREFIX+'-amp_uvdist.png',
              },
              input=INPUT,
              output=OUTPUT,
@@ -106,14 +104,12 @@ for i, robust in enumerate(briggs_robust):
                  cpus=2,
                  memory_limit="2gb")
 
-#pipeline.add("cab/casa_rmtables", "delete_ms", {
-#    "tablenames": MS + ":msfile",
-#},
-#    input=INPUT,
-#    output=OUTPUT,
-#    label="Remove MS")
-
-
+pipeline.add("cab/casa_rmtables", "delete_ms", {
+    "tablenames": MS + ":msfile",
+},
+    input=INPUT,
+    output=OUTPUT,
+    label="Remove MS")
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added
-pipeline.run()
+pipeline.run([3])

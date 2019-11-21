@@ -20,14 +20,14 @@
             "dtype": "str", 
             "default": "t", 
             "name": "xaxis",
-			"choices": ["t","f","c","u","uv","r","a"]
+            "choices": ["time", "f", "c", "u", "uv","r", "a"]
         }, 
         {
             "info": "Y axis: [a]mplitude (default), [p]hase, [r]eal, [i]maginary, [v]", 
             "dtype": "str", 
             "default": "a", 
             "name": "yaxis",
-			"choices": ["a","p","r","i","v"]
+            "choices": ["a","p","r","i","v"]
         }, 
         {
             "info": "Measurement Set column to plot (default = DATA)", 
@@ -37,7 +37,7 @@
         }, 
         {
             "info": "Field ID(s) to plot (comma separated list, default = all)", 
-            "dtype": "list:str", 
+            "dtype": "str", 
             "default": "all", 
             "name": "field"
         }, 
@@ -128,7 +128,7 @@
         {
             "info": "PNG name (default = something verbose)", 
             "dtype": "str", 
-			"io": "output",
+            "io": "output",
             "default": null, 
             "name": "png"
         }, 

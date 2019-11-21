@@ -174,7 +174,8 @@ class Container(object):
         utils.xrun("podman", ["start", "-a", self.name],
                    timeout=self.time_out,
                    kill_callback=lambda: utils.xrun("podman", ["kill", self.name]),
-                   logfile=list(filter(lambda x: "log" in x, self.volumes))[0].split(":")[0])
+                   logfile=self.logfile,
+                   log=self.logger)
 
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime

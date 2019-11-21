@@ -114,9 +114,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
 
 
         p = process = subprocess.Popen(cmd,
-                                       shell=True,
-                                       stdout=None,
-                                       stderr=None)
+                                       shell=True)
         kill_callback = kill_callback or p.kill
 
         def clock_killer(p):

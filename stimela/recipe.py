@@ -656,8 +656,6 @@ class StimelaJob(object):
         _cab = cab.CabDefinition(indir=input, outdir=output,
                                  msdir=msdir, parameter_file=parameter_file)
 
-        logfile_name = name.split('-')[0]
-        self.setup_job_log(logfile_name, self.log_dir)
         cont = docker.Container(image, name,
                                 label=self.label, logger=self.log,
                                 shared_memory=shared_memory,
@@ -730,12 +728,16 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
         cont.add_environ('HOME', od)
         cont.add_environ('OUTPUT', od)
+        cont.add_volume(output, od)
 
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
         logfile_name = '.currentjob.log'.format(name.split('-')[0])
         cont.logfile = os.path.join(self.log_dir, logfile_name)
         with open(cont.logfile, 'w') as std: pass
+        logfile_name = name.split('-')[0]
+        self.setup_job_log(logfile_name, self.log_dir)
+        cont.logger = self.log
 
         cont.add_volume(
             cont.logfile, "{0:s}/logfile".format(self.log_dir), "rw")

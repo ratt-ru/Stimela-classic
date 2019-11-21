@@ -135,7 +135,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
             bytes_read = 0
             while not stop_event.isSet():
                 if logfile is not None and os.path.exists(logfile):
-                    with codecs.open(logfile, "rt", encoding="UTF-8",
+                    with codecs.open(logfile, "r", encoding="UTF-8",
                                      errors="ignore", buffering=0) as foutlog:
                         foutlog.seek(bytes_read, 0)
                         lines = foutlog.readlines()

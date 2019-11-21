@@ -1,7 +1,7 @@
 {
     "task": "crystalball", 
     "base": "stimela/codex-africanus", 
-    "tag": "1.2.0", 
+    "tag": "1.2.3", 
     "description": "Distributed prediction of visibilities from a sky model", 
     "prefix": "--", 
     "binary": "crystalball", 

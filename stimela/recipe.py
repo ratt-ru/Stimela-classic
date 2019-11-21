@@ -99,6 +99,30 @@ class StimelaJob(object):
         self.time_out = time_out
         self.log_dir = log_dir
 
+    def setup_job_log(self, log_name, log_dir=None, loglevel='INFO'):
+        """ set up a log for the job on the host side 
+            log_name: preferably unique name for this jobs log
+            log_dir: log base directory, None is current directory
+        """
+        # Create formatter and add it to the handlers
+        formatter = logging.Formatter('%(asctime)-15s %(name)s \t- %(message)s') # could add time info here
+        logging.basicConfig(format=formatter)
+        self.log = logging.getLogger(log_name)
+        self.log.setLevel(getattr(logging, loglevel))
+        logfile_name = 'log-{0:s}.txt'.format(log_name.split('-')[0])
+        self.logfile = os.path.join(log_dir or ".", logfile_name)
+
+        fh = logging.FileHandler(self.logfile, 'w')
+        fh.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(getattr(logging, loglevel))
+
+        # Add the handlers to logger
+        self.log.addHandler(fh)
+        self.log.addHandler(ch)
+        map(lambda x: x.setFormatter(formatter), self.log.handlers)
+        self.log.propagate = False
+
     def run_python_job(self):
         function = self.job['function']
         options = self.job['parameters']
@@ -217,7 +241,8 @@ class StimelaJob(object):
                                  msdir=msdir, parameter_file=parameter_file)
 
         cab.IODEST = CONT_IO["podman"]
-
+        logfile_name = name.split('-')[0]
+        self.setup_job_log(logfile_name, self.log_dir)
         cont = podman.Container(image, name,
                                 logger=self.log, time_out=self.time_out)
 
@@ -290,16 +315,12 @@ class StimelaJob(object):
 
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
-        self.logfile = cont.logfile = '{0:s}/{1:s}'.format(
-            self.log_dir, logfile_name)
-
-        if not os.path.exists(self.logfile):
-            with open(self.logfile, 'w') as std:
-                pass
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, 'w') as std: pass
 
         cont.add_environ("LOGFILE", "/scratch/logfile")
-        cont.add_volume(self.logfile, "/scratch/logfile", "rw")
+        cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
         cont.add_environ("OUTPUT", od)
         self.log.debug(
@@ -356,6 +377,8 @@ class StimelaJob(object):
 
         cab.IODEST = CONT_IO["singularity"]
 
+        logfile_name = name.split('-')[0]
+        self.setup_job_log(logfile_name, self.log_dir)
         cont = singularity.Container(image, name,
                                      logger=self.log, time_out=self.time_out)
 
@@ -423,15 +446,11 @@ class StimelaJob(object):
 
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
-        self.logfile = cont.logfile = '{0:s}/{1:s}'.format(
-            self.log_dir, logfile_name)
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, 'w') as std: pass
 
-        if not os.path.exists(self.logfile):
-            with open(self.logfile, 'w') as std:
-                pass
-
-        cont.add_volume(self.logfile, "/scratch/logfile", "rw")
+        cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
         self.log.debug(
             'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
@@ -489,6 +508,8 @@ class StimelaJob(object):
 
         cab.IODEST = CONT_IO["udocker"]
 
+        logfile_name = name.split('-')[0]
+        self.setup_job_log(logfile_name, self.log_dir)
         cont = udocker.Container(image, name,
                                  logger=self.log, time_out=self.time_out)
 
@@ -562,15 +583,12 @@ class StimelaJob(object):
 
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
-        self.logfile = cont.logfile = '{0:s}/{1:s}'.format(
-            self.log_dir, logfile_name)
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, 'w') as std: pass
 
-        if not os.path.exists(self.logfile):
-            with open(self.logfile, 'w') as std:
-                pass
         cont.add_environ("LOGFILE", "/scratch/logfile")
-        cont.add_volume(self.logfile, "/scratch/logfile")
+        cont.add_volume(cont.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
         cont.add_environ("OUTPUT", od)
         self.log.debug(
@@ -635,6 +653,8 @@ class StimelaJob(object):
         _cab = cab.CabDefinition(indir=input, outdir=output,
                                  msdir=msdir, parameter_file=parameter_file)
 
+        logfile_name = name.split('-')[0]
+        self.setup_job_log(logfile_name, self.log_dir)
         cont = docker.Container(image, name,
                                 label=self.label, logger=self.log,
                                 shared_memory=shared_memory,
@@ -710,16 +730,12 @@ class StimelaJob(object):
 
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        logfile_name = 'log-{0:s}.txt'.format(name.split('-')[0])
-        self.logfile = cont.logfile = '{0:s}/{1:s}'.format(
-            self.log_dir, logfile_name)
-        cont.add_volume(output, od, "rw")
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, 'w') as std: pass
 
-        if not os.path.exists(self.logfile):
-            with open(self.logfile, "w") as std:
-                pass
         cont.add_volume(
-            self.logfile, "{0:s}/logfile".format(self.log_dir), "rw")
+            cont.logfile, "{0:s}/logfile".format(self.log_dir), "rw")
         cont.add_environ('LOGFILE',  "{0:}/logfile".format(self.log_dir))
         self.log.debug(
             'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))

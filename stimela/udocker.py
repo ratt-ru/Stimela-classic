@@ -13,7 +13,6 @@ import tempfile
 class DockerError(Exception):
     pass
 
-
 def pull(image, tag=None, force=False):
     """ pull a docker image """
     if tag:
@@ -93,7 +92,8 @@ class Container(object):
                                                       "--rm",
                                                       "--dri" if self.use_graphics else "",
                                                       self.name, self.COMMAND or ""], 
-                   logfile=list(filter(lambda x: "log" in x, self.volumes))[0].split(":")[0],
+                   logfile=self.logfile,
+                   log=self.logger,
                    timeout=self.time_out)
 
         self.status = "running"

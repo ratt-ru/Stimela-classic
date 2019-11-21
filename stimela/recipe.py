@@ -111,6 +111,9 @@ class StimelaJob(object):
         self.log.setLevel(getattr(logging, loglevel))
         logfile_name = 'log-{0:s}.txt'.format(log_name.split('-')[0])
         self.logfile = os.path.join(log_dir or ".", logfile_name)
+        if not os.path.exists(log_dir):
+            os.mkdir(log_dir)
+        with open(self.logfile, 'w') as std: pass
 
         fh = logging.FileHandler(self.logfile, 'w')
         fh.setLevel(logging.DEBUG)

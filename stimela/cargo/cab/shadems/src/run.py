@@ -19,6 +19,9 @@ for param in cab['parameters']:
         continue
     elif value is False:
         continue
+    if name == "ms":
+        ms = value
+        continue
 
     if isinstance(value, list):
         val = map(str, value)
@@ -27,4 +30,4 @@ for param in cab['parameters']:
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-utils.xrun(cab['binary'], args)
+utils.xrun(cab['binary'], args+[ms])

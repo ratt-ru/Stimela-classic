@@ -77,6 +77,7 @@ class PipelineException(Exception):
 
 
 class StimelaJob(object):
+    logs_avail = dict()
     def __init__(self, name, recipe, label=None,
                  jtype='docker', cpus=None, memory_limit=None,
                  singularity_dir=None,
@@ -104,27 +105,36 @@ class StimelaJob(object):
             log_name: preferably unique name for this jobs log
             log_dir: log base directory, None is current directory
         """
-        # Create formatter and add it to the handlers
-        formatter = logging.Formatter('%(asctime)-15s %(name)s \t- %(message)s') # could add time info here
-        logging.basicConfig(format=formatter)
-        self.log = logging.getLogger(log_name)
-        self.log.setLevel(getattr(logging, loglevel))
-        logfile_name = 'log-{0:s}.txt'.format(log_name.split('-')[0])
-        self.logfile = os.path.join(log_dir or ".", logfile_name)
-        if not os.path.exists(log_dir):
-            os.mkdir(log_dir)
-        with open(self.logfile, 'w') as std: pass
+        if log_name not in StimelaJob.logs_avail:
+            # Create formatter and add it to the handlers
+            formatter = logging.Formatter('%(asctime)-15s %(name)s \t- %(message)s') # could add time info here
+            logging.basicConfig(format=formatter)
+            self.log = logging.getLogger(log_name)
+            self.log.setLevel(getattr(logging, loglevel))
+            logfile_name = 'log-{0:s}.txt'.format(log_name.split('-')[0])
+            self.logfile = os.path.join(log_dir or ".", logfile_name)
+            if not os.path.exists(log_dir):
+                os.mkdir(log_dir)
+            with open(self.logfile, 'w') as std: pass
 
-        fh = logging.FileHandler(self.logfile, 'w')
-        fh.setLevel(logging.DEBUG)
-        ch = logging.StreamHandler()
-        ch.setLevel(getattr(logging, loglevel))
+            # Add the handlers to logger
+            fh = logging.FileHandler(self.logfile, 'w')
+            fh.setLevel(logging.DEBUG)
+            ch = logging.StreamHandler()
+            ch.setLevel(getattr(logging, loglevel))
+            self.log.addHandler(fh)
+            self.log.addHandler(ch)
+            map(lambda x: x.setFormatter(formatter), self.log.handlers)
+            self.log.propagate = False
+            StimelaJob.logs_avail[log_name] = self.log
+        else:
+            self.log = StimelaJob.logs_avail[log_name]
+            logfile_name = 'log-{0:s}.txt'.format(log_name.split('-')[0])
+            self.logfile = os.path.join(log_dir or ".", logfile_name)
+            if not os.path.exists(log_dir):
+                os.mkdir(log_dir)
+            with open(self.logfile, 'w') as std: pass
 
-        # Add the handlers to logger
-        self.log.addHandler(fh)
-        self.log.addHandler(ch)
-        map(lambda x: x.setFormatter(formatter), self.log.handlers)
-        self.log.propagate = False
 
     def run_python_job(self):
         function = self.job['function']

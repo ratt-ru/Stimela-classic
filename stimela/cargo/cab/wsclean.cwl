@@ -3,7 +3,7 @@ class: CommandLineTool
 
 requirements:
   DockerRequirement:
-    dockerPull: stimela/wsclean:1.2.0
+    dockerPull: stimela/wsclean:1.2.3
   InlineJavascriptRequirement: {}
   InitialWorkDirRequirement:
     listing:
@@ -268,27 +268,17 @@ inputs:
     doc: Apply the beam during DFT. Currently only works for LOFAR.
     inputBinding:
       prefix: -dft-with-beam
-#  visibility_weighting_mode:
-#    type:
-#      type: enum
-#      symbols: [normal, squared, unit]
-#    doc: Specify visibility weighting modi. Affects how the weights (normally) stored
-#      in WEIGHT_SPECTRUM column are applied. Useful for estimating e.g. EoR power
-#      spectra errors. Normally one would use this in combination with 'no-normalize-for-weighting'.
-#    default: normal
-#    inputBinding:
-#      prefix: -visibility-weighting-mode
   no_normalize_for_weighting:
     type: boolean?
-    doc: Disable the normalization for the weights, which makes the PSF's peak one.
-      See 'visibility-weighting-mode'. Only useful with natural weighting.
+    doc: "Disable the normalization for the weights, which makes the PSF's peak one.\
+      \ See 'visibility-weighting-mode'. Only useful with natural weighting."
     inputBinding:
       prefix: -no-normalize-for-weighting
   baseline_averaging:
     type: int?
-    doc: Enable baseline-dependent averaging. The specified size is in number of wavelengths
-      (i.e., uvw-units). One way to calculate this is with <baseline in nr. of lambdas>
-      * 2pi * <acceptable integration in s> /(24*60*60).
+    doc: "Enable baseline-dependent averaging. The specified size is in number of wavelengths\
+      \ (i.e., uvw-units). One way to calculate this is with <baseline in nr. of lambdas>\
+      \ * 2pi * <acceptable integration in s> /(24*60*60)."
     inputBinding:
       prefix: -baseline-averaging
   simulate_noise:
@@ -595,6 +585,25 @@ inputs:
     doc: Prefix for output products. Default is prefix 'wsclean'
     inputBinding:
       prefix: -name
+  horizontal_mask:
+    type: string?
+    doc: "Use a mask that avoids cleaning emission beyond the horizon.\
+      \ Distance is an angle (e.g. '5deg') that (when positive) decreases\
+      \ the size of the mask to stay further away from the horizon"
+    inputBinding:
+      prefix: -horizontal-mask
+  direct_allocation:
+    type: string?
+    doc: "Enabled direct allocation, which changes memory usage.\
+      \ Not recommended for general usage, but when using extremely large images\
+      \ that barely fit in memory it might improve memory usage in rare cases"
+    inputBinding:
+      prefix: -direct-allocation
+  parallel_deconvolution:
+    type: int?
+    doc: Deconvolve subimages in parallel. Subimages will be at most of the given size
+    inputBinding:
+      prefix: -parallel-deconvolution
 
 outputs:
   name_out:

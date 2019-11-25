@@ -129,16 +129,17 @@ for param in stimela_params["parameters"]:
         if not param.get("required", False):
             dtype += "?"
 
+        par_name = name.replace('-', '_')
         # append type if param accepts multiple types
-        cwl_params["inputs"][name] = {
+        cwl_params["inputs"][par_name] = {
             "type" : dtype,
             "doc"  : doc,
         }
 
         if symbols:
-            cwl_params["inputs"][name]["type"] = {"type" : "enum", "symbols": symbols}
+            cwl_params["inputs"][par_name]["type"] = {"type" : "enum", "symbols": symbols}
         if not casa:
-            cwl_params["inputs"][name]["inputBinding"] = {
+            cwl_params["inputs"][par_name]["inputBinding"] = {
                     "prefix" : "{0:s}{1:s}".format(prefix, name),
                     }
 

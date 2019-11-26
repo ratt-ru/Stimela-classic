@@ -1,7 +1,7 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.2.3",
+    "tag": "1.2.4",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-gains",
@@ -96,6 +96,16 @@
             "dtype": "str",
             "required": false,
             "name": "taql"
+        },
+        {
+            "info": "Chose the x-xaxis for the K table.",
+            "dtype": "str",
+            "required": false,
+            "name": "k-xaxis",
+            "choices": [
+                "time",
+                "antenna"
+            ]
         }
     ]
 }

@@ -80,11 +80,14 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         msg = _remove_ctrls(msg)
         if msg.strip() == "": return
         if log:
-            log.info(msg.rstrip('\n'))
+            try:
+                log.info(msg.rstrip('\n'))
+            except UnicodeError:
+                log.warn("Log contains unicode and will not be printed")
         else:
             try:
                 print(msg),
-            except UnicodeEncodeError:
+            except UnicodeError:
                 print("Log contains unicode and will not be printed")
 
     def _print_warn(msg):
@@ -93,11 +96,14 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         msg = _remove_ctrls(msg)
         if msg.strip() == "": return
         if log:
-            log.warn(msg.rstrip('\n'))
+            try:
+                log.info(msg.rstrip('\n'))
+            except UnicodeError:
+                log.warn("Log contains unicode and will not be printed")
         else:
             try:
                 print(msg),
-            except UnicodeEncodeError:
+            except UnicodeError:
                 print("Log contains unicode and will not be printed")
 
 

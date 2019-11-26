@@ -1,6 +1,5 @@
-FROM bhugo/tricolour:0.1.4
+FROM bhugo/tricolour:0.1.5
 MAINTAINER <sphemakh@gmail.com>
-RUN ln /usr/bin/python3 /usr/bin/python
 RUN pip3 install pyyaml
 RUN cp -r /code /opt
 RUN docker-apt-install xvfb

@@ -142,7 +142,13 @@ inputs:
     doc: Name of the output catalog file.
 
 outputs:
-  name_out:
+  model_out:
     type: File
+    doc: "Output tigger file"
+    outputBinding:
+      glob: $(inputs.outfile)
+  models_out:
+    type: File[]
+    doc: "Output tigger files. i.e To pass to a tool that requires models in a list format"
     outputBinding:
       glob: $(inputs.outfile)

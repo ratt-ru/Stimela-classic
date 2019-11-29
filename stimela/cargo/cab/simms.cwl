@@ -61,6 +61,12 @@ inputs:
     inputBinding:
       prefix: --nchan
 
+  direction:
+    type: string?
+    doc: Direction of phase centre
+    inputBinding:
+      prefix: --direction
+
 outputs:
   msname_out:
     type: Directory

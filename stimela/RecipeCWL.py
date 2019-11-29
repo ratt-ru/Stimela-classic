@@ -3,6 +3,7 @@ from scriptcwl import WorkflowGenerator
 import os
 import yaml
 import ruamel.yaml
+import collections
 
 class Workflow(object):
     def __init__(self, steps, collect=[], name=None, doc=None,
@@ -42,6 +43,13 @@ class Workflow(object):
                             "class" : inparam.dtype,
                             "path"  : os.path.join(step.indir, inparam.value),
                         }
+                    elif isinstance(inparam.dtype, collections.OrderedDict) \
+					and 'items' in inparam.dtype \
+					and inparam.dtype['items'] in ["File", "Directory"]:
+                        self.inputs[inparam.name] = [{
+                            "class" : inparam.dtype['items'],
+                            "path"  : os.path.join(step.indir, path),
+                        } for path in inparam.value]
                     else:
                         self.inputs[inparam.name] = inparam.value
 

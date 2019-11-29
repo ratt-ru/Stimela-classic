@@ -2299,7 +2299,11 @@ outputs:
   parmdb_save_out:
     type: File[]
     outputBinding:
-      glob: "*parmdb*"
+      glob: "*parmdb"
+  parmdb_save_out:
+    type: File[]
+    outputBinding:
+      glob: "*parmdb.skel"
   data_ms_out:
     type: Directory
     outputBinding:
@@ -2308,3 +2312,7 @@ outputs:
     type: Directory
     outputBinding:
       glob: cubical.cc-out
+  casa_plot_out:
+    type: Directory[]
+    outputBinding:
+      glob: "*.casa"

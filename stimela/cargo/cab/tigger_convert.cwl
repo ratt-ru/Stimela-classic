@@ -292,7 +292,12 @@ inputs:
     type: string?
 
 outputs:
-  out_model:
+  model_out:
     type: File
+    outputBinding:
+      glob: $(inputs.output_skymodel)
+  models_out:
+    type: File[]
+    doc: "Output files name. i.e To pass to a tool that requires models in a list format"
     outputBinding:
       glob: $(inputs.output_skymodel)

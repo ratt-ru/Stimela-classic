@@ -42,28 +42,27 @@ arguments: [run, -i,
                              var columns = inputs.model_column;
                              var expressions = inputs.model_expression;
                              if (columns) {
-                                 for (var i in columns) {
-                                     map_order2model["col_".concat(i)] = columns[i];
-                                 }
+                               for (var i in columns) {
+                                 map_order2model["col_".concat(i)] = columns[i];
+                               }
                              }
                              if (lsms) {
-                                 for (var i in lsms) {
-                                     map_order2model["lsm_".concat(i)] = "/working_directory/model_lsm/".concat(lsms[i].basename);
-                                 }
+                               for (var i in lsms) {
+                                 map_order2model["lsm_".concat(i)] = "/working_directory/model_lsm/".concat(lsms[i].basename);
+                               }
                              }
                              for (var i in expressions) {
-                                  if (models) {
-                                      models = models.concat(":".concat(expressions[i]));
-                                  } else {
-                                      models = models.concat(expressions[i]);
-                                  }
+                               if (models) {
+                                 models = models.concat(":".concat(expressions[i]));
+                               } else {
+                                 models = models.concat(expressions[i]);
+                               }
                              }
                              for (var i in map_order2model) {
-                                 models = models.replace(new RegExp(i, "g"), map_order2model[i]);
+                               models = models.replace(new RegExp(i, "g"), map_order2model[i]);
                              }
                              return models;
-                            }'
-            ]
+                            }']
 
 inputs:
   b1_solvable:

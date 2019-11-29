@@ -11,7 +11,6 @@ requirements:
   InitialWorkDirRequirement:
     listing:
       - entry: $(inputs.filename)
-        writable: true
   InplaceUpdateRequirement:
     inplaceUpdate: true
 
@@ -45,17 +44,15 @@ arguments:
 
       write_opts = {}
       write_catalog = ['bbs_patches', 'bbs_patches_mask',
-                       'catalog_type', 'clobber', 'correct_proj',
+                       'catalog_type', 'overwrite', 'correct_proj',
                        'format', 'incl_chan', 'incl_empty']
       
       for key, value in kwargs.items():
           if key in write_catalog:
               write_opts[key] = kwargs.pop(key)
-      images = kwargs.pop('filename')
+      image = kwargs.pop('filename')
       outfile = kwargs.pop('outfile')
-      img = bdsm.process_image([im['path'] for im in images
-                                if 'image.fits' in im['path']][-1],
-                               **kwargs)
+      img = bdsm.process_image(image['path'], **kwargs)
       img.write_catalog(outfile=outfile, **write_opts)
 
 inputs:
@@ -428,7 +425,7 @@ inputs:
     doc: FWHM of restoring beam. Specify as (maj, min, pos ang E of N) in degrees.
       E.g., beam = (0.06, 0.02, 13.3). None => get from header
     type: float[]?
-  clobber:
+  overwrite:
     doc: Overwrite existing file?
     type: boolean?
   atrous_do:
@@ -494,9 +491,14 @@ inputs:
     type: float?
 
 outputs:
-  name_out:
+  model_out:
     type: File
     doc: "Output file name. None => file is named automatically; 'SAMP' => send\\ to\
       \ SAMP hub (e.g., to TOPCAT, ds9, or Aladin)"
+    outputBinding:
+      glob: $(inputs.outfile)
+  models_out:
+    type: File[]
+    doc: "Output files name. i.e To pass to a tool that requires models in a list format"
     outputBinding:
       glob: $(inputs.outfile)

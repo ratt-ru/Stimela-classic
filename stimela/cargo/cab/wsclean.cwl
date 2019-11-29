@@ -331,7 +331,7 @@ inputs:
     type: string?
     doc: CORRECTED_DATA if it exists, otherwise DATA will be used.
     inputBinding:
-      prefix: -datacolumn
+      prefix: -data-column
   maxuvw_m:
     type: float?
     doc: Set maximum baseline distance
@@ -606,11 +606,25 @@ inputs:
       prefix: -parallel-deconvolution
 
 outputs:
-  name_out:
+  images_out:
     type: File[]
     doc: Output images
     outputBinding:
       glob: $(inputs.name)*.fits
+  image_out:
+    type: File
+    doc: Output image (i.e. <>-image.fits or <>-MFS-image.fits)
+    outputBinding:
+      glob: ${if (inputs.channels_out) {
+                if (inputs.channels_out > 1) {
+                  return (inputs.name).concat("*-MFS-image.fits");
+                } else {
+                  return (inputs.name).concat("*-image.fits");
+                }
+              } else {
+                return (inputs.name).concat("*-image.fits");
+              }
+             }
   msname_out:
     type: Directory
     doc: Output images

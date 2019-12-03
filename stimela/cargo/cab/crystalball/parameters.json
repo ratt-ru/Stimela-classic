@@ -39,12 +39,6 @@
             "name": "model-chunks"
         }, 
         {
-            "info": "Optional. Invert UVW coordinates. Useful if we want compare our visibilities against MeqTrees", 
-            "dtype": "bool", 
-            "default": true, 
-            "name": "invert-uvw"
-        }, 
-        {
             "info": "Optional. Model sources as non-flat spectra. The spectral coefficients and reference frequency must be present in the sky model.", 
             "dtype": "bool", 
             "default": false, 
@@ -78,6 +72,25 @@
             "default": 0.5, 
             "name": "memory-fraction", 
             "dtype": "float"
+        },
+        {
+            "info": "Comma-separated list of Field names or ids which should be predicted. All fields are predicted by default.",
+            "dtype": [
+                "list:int",
+                "list:str"
+            ],
+            "name": "fields",
+            "default": null
+        },
+        {
+            "info": "Sign convention to use for the complex exponential. 'casa' specifies the e^(2.pi.I) convention while 'thompson' specifies the e^(-2.pi.I) convention in the white book and Fourier analysis literature. Defaults to 'casa'",
+            "dtype": "str",
+            "name": "exp-sign-convention",
+            "default": "casa",
+            "choices": [
+               "casa",
+               "thompson"
+            ]
         }
     ]
 }

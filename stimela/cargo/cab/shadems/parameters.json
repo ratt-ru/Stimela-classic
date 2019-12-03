@@ -20,7 +20,7 @@
             "dtype": "str", 
             "default": "t", 
             "name": "xaxis",
-            "choices": ["time", "f", "c", "u", "uv","r", "a"]
+            "choices": ["t","f","c","u","uv","r","a"]
         }, 
         {
             "info": "Y axis: [a]mplitude (default), [p]hase, [r]eal, [i]maginary, [v]", 
@@ -92,37 +92,37 @@
         {
             "info": "Canvas x-size in pixels (default = 1280)", 
             "dtype": "int", 
-            "default": 1280, 
+            "default": null, 
             "name": "xcanvas"
         }, 
         {
             "info": "Canvas y-size in pixels (default = 800)", 
             "dtype": "int", 
-            "default": 800, 
+            "default": null, 
             "name": "ycanvas"
         }, 
         {
             "info": "Pixel scale normalization: eq_hist (default), cbrt, log, linear", 
             "dtype": "str", 
-            "default": "eq_hist", 
+            "default": null, 
             "name": "norm"
         }, 
         {
             "info": "Colorcet map to use (default = bkr)", 
             "dtype": "str", 
-            "default": "bkr", 
+            "default": null, 
             "name": "cmap" 
         }, 
         {
             "info": "RGB hex code for background colour (default = FFFFFF)", 
             "dtype": "str", 
-            "default": "FFFFFF", 
+            "default": null, 
             "name": "bgcol" 
         }, 
         {
             "info": "Font size for all text elements (default = 20)", 
             "dtype": "float", 
-            "default": 20, 
+            "default": null, 
             "name": "fontsize"
         }, 
         {
@@ -135,7 +135,7 @@
         {
             "info": "Add timestamp to default PNG name", 
             "dtype": "bool", 
-            "default": false, 
+            "default": null, 
             "name": "stamp"
         }
     ]

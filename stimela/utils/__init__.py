@@ -13,15 +13,16 @@ import inspect
 import warnings
 import re
 import math
-from threading import Thread
+from threading import Thread, Event
 import unicodedata
 import hashlib
 #from fcntl import fcntl, F_GETFL, F_SETFL
 #from os import O_NONBLOCK, read
+import codecs
 
 DEBUG = False
-INTERRUPT_TIME = 0.1  # seconds -- do not want to constantly interrupt the child process
-
+INTERRUPT_TIME = 2.0  # seconds -- do not want to constantly interrupt the child process
+LIVELOG_TIME = 0.1
 
 class StimelaCabRuntimeError(RuntimeError):
     pass
@@ -60,40 +61,66 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         Example: _run("ls", ["-lrt", "../"])
     """
     if "LOGFILE" in os.environ and logfile is None:
-        logfile = os.environ["LOGFILE"] # superceed if not set    
+        logfile = os.environ["LOGFILE"] # superceed if not set  
+
     # clear logfile if it exists
     if logfile is not None and os.path.exists(logfile):
         open(logfile, "w").close()
 
     cmd = " ".join([command] + list(map(str, options)))
 
+    def _remove_ctrls(msg):
+        import re
+        ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
+        return ansi_escape.sub('', msg)
+
     def _print_info(msg):
         if msg is None:
             return
+        msg = _remove_ctrls(msg)
+        if msg.strip() == "": return
         if log:
-            log.info(msg)
+            try:
+                log.info(msg.rstrip('\n'))
+            except UnicodeError:
+                log.warn("Log contains unicode and will not be printed")
         else:
-            print(msg)
+            try:
+                print(msg),
+            except UnicodeError:
+                print("Log contains unicode and will not be printed")
 
     def _print_warn(msg):
         if msg is None:
             return
+        msg = _remove_ctrls(msg)
+        if msg.strip() == "": return
         if log:
-            log.warn(msg)
+            try:
+                log.info(msg.rstrip('\n'))
+            except UnicodeError:
+                log.warn("Log contains unicode and will not be printed")
         else:
-            print(msg)
+            try:
+                print(msg),
+            except UnicodeError:
+                print("Log contains unicode and will not be printed")
+
 
     _print_info(u"Running: {0:s}".format(cmd))
 
     sys.stdout.flush()
     starttime = time.time()
     process = p = None
-    foutlog = None
+    stop_log_printer = Event()
+
     try:
         foutname = os.path.join("/tmp", "stimela_output_{0:s}_{1:f}".format(
             hashlib.md5(cmd.encode('utf-8')).hexdigest(), starttime))
-        
-        p = process = subprocess.Popen(cmd, shell=True)
+
+
+        p = process = subprocess.Popen(cmd,
+                                       shell=True)
         kill_callback = kill_callback or p.kill
 
         def clock_killer(p):
@@ -108,38 +135,45 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                     kill_callback()
                 time.sleep(INTERRUPT_TIME)
 
+        def log_reader(logfile, stop_event):
+            bytes_read = 0
+            while not stop_event.isSet():
+                if logfile is not None and os.path.exists(logfile):
+                    with codecs.open(logfile, "r", encoding="UTF-8",
+                                     errors="ignore", buffering=0) as foutlog:
+                        foutlog.seek(bytes_read, 0)
+                        lines = foutlog.readlines()
+                        bytes_read = foutlog.tell()
+                        for line in lines:
+                            line and _print_info(line)
+                time.sleep(LIVELOG_TIME) # wait for the log to go to disk
+
         Thread(target=clock_killer, args=tuple([p])).start()
+        if log is not None:
+            # crucial - child process should not write to stdout unless it is
+            # the container process itself
+            Thread(target=log_reader, args=tuple([logfile, stop_log_printer])).start()
+
+
         while (process.poll() is None):
             currenttime = time.time()
             DEBUG and _print_info(
                 u"God mode on: has been running for {0:f}".format(currenttime - starttime))
-            if logfile is not None and os.path.exists(logfile) and foutlog is None:
-                foutlog = open(logfile, "r")
-            if foutlog is not None:
-                out = foutlog.read()
-                (out != "") and _print_info(out) # read and advance pointer to the current end of file
             # this is probably not ideal as it interrupts the process every few seconds,
             time.sleep(INTERRUPT_TIME)
             # check whether there is an alternative with a callback
 
-        # read whatever remains in the log file and advance pointer to the end of logfile
-        if logfile is not None and os.path.exists(logfile) and foutlog is None:
-            foutlog = open(logfile, "r")
-        if foutlog is not None:
-            out = foutlog.read()
-            (out != "") and _print_info(out)
         assert hasattr(
             process, "returncode"), "No returncode after termination!"
     finally:
-        if foutlog is not None:
-            foutlog.close()
+        stop_log_printer.set()
         if (process is not None) and process.returncode:
             raise StimelaCabRuntimeError(
                 '%s: returns errr code %d' % (command, process.returncode))
 
 
 def readJson(conf):
-    with open(conf) as _std:
+    with open(conf, "r") as _std:
         jdict = yaml.safe_load(_std)
         return jdict
 
@@ -197,7 +231,7 @@ def change_Dockerfile_base_image(path, _from, label, destdir="."):
 
 def get_base_images(logfile, index=1):
 
-    with open(logfile) as std:
+    with opEn(logfile, "r") as std:
         string = std.read()
 
     separator = "[================================DONE==========================]"
@@ -279,7 +313,7 @@ os.chdir('%s')
     # log taskname.last
     task_last = '%s.last' % taskname
     if os.path.exists(task_last):
-        with open(task_last, 'r') as last:
+        with opEn(task_last, 'r') as last:
             print('%s.last is: \n %s' % (taskname, last.read()))
 
     # remove temp directory. This also gets rid of the casa log files; so long suckers!

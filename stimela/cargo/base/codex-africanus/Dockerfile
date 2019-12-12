@@ -9,5 +9,5 @@ RUN docker-apt-install python3-casacore \
     wcslib-dev \
     python3-pip    
 RUN pip3 install --upgrade pip setuptools astropy
-RUN pip3 install crystalball>=0.1.2
+RUN pip3 install crystalball>=0.2.2
 RUN crystalball -h

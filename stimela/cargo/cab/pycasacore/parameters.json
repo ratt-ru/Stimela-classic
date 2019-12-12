@@ -1,7 +1,7 @@
 {
     "task": "pycasacore", 
     "base": "stimela/meqtrees", 
-    "tag": "1.2.0", 
+    "tag": "1.2.4", 
     "description": "Runs a user defined script in a python environment with python-casaore", 
     "prefix": "", 
     "binary": "python", 

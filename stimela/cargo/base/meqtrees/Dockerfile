@@ -1,6 +1,6 @@
-FROM stimela/meqtrees:1.0.1
-RUN pip install --no-deps "owlcat>=1.5.3"
-RUN docker-apt-install xvfb
+FROM stimela/meqtrees:1.2.0
+RUN pip install -U pip
+RUN pip install --no-deps git+https://github.com/ska-sa/owlcat.git@elevation-plots
 COPY xvfb.init.d /etc/init.d/xvfb
 RUN chmod 755 /etc/init.d/xvfb
 RUN chmod 777 /var/run

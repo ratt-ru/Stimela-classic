@@ -1,4 +1,4 @@
-FROM stimela/montage:1.2.0
+FROM stimela/montage:1.2.4
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

@@ -1,10 +1,10 @@
 {
-    "task": "montage_mosaic", 
+    "task": "mosaicsteward", 
     "base": "stimela/montage", 
-    "tag": "1.2.0", 
+    "tag": "1.2.4", 
     "description": "A package that allows continuum (2D) images and spectral (3D) images to be mosaicked together, using montage commands.", 
     "prefix": "--", 
-    "binary": "montage-mosaic", 
+    "binary": "MosaicSteward", 
     "msdir": false, 
     "parameters": [
         {

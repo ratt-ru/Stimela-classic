@@ -1,0 +1,37 @@
+{
+    "task": "owlcat_plotelev",
+    "base": "stimela/owlcat",
+    "tag": "1.2.4",
+    "description": "Plots elevation tracks from an measurement set",
+    "prefix": "--",
+    "binary": "plot-elevation-tracks.py",
+    "msdir": true,
+    "parameters": [
+        {
+            "info": "Name of Measurement set",
+            "name": "msname",
+            "io": "msfile",
+            "default": null,
+            "dtype": "file",
+            "required": true
+        }, 
+        {
+            "info": "lists fields found in MS, then exits",
+            "dtype": "bool",
+            "default": null,
+            "name": "list"
+        }, 
+        {
+            "info": "Output filename",
+            "dtype": "str",
+            "default": "lst-elev.png",
+            "name": "output-name"
+        },
+        {
+            "info": "Display plot on screen",
+            "dtype": "bool",
+            "default": false,
+            "name": "display"
+        }
+    ]
+}

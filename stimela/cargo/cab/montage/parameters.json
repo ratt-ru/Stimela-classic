@@ -1,5 +1,5 @@
 {
-    "task": "montage.mosiac", 
+    "task": "montage", 
     "base": "stimela/montage", 
     "tag": "1.2.0", 
     "description": "Combine FITS files into a mosaic", 

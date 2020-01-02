@@ -1,4 +1,4 @@
-FROM bhugo/tricolour:0.1.5
+FROM bhugo/tricolour:0.1.6
 MAINTAINER <sphemakh@gmail.com>
 RUN pip3 install pyyaml
 RUN cp -r /code /opt

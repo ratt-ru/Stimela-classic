@@ -1,4 +1,4 @@
-FROM stimela/tricolour:1.2.4
+FROM stimela/tricolour:1.2.5
 MAINTAINER <sphemakh@gmial.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

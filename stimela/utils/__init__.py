@@ -63,9 +63,18 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
     if "LOGFILE" in os.environ and logfile is None:
         logfile = os.environ["LOGFILE"] # superceed if not set  
 
-    # clear logfile if it exists
+    # skip lines from previous log files
     if logfile is not None and os.path.exists(logfile):
-        open(logfile, "w").close()
+        with codecs.open(logfile, "r", encoding="UTF-8",
+                         errors="ignore", buffering=0) as foutlog:
+            lines = foutlog.readlines()
+            prior_log_bytes_read = foutlog.tell()
+    else: # not existant, create
+        prior_log_bytes_read = 0
+        if logfile is not None and not os.path.exists(logfile):
+            with codecs.open(logfile, "w+", encoding="UTF-8",
+                             errors="ignore", buffering=0) as foutlog:
+                pass
 
     cmd = " ".join([command] + list(map(str, options)))
 
@@ -136,7 +145,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 time.sleep(INTERRUPT_TIME)
 
         def log_reader(logfile, stop_event):
-            bytes_read = 0
+            bytes_read = prior_log_bytes_read # skip any previous runs' output
             while not stop_event.isSet():
                 if logfile is not None and os.path.exists(logfile):
                     with codecs.open(logfile, "r", encoding="UTF-8",

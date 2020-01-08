@@ -1,4 +1,4 @@
-FROM bhugo/ddfacet:0.4.1
+FROM bhugo/ddfacet:0.5.0
 MAINTAINER Ben Hugo "bhugo@ska.ac.za"
 RUN pip install pyyaml
 RUN apt install xvfb -y

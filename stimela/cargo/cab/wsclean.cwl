@@ -558,12 +558,12 @@ inputs:
     doc: Number of major cycles
     inputBinding:
       prefix: -nmiter
-  -save_source_list:
+  save_source_list:
     type: boolean?
     doc: list of model components from wsclean
     inputBinding:
       prefix: --save-source-list
-  -predict:
+  predict:
     type: boolean?
     doc: list of model components from wsclean
     inputBinding:
@@ -606,6 +606,11 @@ inputs:
       prefix: -parallel-deconvolution
 
 outputs:
+  source_list:
+    type: File
+    doc: Output list of model components from wsclean
+    outputBinding:
+      glob: $(inputs.name)*.txt
   images_out:
     type: File[]
     doc: Output images

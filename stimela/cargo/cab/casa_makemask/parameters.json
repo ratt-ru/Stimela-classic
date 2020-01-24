@@ -1,7 +1,7 @@
 {
     "task": "casa_makemask", 
     "base": "stimela/casa", 
-    "tag": "1.2.0", 
+    "tag": "1.2.5", 
     "description": "Makes and manipulates image masks", 
     "prefix": "-", 
     "binary": "makemask", 

@@ -1,7 +1,7 @@
 {
     "task": "casa_fringefit", 
     "base": "stimela/casa", 
-    "tag": "1.2.3", 
+    "tag": "1.2.5", 
     "description": "Phase offsets, groups delays and delay rates are calculated with respect to a specified referance antenna by a two-dimensional FFT and subsequent least-squares optimisation.",
     "prefix": "-", 
     "binary": "fringefit", 

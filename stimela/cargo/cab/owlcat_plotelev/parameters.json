@@ -1,7 +1,7 @@
 {
     "task": "owlcat_plotelev",
-    "base": "stimela/plotelev",
-    "tag": "1.2.5",
+    "base": "stimela/owlcat",
+    "tag": "1.2.5-1",
     "description": "Plots elevation tracks from an measurement set",
     "prefix": "--",
     "binary": "plot-elevation-tracks.py",

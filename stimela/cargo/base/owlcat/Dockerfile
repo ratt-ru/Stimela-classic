@@ -1,4 +1,4 @@
-FROM stimela/base:final
+FROM stimela/base:1.2.0
 RUN pip install --upgrade pip
 RUN pip install owlcat meqtrees-cattery --upgrade --ignore-installed
 RUN pip uninstall -y python-casacore

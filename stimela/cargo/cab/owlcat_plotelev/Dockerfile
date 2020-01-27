@@ -1,5 +1,5 @@
 FROM stimela/owlcat:1.2.5-1
-MAINTAINER <sphemakh@gmial.com>
+MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt
 CMD /scratch/code/run.sh

@@ -1,14 +1,14 @@
 {
     "task": "casa_uvsub", 
     "base": "stimela/casa", 
-    "tag": "1.2.0", 
+    "tag": "1.2.5", 
     "description": "Subtract/add model from/to the corrected visibility data.", 
     "prefix": "", 
     "binary": "uvsub", 
     "msdir": true, 
     "parameters": [
         {
-            "info": "Name of input visibility file (MS", 
+            "info": "Name of input visibility file (MS)", 
             "name": "msname", 
             "io": "msfile", 
             "default": null, 

@@ -3,6 +3,7 @@ set -e
 set -u
 export INPUT=/scratch/input
 export OUTPUT=/scratch/output
+export TMPDIR=/scratch/output/tmp
 export CONFIG=/scratch/configfile
 export MSDIR=/scratch/msdir
 test -d $OUTPUT/.casa || { test -d /root/.casa && cp -r /root/.casa $OUTPUT/.casa; } || echo " "

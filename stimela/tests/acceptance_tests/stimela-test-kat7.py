@@ -325,7 +325,7 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label="image_target_field_r1:: Image target field second round",
-            time_out=120)
+            time_out=300)
 
         recipe.add('cab/cleanmask', 'mask0', {
             "image": '%s.image.fits:output' % (imname1),

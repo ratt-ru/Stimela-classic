@@ -1,7 +1,7 @@
 {
     "task": "casa_tclean", 
     "base": "stimela/casa", 
-    "tag": "1.2.0", 
+    "tag": "1.2.5", 
     "description": "CASA tclean task. Clean based algorithm for multi-scale and wideband image reconstruction, widefield imaging correcting for the w-term", 
     "prefix": "", 
     "binary": "tclean", 

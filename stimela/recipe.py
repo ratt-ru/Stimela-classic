@@ -305,7 +305,8 @@ class StimelaJob(object):
 
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        cont.logfile = self.logfile
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
         with open(cont.logfile, "w+"): pass
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
@@ -443,7 +444,8 @@ class StimelaJob(object):
 
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        cont.logfile = self.logfile
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
         with open(cont.logfile, "w+"): pass
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
@@ -587,6 +589,8 @@ class StimelaJob(object):
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
         cont.logfile = self.logfile
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
         with open(cont.logfile, "w+"): pass
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile")
@@ -749,6 +753,8 @@ class StimelaJob(object):
         logfile_name = name.split('-')[0]
         self.setup_job_log(logfile_name, self.log_dir)
         cont.logfile = self.logfile
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
         with open(cont.logfile, "w+"): pass
         cont.logger = self.log
 

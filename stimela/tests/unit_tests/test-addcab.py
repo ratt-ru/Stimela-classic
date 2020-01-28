@@ -22,6 +22,7 @@ class basicrecipe_test(unittest.TestCase):
 
         # Start stimela Recipe instance
         import stimela.main as main
+        os.chdir(os.path.dirname(__file__))
         main.build(["-c", "custom,cab/custom"])
 
 

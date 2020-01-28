@@ -58,7 +58,7 @@ class StimelaJob(object):
                  singularity_dir=None,
                  time_out=-1,
                  log_dir=None,
-		 logfile=None,
+		         logfile=None,
                  cabpath=None):
 
         self.name = name
@@ -94,7 +94,7 @@ class StimelaJob(object):
             self.logfile = os.path.join(log_dir or ".", logfile_name)
             if not os.path.exists(log_dir):
                 os.mkdir(log_dir)
-
+            with open(logfile_name, "w+"): pass
             # Add the handlers to logger
             fh = logging.FileHandler(self.logfile, 'w')
             fh.setLevel(logging.DEBUG)
@@ -306,7 +306,7 @@ class StimelaJob(object):
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
         cont.logfile = self.logfile
-
+        with open(cont.logfile, "w+"): pass
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
@@ -444,7 +444,7 @@ class StimelaJob(object):
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
         cont.logfile = self.logfile
-
+        with open(cont.logfile, "w+"): pass
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
 
@@ -587,7 +587,7 @@ class StimelaJob(object):
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
         cont.logfile = self.logfile
-
+        with open(cont.logfile, "w+"): pass
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
@@ -749,6 +749,7 @@ class StimelaJob(object):
         logfile_name = name.split('-')[0]
         self.setup_job_log(logfile_name, self.log_dir)
         cont.logfile = self.logfile
+        with open(cont.logfile, "w+"): pass
         cont.logger = self.log
 
         cont.add_volume(

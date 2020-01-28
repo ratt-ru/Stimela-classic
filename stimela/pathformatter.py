@@ -26,13 +26,14 @@ class pathformatter:
     expect:
         pattern: of the format (({})?[\s\S-[{}]]*)*, {} indicate placeholders where
                  paths are to be inserted. \{ and \} escapes these groups
-        *args: of special types pathfinder.input, pathfinder.output and
-               pathfinder.msdir. Will attempt to replace placeholders in order
+        *args: of special string types input, output and
+               msfile. Will attempt to replace placeholders in order
                of *args specification
     Example:
+        ...
         {
-            'model': pathfinder("MODEL_DATA:{}/mod2.lsm:{}/mod3.DicoModel", "output", "input")
-        }
+            'model': pathformatter("MODEL_DATA:{}/mod2.lsm:{}/mod3.DicoModel", "output", "input")
+        }...
         This will create placeholders for output and input on the second and third files
         respectively.
     '''
@@ -73,6 +74,6 @@ class pathformatter:
 if __name__ == "__main__":
     p = pathformatter("MODEL_DATA+-{}/bla\{ab\}.DicoModel@{}/poly.reg:{}/abc.lsm",
                   "output",
-                  "outfile",
+                  "output",
                   "input")
     print(p())

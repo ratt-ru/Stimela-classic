@@ -49,7 +49,7 @@ def build(argv):
     parser.add_argument("-nc", "--no-cache", action="store_true",
                         help="Do not use cache when building the image")
 
-    parser.add_argument("-bl", "--build-label", default=USER,
+    parser.add_argument("-bl", "--build-label", default=USER.lower(),
                         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -229,7 +229,7 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-bl", "--build-label", default=USER,
+    add("-bl", "--build-label", default=USER.lower(),
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -487,7 +487,7 @@ def clean(argv):
     add("-aC", "--all-containers", action="store_true",
         help="Stop and/or Remove all stimela containers")
 
-    add("-bl", "--build-label", default=USER,
+    add("-bl", "--build-label", default=USER.lower(),
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)

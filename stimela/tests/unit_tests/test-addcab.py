@@ -25,6 +25,8 @@ class basicrecipe_test(unittest.TestCase):
         os.chdir(os.path.dirname(__file__))
         main.build(["-c", "custom,cab/custom"])
         main.pull(["-s", "--force", "-im", "stimela/base:1.2.0"])
+        if sys.version_info[0] == 2:
+            main.pull(["--force", "-im", "stimela/base:1.2.0"])
 
     @classmethod
     def tearDownClass(cls):

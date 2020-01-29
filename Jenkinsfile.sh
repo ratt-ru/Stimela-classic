@@ -22,9 +22,11 @@ ln -s ${SINGULARITY_STORAGE}/podman ${POD_STORAGE}
 virtualenv ${WORKSPACE_ROOT}/projects/pyenv -p python3
 . ${WORKSPACE_ROOT}/projects/pyenv/bin/activate
 pip install pip setuptools -U
+OLDPATH=$PATH
+OLDLDPATH=$LD_LIBRARY_PATH
 PATH=${WORKSPACE}/projects/pyenv/bin:$PATH
 LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv/lib:$LD_LIBRARY_PATH
-pip install ${WORKSPACE_ROOT}/projects/Stimela/
+python3 -m pip install ${WORKSPACE_ROOT}/projects/Stimela/
 
 # Copy a clean dataset over
 mkdir $TEST_OUTPUT_DIR/msdir
@@ -46,4 +48,18 @@ stimela build -nc
 #Run forest run!
 cd $TEST_OUTPUT_DIR
 nosetests --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
+
+#Run 2.7 tests
+virtualenv ${WORKSPACE_ROOT}/projects/pyenv27 -p python2.7
+. ${WORKSPACE_ROOT}/projects/pyenv27/bin/activate
+pip install pip setuptools -U
+PATH=$OLDPATH
+LD_LIBRARY_PATH=$OLDLDPATH
+PATH=${WORKSPACE}/projects/pyenv/bin:$PATH
+LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv27/lib:$LD_LIBRARY_PATH
+python2.7 -m pip install ${WORKSPACE_ROOT}/projects/Stimela/
+
+cd $TEST_OUTPUT_DIR
+nosetests --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests/unit_tests"
+
 rm -rf $SINGULARITY_PULLFOLDER/* # delete the compiled images after testing is done

@@ -19,3 +19,5 @@ RUN pip install ".[lsm-support]"
 RUN DDF.py --help
 RUN gocubical --help
 ENV NUMBA_CACHE_DIR /tmp
+
+ENTRYPOINT []

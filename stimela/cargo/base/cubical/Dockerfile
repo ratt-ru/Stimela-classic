@@ -1,4 +1,4 @@
-FROM bhugo/ddfacet:0.5.0
+FROM bhugo/ddfacet:0.4.1
 MAINTAINER <sphemakh@gmail.com>
 
 RUN pip install pyyaml

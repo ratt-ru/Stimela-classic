@@ -1,7 +1,7 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "1.3.0", 
+    "tag": "1.2.0", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--", 
     "binary": "gocubical", 
@@ -2043,54 +2043,6 @@
                 "str"
             ], 
             "name": "log-verbose"
-        },
-        {
-            "info": "Oversampling factor.",
-            "dtype": "int",
-            "name": "degridding-OverS",
-            "default": 11
-        },
-        {
-            "info": "CF support size.",
-            "dtype": "int",
-            "name": "degridding-Support",
-            "default": 7
-        },
-        {
-            "info": "Number of w-planes.",
-            "dtype": "int",
-            "name": "degridding-Nw",
-            "default": 100
-        },
-        {
-            "info": "Maximum w coordinate (meters). Visibilities with larger w will not be gridded. If 0, no maximum is imposed.",
-            "dtype": "float",
-            "name": "degridding-wmax",
-            "default": 0
-        },
-        {
-            "info": "Facet padding factor.",
-            "dtype": "float",
-            "name": "degridding-Padding",
-            "default": 1.7
-        },
-        {
-            "info": "Number of image bands for degridding. 0 means degrid each channel.",
-            "dtype": "int",
-            "name": "degridding-NDegridBand",
-            "default": 16
-        },
-        {
-            "info": "Maximum facet size in degrees",
-            "dtype": "float",
-            "name": "degridding-MaxFacetSize",
-            "default": 0.25
-        },
-        {
-            "info": "Minimum number of facets per direction",
-            "dtype": "int",
-            "name": "degridding-MinNFacetPerAxis",
-            "default": 1
         }
     ]
 }

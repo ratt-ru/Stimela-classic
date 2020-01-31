@@ -27,7 +27,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           log_dir=os.path.join(OUTPUT, "logs")
                           )
 
-pipeline.JOB_TYPE = "docker"
+pipeline.JOB_TYPE = "udocker"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from

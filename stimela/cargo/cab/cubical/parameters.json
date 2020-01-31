@@ -75,11 +75,12 @@
             "name": "sel-chan"
         }, 
         {
-            "info": "Predict model visibilities from given LSM (using Montblanc).", 
+            "info": "Predict model visibilities from given LSM (using Montblanc). Expects pattern of the style source(+-?source)*(:source(+-?source)*)* where source at present can be a column name, lsm or DDFacet DicoModel. Colons split directions as specifiable as 0-indexed indicies through the gain directions and fix directions switches. If an lsm file is spcified a tagged selection of sources can be picked by appending a @[user tag] option. If a DicoModel is used regions can be extracted from the model components through a @[DS9 polygon regions file].", 
             "default": null, 
             "check_io": false, 
             "name": "model-list", 
-            "dtype": "str"
+            "dtype": "file",
+            "io": "output"
         }, 
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 

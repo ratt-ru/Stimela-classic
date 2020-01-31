@@ -313,10 +313,10 @@
         {
             "info": "Number of iterations per Jones term. If empty, then each Jones\nterm is solved for once, up to convergence, or up to its -max-iter\nsetting.\nOtherwise, set to a list giving the number of iterations per Jones term.\nFor example, given two Jones terms and --sol-num-iter 10,20,10, it will\ndo 10 iterations on the first term, 20 on the second, and 10 again on the\nfirst.", 
             "dtype": [
-                "int", 
-                "str"
+                "list:int", 
+                "list:str"
             ], 
-            "default": null, 
+            "default": [50], 
             "name": "sol-term-iters"
         }, 
         {

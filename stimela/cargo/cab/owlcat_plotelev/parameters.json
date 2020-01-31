@@ -23,7 +23,8 @@
         }, 
         {
             "info": "Output filename",
-            "dtype": "str",
+            "io": "output",
+            "dtype": "file",
             "default": "lst-elev.png",
             "name": "output-name"
         },

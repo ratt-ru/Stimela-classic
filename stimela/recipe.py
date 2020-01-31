@@ -7,9 +7,12 @@ from stimela.cargo import cab
 import logging
 import inspect
 import re
+from stimela.exceptions import *
 from stimela.dismissable import dismissable
 from future.utils import raise_
 from stimela.main import get_cabs
+
+from stimela.cargo.cab import StimelaCabParameterError
 
 version = stimela.__version__
 USER = os.environ["USER"]
@@ -45,47 +48,18 @@ CONT_IO = {
 }
 
 
-class StimelaCabParameterError(Exception):
-    pass
 
-class StimelaRecipeExecutionError(Exception):
-    pass
-
-class PipelineException(Exception):
-    """ 
-    Encapsulates information about state of pipeline when an
-    exception occurs
-    """
-
-    def __init__(self, exception, completed, failed, remaining):
-        message = ("Exception occurred while running "
-                   "pipeline component '%s': %s" % (failed.label, str(exception)))
-
-        super(PipelineException, self).__init__(message)
-
-        self._completed = completed
-        self._failed = failed
-        self._remaining = remaining
-
-    @property
-    def completed(self):
-        return self._completed
-
-    @property
-    def failed(self):
-        return self._failed
-
-    @property
-    def remaining(self):
-        return self._remaining
 
 
 class StimelaJob(object):
     logs_avail = dict()
     def __init__(self, name, recipe, label=None,
                  jtype='docker', cpus=None, memory_limit=None,
-                 singularity_dir=None, time_out=-1,
-                 log_dir=None, logfile=None):
+                 singularity_dir=None,
+                 time_out=-1,
+                 log_dir=None,
+		         logfile=None,
+                 cabpath=None):
 
         self.name = name
         self.recipe = recipe
@@ -103,6 +77,7 @@ class StimelaJob(object):
         self.time_out = time_out
         self.log_dir = log_dir
         self.logfile = logfile
+        self.cabpath = cabpath
 
     def setup_job_log(self, log_name, log_dir=None, loglevel='INFO'):
         """ set up a log for the job on the host side 
@@ -119,7 +94,7 @@ class StimelaJob(object):
             self.logfile = os.path.join(log_dir or ".", logfile_name)
             if not os.path.exists(log_dir):
                 os.mkdir(log_dir)
-
+            with open(logfile_name, "w+"): pass
             # Add the handlers to logger
             fh = logging.FileHandler(self.logfile, 'w')
             fh.setLevel(logging.DEBUG)
@@ -245,7 +220,8 @@ class StimelaJob(object):
 
         # Get location of template parameters file
         cabpath = self.recipe.stimela_path + \
-            "/cargo/cab/{0:s}/".format(image.split("/")[1])
+            "/cargo/cab/{0:s}/".format(image.split("/")[1]) if not self.cabpath else \
+                os.path.join(self.cabpath, image.split("/")[1])
         parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image),
@@ -283,8 +259,8 @@ class StimelaJob(object):
                         '/scratch/stimela', perm='ro')
         cont.add_volume(cont.parameter_file_name,
                         '/scratch/configfile', perm='ro', noverify=True)
-        cont.add_volume("{0:s}/cargo/cab/{1:s}/src/".format(
-            self.recipe.stimela_path, _cab.task), "/scratch/code", "ro")
+        cont.add_volume("{0:s}/{1:s}/src/".format(
+            self.cabpath or "{0:s}/cargo/cab".format(self.recipe.stimela_path), _cab.task), "/scratch/code", "ro")
         cont.add_volume("{0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path),
                         "/podman_run", perm="ro")
         cont.COMMAND = "/bin/sh -c /podman_run"
@@ -326,10 +302,12 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = cab.IODEST["output"]
+
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        cont.logfile = self.logfile
-
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, "w+"): pass
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
@@ -385,7 +363,8 @@ class StimelaJob(object):
 
         # Get location of template parameters file
         cabpath = self.recipe.stimela_path + \
-            "/cargo/cab/{0:s}/".format(image.split("/")[1])
+            "/cargo/cab/{0:s}/".format(image.split("/")[1]) if not self.cabpath else \
+                os.path.join(self.cabpath, image.split("/")[1])
         parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image),
@@ -424,8 +403,8 @@ class StimelaJob(object):
                         '/scratch/stimela', perm='ro')
         cont.add_volume(cont.parameter_file_name,
                         '/scratch/configfile', perm='ro', noverify=True)
-        cont.add_volume("{0:s}/cargo/cab/{1:s}/src/".format(
-            self.recipe.stimela_path, _cab.task), "/scratch/code", "ro")
+        cont.add_volume("{0:s}/{1:s}/src/".format(
+            self.cabpath or "{0:s}/cargo/cab".format(self.recipe.stimela_path), _cab.task), "/scratch/code", "ro")
         cont.add_volume("{0:s}/cargo/cab/singularity_run".format(self.recipe.stimela_path,
                                                                  _cab.task), "/singularity")
 
@@ -462,10 +441,12 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = cab.IODEST["output"]
+
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
-        cont.logfile = self.logfile
-
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, "w+"): pass
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
 
@@ -520,8 +501,10 @@ class StimelaJob(object):
 
         # Get location of template parameters file
         cabpath = self.recipe.stimela_path + \
-            "/cargo/cab/{0:s}/".format(image.split("/")[1])
+            "/cargo/cab/{0:s}/".format(image.split("/")[1]) if not self.cabpath else \
+                os.path.join(self.cabpath, image.split("/")[1])
         parameter_file = cabpath+'/parameters.json'
+
         name = '{0}-{1}{2}'.format(self.name, id(image),
                                    str(time.time()).replace('.', ''))
 
@@ -561,8 +544,8 @@ class StimelaJob(object):
         cont.add_volume(self.recipe.stimela_path, '/scratch/stimela')
         cont.add_volume(cont.parameter_file_name,
                         '/scratch/configfile', noverify=True)
-        cont.add_volume("{0:s}/cargo/cab/{1:s}/src/".format(
-            self.recipe.stimela_path, _cab.task), "/scratch/code")
+        cont.add_volume("{0:s}/{1:s}/src/".format(
+            self.cabpath or "{0:s}/cargo/cab".format(self.recipe.stimela_path), _cab.task), "/scratch/code")
 
         cont.add_environ('CONFIG', '/scratch/configfile'.format(name))
 
@@ -606,7 +589,9 @@ class StimelaJob(object):
         self.log_dir = os.path.abspath(self.log_dir or output)
         log_dir_name = os.path.basename(self.log_dir or output)
         cont.logfile = self.logfile
-
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, "w+"): pass
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
@@ -768,6 +753,9 @@ class StimelaJob(object):
         logfile_name = name.split('-')[0]
         self.setup_job_log(logfile_name, self.log_dir)
         cont.logfile = self.logfile
+        logfile_name = '.currentjob.log'.format(name.split('-')[0])
+        cont.logfile = os.path.join(self.log_dir, logfile_name)
+        with open(cont.logfile, "w+"): pass
         cont.logger = self.log
 
         cont.add_volume(
@@ -787,7 +775,8 @@ class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
                  tag=None, build_label=None, loglevel='INFO',
-                 loggername='STIMELA', singularity_image_dir=None, log_dir=None, JOB_TYPE='docker'):
+                 loggername='STIMELA', singularity_image_dir=None, log_dir=None, JOB_TYPE='docker',
+                 cabpath=None):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -796,7 +785,7 @@ class Recipe(object):
         tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
         """
-
+        self.cabpath = cabpath
         self.log = logging.getLogger(loggername)
         self.log.setLevel(getattr(logging, loglevel))
 
@@ -881,8 +870,9 @@ class Recipe(object):
             build_label=None,
             cpus=None, memory_limit=None,
             time_out=-1,
-            log_dir=None, 
-            logfile=None):
+            log_dir=None,
+            logfile=None,
+            cabpath=None):
 
         if self.log_dir:
             if not os.path.exists(self.log_dir):
@@ -894,8 +884,10 @@ class Recipe(object):
 
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,
-                         log_dir=self.log_dir or output, jtype=self.JOB_TYPE, 
-                         logfile=logfile)
+                         log_dir=self.log_dir or output,
+                         jtype=self.JOB_TYPE,
+                         logfile=logfile,
+                         cabpath=cabpath or self.cabpath)
 
         if callable(image):
             job.jtype = 'function'
@@ -992,7 +984,7 @@ class Recipe(object):
                     cont.msdir_content = step['msdir_content']
                     cont.logfile = step['logfile']
                     job = StimelaJob(
-                        step['name'], recipe=self, label=step['label'])
+                        step['name'], recipe=self, label=step['label'], cabpath=self.cabpath)
                     job.job = cont
                     job.jtype = 'docker'
 
@@ -1079,11 +1071,10 @@ class Recipe(object):
                     run_job()
 
                 self.log2recipe(job, recipe, step, 'completed')
-
+                self.completed.append(job)
             except (utils.StimelaCabRuntimeError,
                     StimelaRecipeExecutionError,
                     StimelaCabParameterError) as e:
-                self.completed = [jb[1] for jb in jobs[:i]]
                 self.remaining = [jb[1] for jb in jobs[i+1:]]
                 self.failed = job
 

@@ -1,0 +1,49 @@
+{
+    "task": "custom", 
+    "base": "stimela/base", 
+    "tag": "1.2.0", 
+    "description": "Custom", 
+    "prefix": "--", 
+    "binary": "echo", 
+    "msdir": true, 
+    "parameters": [
+        {
+            "info": "bla1", 
+            "dtype": "str", 
+            "default": null, 
+            "required": true, 
+            "name": "bla1",
+            "choices": [
+                "a",
+                "b",
+                "c"
+            ]
+        }, 
+        {
+            "default": true, 
+            "dtype": "file", 
+            "name": "bla2", 
+            "io": "output",
+            "check_io": true
+        }, 
+        {
+            "info": "bla3", 
+            "dtype": "list:float", 
+            "default": null, 
+            "name": "bla3"
+        },
+        {
+            "info": "bla4", 
+            "dtype": "list:str", 
+            "default": null, 
+            "name": "bla4"
+        },
+        {
+            "default": true, 
+            "dtype": "list:file", 
+            "name": "bla5", 
+            "io": "output",
+            "check_io": false
+        }
+    ]
+}

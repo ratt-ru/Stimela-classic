@@ -21,7 +21,8 @@
             "io": "msfile", 
             "default": null, 
             "dtype": "list:file", 
-            "required": false
+            "required": false,
+            "check_io": false
         }, 
         {
             "info": "ColName to image", 

@@ -1,7 +1,7 @@
 {
     "task": "owlcat_plotelev",
     "base": "stimela/owlcat",
-    "tag": "1.2.5",
+    "tag": "1.2.5-1",
     "description": "Plots elevation tracks from an measurement set",
     "prefix": "--",
     "binary": "plot-elevation-tracks.py",
@@ -23,7 +23,8 @@
         }, 
         {
             "info": "Output filename",
-            "dtype": "str",
+            "io": "output",
+            "dtype": "file",
             "default": "lst-elev.png",
             "name": "output-name"
         },

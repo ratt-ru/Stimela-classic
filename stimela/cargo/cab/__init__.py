@@ -3,6 +3,9 @@ import logging
 import sys
 import os
 import textwrap
+from stimela.pathformatter import pathformatter, placeholder
+from stimela.exceptions import *
+
 
 USER = os.environ['USER']
 
@@ -49,9 +52,17 @@ class Parameter(object):
 
         self.value = None
 
+    def __iter__(self):
+       for x in ["info", "default", "required", "choices", "mapping",
+                 "check_io", "value", "name", "io", "dtype"]:
+          yield x
+
+    def __getitem__(self, v):
+        return getattr(self, v)
+
     def validate(self, value):
         if self.choices and value not in self.choices:
-            raise ValueError("Parameter '{0}', can only be either of {1}".format(
+            raise StimelaCabParameterError("Parameter '{0}', can only be either of {1}".format(
                 self.name, self.choices))
 
         for item in self.dtype:
@@ -67,7 +78,7 @@ class Parameter(object):
                 return True
             elif isinstance(value, tuple([item]+[int] if item is float else [item])):
                 return True
-        raise TypeError("Expecting any of types {0} for parameter '{1}', but got '{2}'".format(
+        raise StimelaCabParameterError("Expecting any of types {0} for parameter '{1}', but got '{2}'".format(
             self.dtype, self.name, type(value).__name__))
 
     def get_type(self, dtype):
@@ -75,7 +86,7 @@ class Parameter(object):
         def _type(a):
             if a == "file":
                 if self.io not in ["input", "output", "msfile"]:
-                    raise TypeError("io '{0}' for parameter '{1}' not understood. Please specify 'io' as either 'input', 'output' or 'msfile'".format(
+                    raise StimelaCabParameterError("io '{0}' for parameter '{1}' not understood. Please specify 'io' as either 'input', 'output' or 'msfile'".format(
                         self.io, self.name))
                 return "file"
             else:
@@ -84,7 +95,7 @@ class Parameter(object):
         if dtype.startswith("list:"):
             val = dtype.split(":")
             if len(val) != 2:
-                raise TypeError(
+                raise StimelaCabParameterError(
                     "The type of '{0}' could not validate. Specify list types as \"list:dtype\" where dtype is normal type")
             ttype = val[1]
 
@@ -120,6 +131,8 @@ class CabDefinition(object):
             self.tag = cab["tag"]
             if cab["msdir"]:
                 self.msdir = msdir
+            else:
+                self.msdir = None
             self.description = cab["description"]
             self.prefix = cab["prefix"]
             parameters0 = cab["parameters"]
@@ -150,6 +163,18 @@ class CabDefinition(object):
             self.description = description
             self.msdir = msdir
             self.tag = tag
+
+    def __str__(self):
+        res = ""
+        res += "Cab definition for {}\n".format(self.task)
+        for b in ["base", "binary", "prefix", "description", "tag"]:
+            res += "\t {}: {}\n".format(b, getattr(self, b))
+        res += "\t Parameters:\n"
+        for p in self.parameters:
+            res += "\t\t {}:\n".format(p.name)
+            for k in p:
+                res += "\t\t\t {}: {}\n".format(k, str(p[k]))
+        return res
 
     def display(self, header=False):
         rows, cols = os.popen('stty size', 'r').read().split()
@@ -230,7 +255,7 @@ class CabDefinition(object):
         required = filter(lambda a: a.required, self.parameters)
         for param0 in required:
             if param0.name not in options.keys() and param0.mapping not in options.keys():
-                raise RuntimeError(
+                raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
 
         self.log.info(
@@ -248,49 +273,84 @@ class CabDefinition(object):
                         if not isinstance(value, (list, tuple)):
                             value = [value]
                         for _value in value:
-                            val = _value.split(":")
-                            if len(val) == 2:
-                                if val[1] not in IODEST.keys():
-                                    raise IOError('The location \'{0}\' specified for parameter \'{1}\', is unknown. Choices are {2}'.format(
-                                        val[1], param.name, IODEST.keys()))
-                                self.log.info("Location of '{0}' was specified as '{1}'. Will overide default.".format(
-                                    param.name, val[1]))
-                                _value = val[0]
-                                location = val[1]
-                            else:
-                                location = param.io
+                            if isinstance(_value, pathformatter):
+                                if param.check_io:
+                                    raise StimelaCabParameterError("Pathformatters cannot be used on io parameters where io has to be checked")
+                                joinlist = _value() # construct placeholder list
+                                joined_str = ""
+                                for p in joinlist:
+                                    if not isinstance(p, placeholder):
+                                        joined_str += p
+                                    else:
+                                        if p() not in IODEST.keys():
+                                            raise StimelaCabParameterError('The location \'{0}\' specified for parameter \'{1}\', is unknown. Choices are {2}'.format(
+                                                p(), param.name, IODEST.keys()))
+                                        location = p()
+                                        if location in ["input", "msfile"]:
+                                            if location == "input" and self.indir is None:
+                                                raise StimelaCabParameterError(
+                                                    "You have specified input files, but have not specified an input folder")
+                                            if location == "msfile" and self.msdir is None:
+                                                raise StimelaCabParameterError(
+                                                    "You have specified MS files, but have not specified an MS folder")
 
-                            if location in ["input", "msfile"]:
-                                if location == "input" and self.indir is None:
-                                    raise IOError(
-                                        "You have specified input files, but have not specified an input folder")
-                                if location == "msfile" and self.msdir is None:
-                                    raise IOError(
-                                        "You have specified MS files, but have not specified an MS folder")
+                                            joined_str += "{0}/".format(IODEST[location])
+                                        else:
+                                            if self.outdir is None:
+                                                raise StimelaCabParameterError(
+                                                    "You have specified output files, but have not specified an output folder")
+                                            joined_str += "{0}/".format(IODEST[location])
 
-                                path = "{0}/{1}".format(self.indir if location ==
-                                                        "input" else self.msdir, _value)
-                                if param.check_io and not os.path.exists(path):
-                                    raise IOError("File '{0}' for parameter '{1}' could not be located at '{2}'.".format(
-                                        _value, param.name, path))
-                                param.value.append(
-                                    "{0}/{1}".format(IODEST[location], _value))
+                                param.value.append(joined_str)
+                            elif isinstance(_value, str):
+                                val = _value.split(":")
+                                if len(val) == 2:
+                                    if val[1] not in IODEST.keys():
+                                        raise StimelaCabParameterError('The location \'{0}\' specified for parameter \'{1}\', is unknown. Choices are {2}'.format(
+                                            val[1], param.name, IODEST.keys()))
+                                    self.log.info("Location of '{0}' was specified as '{1}'. Will overide default.".format(
+                                        param.name, val[1]))
+                                    _value = val[0]
+                                    location = val[1]
+                                else:
+                                    location = param.io
+
+                                if location in ["input", "msfile"]:
+                                    if location == "input" and self.indir is None:
+                                        raise StimelaCabParameterError(
+                                            "You have specified input files, but have not specified an input folder")
+                                    if location == "msfile" and self.msdir is None:
+                                        raise StimelaCabParameterError(
+                                            "You have specified MS files, but have not specified an MS folder")
+
+                                    path = "{0}/{1}".format(self.indir if location ==
+                                                            "input" else self.msdir, _value)
+                                    if param.check_io and not os.path.exists(path):
+                                        raise StimelaCabParameterError("File '{0}' for parameter '{1}' could not be located at '{2}'.".format(
+                                            _value, param.name, path))
+                                    param.value.append(
+                                        "{0}/{1}".format(IODEST[location], _value))
+                                else:
+                                    if self.outdir is None:
+                                        raise StimelaCabParameterError(
+                                            "You have specified output files, but have not specified an output folder")
+                                    param.value.append(
+                                        "{0}/{1}".format(IODEST[location], _value))
                             else:
-                                if self.outdir is None:
-                                    raise IOError(
-                                        "You have specified output files, but have not specified an output folder")
-                                param.value.append(
-                                    "{0}/{1}".format(IODEST[location], _value))
+                                raise StimelaCabParameterError("io parameter must either be a pathformatter object or a string")
                         if len(param.value) == 1:
                             param.value = param.value[0]
 
-                    else:
+                    else: # not io type
+                        if isinstance(value, pathformatter):
+                            raise StimelaCabParameterError("Path formatter type specified, but {} is not io".format(param.name))
+
                         self.log.debug(
                             "Validating paramter {}".format(param.name))
                         param.validate(value)
                         param.value = value
             if not found:
-                raise RuntimeError(
+                raise StimelaCabParameterError(
                     "Parameter {0} is unknown. Run 'stimela cabs -i {1}' to get help on this cab".format(name, self.task))
         conf = {}
         conf.update(self.toDict())

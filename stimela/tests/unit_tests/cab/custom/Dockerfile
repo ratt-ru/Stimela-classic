@@ -1,4 +1,4 @@
-FROM stimela/owlcat:1.2.5-1
+FROM stimela/base:1.2.0
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

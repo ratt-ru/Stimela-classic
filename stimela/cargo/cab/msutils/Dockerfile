@@ -1,4 +1,4 @@
-FROM stimela/msutils:1.2.5
+FROM stimela/msutils:1.2.51
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

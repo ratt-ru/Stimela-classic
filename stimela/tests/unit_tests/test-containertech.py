@@ -127,8 +127,10 @@ class basicrecipe_test(unittest.TestCase):
                      spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
         }, input=INPUT, output=OUTPUT)
         rrr.run() #validate and run
+        assert rrr.jobs[0].job._cab.parameters[4].value[0] == os.path.join("/",
+                                                                           "input",
+                                                                           "testinput2.txt")
 
-        assert rrr.jobs[0].job._cab.parameters[4].value[0] == "/scratch/input/testinput2.txt"
         assert rrr.jobs[0].job._cab.parameters[4].value[1] == os.path.join("/",
                                                                            "home",
                                                                            os.environ["USER"],
@@ -136,7 +138,7 @@ class basicrecipe_test(unittest.TestCase):
                                                                            "testinput3.txt")
         assert rrr.jobs[0].job._cab.parameters[4].value[2] == \
                 "{}hello{{reim}}.fits,{}to.fits,{}world.fits".format(
-                    "/scratch/input/",
+                    os.path.join("/", "input/"),
                     os.path.join("/", "home", os.environ["USER"], "msdir/"),
                     os.path.join("/", "home", os.environ["USER"], "output/"),
                 )

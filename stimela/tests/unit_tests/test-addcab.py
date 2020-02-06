@@ -24,9 +24,6 @@ class basicrecipe_test(unittest.TestCase):
         import stimela.main as main
         os.chdir(os.path.dirname(__file__))
         main.build(["-c", "custom,cab/custom"])
-        main.pull(["-s", "--force", "-im", "stimela/base:1.2.0"])
-        if sys.version_info[0] == 2:
-            main.pull(["--force", "-im", "stimela/base:1.2.0"])
 
     @classmethod
     def tearDownClass(cls):
@@ -196,65 +193,6 @@ class basicrecipe_test(unittest.TestCase):
                     "/input/",
                     os.path.join("/", "home", os.environ["USER"], "msdir/"),
                     os.path.join("/", "home", os.environ["USER"], "output/"),
-                )
-
-    def test_singularity(self):
-        global MSDIR
-        global INPUT
-        global OUTPUT
-        stimela.register_globals()
-        rrr = stimela.Recipe("singularitypaths",
-                             ms_dir=MSDIR,
-                             JOB_TYPE="singularity",
-                             cabpath="cab/",
-                             singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"])
-        assert os.path.exists(MSDIR)
-        rrr.add("cab/custom", "test1", {
-            "bla1": "a", # only accepts a, b or c
-            "bla5": ["testinput2.txt:input",
-                     "testinput3.txt:msfile",
-                     spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
-        }, input=INPUT, output=OUTPUT)
-        rrr.run() #validate and run
-
-        assert rrr.jobs[0].job._cab.parameters[4].value[0] == "/scratch/input/testinput2.txt"
-        assert rrr.jobs[0].job._cab.parameters[4].value[1] == "/scratch/msdir/testinput3.txt"
-        assert rrr.jobs[0].job._cab.parameters[4].value[2] == \
-                "{}hello{{reim}}.fits,{}to.fits,{}world.fits".format(
-                    "/scratch/input/",
-                    "/scratch/msdir/",
-                    "/scratch/output/"
-                )
-
-
-    def test_udocker(self):
-        import sys
-        if sys.version_info[0] > 2:
-            return
-
-        global MSDIR
-        global INPUT
-        global OUTPUT
-        stimela.register_globals()
-        rrr = stimela.Recipe("singularitypaths",
-                             ms_dir=MSDIR,
-                             JOB_TYPE="udocker",
-                             cabpath="cab/")
-        assert os.path.exists(MSDIR)
-        rrr.add("cab/custom", "test1", {
-            "bla1": "a", # only accepts a, b or c
-            "bla5": ["testinput2.txt:input",
-                     "testinput3.txt:msfile",
-                     spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
-        }, input=INPUT, output=OUTPUT)
-        rrr.run() #validate and run
-        assert rrr.jobs[0].job._cab.parameters[4].value[0] == "/scratch/input/testinput2.txt"
-        assert rrr.jobs[0].job._cab.parameters[4].value[1] == "/scratch/msdir/testinput3.txt"
-        assert rrr.jobs[0].job._cab.parameters[4].value[2] == \
-                "{}hello{{reim}}.fits,{}to.fits,{}world.fits".format(
-                    "/scratch/input/",
-                    "/scratch/msdir/",
-                    "/scratch/output/"
                 )
 
 if __name__ == "__main__":

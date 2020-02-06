@@ -358,8 +358,8 @@
         }, 
         {
             "info": "Compute suggested BBCs at end of run,\nand save them to the given database. It can be useful to have this always\nenabled, since the BBCs provide useful diagnostics of the solution quality\n(and are not actually applied without a load-from setting).", 
-            "dtype": "str", 
-            "default": "file", 
+            "dtype": "file", 
+            "default": "{out[name]}-BBC-field_{sel[field]}-ddid_{sel[ddid]}.parmdb", 
             "name": "bbc-save-to", 
             "io": "output"
         }, 

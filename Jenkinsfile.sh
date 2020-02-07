@@ -6,7 +6,7 @@ TEST_DATA_DIR="$WORKSPACE/../../../test-data"
 mkdir $TEST_OUTPUT_DIR
 
 #Custom home for this run's temporary stuff
-rm ~/.stimela
+rm -rf ~/.stimela
 HOME=$WORKSPACE_ROOT
 export HOME
 SINGULARITY_STORAGE="${WORKSPACE}/../../../.singularity"

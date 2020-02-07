@@ -52,7 +52,7 @@ stimela build -nc
 
 #Run forest run!
 cd $TEST_OUTPUT_DIR
-python3 -m nosetests --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
+python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
 
 #########################################################################
 # PYTHON 2.7 TEST
@@ -69,6 +69,6 @@ LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv2/lib:$LD_LIBRARY_PATH
 pip install ${WORKSPACE_ROOT}/projects/Stimela/
 
 stimela --version
-python2.7 -m nosetests --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests27.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/unit_tests"
+python2.7 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests27.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/unit_tests"
 
 rm -rf $SINGULARITY_PULLFOLDER/* # delete the compiled images after testing is done

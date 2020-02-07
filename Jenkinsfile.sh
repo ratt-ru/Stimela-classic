@@ -6,6 +6,7 @@ TEST_DATA_DIR="$WORKSPACE/../../../test-data"
 mkdir $TEST_OUTPUT_DIR
 
 #Custom home for this run's temporary stuff
+rm ~/.stimela
 HOME=$WORKSPACE_ROOT
 export HOME
 SINGULARITY_STORAGE="${WORKSPACE}/../../../.singularity"
@@ -44,7 +45,7 @@ LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv/lib:$LD_LIBRARY_PATH
 pip install ${WORKSPACE_ROOT}/projects/Stimela/
 
 stimela --version
-stimela pull -s -cb simms
+stimela pull -d --force
 
 # fresh build
 stimela build -nc

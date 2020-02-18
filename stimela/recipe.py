@@ -94,7 +94,6 @@ class StimelaJob(object):
             self.logfile = os.path.join(log_dir or ".", logfile_name)
             if not os.path.exists(log_dir):
                 os.mkdir(log_dir)
-            with open(logfile_name, "w+"): pass
             # Add the handlers to logger
             fh = logging.FileHandler(self.logfile, 'w')
             fh.setLevel(logging.DEBUG)

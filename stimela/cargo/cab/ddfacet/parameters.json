@@ -1,7 +1,7 @@
 {
     "task": "ddfacet", 
     "base": "stimela/ddfacet", 
-    "tag": "1.3.0", 
+    "tag": "1.3.1", 
     "description": "DDFacet: a facet-based imager", 
     "prefix": "--", 
     "binary": "DDF.py", 
@@ -50,12 +50,7 @@
             "name": "Predict-ColName", 
             "default": null, 
             "dtype": "str", 
-            "required": false, 
-            "choices": [
-                "DATA", 
-                "CORRECTED_DATA", 
-                "MODEL_DATA"
-            ]
+            "required": false 
         }, 
         {
             "info": "Use this field if you want to predict (in/out)side a square region. Syntax is (MaskOutSide,NpixInside). For example setting (0,1000) will predict the outer (1000x1000) square only", 

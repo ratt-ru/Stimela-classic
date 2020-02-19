@@ -1,4 +1,4 @@
-FROM stimela/ddfacet:1.3.0
+FROM stimela/ddfacet:1.3.1
 MAINTAINER <sphemakh@gmail.com>
 ENV TERM xterm
 ADD src /scratch/code

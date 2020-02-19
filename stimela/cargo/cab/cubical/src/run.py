@@ -44,6 +44,6 @@ for jones in joneses:
 
 opts = ["{0:s}sol-jones {1:s}".format(cab["prefix"], soljones)] + \
     ['{0}{1} {2}'.format(cab['prefix'], name, value)
-     for name, value in args.iteritems()]
+     for name, value in args.items()]
 
 utils.xrun(cab['binary'], parset+opts)

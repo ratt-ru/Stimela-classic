@@ -1,7 +1,8 @@
-FROM bhugo/ddfacet:0.5.0
+FROM bhugo/ddfacet:0.5.1
 MAINTAINER Ben Hugo "bhugo@ska.ac.za"
-RUN pip install pyyaml
-RUN pip install astropy==2.0.11 -U # fixes udocker environment issue
+RUN pip3 install pyyaml
+RUN rm /usr/bin/python
+RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN apt install xvfb -y
 COPY xvfb.init.d /etc/init.d/xvfb
 RUN chmod 755 /etc/init.d/xvfb

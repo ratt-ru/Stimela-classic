@@ -69,6 +69,6 @@ LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv2/lib:$LD_LIBRARY_PATH
 pip install ${WORKSPACE_ROOT}/projects/Stimela/
 
 stimela --version
-python2.7 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests27.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/unit_tests"
+python2.7 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests27.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests/unit_tests"
 
 rm -rf $SINGULARITY_PULLFOLDER/* # delete the compiled images after testing is done

@@ -26,7 +26,7 @@ class basicrecipe_test(unittest.TestCase):
         main.pull(["-s", "--force", "-im", "stimela/base:1.2.0"])
         if sys.version_info[0] == 2:
             main.pull(["--force", "-im", "stimela/base:1.2.0"])
-        main.pull(["-p", "--force", "-im", "stimela/base:1.2.0"])
+        #main.pull(["-p", "--force", "-im", "stimela/base:1.2.0"])
 
     @classmethod
     def tearDownClass(cls):

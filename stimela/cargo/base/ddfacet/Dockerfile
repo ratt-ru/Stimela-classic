@@ -1,4 +1,4 @@
-FROM bhugo/ddfacet:0.5.1
+FROM bhugo/ddfacet:0.5.2
 MAINTAINER Ben Hugo "bhugo@ska.ac.za"
 RUN pip3 install pyyaml
 RUN rm /usr/bin/python

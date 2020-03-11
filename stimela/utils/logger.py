@@ -44,7 +44,7 @@ class StimelaLogger(object):
 
         return jdict
 
-    def log_image(self, name, image_dir, replace=False, cab=False):
+    def log_image(self, name, image_dir, replace=True, cab=False):
         info = self._inspect(name)
         if self.jtype in ["docker", "podman"]:
             if name not in self.info['images'].keys() or replace:

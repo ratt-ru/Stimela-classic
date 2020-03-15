@@ -861,6 +861,10 @@ class Recipe(object):
         else:
             log_dir = self.log_dir
 
+
+        if self.logfile_label and logfile is None:
+            logfile = "log-{0:s}-{1:s}.txt".format(self.logfile_label, name)
+
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,
                          log_dir=self.log_dir or output,

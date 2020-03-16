@@ -76,24 +76,27 @@ class StimelaJob(object):
             self.args.append("--memory {0:s}".format(memory_limit))
         self.time_out = time_out
         self.log_dir = log_dir
-        self.logfile = logfile
+        self.logfile = os.path.join(self.log_dir, 
+                logfile or "log-{0:s}.txt".format(self.name))
+        # We need this temp logfile to avoid two streams writing to the same file
+        self.tmp_logfile = os.path.join(self.log_dir, ".current_job.log")
+        with open(self.tmp_logfile, "w"): pass
         self.cabpath = cabpath
 
-    def setup_job_log(self, log_name, log_dir=None, loglevel='INFO'):
+    def setup_job_log(self, log_name=None, loglevel='INFO'):
         """ set up a log for the job on the host side 
             log_name: preferably unique name for this jobs log
             log_dir: log base directory, None is current directory
         """
+        log_name = log_name or self.name
         if log_name not in StimelaJob.logs_avail:
             # Create formatter and add it to the handlers
             formatter = logging.Formatter('%(asctime)-15s %(name)s \t- %(message)s') # could add time info here
             logging.basicConfig(format=formatter)
             self.log = logging.getLogger(log_name)
             self.log.setLevel(getattr(logging, loglevel))
-            logfile_name = self.logfile or 'log-{0:s}.txt'.format(log_name)
-            self.logfile = os.path.join(log_dir or ".", logfile_name)
-            if not os.path.exists(log_dir):
-                os.mkdir(log_dir)
+            if not os.path.exists(self.log_dir):
+                os.mkdir(self.log_dir)
             # Add the handlers to logger
             fh = logging.FileHandler(self.logfile, 'w')
             fh.setLevel(logging.DEBUG)
@@ -106,10 +109,8 @@ class StimelaJob(object):
             StimelaJob.logs_avail[log_name] = self.log
         else:
             self.log = StimelaJob.logs_avail[log_name]
-            logfile_name = self.logfile or 'log-{0:s}.txt'.format(log_name.split('-')[0])
-            self.logfile = os.path.join(log_dir or ".", logfile_name)
-            if not os.path.exists(log_dir):
-                os.mkdir(log_dir)
+            if not os.path.exists(self.log_dir):
+                os.mkdir(self.log_dir)
 
     def run_python_job(self):
         function = self.job['function']
@@ -211,7 +212,6 @@ class StimelaJob(object):
                                            ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
 
         # Update I/O with values specified on command line
-        # TODO (sphe) I think this feature should be removed
         script_context = self.recipe.stimela_context
         input = script_context.get('_STIMELA_INPUT', None) or input
         output = script_context.get('_STIMELA_OUTPUT', None) or output
@@ -230,8 +230,7 @@ class StimelaJob(object):
                                  msdir=msdir, parameter_file=parameter_file)
 
         cab.IODEST = CONT_IO["podman"]
-        logfile_name = name.split('-')[0]
-        self.setup_job_log(logfile_name, self.log_dir)
+        self.setup_job_log()
         cont = podman.Container(image, name,
                                 logger=self.log, time_out=self.time_out)
 
@@ -303,10 +302,7 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
 
         self.log_dir = os.path.abspath(self.log_dir or output)
-        log_dir_name = os.path.basename(self.log_dir or output)
-        logfile_name = '.currentjob.log'.format(name.split('-')[0])
-        cont.logfile = os.path.join(self.log_dir, logfile_name)
-        with open(cont.logfile, "w+"): pass
+        cont.logfile = self.tmp_logfile
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
@@ -374,8 +370,7 @@ class StimelaJob(object):
 
         cab.IODEST = CONT_IO["singularity"]
 
-        logfile_name = name.split('-')[0]
-        self.setup_job_log(logfile_name, self.log_dir)
+        self.setup_job_log()
         cont = singularity.Container(image, name,
                                      logger=self.log, time_out=self.time_out)
 
@@ -442,10 +437,7 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
 
         self.log_dir = os.path.abspath(self.log_dir or output)
-        log_dir_name = os.path.basename(self.log_dir or output)
-        logfile_name = '.currentjob.log'.format(name.split('-')[0])
-        cont.logfile = os.path.join(self.log_dir, logfile_name)
-        with open(cont.logfile, "w+"): pass
+        cont.logfile = self.tmp_logfile
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
 
@@ -512,8 +504,7 @@ class StimelaJob(object):
 
         cab.IODEST = CONT_IO["udocker"]
 
-        logfile_name = name.split('-')[0]
-        self.setup_job_log(logfile_name, self.log_dir)
+        self.setup_job_log()
         cont = udocker.Container(image, name,
                                  logger=self.log, time_out=self.time_out)
 
@@ -586,11 +577,7 @@ class StimelaJob(object):
         cont.WORKDIR = od
 
         self.log_dir = os.path.abspath(self.log_dir or output)
-        log_dir_name = os.path.basename(self.log_dir or output)
-        cont.logfile = self.logfile
-        logfile_name = '.currentjob.log'.format(name.split('-')[0])
-        cont.logfile = os.path.join(self.log_dir, logfile_name)
-        with open(cont.logfile, "w+"): pass
+        cont.logfile = self.tmp_logfile
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
@@ -746,17 +733,10 @@ class StimelaJob(object):
         cont.add_volume(tmpfol, cab.IODEST["tmp"], "rw")
         cont.add_environ("TMPDIR", cab.IODEST["tmp"])
 
-
         self.log_dir = os.path.abspath(self.log_dir or output)
-        log_dir_name = os.path.basename(self.log_dir or output)
-        logfile_name = name.split('-')[0]
-        self.setup_job_log(logfile_name, self.log_dir)
-        cont.logfile = self.logfile
-        logfile_name = '.currentjob.log'.format(name.split('-')[0])
-        cont.logfile = os.path.join(self.log_dir, logfile_name)
-        with open(cont.logfile, "w+"): pass
+        self.setup_job_log()
+        cont.logfile = self.tmp_logfile
         cont.logger = self.log
-
         cont.add_volume(
             cont.logfile, "{0:s}/logfile".format(self.log_dir), "rw")
         cont.add_environ('LOGFILE',  "{0:}/logfile".format(self.log_dir))
@@ -775,7 +755,7 @@ class Recipe(object):
                  parameter_file_dir=None, ms_dir=None,
                  tag=None, build_label=None, loglevel='INFO',
                  loggername='STIMELA', singularity_image_dir=None, log_dir=None, JOB_TYPE='docker',
-                 cabpath=None):
+                 cabpath=None, logfile_label=None):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -787,6 +767,7 @@ class Recipe(object):
         self.cabpath = cabpath
         self.log = logging.getLogger(loggername)
         self.log.setLevel(getattr(logging, loglevel))
+        self.logfile_label = logfile_label or ""
 
         self.JOB_TYPE = JOB_TYPE
 
@@ -880,6 +861,15 @@ class Recipe(object):
                 os.mkdir(log_dir)
         else:
             log_dir = self.log_dir
+
+        if not os.path.exists(output):
+            self.log.info(
+                    'The Log directory \'{0:s}\' cannot be found. Will create it'.format(output))
+            os.mkdir(output)
+
+
+        if self.logfile_label and logfile is None:
+            logfile = "log-{0:s}-{1:s}.txt".format(self.logfile_label, name)
 
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,

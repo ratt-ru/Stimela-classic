@@ -13,8 +13,14 @@
             "io": "input", 
             "default": null, 
             "dtype": "list:file", 
-            "required": true
+            "required": false
         }, 
+        {
+            "info": "archive URLs (including access tokens)",
+            "name": "archive-url",
+            "dtype": "list:str",
+            "required" : false
+        },
         {
             "info": "Output MS", 
             "check_io": false, 

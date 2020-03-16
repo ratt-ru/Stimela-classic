@@ -78,6 +78,9 @@ class StimelaJob(object):
         self.log_dir = log_dir
         self.logfile = os.path.join(self.log_dir, 
                 logfile or "log-{0:s}.txt".format(self.name))
+        # We need this temp logfile to avoid two streams writing to the same file
+        self.tmp_logfile = os.path.join(self.log_dir, ".current_job.log")
+        with open(self.tmp_logfile, "w"): pass
         self.cabpath = cabpath
 
     def setup_job_log(self, log_name=None, loglevel='INFO'):
@@ -299,7 +302,7 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
 
         self.log_dir = os.path.abspath(self.log_dir or output)
-        cont.logfile = self.logfile
+        cont.logfile = self.tmp_logfile
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
@@ -434,7 +437,7 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
 
         self.log_dir = os.path.abspath(self.log_dir or output)
-        cont.logfile = self.logfile
+        cont.logfile = self.tmp_logfile
         cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
 
@@ -574,7 +577,7 @@ class StimelaJob(object):
         cont.WORKDIR = od
 
         self.log_dir = os.path.abspath(self.log_dir or output)
-        cont.logfile = self.logfile
+        cont.logfile = self.tmp_logfile
         cont.add_environ("LOGFILE", "/scratch/logfile")
         cont.add_volume(cont.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
@@ -730,12 +733,10 @@ class StimelaJob(object):
         cont.add_volume(tmpfol, cab.IODEST["tmp"], "rw")
         cont.add_environ("TMPDIR", cab.IODEST["tmp"])
 
-
         self.log_dir = os.path.abspath(self.log_dir or output)
         self.setup_job_log()
-        cont.logfile = self.logfile
+        cont.logfile = self.tmp_logfile
         cont.logger = self.log
-
         cont.add_volume(
             cont.logfile, "{0:s}/logfile".format(self.log_dir), "rw")
         cont.add_environ('LOGFILE',  "{0:}/logfile".format(self.log_dir))
@@ -860,6 +861,11 @@ class Recipe(object):
                 os.mkdir(log_dir)
         else:
             log_dir = self.log_dir
+
+        if not os.path.exists(output):
+            self.log.info(
+                    'The Log directory \'{0:s}\' cannot be found. Will create it'.format(output))
+            os.mkdir(output)
 
 
         if self.logfile_label and logfile is None:

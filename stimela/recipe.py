@@ -58,7 +58,7 @@ class StimelaJob(object):
                  singularity_dir=None,
                  time_out=-1,
                  log_dir=None,
-		         logfile=None,
+		 logfile=None,
                  cabpath=None):
 
         self.name = name
@@ -79,7 +79,7 @@ class StimelaJob(object):
         self.logfile = os.path.join(self.log_dir, 
                 logfile or "log-{0:s}.txt".format(self.name))
         # We need this temp logfile to avoid two streams writing to the same file
-        self.tmp_logfile = os.path.join(self.log_dir, ".current_job.log")
+        self.tmp_logfile = os.path.join(self.log_dir, ".currentjob.log")
         with open(self.tmp_logfile, "w"): pass
         self.cabpath = cabpath
 

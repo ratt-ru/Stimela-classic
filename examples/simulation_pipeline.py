@@ -12,19 +12,17 @@ try:
 except KeyError:
     SINGULARTITY_IMAGE_DIR = None
 
-
 # MS name
 MS = "meerkat_simulation_example.ms"
 
 # Use the NVSS skymodel. This is natively available
 LSM = "nvss1deg.lsm.html"
 
-
 # Start stimela Recipe instance
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           ms_dir=MSDIR,
                           singularity_image_dir=SINGULARTITY_IMAGE_DIR,
-                          log_dir=os.path.join(OUTPUT, "logs")
+                          log_dir=os.path.join(OUTPUT, "logs"),
                           )
 
 pipeline.JOB_TYPE = "udocker"
@@ -46,7 +44,6 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              output=OUTPUT,                             # Output folder
              label="Creating MS",                       # Process label
              cpus=2.5,
-             logfile="log-hjgdsaad.txt",
              memory_limit="2gb")
 
 pipeline.add("cab/flagstats", "stats", {

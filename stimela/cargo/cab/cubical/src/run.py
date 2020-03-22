@@ -39,11 +39,11 @@ for jones in joneses:
     if jones.lower() not in soljones.lower():
         jopts = filter(lambda a: a.startswith(
             "{0:s}-".format(jones)), args.keys())
-        for item in jopts:
+        for item in list(jopts):
             del args[item]
 
 opts = ["{0:s}sol-jones {1:s}".format(cab["prefix"], soljones)] + \
     ['{0}{1} {2}'.format(cab['prefix'], name, value)
-     for name, value in args.iteritems()]
+     for name, value in args.items()]
 
 utils.xrun(cab['binary'], parset+opts)

@@ -48,9 +48,6 @@ CONT_IO = {
 }
 
 
-
-
-
 class StimelaJob(object):
     logs_avail = dict()
     def __init__(self, name, recipe, label=None,
@@ -1095,6 +1092,10 @@ class Recipe(object):
             finally:
                 if job.jtype == 'singularity' and job.created:
                     job.job.stop()
+                with open(job.job.logfile, 'a') as stda:
+                    with open(job.tmp_logfile, "r") as stdr:
+                        steplogfile = stdr.read()
+                        stda.write(steplogfile)
 
         self.log.info(
             'Saving pipeline information in {}'.format(self.resume_file))

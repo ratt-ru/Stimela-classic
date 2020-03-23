@@ -46,14 +46,6 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              cpus=2.5,
              memory_limit="2gb")
 
-pipeline.add("cab/flagstats", "stats", {
-        "msname" : MS,
-        "antennas" : "1,2,3",
-        "statsfile" : "flagstats.json",
-    }, 
-        input=INPUT,
-        output=OUTPUT,
-        label="Get flag stats")
 
 # 2: Simulate visibilities into it
 pipeline.add("cab/simulator",

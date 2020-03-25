@@ -36,7 +36,7 @@ class Container(object):
                  volumes=None,
                  logger=None,
                  time_out=-1,
-                 runscript=""):
+                 runscript="/singularity"):
         """
         Python wrapper to singularity tools for managing containers.
         """

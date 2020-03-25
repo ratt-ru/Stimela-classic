@@ -113,8 +113,11 @@ def build(argv):
         logged_images = log.read().get('images', {})
         for key, val in logged_images.items():
             if val['CAB']:
-                cabs.append(key)
-                dockerfiles.append(val['DIR'])
+                if key.endswith("custom"):
+                    continue
+                else:
+                    cabs.append(key)
+                    dockerfiles.append(val['DIR'])
         # If user wants to ignore some cabs
         IGNORE = args.ignore_cabs.split(",")
         CABS = set(CAB).difference(set(IGNORE))

@@ -3,6 +3,7 @@
 import os
 import sys
 from setuptools import setup
+import glob
 
 
 requirements = ["pyyaml",
@@ -37,10 +38,9 @@ setup(name=PACKAGE_NAME,
           "cab/*/xvfb.init.d",
           "cab/*/parameters.json",
           "cab/*/src/tdlconf.profiles",
-          "cab/singularity_run",
-          "cab/docker_run",
       ]},
       install_requires=requirements,
-      scripts=["bin/" + i for i in os.listdir("bin")],
+      scripts=["bin/" + i for i in os.listdir("bin")] + 
+                glob.glob("stimela/cargo/cab/*_run"),
       classifiers=[],
       )

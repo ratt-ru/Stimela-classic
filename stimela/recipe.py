@@ -11,7 +11,6 @@ from stimela.exceptions import *
 from stimela.dismissable import dismissable
 from future.utils import raise_
 from stimela.main import get_cabs
-
 from stimela.cargo.cab import StimelaCabParameterError
 
 version = stimela.__version__
@@ -19,6 +18,7 @@ USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
+BIN = os.path.abspath(os.path.dirname(sys.executable))
 
 CONT_IO = {
     "docker": {
@@ -46,7 +46,6 @@ CONT_IO = {
         "tmp": "/scratch/output/tmp"
     },
 }
-
 
 class StimelaJob(object):
     logs_avail = dict()
@@ -256,8 +255,9 @@ class StimelaJob(object):
                         '/scratch/configfile', perm='ro', noverify=True)
         cont.add_volume("{0:s}/{1:s}/src/".format(
             self.cabpath or "{0:s}/cargo/cab".format(self.recipe.stimela_path), _cab.task), "/scratch/code", "ro")
-        cont.add_volume("{0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path),
-                        "/podman_run", perm="ro")
+
+        cont.add_volume(os.path.join(BIN, "stimela_docker_run"), 
+                "/podman_run", perm="ro")
         cont.COMMAND = "/bin/sh -c /podman_run"
 
         cont.add_environ('CONFIG', '/scratch/configfile'.format(name))
@@ -396,8 +396,7 @@ class StimelaJob(object):
                         '/scratch/configfile', perm='ro', noverify=True)
         cont.add_volume("{0:s}/{1:s}/src/".format(
             self.cabpath or "{0:s}/cargo/cab".format(self.recipe.stimela_path), _cab.task), "/scratch/code", "ro")
-        cont.add_volume("{0:s}/cargo/cab/singularity_run".format(self.recipe.stimela_path,
-                                                                 _cab.task), "/singularity")
+        cont.add_volume(os.path.join(BIN, "stimela_singularity_run"), "/singularity")
 
         if msdir:
             md = cab.IODEST["msfile"]
@@ -505,8 +504,8 @@ class StimelaJob(object):
         cont = udocker.Container(image, name,
                                  logger=self.log, time_out=self.time_out)
 
-        cont.add_volume(
-            "{0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path), "/udocker_run")
+        cont.add_volume(os.path.join(BIN, "stimela_docker_run"), 
+                "/udocker_run")
         cont.COMMAND = "/bin/sh -c /udocker_run"
 
         # Container parameter file will be updated and validated before the container is executed
@@ -671,8 +670,8 @@ class StimelaJob(object):
                 config[op] = arg
         cont.config = config
 
-        cont.add_volume(
-            "{0:s}/cargo/cab/docker_run".format(self.recipe.stimela_path), "/docker_run", perm="ro")
+        cont.add_volume(os.path.join(BIN, "stimela_docker_run"), 
+                "/docker_run", perm="ro")
         cont.COMMAND = "/bin/sh -c /docker_run"
         # These are standard volumes and
         # environmental variables. These will be
@@ -1045,7 +1044,7 @@ class Recipe(object):
                 if job.jtype == 'function':
                     job.run_python_job()
                 elif job.jtype in ['docker', 'singularity', 'udocker', 'podman']:
-                    with open(job.job.logfile, 'a') as astd:
+                    with open(job.logfile, 'a') as astd:
                         astd.write('\n-----------------------------------\n')
                         astd.write(
                             'Stimela version     : {}\n'.format(version))
@@ -1092,7 +1091,7 @@ class Recipe(object):
             finally:
                 if job.jtype == 'singularity' and job.created:
                     job.job.stop()
-                with open(job.job.logfile, 'a') as stda:
+                with open(job.logfile, 'a') as stda:
                     with open(job.tmp_logfile, "r") as stdr:
                         steplogfile = stdr.read()
                         stda.write(steplogfile)

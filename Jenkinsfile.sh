@@ -37,7 +37,7 @@ OLDPATH=$PATH
 OLDLDPATH=$LD_LIBRARY_PATH
 
 # Install Stimela into a virtual env
-virtualenv -p python3 --no-download ${WORKSPACE_ROOT}/projects/pyenv
+virtualenv -p python3 ${WORKSPACE_ROOT}/projects/pyenv
 . ${WORKSPACE_ROOT}/projects/pyenv/bin/activate
 #pip install pip setuptools -U
 PATH=${WORKSPACE}/projects/pyenv/bin:$PATH
@@ -61,7 +61,7 @@ PATH=$OLDPATH
 LD_LIBRARY_PATH=$OLDLDPATH
 
 # Install Stimela into a virtual env
-virtualenv -p python3 --no-download ${WORKSPACE_ROOT}/projects/pyenv2
+virtualenv -p python2 ${WORKSPACE_ROOT}/projects/pyenv2
 . ${WORKSPACE_ROOT}/projects/pyenv2/bin/activate
 #pip install pip setuptools -U
 PATH=${WORKSPACE}/projects/pyenv2/bin:$PATH

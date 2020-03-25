@@ -60,10 +60,11 @@ run_func = getattr(msutils, function, None)
 if run_func is None:
     raise RuntimeError("Function '{}' is not part of MSUtils".format(function))
 
-# Reove default parameters that are not part of this particular function
+# Filter default parameters that are part of this function
 func_args = inspect.getargspec(run_func)[0]
+_args = {}
 for arg in args.keys():
-    if arg not in func_args:
-        args.pop(arg, None)
-
-run_func(**args)
+    if arg in func_args:
+        _args[arg] = args[arg]
+        
+run_func(**_args)

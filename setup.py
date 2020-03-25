@@ -17,7 +17,7 @@ if sys.version_info <= (3, 0):
     ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.2.4"
+__version__ = "1.2.5"
 
 setup(name=PACKAGE_NAME,
       version=__version__,

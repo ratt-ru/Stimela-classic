@@ -8,7 +8,6 @@ RUN git clone https://github.com/ratt-ru/CubiCal
 WORKDIR CubiCal
 RUN git checkout v1.4.4
 RUN pip3 install ".[lsm-support,degridder-support]"
-RUN pip3 install --force-reinstall "scipy<=1.3.3"
 RUN DDF.py --help
 RUN gocubical --help
 ENV NUMBA_CACHE_DIR /tmp

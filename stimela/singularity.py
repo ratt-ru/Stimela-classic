@@ -42,7 +42,6 @@ class Container(object):
         """
 
         self.image = image
-        self.name = hashlib.md5(name.encode('utf-8')).hexdigest()[:3]
         self.volumes = volumes or []
         self.logger = logger
         self.status = None
@@ -52,6 +51,11 @@ class Container(object):
         self.uptime = "00:00:00"
         self.time_out = time_out
         #self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
+
+        version_string = subprocess.check_output("singularity --version".split()).decode("utf8")
+        self.singularity_version = version_string.strip().split()[-1]
+        hashname = hashlib.md5(name.encode('utf-8')).hexdigest()[:3]
+        self.name = hashname if self.singularity_version < "3.0.0" else name
 
     def add_volume(self, host, container, perm="rw", noverify=False):
 
@@ -80,7 +84,8 @@ class Container(object):
 
         self._print("Instantiating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun("singularity instance.start",
+        utils.xrun("singularity instance.start" if self.singularity_version < "3.0.0" \
+                else "singularity instance start",
                    list(args) + [volumes,
                                  "-c",
                                  self.image, self.name])
@@ -122,7 +127,8 @@ class Container(object):
 
         self._print(
             "Stopping container [{}]. The container ID is printed below.".format(self.name))
-        utils.xrun("singularity", ["instance.stop {0:s}".format(self.name)])
+        utils.xrun("singularity", ["instance{1:s} {0:s}".format(self.name, 
+            ".stop" if self.singularity_version < "3.0.0" else " stop")])
 
         self.status = "exited"
 

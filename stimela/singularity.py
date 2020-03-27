@@ -42,7 +42,6 @@ class Container(object):
         """
 
         self.image = image
-        self.name = name
         self.volumes = volumes or []
         self.logger = logger
         self.status = None
@@ -55,6 +54,8 @@ class Container(object):
 
         version_string = subprocess.check_output("singularity --version".split()).decode("utf8")
         self.singularity_version = version_string.strip().split()[-1]
+        hashname = hashlib.md5(name.encode('utf-8')).hexdigest()[:3]
+        self.name = hashname if self.singularity_version < "3.0.0" else name
 
     def add_volume(self, host, container, perm="rw", noverify=False):
 

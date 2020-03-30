@@ -170,7 +170,7 @@ class CabDefinition(object):
     def __str__(self):
         res = ""
         res += "Cab definition for {}\n".format(self.task)
-        for b in ["base", "binary", "prefix", "description", "tag"]:
+        for b in ["base", "binary", "prefix", "description", "tag", "version"]:
             res += "\t {}: {}\n".format(b, getattr(self, b))
         res += "\t Parameters:\n"
         for p in self.parameters:
@@ -182,7 +182,7 @@ class CabDefinition(object):
     def display(self, header=False):
         rows, cols = os.popen('stty size', 'r').read().split()
         lines = textwrap.wrap(self.description, int(cols)*3/4)
-        print("Cab      {0}  vsrsion {1}".format(self.task, version))
+        print("Cab      {0}  version {1}".format(self.task, self.version))
         print("Info     {}".format(lines[0]))
         for line in lines[1:]:
             print("         {}".format(line))

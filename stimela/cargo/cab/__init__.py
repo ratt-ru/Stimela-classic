@@ -116,7 +116,8 @@ class CabDefinition(object):
                  description=None,
                  tag=None,
                  prefix=None, loglevel='INFO',
-                 parameters=[]):
+                 parameters=[],
+                 version=None):
 
         logging.basicConfig(level=getattr(logging, loglevel))
         self.log = logging
@@ -129,6 +130,7 @@ class CabDefinition(object):
             self.base = cab["base"]
             self.binary = cab["binary"]
             self.tag = cab["tag"]
+            self.version = cab.get("version", "x.x.x")
             if cab["msdir"]:
                 self.msdir = msdir
             else:
@@ -163,6 +165,7 @@ class CabDefinition(object):
             self.description = description
             self.msdir = msdir
             self.tag = tag
+            self.version = vesion
 
     def __str__(self):
         res = ""
@@ -179,7 +182,7 @@ class CabDefinition(object):
     def display(self, header=False):
         rows, cols = os.popen('stty size', 'r').read().split()
         lines = textwrap.wrap(self.description, int(cols)*3/4)
-        print("Cab      {0}".format(self.task))
+        print("Cab      {0}  vsrsion {1}".format(self.task, version))
         print("Info     {}".format(lines[0]))
         for line in lines[1:]:
             print("         {}".format(line))

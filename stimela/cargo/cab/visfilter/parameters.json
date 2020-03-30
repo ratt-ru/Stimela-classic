@@ -2,6 +2,7 @@
     "task": "visfilter", 
     "base": "stimela/meqtrees", 
     "tag": "1.2.0", 
+    "version" : "beta",
     "description": "Apply weights to uv-coords to filter out visibilities corresponding to a specific resolution range", 
     "prefix": "--", 
     "binary": "inner_taper.py", 

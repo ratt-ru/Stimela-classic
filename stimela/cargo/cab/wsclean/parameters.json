@@ -3,6 +3,7 @@
     "base": "stimela/wsclean", 
     "tag": "1.2.3",
     "description": "WSClean imaging software", 
+    "version" : "2.8",
     "prefix": "-", 
     "binary": "wsclean", 
     "msdir": true, 

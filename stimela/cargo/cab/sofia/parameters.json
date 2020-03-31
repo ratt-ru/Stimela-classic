@@ -2,7 +2,7 @@
     "task": "sofia", 
     "base": "stimela/sofia", 
     "tag": "1.2.0", 
-    "version" : "1.3.0",
+    "version" : "1.3.2",
     "description": "SoFiA, the Source Finding Application, is a new HI source finding pipeline intended to detect and parameterise galaxies in HI data cubes. While the software is still under development, several stable versions of SoFiA have already been released. This wiki contains user documentation and technical information on SoFiA and its individual modules.", 
     "prefix": "--", 
     "binary": "sofia_pipeline.py", 
@@ -882,5 +882,22 @@
             "dtype": "bool", 
             "name": "parameters.getUncertainties"
         }
+        {
+            "info": "If set to global, the noise measurement will be carried out on the entire projected image plane perpendicular to the axis along which the noise is to be scaled (default). If set to local, the noise measurement will occur in a running window of specified size on a specified grid. Note that the latter can be slow and memory-heavy and is only recommended for small cubes or 2D images that are affected by localised noise variations. If  set to 1d2d normalise the noise first channel by channel along Z, and then in XY windows.", 
+            "dtype": "str", 
+            "default": "global", 
+            "name": "scaleNoise.method"
+            "choices": [
+                "global", 
+                "local", 
+                "1d2d"
+            ]
+        }, 
+        {
+            "info": "if True normalise noise variations within the cube after each smoothing operation within the S+C source finder and befpre applying the detection threshold.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "scaleNoise.perSCkernel"
+        }, 
     ]
 }

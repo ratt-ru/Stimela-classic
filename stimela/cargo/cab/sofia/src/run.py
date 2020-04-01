@@ -3,6 +3,8 @@ import sys
 import Tigger
 import numpy
 import tempfile
+import json
+import codecs
 
 from astLib.astWCS import WCS
 from Tigger.Models import SkyModel, ModelClasses
@@ -17,7 +19,9 @@ INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 OUTPUT = os.environ["OUTPUT"]
 
-cab = utils.readJson(CONFIG)
+with codecs.open(CONFIG, "r", "utf8") as stdr:
+    cab = json.load(stdr)
+
 args = []
 msname = None
 

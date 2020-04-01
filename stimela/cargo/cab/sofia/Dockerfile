@@ -1,4 +1,4 @@
-FROM stimela/sofia:1.2.0
+FROM stimela/sofia:1.2.5
 MAINTAINER <sphemakh@gmial.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

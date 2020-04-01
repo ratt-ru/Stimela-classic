@@ -692,13 +692,14 @@
             "io": "input"
         }, 
         {
-            "info": "If set to global, the noise measurement will be carried out on the entire projected image plane perpendicular to the axis along which the noise is to be scaled (default). If set to local, the noise measurement will occur in a running window of specified size on a specified grid. Note that the latter can be slow and memory-heavy and is only recommended for small cubes or 2D images that are affected by localised noise variations.", 
+            "info": "If set to global, the noise measurement will be carried out on the entire projected image plane perpendicular to the axis along which the noise is to be scaled (default). If set to local, the noise measurement will occur in a running window of specified size on a specified grid. Note that the latter can be slow and memory-heavy and is only recommended for small cubes or 2D images that are affected by localised noise variations. If set to 1d2d normalise the noise first channel by channel along Z, and then in XY windows.", 
             "dtype": "str", 
             "default": null, 
             "name": "scaleNoise.method", 
             "choices": [
                 "global", 
-                "local"
+                "local",
+                "1d2d"
             ]
         }, 
         {
@@ -881,17 +882,6 @@
             "info": "If set to true, statistical uncertainties of several source parameters, including centroids and line widths, will be estimated. Please use this feature with great caution, as statistical uncertainties are not likely to be representative of the true uncertainties, in particular when systematic errors are present. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "bool", 
             "name": "parameters.getUncertainties"
-        }
-        {
-            "info": "If set to global, the noise measurement will be carried out on the entire projected image plane perpendicular to the axis along which the noise is to be scaled (default). If set to local, the noise measurement will occur in a running window of specified size on a specified grid. Note that the latter can be slow and memory-heavy and is only recommended for small cubes or 2D images that are affected by localised noise variations. If  set to 1d2d normalise the noise first channel by channel along Z, and then in XY windows.", 
-            "dtype": "str", 
-            "default": "global", 
-            "name": "scaleNoise.method"
-            "choices": [
-                "global", 
-                "local", 
-                "1d2d"
-            ]
         }, 
         {
             "info": "if True normalise noise variations within the cube after each smoothing operation within the S+C source finder and befpre applying the detection threshold.", 

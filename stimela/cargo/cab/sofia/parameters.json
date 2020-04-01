@@ -1,7 +1,7 @@
 {
     "task": "sofia", 
     "base": "stimela/sofia", 
-    "tag": "1.2.0", 
+    "tag": "1.2.5", 
     "version" : "1.3.2",
     "description": "SoFiA, the Source Finding Application, is a new HI source finding pipeline intended to detect and parameterise galaxies in HI data cubes. While the software is still under development, several stable versions of SoFiA have already been released. This wiki contains user documentation and technical information on SoFiA and its individual modules.", 
     "prefix": "--", 

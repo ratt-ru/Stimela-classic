@@ -2,6 +2,7 @@ import os
 import sys
 import inspect
 import pkg_resources
+import logging
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -46,5 +47,80 @@ for item in os.listdir(CAB_PATH):
         continue
     if dockerfile and paramfile and srcdir:
         CAB.append(item)
+
+
+class SelectiveFormatter(logging.Formatter):
+    """Selective formatter. if condition(record) is True, invokes other formatter"""
+    def __init__(self, fmt=None, datefmt=None, style='%', condition=None, other=None):
+        super(SelectiveFormatter, self).__init__(fmt, datefmt, style)
+        self._condition = condition
+        self._other = other
+
+    def format(self, record):
+        if self._condition and self._other and self._condition(record):
+            return self._other.format(record)
+        return super(SelectiveFormatter, self).format(record)
+
+
+class MultiplexingHandler(logging.Handler):
+    """handler to send INFO and below to stdout, everything above to stderr"""
+    def __init__(self, info_stream=sys.stdout, err_stream=sys.stderr):
+        super(MultiplexingHandler, self).__init__()
+        self.info_handler = logging.StreamHandler(info_stream)
+        self.err_handler = logging.StreamHandler(err_stream)
+        self.multiplex = True
+
+    def emit(self, record):
+        handler = self.err_handler if record.levelno > logging.INFO and self.multiplex else self.info_handler
+        handler.emit(record)
+        # ignore broken pipes, this often happens when cleaning up and exiting
+        try:
+            handler.flush()
+        except BrokenPipeError:
+            pass
+
+    def flush(self):
+        try:
+            self.err_handler.flush()
+            self.info_handler.flush()
+        except BrokenPipeError:
+            pass
+
+    def close(self):
+        self.err_handler.close()
+        self.info_handler.close()
+
+    def setFormatter(self, fmt):
+        self.err_handler.setFormatter(fmt)
+        self.info_handler.setFormatter(fmt)
+
+
+_logger = None
+
+log_console_handler = log_formatter = None
+
+def logger(name="STIMELA", propagate=False,
+           fmt="{asctime} {name} {levelname}: {message}",
+           sub_fmt="{message}",
+           datefmt="%Y-%m-%d %H:%M:%S"):
+    """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
+    global _logger
+    if _logger is None:
+        _logger = logging.getLogger(name)
+        _logger.propagate = propagate
+
+        global log_console_handler, log_formatter
+
+        log_formatter = SelectiveFormatter(fmt, datefmt, style="{",
+                                           condition=lambda rec:hasattr(rec, 'subprocess'),
+                                           other=logging.Formatter(sub_fmt, datefmt, style="{"))
+        log_console_handler = MultiplexingHandler()
+        log_console_handler.setFormatter(log_formatter)
+        log_console_handler.setLevel(logging.DEBUG)
+
+        _logger.addHandler(log_console_handler)
+
+    return _logger
+
 
 from stimela.recipe import Recipe

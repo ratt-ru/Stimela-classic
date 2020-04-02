@@ -1,6 +1,6 @@
+import stimela
 from stimela import utils
 import logging
-import sys
 import os
 import textwrap
 from stimela.pathformatter import pathformatter, placeholder
@@ -119,8 +119,14 @@ class CabDefinition(object):
                  parameters=[],
                  version=None):
 
-        logging.basicConfig(level=getattr(logging, loglevel))
-        self.log = logging
+        #logging.basicConfig(level=getattr(logging, loglevel))
+        self.log = stimela.logger().getChild("cab")
+        self.log.propagate = True
+        self.log.setLevel(getattr(logging, loglevel))
+
+
+        # self.log = logging
+
         self.indir = indir
         self.outdir = outdir
 

@@ -54,7 +54,7 @@ class StimelaJob(object):
                  singularity_dir=None,
                  time_out=-1,
                  log_dir=None,
-		 logfile=None,
+		         logfile=None,
                  cabpath=None):
 
         self.name = name
@@ -71,12 +71,11 @@ class StimelaJob(object):
         if memory_limit:
             self.args.append("--memory {0:s}".format(memory_limit))
         self.time_out = time_out
-        self.log_dir = log_dir
-        self.logfile = os.path.join(self.log_dir, 
-                logfile or "log-{0:s}.txt".format(self.name))
-        # We need this temp logfile to avoid two streams writing to the same file
-        self.tmp_logfile = os.path.join(self.log_dir, ".currentjob.log")
-        with open(self.tmp_logfile, "w"): pass
+
+        self.logfile = logfile
+        if self.logfile is not False:
+            self.logfile = logfile or os.path.join(log_dir or ".", "log-{0:s}.txt".format(self.name))
+
         self.cabpath = cabpath
 
     def setup_job_log(self, log_name=None, loglevel='INFO'):
@@ -86,27 +85,27 @@ class StimelaJob(object):
         """
         log_name = log_name or self.name
         if log_name not in StimelaJob.logs_avail:
-            # Create formatter and add it to the handlers
-            formatter = logging.Formatter('%(asctime)-15s %(name)s \t- %(message)s') # could add time info here
-            logging.basicConfig(format=formatter)
-            self.log = logging.getLogger(log_name)
+            # # Create formatter and add it to the handlers
+            # formatter = logging.Formatter('%(asctime)-15s %(name)s \t- %(message)s') # could add time info here
+            # logging.basicConfig(format=formatter)
+            # self.log = logging.getLogger(log_name)
+
+            self.log = stimela.logger().getChild(log_name)
             self.log.setLevel(getattr(logging, loglevel))
-            if not os.path.exists(self.log_dir):
-                os.mkdir(self.log_dir)
-            # Add the handlers to logger
-            fh = logging.FileHandler(self.logfile, 'w')
-            fh.setLevel(logging.DEBUG)
-            ch = logging.StreamHandler()
-            ch.setLevel(getattr(logging, loglevel))
-            self.log.addHandler(fh)
-            self.log.addHandler(ch)
-            map(lambda x: x.setFormatter(formatter), self.log.handlers)
-            self.log.propagate = False
+
+            if self.logfile is not False:
+                log_dir = os.path.dirname(self.logfile) or "."
+                if not os.path.exists(log_dir):
+                    os.mkdir(log_dir)
+                fh = logging.FileHandler(self.logfile, 'w', delay=True)
+                fh.setLevel(logging.DEBUG)
+                self.log.addHandler(fh)
+
+            self.log.propagate = True            # propagate also to main stimela logger
+
             StimelaJob.logs_avail[log_name] = self.log
         else:
             self.log = StimelaJob.logs_avail[log_name]
-            if not os.path.exists(self.log_dir):
-                os.mkdir(self.log_dir)
 
     def run_python_job(self):
         function = self.job['function']
@@ -298,10 +297,9 @@ class StimelaJob(object):
 
         od = cab.IODEST["output"]
 
-        self.log_dir = os.path.abspath(self.log_dir or output)
-        cont.logfile = self.tmp_logfile
-        cont.add_environ("LOGFILE", "/scratch/logfile")
-        cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
+        cont.logfile = self.logfile
+        # cont.add_environ("LOGFILE", "/scratch/logfile")
+        #cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
         cont.add_environ("OUTPUT", od)
 
@@ -432,9 +430,8 @@ class StimelaJob(object):
 
         od = cab.IODEST["output"]
 
-        self.log_dir = os.path.abspath(self.log_dir or output)
-        cont.logfile = self.tmp_logfile
-        cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
+        cont.logfile = self.logfile
+        #cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
 
         # temp files go into output
@@ -572,10 +569,9 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
         cont.WORKDIR = od
 
-        self.log_dir = os.path.abspath(self.log_dir or output)
-        cont.logfile = self.tmp_logfile
+        cont.logfile = self.logfile
         cont.add_environ("LOGFILE", "/scratch/logfile")
-        cont.add_volume(cont.logfile, "/scratch/logfile")
+        #cont.add_volume(cont.logfile, "/scratch/logfile")
         cont.add_volume(output, od)
         cont.add_environ("OUTPUT", od)
 
@@ -729,15 +725,9 @@ class StimelaJob(object):
         cont.add_volume(tmpfol, cab.IODEST["tmp"], "rw")
         cont.add_environ("TMPDIR", cab.IODEST["tmp"])
 
-        self.log_dir = os.path.abspath(self.log_dir or output)
         self.setup_job_log()
-        cont.logfile = self.tmp_logfile
+        cont.logfile = self.logfile
         cont.logger = self.log
-        cont.add_volume(
-            cont.logfile, "{0:s}/logfile".format(self.log_dir), "rw")
-        cont.add_environ('LOGFILE',  "{0:}/logfile".format(self.log_dir))
-        self.log.debug(
-            'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
         cont.image = '{0}_{1}'.format(build_label, image)
         # Added and ready for execution
@@ -750,8 +740,8 @@ class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
                  tag=None, build_label=None, loglevel='INFO',
-                 loggername='STIMELA', singularity_image_dir=None, log_dir=None, JOB_TYPE='docker',
-                 cabpath=None, logfile_label=None):
+                 singularity_image_dir=None, log_dir=None, JOB_TYPE='docker',
+                 cabpath=None, logfile=None, logfile_label=None):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -760,50 +750,56 @@ class Recipe(object):
         tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
         """
+        self.name = name
+        self.name_ = self.name.lower().replace(' ', '_')
+
         self.cabpath = cabpath
-        self.log = logging.getLogger(loggername)
+        self.log = stimela.logger().getChild(name)
         self.log.setLevel(getattr(logging, loglevel))
-        self.logfile_label = logfile_label or ""
+
+        self.log.propagate = True # propagate to main stimela logger
+
+        # logfile is False: no logfile for recipe
+        if logfile is False:
+            # ... but we still need to provide a logfile base for tasks
+            self.task_logfile_base = "{0}/log-{1}".format(log_dir or ".", logfile_label or self.name_.split('-')[0])
+
+        else:
+            # logfile is None: use default name
+            if logfile is None:
+                logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_.split('-')[0])
+
+            # set base name for tasks
+            self.task_logfile_base = os.path.splitext(logfile)[0]
+
+            # ensure directory exists
+            log_dir = os.path.dirname(logfile) or "."
+            if not os.path.exists(log_dir):
+                self.log.info('creating log directory {0:s}'.format(log_dir))
+                os.makedirs(log_dir)
+
+            fh = logging.FileHandler(logfile, 'w', delay=True)
+            fh.setLevel(logging.DEBUG)
+            fh.setFormatter(stimela.log_formatter)
+            self.log.addHandler(fh)
+
 
         self.JOB_TYPE = JOB_TYPE
 
-        name_ = name.lower().replace(' ', '_')
-        self.log_dir = log_dir
-        if self.log_dir:
-            if not os.path.exists(self.log_dir):
-                self.log.info(
-                    'The Log directory \'{0:s}\' cannot be found. Will create it'.format(self.log_dir))
-                os.makedirs(self.log_dir)
-
-        logfile_name = 'log-{0:s}.txt'.format(name_.split('-')[0])
-        self.logfile = '{0}/{1}'.format(self.log_dir or ".", logfile_name)
-
         # Create file handler which logs even debug
         # messages
-        self.resume_file = '.last_{}.json'.format(name_)
+        self.resume_file = '.last_{}.json'.format(self.name_)
 
-        fh = logging.FileHandler(self.logfile, 'w')
-        fh.setLevel(logging.DEBUG)
-        # Create console handler with a higher log level
-        ch = logging.StreamHandler(sys.stdout)
-        ch.setLevel(getattr(logging, loglevel))
-        # Create formatter and add it to the handlers
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        fh.setFormatter(formatter)
-        # Add the handlers to logger
 
-        len(list(filter(lambda x: isinstance(x, logging.StreamHandler),
-                        self.log.handlers))) == 0 and self.log.addHandler(ch)
-        len(list(filter(lambda x: isinstance(x, logging.FileHandler),
-                        self.log.handlers))) == 0 and self.log.addHandler(fh)
+        # len(list(filter(lambda x: isinstance(x, logging.StreamHandler),
+        #                 self.log.handlers))) == 0 and self.log.addHandler(ch)
+        # len(list(filter(lambda x: isinstance(x, logging.FileHandler),
+        #                 self.log.handlers))) == 0 and self.log.addHandler(fh)
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
 
         self.stimela_path = os.path.dirname(docker.__file__)
 
-        self.name = name
         self.build_label = build_label or USER
         self.ms_dir = ms_dir
         if not os.path.exists(self.ms_dir):
@@ -840,36 +836,36 @@ class Recipe(object):
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
 
+    def _resolve_logfile(self, logfile, log_dir):
+        if logfile:
+            return logfile
+        log_dir = log_dir or "."
+        if not os.path.exists(log_dir):
+            self.log.info('creating log directory {0:s}'.format(log_dir))
+            os.makedirs(log_dir)
+
+        logfile = 'log-{0:s}.txt'.format(self.name_.split('-')[0])
+        return '{0}/{1}'.format(log_dir, logfile)
+
     def add(self, image, name, config=None,
             input=None, output=None, msdir=None,
             label=None, shared_memory='1gb',
             build_label=None,
             cpus=None, memory_limit=None,
             time_out=-1,
-            log_dir=None,
             logfile=None,
             cabpath=None):
-
-        if self.log_dir:
-            if not os.path.exists(self.log_dir):
-                self.log.info(
-                    'The Log directory \'{0:s}\' cannot be found. Will create it'.format(self.log_dir))
-                os.mkdir(log_dir)
-        else:
-            log_dir = self.log_dir
 
         if not os.path.exists(output):
             self.log.info(
                     'The Log directory \'{0:s}\' cannot be found. Will create it'.format(output))
             os.mkdir(output)
 
-
-        if self.logfile_label and logfile is None:
-            logfile = "log-{0:s}-{1:s}.txt".format(self.logfile_label, name)
+        logfile = logfile or "{0:s}-{1:s}.txt".format(self.task_logfile_base, name)
 
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,
-                         log_dir=self.log_dir or output,
+                         log_dir=os.path.dirname(self.task_logfile_base),
                          jtype=self.JOB_TYPE,
                          logfile=logfile,
                          cabpath=cabpath or self.cabpath)
@@ -1091,10 +1087,6 @@ class Recipe(object):
             finally:
                 if job.jtype == 'singularity' and job.created:
                     job.job.stop()
-                with open(job.logfile, 'a') as stda:
-                    with open(job.tmp_logfile, "r") as stdr:
-                        steplogfile = stdr.read()
-                        stda.write(steplogfile)
 
         self.log.info(
             'Saving pipeline information in {}'.format(self.resume_file))

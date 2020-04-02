@@ -1,4 +1,4 @@
-FROM stimela/aimfast:test
+FROM stimela/aimfast:dev
 MAINTAINER <sphemakh@gmial.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

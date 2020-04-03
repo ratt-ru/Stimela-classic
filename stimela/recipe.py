@@ -741,7 +741,7 @@ class Recipe(object):
                  parameter_file_dir=None, ms_dir=None,
                  tag=None, build_label=None, loglevel='INFO',
                  singularity_image_dir=None, log_dir=None, JOB_TYPE='docker',
-                 cabpath=None, logfile=None, logfile_label=None):
+                 cabpath=None, logfile=None, logfile_task=None):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -749,6 +749,10 @@ class Recipe(object):
         msdir   :   Path of MSs to be used during the execution of the recipe
         tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
+
+        logfile:  name of logfile, False to disable recipe-level logging, or None to form a default name
+        logfile_task: name of task-level logfile, False to disable task-level logging, or None to form a default name.
+                    logfile_task may contain a "{task}" entry which will be substituted for a task name.
         """
         self.name = name
         self.name_ = self.name.lower().replace(' ', '_')
@@ -762,7 +766,8 @@ class Recipe(object):
         # logfile is False: no logfile for recipe
         if logfile is False:
             # ... but we still need to provide a logfile base for tasks
-            self.task_logfile_base = "{0}/log-{1}".format(log_dir or ".", logfile_label or self.name_.split('-')[0])
+            self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_.split('-')[0]) \
+                if logfile_task is None else logfile_task
 
         else:
             # logfile is None: use default name
@@ -770,7 +775,8 @@ class Recipe(object):
                 logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_.split('-')[0])
 
             # set base name for tasks
-            self.task_logfile_base = os.path.splitext(logfile)[0]
+            self.logfile_task = os.path.splitext(logfile)[0] + "-{task}.txt" \
+                        if logfile_task is None else logfile_task
 
             # ensure directory exists
             log_dir = os.path.dirname(logfile) or "."
@@ -836,17 +842,6 @@ class Recipe(object):
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
 
-    def _resolve_logfile(self, logfile, log_dir):
-        if logfile:
-            return logfile
-        log_dir = log_dir or "."
-        if not os.path.exists(log_dir):
-            self.log.info('creating log directory {0:s}'.format(log_dir))
-            os.makedirs(log_dir)
-
-        logfile = 'log-{0:s}.txt'.format(self.name_.split('-')[0])
-        return '{0}/{1}'.format(log_dir, logfile)
-
     def add(self, image, name, config=None,
             input=None, output=None, msdir=None,
             label=None, shared_memory='1gb',
@@ -861,11 +856,12 @@ class Recipe(object):
                     'The Log directory \'{0:s}\' cannot be found. Will create it'.format(output))
             os.mkdir(output)
 
-        logfile = logfile or "{0:s}-{1:s}.txt".format(self.task_logfile_base, name)
+        if logfile is None:
+            logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
 
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,
-                         log_dir=os.path.dirname(self.task_logfile_base),
+                         log_dir=logfile and os.path.dirname(logfile),
                          jtype=self.JOB_TYPE,
                          logfile=logfile,
                          cabpath=cabpath or self.cabpath)

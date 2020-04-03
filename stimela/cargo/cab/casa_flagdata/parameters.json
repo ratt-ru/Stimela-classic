@@ -131,7 +131,7 @@
         {
             "info": "Data column on which to operate (data,corrected,model,weight,etc.)", 
             "dtype": "str", 
-            "default": "corrected", 
+            "default": "", 
             "name": "datacolumn"
         }, 
         {

@@ -1,111 +1,112 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.2.4",
+    "tag": "1.2.6",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-gains",
     "msdir": false,
     "parameters": [
         {
-            "info": "Plot only this antenna, or comma-separated list of antennas. Default plots all",
-            "dtype": "str",
-            "required": false,
-            "name": "ant"
-        },
-        {
-            "info": "Correlation index to plot (Defaults to all)",
-            "dtype": "int",
-            "required": false,
-            "name": "corr"
-        },
-        {
-            "info": "Matplotlib colour map to use for antennas (default=coolwarm)",
-            "dtype": "str",
-            "default": "coolwarm",
-            "required": false,
-            "name": "cmap"
-        },
-        {
-            "info": "Plot complex values as amp and phase (ap) or real and imag (ri)",
-            "name": "doplot",
-            "default": "ap",
-            "dtype": "str",
-            "required": false,
-            "choices": [
-                "ap",
-                "ri"
-            ]
-        },
-        {
-            "info": "Field ID to plot",
-            "dtype": [
-                "list:str",
-                "list:int"
-            ],
-            "required": false,
-            "name": "field"
-        },
-        {
-            "info": "The gain type of table(s) to be plotted. Options: ['B', 'F', 'G', 'K']",
-            "dtype": "list:str",
-            "required": true,
-            "name": "gaintype"
-        },
-        {
-            "info": "Output html file name",
-            "dtype": "str",
-            "required": false,
-            "name": "htmlname",
-            "io": "output"
-        },
-        {
-            "info": "Output png/svg image file name",
-            "dtype": "str",
-            "required": false,
-            "name": "plotname",
-            "io": "output"
-        },
-        {
-            "info": "Gain table(s) to plot",
+            "info": "Gain table(s) to plot. Specify space separated list for multiple",
             "dtype": "list:file",
             "required": true,
             "name": "table",
             "io": "input"
         },
         {
-            "info": "Minimum time to plot (default = full range)",
-            "dtype": "float",
-            "required": false,
-            "name": "t0"
+            "info": "Type of gain table(s) to be plotted. Specify as a single character or space separated list for multiple tables.",
+            "dtype": "list:str",
+            "required": true,
+            "name": "gaintype",
+            "choices": [
+                "B",
+                "D"
+                "F", 
+                "G", 
+                "K"
+            ]
         },
         {
-            "info": "Maximum time to plot (default = full range)",
-            "dtype": "float",
+            "info": "Plot only a specific antenna, or comma-separated list of antennas. Defaults to all",
+            "dtype": "str",
             "required": false,
-            "name": "t1"
+            "name": "ant"
         },
         {
-            "info": "SPECTRAL_WINDOW_ID or ddid number. Defaults to all",
-            "dtype": "float",
+            "info": "Correlation index (ices) to plot. Defaults to all.",
+            "dtype": "str",
+            "required": false,
+            "name": "corr"
+        },
+        {
+            "info": "Matplotlib colour map to use for antennas. Defaults to coolwarm",
+            "dtype": "str",
+            "default": "coolwarm",
+            "required": false,
+            "name": "cmap"
+        },
+        {
+            "info": "Spectral window to plot. Defaults to all",
+            "dtype": "str",
             "required": false,
             "name": "ddid"
         },
         {
-            "info": "TAQL where clause",
+            "info": "Plot amplitude & phase (ap) or real and imaginary (ri). Defaults to ap.",
+            "name": "doplot",
             "dtype": "str",
             "required": false,
-            "name": "taql"
+            "default": "ap",
+            "choices": [
+                "ap",
+                "ri"
+            ]
         },
         {
-            "info": "Chose the x-xaxis for the K table.",
+            "info": "Field ID(s) / NAME(s) to plot. Defaults to all",
+            "dtype": [
+                "list:str"
+            ],
+            "required": false,
+            "name": "field"
+        },
+        {
+            "info": "Output HTML file name",
+            "dtype": "str",
+            "required": false,
+            "name": "htmlname",
+            "io": "output"
+        },
+        {
+            "info": "Choose the x-xaxis for the K table.",
             "dtype": "str",
             "required": false,
             "name": "k-xaxis",
             "choices": [
                 "time",
                 "antenna"
-            ]
+            ],
+            "default": "time"
+        },
+        {
+            "info": "Min time to plot [in seconds]. Defaults to full range]",
+            "dtype": "float",
+            "required": false,
+            "name": "t0"
+        },
+        {
+            "info": "Max time to plot [in seconds]. Defaults to full range",
+            "dtype": "float",
+            "required": false,
+            "name": "t1"
+        },
+        {
+            "info": "TAQL where clause",
+            "dtype": "str",
+            "required": false,
+            "name": "taql"
         }
+        
     ]
 }

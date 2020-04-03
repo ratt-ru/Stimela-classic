@@ -216,7 +216,7 @@ class ColorizingFormatter(logging.Formatter):
             style = Colors.WARNING
         endstyle = Colors.ENDC if style else ""
         msg = super(ColorizingFormatter, self).format(record)
-        return msg.replace("<<<<", style).replace(">>>", endstyle)
+        return msg.replace("<<<<", style).replace(">>>>", endstyle)
 
 
 class SelectiveFormatter(logging.Formatter):

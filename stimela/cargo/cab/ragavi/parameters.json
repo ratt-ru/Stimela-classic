@@ -21,7 +21,7 @@
             "name": "gaintype",
             "choices": [
                 "B",
-                "D"
+                "D",
                 "F", 
                 "G", 
                 "K"

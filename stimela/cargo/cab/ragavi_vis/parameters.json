@@ -34,12 +34,12 @@
                 "scan", 
                 "time",
                 "uvdist",
-                "uvwave",
+                "uvwave"
                 ]
         },
         {
             "info": "Y-axis to plot.",
-            "dtype": " ",
+            "dtype": "str",
             "required": true,
             "name": "yaxis",
             "default": null,
@@ -47,7 +47,7 @@
                 "amplitude", 
                 "imaginary", 
                 "phase",
-                "real", 
+                "real"
                 ]
         },
         {
@@ -105,7 +105,7 @@
                 "corr", 
                 "field", 
                 "scan", 
-                "spw",
+                "spw"
                 ]
         },
         {
@@ -113,7 +113,7 @@
             "dtype": "str",
             "required": false,
             "name": "corr",
-            "default": "0:",
+            "default": "0:"
         },
         {
             "info": "MS column to use for data.",
@@ -157,7 +157,7 @@
                 "corr", 
                 "field", 
                 "scan", 
-                "spw",
+                "spw"
                 ]
         },
         {
@@ -229,6 +229,5 @@
             "name": "ymax",
             "default": null
         }
-        
     ]
 }

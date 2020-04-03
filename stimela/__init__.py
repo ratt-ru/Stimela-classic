@@ -57,6 +57,7 @@ from .utils.logger import SelectiveFormatter, ColorizingFormatter, MultiplexingH
 
 def logger(name="STIMELA", propagate=False, console=True,
            fmt="{asctime} {name} {levelname}: {message}",
+           col_fmt="{asctime} {name} {<{<{levelname}: {message}>}>}",
            sub_fmt="{message}",
            datefmt="%Y-%m-%d %H:%M:%S",
            boring=False):
@@ -74,7 +75,7 @@ def logger(name="STIMELA", propagate=False, console=True,
             {lambda rec: hasattr(rec, 'subprocess'): logging.Formatter(sub_fmt, datefmt, style="{")})
 
         log_colourful_formatter = SelectiveFormatter(
-            ColorizingFormatter(fmt, datefmt, style="{"),
+            ColorizingFormatter(col_fmt, datefmt, style="{"),
             {lambda rec: hasattr(rec, 'subprocess'): ColorizingFormatter(sub_fmt, datefmt, style="{")})
 
         log_formatter = log_boring_formatter if boring else log_colourful_formatter

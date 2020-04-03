@@ -55,7 +55,19 @@ def _remove_ctrls(msg):
 
 
 def xrun_nolog(command):
-    return subprocess.call(command, shell=True)
+    try:
+        status = subprocess.call(command, shell=True)
+
+    except KeyboardInterrupt:
+        print("Ctrl+C caught")
+        status = 1
+
+    except Exception as exc:
+        traceback.print_exc()
+        print("Exception caught: {}".format(str(exc)))
+        status = 1
+
+    return status
 
 def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=None):
 

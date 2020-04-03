@@ -1074,11 +1074,11 @@ class Recipe(object):
 
                 pe = PipelineException(e, self.completed, job, self.remaining)
                 raise_(pe, None, sys.exc_info()[2])
-            except:
-                import traceback
-                traceback.print_exc()
-                raise RuntimeError(
-                    "An unhandled exception has occured. This is a bug, please report")
+            # except:
+            #     import traceback
+            #     traceback.print_exc()
+            #     raise RuntimeError(
+            #         "An unhandled exception has occured. This is a bug, please report")
 
             finally:
                 if job.jtype == 'singularity' and job.created:

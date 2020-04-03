@@ -99,7 +99,7 @@ _logger = None
 
 log_console_handler = log_formatter = None
 
-def logger(name="STIMELA", propagate=False,
+def logger(name="STIMELA", propagate=False, console=True,
            fmt="{asctime} {name} {levelname}: {message}",
            sub_fmt="{message}",
            datefmt="%Y-%m-%d %H:%M:%S"):
@@ -114,11 +114,12 @@ def logger(name="STIMELA", propagate=False,
         log_formatter = SelectiveFormatter(fmt, datefmt, style="{",
                                            condition=lambda rec:hasattr(rec, 'subprocess'),
                                            other=logging.Formatter(sub_fmt, datefmt, style="{"))
-        log_console_handler = MultiplexingHandler()
-        log_console_handler.setFormatter(log_formatter)
-        log_console_handler.setLevel(logging.DEBUG)
 
-        _logger.addHandler(log_console_handler)
+        if console:
+            log_console_handler = MultiplexingHandler()
+            log_console_handler.setFormatter(log_formatter)
+            log_console_handler.setLevel(logging.DEBUG)
+            _logger.addHandler(log_console_handler)
 
     return _logger
 

@@ -57,7 +57,7 @@ from .utils.logger import SelectiveFormatter, ColorizingFormatter, MultiplexingH
 
 def logger(name="STIMELA", propagate=False, console=True,
            fmt="{asctime} {name} {levelname}: {message}",
-           col_fmt="{asctime} {name} {<{<{levelname}: {message}>}>}",
+           col_fmt="{asctime} {name} <<<<{levelname}: {message}>>>>",
            sub_fmt="{message}",
            datefmt="%Y-%m-%d %H:%M:%S",
            boring=False):

@@ -1,62 +1,63 @@
 {
     "task": "sofia", 
     "base": "stimela/sofia", 
-    "tag": "1.2.0", 
+    "tag": "1.2.5-1", 
+    "version" : "1.3.2",
     "description": "SoFiA, the Source Finding Application, is a new HI source finding pipeline intended to detect and parameterise galaxies in HI data cubes. While the software is still under development, several stable versions of SoFiA have already been released. This wiki contains user documentation and technical information on SoFiA and its individual modules.", 
     "prefix": "--", 
     "binary": "sofia_pipeline.py", 
     "msdir": false, 
     "parameters": [
         {
-            "info": null, 
+            "info": "The maximum size of test regions. The default value of -1 is a flag value that sets the maximum size to half of the size of the spectral axis.", 
             "dtype": "int", 
             "default": -1, 
             "name": "CNHI.maxScale"
         }, 
         {
-            "info": null, 
+            "info": "This parameter determines whether test regions need to have a median greater than that of the remaining data in order to be considered a source.", 
             "dtype": "bool", 
             "default": true, 
             "name": "CNHI.medianTest"
         }, 
         {
-            "info": null, 
+            "info": "The minimum size of test regions.", 
             "dtype": "int", 
             "default": 5, 
             "name": "CNHI.minScale"
         }, 
         {
-            "info": null, 
+            "info": "Minimum probability requirement for detections to be considered genuine. Sensible values are typically in the range of about 1e−3 to 1e−5.", 
             "dtype": "float", 
             "default": "1e-05", 
             "name": "CNHI.pReq"
         }, 
         {
-            "info": null, 
+            "info": "This is the Q value of the Kuiper test, which is a heuristic parameter for assessing the quality/accuracy of the probability calculated from the Kuiper test. The minimum scale that the CNHI source finder processes is increased until it is sufficiently large to ensure that the required Q value is achieved. This requirement supersedes the user-specified minimum scale (see parameter CNHI.minScale). The default value is 3.8, which is the generally accepted minimally useful value.", 
             "dtype": "float", 
             "default": 3.8, 
             "name": "CNHI.qReq"
         }, 
         {
-            "info": null, 
+            "info": "An integer value that indicates the level of verbosity of the CNHI finder. Values of 0, 1 and 2 correspond to none, minimal and maximal, respectively.", 
             "dtype": "int", 
             "default": 1, 
             "name": "CNHI.verbose"
         }, 
         {
-            "info": null, 
+            "info": "Pixel values assumed by the smoothing algorithm outside the boundaries of the cube. The following options are available: 'constant' assume a constant value of 0; 'nearest' assume a constant value equal to that of the nearest edge pixel; 'reflect' mirror values at the edge, thereby duplicating the edge pixel itself; 'mirror' mirror values at the centre of the outermost pixel, thereby avoiding duplication of the edge pixel itself; 'wrap' copy values from the opposite edge of the cube.", 
             "dtype": "str", 
             "default": "constant", 
             "name": "SCfind.edgeMode"
         }, 
         {
-            "info": null, 
+            "info": "This parameter defines whether the kernel parameters set by SCfind.kernels are specified in pixel or world coordinates.", 
             "dtype": "str", 
             "default": "pixel", 
             "name": "SCfind.kernelUnit"
         }, 
         {
-            "info": null, 
+            "info": "List of kernels to be used for smoothing. The format is [[dx, dy, dz, 'type'], ...] where dx, dy, and dz are the spatial and spectral kernel sizes (FWHM), and 'type' can be boxcar ('b') or Gaussian ('g'). Note that 'type' only applies to the spectral axis, and the spatial kernel is always Gaussian. Kernel sizes can be given either in pixels or in world coordinates depending of the value of SCfind.kernelUnit.", 
             "dtype": "list", 
             "default": [
                 [
@@ -135,197 +136,197 @@
             "name": "SCfind.kernels"
         }, 
         {
-            "info": null, 
+            "info": "Set already detected pixels to sigma x maskScaleXY before spatial smoothing, where sigma is the rms noise level in the original data cube. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "float", 
             "default": 2.0, 
             "name": "SCfind.maskScaleXY"
         }, 
         {
-            "info": null, 
+            "info": "Not currently used.", 
             "dtype": "float", 
             "default": 2.0, 
             "name": "SCfind.maskScaleZ"
         }, 
         {
-            "info": null, 
+            "info": "Statistic used to determine the noise in the data cube. The following options are available: standard deviation (std), median absolute deviation (mad), fitting of a Gaussian function to the flux histogram (gauss) or fitting of a Gaussian function to the negative part of the flux histogram (negative).", 
             "dtype": "str", 
             "default": "negative", 
             "name": "SCfind.rmsMode"
         }, 
         {
-            "info": null, 
+            "info": "Not currently used.", 
             "dtype": "float", 
             "default": 0.0, 
             "name": "SCfind.sizeFilter"
         }, 
         {
-            "info": null, 
+            "info": "Flux threshold relative to the noise level of the cube. The default value of 6.0 sigma is likely to miss a large number of faint sources in most cases, and lower values will be required to maximise completeness.", 
             "dtype": "float", 
             "default": 3.5, 
             "name": "SCfind.threshold"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, print additional progress information. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "bool", 
             "default": true, 
             "name": "SCfind.verbose"
         }, 
         {
-            "info": null, 
+            "info": "Pixel/channel range(s) to be flagged prior to source finding. Format: [[x1, x2, y1, y2, z1, z2], ...]. A place holder, '' (two single quotes), can be used for the upper range limit (x2, y2, and z2) to flag all the way to the end, e.g. [[0, '', 0, '', 0, 19]] will flag the first 20 channels of the entire cube. The default is an empty list, [], which means to not flag anything.", 
             "dtype": "list", 
             "default": [], 
             "name": "flag.regions"
         }, 
         {
-            "info": null, 
+            "info": "Full path and name of input data cube. This option is mandatory, and there is no default. Note that only FITS files are currently supported by SoFiA.", 
             "dtype": "file", 
             "default": null, 
             "name": "import.inFile", 
             "io": "input"
         }, 
         {
-            "info": null, 
+            "info": "Name of an optional file containing a mask of pixels identified as part of a source, e.g. from a previous run of SoFiA. This can be used to re-parametrise sources without repeating the source finding step. The default is to not read a mask cube.", 
             "dtype": "file", 
             "default": null, 
             "name": "import.maskFile", 
             "io": "input"
         }, 
         {
-            "info": null, 
+            "info": "This parameter defines a subcube to be read in and processed by SoFiA. Depending on the value of import.subcubeMode, the range is either specified in pixels as [x1, x2, y1, y2, z1, z2] or in world coordinates as [x, y, z, rx, ry, rz] depending on the value of import.subcubeMode. In the latter case, x, y and z define the centre of the subcube, and rx, ry and rz specify the half-widths in the three dimensions. If world coordinates are used, all parameters must be in the native format as defined in the header of the data cube; e.g. if CUNIT3 is 'Hz' then both z and rz must be given in hertz. The default is an empty list, [], which means to read the entire cube.", 
             "dtype": "list", 
             "default": [], 
             "name": "import.subcube"
         }, 
         {
-            "info": null, 
+            "info": "This parameter defines whether import.subcube is specified in pixels (pixel) or in world coordinates (world).", 
             "dtype": "str", 
             "default": "pixel", 
             "name": "import.subcubeMode"
         }, 
         {
-            "info": null, 
+            "info": "Name of an optional file containing weights of pixels in the input cube. The weights will be applied before running the source finder. The default is to not apply weights.", 
             "dtype": "file", 
             "default": null, 
             "name": "import.weightsFile", 
             "io": "input"
         }, 
         {
-            "info": null, 
+            "info": "Analytic function used to describe the data weights as a function of x, y, and z. The default is to not apply weights. The following mathematical functions from Numpy are supported: sin(), cos(), tan(), arcsin(), arccos(), arctan(), arctan2(), sinh(), cosh(), tanh(), arcsinh(), arccosh(), arctanh(), exp(), log(), log10(), log2(), sqrt(), square(), power(), absolute(), fabs(), and sign(). Note that the weights function is not applied whenever a weights cube is specified (see import.weightsFile).", 
             "dtype": "str", 
             "default": null, 
             "name": "import.weightsFunction"
         }, 
         {
-            "info": null, 
+            "info": "Minimum required extent in first dimension of genuine sources after merging. Sources below this size will be discarded.", 
             "dtype": "int", 
             "default": 3, 
             "name": "merge.minSizeX"
         }, 
         {
-            "info": null, 
+            "info": "Minimum required extent in second dimension of genuine sources after merging. Sources below this size will be discarded.", 
             "dtype": "int", 
             "default": 3, 
             "name": "merge.minSizeY"
         }, 
         {
-            "info": null, 
+            "info": "Minimum required extent in third dimension of genuine sources after merging. Sources below this size will be discarded.", 
             "dtype": "int", 
             "default": 2, 
             "name": "merge.minSizeZ"
         }, 
         {
-            "info": null, 
+            "info": "Merging radius in first dimension in pixels. Note that a value of 0 means that no merging takes place and each detected pixel is retained as a separate source.", 
             "dtype": "int", 
             "default": 2, 
             "name": "merge.radiusX"
         }, 
         {
-            "info": null, 
+            "info": "Merging radius in second dimension in pixels. Note that a value of 0 means that no merging takes place and each detected pixel is retained as a separate source.", 
             "dtype": "int", 
             "default": 2, 
             "name": "merge.radiusY"
         }, 
         {
-            "info": null, 
+            "info": "Merging radius in third dimension in pixels. Note that a value of 0 means that no merging takes place and each detected pixel is retained as a separate source.", 
             "dtype": "int", 
             "default": 3, 
             "name": "merge.radiusZ"
         }, 
         {
-            "info": null, 
+            "info": "This parameter defines the full path to the input catalogue required for catalogue-based source finding (see parameter steps.doOptical). There is no default. Catalogues must be comma-separated and contain at least four columns containing a unique ID number, right ascension, declination and frequency/velocity of the positions to be searched. All parameters must be specified in the native WCS units of the cube. In addition, a header line must be provided, with the four parameter columns above listed as id, ra, dec and z.", 
             "dtype": "file", 
             "default": null, 
             "name": "optical.sourceCatalogue", 
             "io": "input"
         }, 
         {
-            "info": null, 
+            "info": "This parameter defines the spatial size of the sub-cube to be searched around each catalogue position. The size must be specified in the native units of the data cube, e.g. in degrees.", 
             "dtype": "float", 
             "default": 0.01, 
             "name": "optical.spatSize"
         }, 
         {
-            "info": null, 
+            "info": "This parameter defines the spectral size of the sub-cube to be searched around each catalogue position. The size must be specified in the native units of the data cube, e.g. in km/s or Hz.", 
             "dtype": "float", 
             "default": 100000.0, 
             "name": "optical.specSize"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, a separate output catalogue will be created for each input position, containing only the sources found in that subcube. In addition, a single, merged catalogue will also be created. By default this parameter is set to false, in which case only a single output catalogue file is generated.", 
             "dtype": "bool", 
             "default": false, 
             "name": "optical.storeMultiCat"
         }, 
         {
-            "info": null, 
+            "info": "Sets the maximum mask dilation along the spectral axis. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "int", 
             "default": 1, 
             "name": "parameters.dilateChanMax"
         }, 
         {
-            "info": null, 
+            "info": "Run the mask optimisation algorithm based on spatially dilating the initial mask to achieve more accurate flux measurements. The advantage of this algorithm is that it preserves the source shape (also see parameters.optimiseMask).", 
             "dtype": "bool", 
             "default": true, 
             "name": "parameters.dilateMask"
         }, 
         {
-            "info": null, 
+            "info": "Sets the maximum mask dilation (in pixels) in the spatial domain. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "int", 
             "default": 10, 
             "name": "parameters.dilatePixMax"
         }, 
         {
-            "info": null, 
+            "info": "Defines convergence of the mask dilation. Dilation  stops when the relative flux growth is below 1+ this threshold. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "float", 
             "default": 0.02, 
             "name": "parameters.dilateThreshold"
         }, 
         {
-            "info": null, 
+            "info": "Fit the Busy Function (Westmeier et al. 2014) to the integrated spectrum of each source for more accurate parameterisation.", 
             "dtype": "bool", 
             "default": true, 
             "name": "parameters.fitBusyFunction"
         }, 
         {
-            "info": null, 
+            "info": "Run the mask optimisation algorithm based on fitting and growing ellipses to achieve more accurate flux measurements. Note that the improved integrated fluxes obtained by this algorithm will come at the cost of increased statistical uncertainties in most source parameters (also see parameters.dilateMask).", 
             "dtype": "bool", 
             "default": false, 
             "name": "parameters.optimiseMask"
         }, 
         {
-            "info": null, 
+            "info": "This parameter controls whether the kernel size to be used for reliability calculation should be determined automatically (true) or manually (false). Default is true. If set to false, the reliability.kernel parameter must be used to specify the kernel size. Note that this is a hidden option not accessible through the graphical user interface. Also see the reliability.negPerBin and reliability.skellamTol parameters.", 
             "dtype": "bool", 
             "default": true, 
             "name": "reliability.autoKernel"
         }, 
         {
-            "info": null, 
+            "info": "Minimum value of the sum of the pixel values, Sum(Si), divided by the global RMS noise level, sigma, and the square root of the number of pixels, N, for a source to be considered reliable. This parameter is a proxy for integrated signal-to-noise ratio, SNRint = Sum(Si) / [sigmaxsqrt(N)xsqrt(Omega)], where Omega is the solid angle of the beam, but has not yet been divided by the square root of the beam solid angle in pixels.", 
             "dtype": "float", 
             "default": 0.0, 
             "name": "reliability.fMin"
         }, 
         {
-            "info": null, 
+            "info": "Size of the 3D smoothing kernel in log(parameter) space (see reliability.parSpace). This parameter will be ignored if reliability.autoKernel is set to true (default behaviour). Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "list", 
             "default": [
                 0.15, 
@@ -335,7 +336,7 @@
             "name": "reliability.kernel"
         }, 
         {
-            "info": null, 
+            "info": "For each source parameter defined in reliability.parSpace this parameter defines whether the reliability analysis is carried out in linear space (0) or in logarithmic space (1). Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "list", 
             "default": [
                 1, 
@@ -345,19 +346,19 @@
             "name": "reliability.logPars"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, PDF files showing the distribution of positive and negative detections in parameter space will be created for diagnostic purposes.", 
             "dtype": "bool", 
             "default": false, 
             "name": "reliability.makePlot"
         }, 
         {
-            "info": null, 
+            "info": "This parameter defines the minimum number of negative detections per bin in parameter space required for the automatic kernel size determination. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "float", 
             "default": 1.0, 
             "name": "reliability.negPerBin"
         }, 
         {
-            "info": null, 
+            "info": "Defines the 3D parameter space in which to determine reliability. It is strongly recommended to use the pre-defined default settings. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "list", 
             "default": [
                 "n_pix", 
@@ -367,247 +368,247 @@
             "name": "reliability.parSpace"
         }, 
         {
-            "info": null, 
+            "info": "If autoKernel is set to true, then this parameter will determine whether the kernel size will be set automatically by SoFiA (0) or scaled by the given factor (> 0). If autoKernel is false, this option will be ignored.", 
             "dtype": "float", 
             "default": 0.55, 
             "name": "reliability.scaleKernel"
         }, 
         {
-            "info": null, 
+            "info": "Tolerance parameter for reliability kernel size determination. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "float", 
             "default": -0.5, 
             "name": "reliability.skellamTol"
         }, 
         {
-            "info": null, 
+            "info": "Discard all sources whose reliability is below this threshold.", 
             "dtype": "float", 
             "default": 0.95, 
             "name": "reliability.threshold"
         }, 
         {
-            "info": null, 
+            "info": "Controls whether to use the full covariance kernel when smoothing the distribution of detections in parameter space. The default is true. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "bool", 
             "default": true, 
             "name": "reliability.usecov"
         }, 
         {
-            "info": null, 
+            "info": "Size of the edge (in pixels) to be excluded in first (spatial) dimension. The setting will be ignored if scaleNoise.method = local.", 
             "dtype": "int", 
             "default": null, 
             "name": "scaleNoise.edgeX"
         }, 
         {
-            "info": null, 
+            "info": "Size of the edge (in pixels) to be excluded in second (spatial) dimension. The setting will be ignored if scaleNoise.method = local.", 
             "dtype": "int", 
             "default": null, 
             "name": "scaleNoise.edgeY"
         }, 
         {
-            "info": null, 
+            "info": "Size of the edge (in pixels) to be excluded in third (spectral) dimension. The setting will be ignored if scaleNoise.method = local.", 
             "dtype": "int", 
             "default": null, 
             "name": "scaleNoise.edgeZ"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, apply noise normalisation in first (spatial) dimension. The setting will be ignored if scaleNoise.method = local.", 
             "dtype": "bool", 
             "default": null, 
             "name": "scaleNoise.scaleX"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, apply noise normalisation in second (spatial) dimension. The setting will be ignored if scaleNoise.method = local.", 
             "dtype": "bool", 
             "default": null, 
             "name": "scaleNoise.scaleY"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, apply noise normalisation in third (spectral) dimension. The setting will be ignored if scaleNoise.method = local.", 
             "dtype": "bool", 
             "default": null, 
             "name": "scaleNoise.scaleZ"
         }, 
         {
-            "info": null, 
+            "info": "Statistic used to determine the noise in the data cube. The following options are available: standard deviation (std), median absolute deviation (mad), fitting of a Gaussian to the flux histogram (gauss) or fitting of a Gaussian function to the negative part of the flux histogram (negative).", 
             "dtype": "str", 
             "default": "negative", 
             "name": "scaleNoise.statistic"
         }, 
         {
-            "info": null, 
+            "info": "Pixel values assumed by the smoothing algorithm outside the boundaries of the cube. The following options are available: 'constant' assume a constant value of 0; 'nearest' assume a constant value equal to that of the nearest edge pixel; 'reflect' mirror values at the edge, thereby duplicating the edge pixel itself; 'mirror' mirror values at the centre of the outermost pixel, thereby avoiding duplication of the edge pixel itself; 'wrap' copy values from the opposite edge of the cube.", 
             "dtype": "str", 
             "default": "constant", 
             "name": "smooth.edgeMode"
         }, 
         {
-            "info": null, 
+            "info": "Type of smoothing kernel used in both spatial and spectral smoothing. The possible options are gaussian, boxcar or median.", 
             "dtype": "str", 
             "default": "gaussian", 
             "name": "smooth.kernel"
         }, 
         {
-            "info": null, 
+            "info": "Kernel size in pixels for the first (spatial) coordinate. For Gaussian kernels the value refers to the FWHM.", 
             "dtype": "float", 
             "default": 3.0, 
             "name": "smooth.kernelX"
         }, 
         {
-            "info": null, 
+            "info": "Kernel size in pixels for the second (spatial) coordinate. For Gaussian kernels the value refers to the FWHM.", 
             "dtype": "float", 
             "default": 3.0, 
             "name": "smooth.kernelY"
         }, 
         {
-            "info": null, 
+            "info": "Kernel size in pixels for the third (spectral) coordinate. For Gaussian kernels the value refers to the FWHM.", 
             "dtype": "float", 
             "default": 3.0, 
             "name": "smooth.kernelZ"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, run the Characterised Noise HI (CNHI) source finder by Jurek (2012).", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doCNHI"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, a range of data products for each individual source will be created and written to disk, including a small sub-cube, moment-0, 1 and 2 maps, a position–velocity diagram along the kinematical major axis and an integrated spectrum of the source.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doCubelets"
         }, 
         {
-            "info": null, 
+            "info": "Creates additional debugging data products.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doDebug"
         }, 
         {
-            "info": null, 
+            "info": "Flag pixel and channel ranges before proceeding. Details are specified with the flag.file and flag.regions options.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doFlag"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, pixels detected by the source finder will be merged into final sources based on user-defined separation and size criteria.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doMerge"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, a moment-0 map of all detected sources will be created and saved to disk.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doMom0"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, a moment-1 map of all detected sources will be created and saved to disk.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doMom1"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, run SoFiA on multiple, smaller sub-cubes centred on positions defined in an input source catalogue. A catalogue file will need to be specified (see parameter optical.sourceCatalogue). This could, e.g., be an optical galaxy catalogue with the aim to search for HI detections at the positions of all galaxies. Note that optical_find.py must be called in this case when running SoFiA from the command line interface!", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doOptical"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, run the mask optimisation and source parameterisation module.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doParameterise"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, use negative detections to determine the reliability of each source based on the algorithm of Serra, Jurek & Flöer (2012).", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doReliability"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, run the smooth + clip finder.", 
             "dtype": "bool", 
             "default": true, 
             "name": "steps.doSCfind"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, normalise noise levels across the data cube prior to source finding.", 
             "dtype": "bool", 
             "default": true, 
             "name": "steps.doScaleNoise"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, spatially and spectrally smooth the data cube prior to source finding.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doSmooth"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, source finding can be carried out on a subcube to be defined by the import.subcube and import.subcubeMode options.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doSubcube"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, run the threshold finder.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doThreshold"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, decompose the data cube into wavelet components using the 2D–1D wavelet decomposition algorithm of Flöer & Winkel (2012).", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doWavelet"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, write output catalogue(s) to disk. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doWriteCat"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, save a copy of the filtered data cube. Note that this will only make sense if at least one of the input filters was applied.", 
             "dtype": "bool", 
             "default": false, 
             "name": "steps.doWriteFilteredCube"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, save the mask cube.", 
             "dtype": "bool", 
             "default": true, 
             "name": "steps.doWriteMask"
         }, 
         {
-            "info": null, 
+            "info": "Is the threshold specified by threshold.threshold relative to the noise level or in absolute flux units?", 
             "dtype": "str", 
             "default": "relative", 
             "name": "threshold.clipMethod"
         }, 
         {
-            "info": null, 
+            "info": "Statistic used to determine the noise in the data cube. The following options are available: standard deviation (std), median absolute deviation (mad), fitting of a Gaussian function to the flux histogram (gauss) or fitting of a Gaussian function to the negative part of the flux histogram (negative).", 
             "dtype": "str", 
             "default": "std", 
             "name": "threshold.rmsMode"
         }, 
         {
-            "info": null, 
+            "info": "Absolute or relative flux threshold (see threshold.clipMethod). The default value of 4.0 sigma is likely to miss a large number of faint sources in most cases, and lower values will be required to maximise completeness.", 
             "dtype": "float", 
             "default": 4.0, 
             "name": "threshold.threshold"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, print additional progress information. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "bool", 
             "default": false, 
             "name": "threshold.verbose"
         }, 
         {
-            "info": null, 
+            "info": "Number of iterations to be used in the wavelet reconstruction process.", 
             "dtype": "int", 
             "default": 3, 
             "name": "wavelet.iterations"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, include only positive wavelet components in the decomposition. Otherwise, negative components will be included as well.", 
             "dtype": "bool", 
             "default": false, 
             "name": "wavelet.positivity"
@@ -619,37 +620,37 @@
             "name": "wavelet.scaleXY"
         }, 
         {
-            "info": null, 
+            "info": "Number of spectral scales used in the decomposition. The default value of -1 will automatically determine the appropriate number of scales based on the actual data cube.", 
             "dtype": "int", 
             "default": -1, 
             "name": "wavelet.scaleZ"
         }, 
         {
-            "info": null, 
+            "info": "Flux threshold used in the wavelet reconstruction processs in multiples of the rms noise. Note that this threshold only determines which wavelet components are added to the decomposed cube. Any source finder run after the reconstruction will use its own flux threshold.", 
             "dtype": "float", 
             "default": 5.0, 
             "name": "wavelet.threshold"
         }, 
         {
-            "info": null, 
+            "info": "Optional base name of all output files. If not specified, the input file name will be used by default.", 
             "dtype": "str", 
             "default": null, 
             "name": "writeCat.basename"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, use gzip to compress all output files.", 
             "dtype": "bool", 
             "default": false, 
             "name": "writeCat.compress"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, any existing output files will automatically get overwritten. If set to false, the pipeline will print an error message for any output file that already exists and skip writing that file.", 
             "dtype": "bool", 
             "default": true, 
             "name": "writeCat.overwrite"
         }, 
         {
-            "info": null, 
+            "info": "List of parameters to appear in source catalogue. Format: ['par1', 'par2', ...]. An asterisk, ['*'], means that all available parameters are written to the output catalogue. Note that, depending on the actual pipeline settings, some selected parameters may not appear in the source catalogue.", 
             "dtype": "list", 
             "default": [
                 "*"
@@ -657,51 +658,52 @@
             "name": "writeCat.parameters"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, write catalogue in human-readable ASCII format.", 
             "dtype": "bool", 
             "default": true, 
             "name": "writeCat.writeASCII"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, write catalogue in SQL format for insertion into an SQL database.", 
             "dtype": "bool", 
             "default": false, 
             "name": "writeCat.writeSQL"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, write catalogue in VO table format (XML).", 
             "dtype": "bool", 
             "default": true, 
             "name": "writeCat.writeXML"
         }, 
         {
-            "info": null, 
+            "info": "If set to true (default), SoFiA will exit with an error message whenever unrecognised or multiply-defined parameters are encountered in the parameter file. If set to false, SoFiA will ignore all unknown and redefined parameter settings and print a warning message for each case. This is a hidden option not available in the GUI.", 
             "dtype": "bool", 
             "name": "pipeline.pedantic"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, then a copy of the noise cube estimated by SoFiA will be written to disk as a FITS file. This will only work if noise scaling is enabled (steps.doScaleNoise = true).", 
             "dtype": "bool", 
             "name": "steps.doWriteNoiseCube"
         }, 
         {
-            "info": null, 
+            "info": "Full path and file name of an optional flagging cube that must be of the same dimensions as the input cube. All pixels that are flagged (i.e. set to BLANK) in the flagging cube will also be flagged in the input cube prior to source finding. The default is to not apply flags.", 
             "dtype": "file", 
             "name": "flag.file", 
             "io": "input"
         }, 
         {
-            "info": null, 
+            "info": "If set to global, the noise measurement will be carried out on the entire projected image plane perpendicular to the axis along which the noise is to be scaled (default). If set to local, the noise measurement will occur in a running window of specified size on a specified grid. Note that the latter can be slow and memory-heavy and is only recommended for small cubes or 2D images that are affected by localised noise variations. If set to 1d2d normalise the noise first channel by channel along Z, and then in XY windows.", 
             "dtype": "str", 
             "default": null, 
             "name": "scaleNoise.method", 
             "choices": [
                 "global", 
-                "local"
+                "local",
+                "1d2d"
             ]
         }, 
         {
-            "info": null, 
+            "info": "Range of flux values to be used in noise measurement. Can be negative, positive or all to use only negative, only positive or all pixels, respectively.", 
             "dtype": "str", 
             "default": null, 
             "name": "scaleNoise.fluxRange", 
@@ -712,25 +714,25 @@
             ]
         }, 
         {
-            "info": null, 
+            "info": "This defines the spatial window size over which the local noise measurement is taken. The setting will only be relevant if scaleNoise.method = local. It must be an odd number of 1 or greater.", 
             "dtype": "int", 
             "default": null, 
             "name": "scaleNoise.windowSpatial"
         }, 
         {
-            "info": null, 
+            "info": "This defines the spectral window size over which the local noise measurement is taken. The setting will only be relevant if scaleNoise.method = local. It must be an odd number of 1 or greater.", 
             "dtype": "int", 
             "default": null, 
             "name": "scaleNoise.windowSpectral"
         }, 
         {
-            "info": null, 
+            "info": "This defines the separation of spatial grid points on which the local noise measurement takes place. The setting will only be relevant if scaleNoise.method = local. It must be an odd number of 1 or greater. Alternatively, if set to 0 (default), SoFiA will automatically determine an appropriate grid size based on the specified window size. This is a hidden option not available in the GUI.", 
             "dtype": "int", 
             "default": null, 
             "name": "scaleNoise.gridSpatial"
         }, 
         {
-            "info": null, 
+            "info": "Select if the local noise measurement made by SoFiA should be interpolated in between grid points or not. The default is none which will simply fill each grid cell with the noise value. linear will carry out a linear interpolation between grid points, which is slower, but results in smoother noise maps. Lastly, cubic will carry out a cubic spline interpolation between grid points, which is by far the slowest method, but results in the smoothest noise maps. Note that this setting will only be relevant if scaleNoise.method = local.", 
             "dtype": "str", 
             "default": null, 
             "name": "scaleNoise.interpolation", 
@@ -741,7 +743,7 @@
             ]
         }, 
         {
-            "info": null, 
+            "info": "Range of flux values to be used in noise measurement. Can be negative, positive or all to use only negative, only positive or all pixels, respectively.", 
             "dtype": "str", 
             "default": "all", 
             "name": "SCfind.fluxRange", 
@@ -752,7 +754,7 @@
             ]
         }, 
         {
-            "info": null, 
+            "info": "Range of flux values to be used in noise measurement. Can be negative, positive or all to use only negative, only positive or all pixels, respectively.", 
             "dtype": "str", 
             "default": "all", 
             "name": "threshold.fluxRange", 
@@ -768,81 +770,81 @@
             "name": "port2tigger"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, SoFiA will report its own peak memory usage at certain times throughout the pipeline run. This is a hidden option not available in the GUI.", 
             "dtype": "bool", 
             "name": "pipeline.trackMemory"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, SoFiA will attempt to automatically flag residual continuum emission in the data on a position-by-position basis by measuring the noise along the line of sight and blanking all positions where the noise is above a given threshold with respect to the global noise level of the data cube.", 
             "dtype": "bool", 
             "name": "steps.doFilterArtefacts"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, SoFiA will multiply the data cube by −1 in order to search for negative signals.", 
             "dtype": "bool", 
             "name": "import.invertData"
         }, 
         {
-            "info": null, 
+            "info": "List of source IDs to be retained in the input source mask (e.g. [1, 3, 4]). An empty list ([]) means that all sources are kept (default). Otherwise, sources not in the list will be removed from the mask before proceeding. This parameter will only take effect if import.maskFile is set.", 
             "dtype": "list:str", 
             "name": "import.sources"
         }, 
         {
-            "info": null, 
+            "info": "This defines the separation of spectral grid points on which the local noise measurement takes place. The setting will only be relevant if scaleNoise.method = local. It must be an odd number of 1 or greater. Alternatively, if set to 0 (default), SoFiA will automatically determine an appropriate grid size based on the specified window size. This is a hidden option not available in the GUI.", 
             "dtype": "int", 
             "default": 0, 
             "name": "scaleNoise.gridSpectral"
         }, 
         {
-            "info": null, 
+            "info": "Threshold for masking lines of sight with anomalously high noise. A line of sight is masked if its noise level is more than filterArtefacts.threshold * STD above the global noise level of the data cube, where STD is the standard deviation of the distribution of the noise values across all lines of sight.", 
             "dtype": "float", 
             "default": 4.0, 
             "name": "filterArtefacts.threshold"
         }, 
         {
-            "info": null, 
+            "info": "Size of the box structuring element used to propagate the flagging to neighbouring lines of sight. A value of 1 means no dilation.", 
             "dtype": "int", 
             "default": 3, 
             "name": "filterArtefacts.dilation"
         }, 
         {
-            "info": null, 
+            "info": "Maximum allowed extent of genuine sources in first dimension after merging. Sources above this size will be discarded. Set to -1 to disable maximum size filtering.", 
             "dtype": "int", 
             "default": -1, 
             "name": "merge.maxSizeX"
         }, 
         {
-            "info": null, 
+            "info": "Maximum allowed extent of genuine sources in second dimension after merging. Sources above this size will be discarded. Set to -1 to disable maximum size filtering.", 
             "dtype": "int", 
             "default": -1, 
             "name": "merge.maxSizeY"
         }, 
         {
-            "info": null, 
+            "info": "Maximum allowed extent of genuine sources in third dimension after merging. Sources above this size will be discarded. Set to -1 to disable maximum size filtering.", 
             "dtype": "int", 
             "default": -1, 
             "name": "merge.maxSizeZ"
         }, 
         {
-            "info": null, 
+            "info": "Minimum required number of voxels of genuine sources after merging. Sources below this limit will be discarded. Note that this is a hidden option not available in the GUI.", 
             "dtype": "int", 
             "default": 1, 
             "name": "merge.minVoxels"
         }, 
         {
-            "info": null, 
+            "info": "Maximum allowed number of voxels of genuine sources after merging. Sources above this limit will be discarded. Set to -1 to disable maximum size filtering. Note that this is a hidden option not available in the GUI.", 
             "dtype": "int", 
             "default": -1, 
             "name": "merge.maxVoxels"
         }, 
         {
-            "info": null, 
+            "info": "Minimum required number of lines-of-sight (i.e. spatial pixels) of genuine sources after merging. Sources below this limit will be discarded. Note that this is a hidden option not available in the GUI.", 
             "dtype": "int", 
             "default": 1, 
             "name": "merge.minLoS"
         }, 
         {
-            "info": null, 
+            "info": "Maximum allowed number of lines-of-sight (i.e. spatial pixels) of genuine sources after merging. Sources above this limit will be discarded. Set to -1 to disable maximum size filtering. Note that this is a hidden option not available in the GUI.", 
             "dtype": "int", 
             "default": -1, 
             "name": "merge.maxLoS"
@@ -860,26 +862,32 @@
             "name": "merge.maxFill"
         }, 
         {
-            "info": null, 
+            "info": "Probably some minimum flux limit. Note that this is a hidden option not available in the GUI.", 
             "dtype": "float", 
             "default": "-9e30", 
             "name": "merge.minIntens"
         }, 
         {
-            "info": null, 
+            "info": "Probably some maximum flux limit. Note that this is a hidden option not available in the GUI.", 
             "dtype": "float", 
             "default": "9e30", 
             "name": "merge.maxIntens"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, only positive signals will be merged into detections, and all negative signals will be discarded. This is useful for data sets with significant negative artefacts, such as sidelobes. The default is false. Warning: Enabling positivity is dangerous and will render some of SoFiA’s most powerful algorithms useless, including mask optimisation and reliability calculation. Only use this feature if you are fully aware of its risks and consequences!", 
             "dtype": "bool", 
             "name": "merge.positivity"
         }, 
         {
-            "info": null, 
+            "info": "If set to true, statistical uncertainties of several source parameters, including centroids and line widths, will be estimated. Please use this feature with great caution, as statistical uncertainties are not likely to be representative of the true uncertainties, in particular when systematic errors are present. Note that this is a hidden option not accessible through the graphical user interface.", 
             "dtype": "bool", 
             "name": "parameters.getUncertainties"
-        }
+        }, 
+        {
+            "info": "if True normalise noise variations within the cube after each smoothing operation within the S+C source finder and befpre applying the detection threshold.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "scaleNoise.perSCkernel"
+        }, 
     ]
 }

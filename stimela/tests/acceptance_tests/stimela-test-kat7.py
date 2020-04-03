@@ -105,7 +105,7 @@ class kat7_reduce(unittest.TestCase):
         global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
 
         recipe = stimela.Recipe('Test reduction script',
-                                ms_dir=MSDIR, JOB_TYPE="docker")
+                                ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
 
         recipe.add('cab/casa_listobs', 'listobs', {
             "vis": MS
@@ -262,7 +262,7 @@ class kat7_reduce(unittest.TestCase):
         recipe.run()
 
         recipe = stimela.Recipe('KAT reduction script 2',
-                                ms_dir=MSDIR, JOB_TYPE="docker")
+                                ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
         # Copy CORRECTED_DATA to DATA, so we can start uv_contsub
         recipe.add("cab/msutils", "move_corrdata_to_data", {
             "command": "copycol",

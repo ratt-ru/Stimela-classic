@@ -134,7 +134,9 @@
                 "T", 
                 "GSPLINE", 
                 "K", 
-                "KCROSS"
+                "KCROSS",
+                "XY+QU",
+                "XYf+QU"
             ]
         }, 
         {

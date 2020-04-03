@@ -1,6 +1,5 @@
 FROM stimela/base:1.2.5
 MAINTAINER <sphemakh@gmail.com>
-RUN pip3 install msutils
-RUN mv /usr/bin/python /usr/bin/python2
-RUN ln -s /usr/bin/python3 /usr/bin/python
-RUN python -c "import MSUtils"
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
+RUN pip install msutils
+RUN python -c "import MSUtils.msutils"

@@ -216,17 +216,17 @@ class ColorizingFormatter(logging.Formatter):
             style = Colors.WARNING
         endstyle = Colors.ENDC if style else ""
         msg = super(ColorizingFormatter, self).format(record)
-        return msg.replace("<<<<", style).replace(">>>>", endstyle)
+        return msg.replace("<:<:", style).replace(":>:>", endstyle)
 
 
 class SelectiveFormatter(logging.Formatter):
     """Selective formatter. if condition(record) is True, invokes other formatter"""
-    def __init__(self, default_formatter, dispatch_dict):
-        self._dispatch_dict = dispatch_dict
+    def __init__(self, default_formatter, dispatch_list):
+        self._dispatch_list = dispatch_list
         self._default_formatter = default_formatter
 
     def format(self, record):
-        for condition, formatter in self._dispatch_dict.items():
+        for condition, formatter in self._dispatch_list:
             if condition(record):
                 return formatter.format(record)
         else:

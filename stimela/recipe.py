@@ -53,10 +53,16 @@ class StimelaJob(object):
                  jtype='docker', cpus=None, memory_limit=None,
                  singularity_dir=None,
                  time_out=-1,
-                 log_dir=None,
+                 logger=None,
 		         logfile=None,
                  cabpath=None):
+        """
 
+        logger:   if set to a logger object, uses the specified logger.
+                  if None, sets up its own logger using the parameters below
+
+        logfile:  name of logfile, False to disable recipe-level logfiles, or None to form a default name
+        """
         self.name = name
         self.recipe = recipe
         self.label = label or '{0}_{1}'.format(name, id(name))
@@ -74,7 +80,7 @@ class StimelaJob(object):
 
         self.logfile = logfile
         if self.logfile is not False:
-            self.logfile = logfile or os.path.join(log_dir or ".", "log-{0:s}.txt".format(self.name))
+            self.logfile = logfile or "log-{0:s}.txt".format(self.name)
 
         self.cabpath = cabpath
 
@@ -739,9 +745,11 @@ class StimelaJob(object):
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
-                 tag=None, build_label=None, loglevel='INFO',
-                 singularity_image_dir=None, log_dir=None, JOB_TYPE='docker',
-                 cabpath=None, logfile=None, logfile_task=None):
+                 tag=None, build_label=None,
+                 singularity_image_dir=None, JOB_TYPE='docker',
+                 cabpath=None,
+                 logger=None,
+                 loglevel='INFO', log_dir=None, logfile=None, logfile_task=None):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -750,50 +758,56 @@ class Recipe(object):
         tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
 
-        logfile:  name of logfile, False to disable recipe-level logging, or None to form a default name
-        logfile_task: name of task-level logfile, False to disable task-level logging, or None to form a default name.
-                    logfile_task may contain a "{task}" entry which will be substituted for a task name.
+        logger:   if set to a logger object, uses the specified logger.
+                  if None, sets up its own logger using the parameters below
+
+        loglevel: default logging level
+        log_dir:  default directory for logfiles
+        logfile:  name of logfile, False to disable recipe-level logfiles, or None to form a default name
+
+        logfile_task: name of task-level logfile, False to disable task-level logfiles, or None to form a default name.
+                      logfile_task may contain a "{task}" entry which will be substituted for a task name.
         """
         self.name = name
         self.name_ = self.name.lower().replace(' ', '_')
 
         self.cabpath = cabpath
-        self.log = stimela.logger().getChild(name)
-        self.log.setLevel(getattr(logging, loglevel))
 
-        self.log.propagate = True # propagate to main stimela logger
+        # set default name for task-level logfiles
+        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_.split('-')[0]) \
+            if logfile_task is None else logfile_task
 
-        # logfile is False: no logfile for recipe
-        if logfile is False:
-            # ... but we still need to provide a logfile base for tasks
-            self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_.split('-')[0]) \
-                if logfile_task is None else logfile_task
-
+        if logger is not None:
+            self.log = logger
         else:
-            # logfile is None: use default name
-            if logfile is None:
-                logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_.split('-')[0])
+            self.log = stimela.logger().getChild(name)
+            self.log.setLevel(getattr(logging, loglevel))
 
-            # set base name for tasks
-            self.logfile_task = os.path.splitext(logfile)[0] + "-{task}.txt" \
-                        if logfile_task is None else logfile_task
+            self.log.propagate = True # propagate to main stimela logger
 
-            # ensure directory exists
-            log_dir = os.path.dirname(logfile) or "."
-            if not os.path.exists(log_dir):
-                self.log.info('creating log directory {0:s}'.format(log_dir))
-                os.makedirs(log_dir)
+            # logfile is False: no logfile at recipe level
+            if logfile is not False:
+                # logfile is None: use default name
+                if logfile is None:
+                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_.split('-')[0])
 
-            fh = logging.FileHandler(logfile, 'w', delay=True)
-            fh.setLevel(logging.DEBUG)
-            fh.setFormatter(stimela.log_formatter)
-            self.log.addHandler(fh)
+                # reset default name for task-level logfiles based on logfile
+                self.logfile_task = os.path.splitext(logfile)[0] + "-{task}.txt" \
+                            if logfile_task is None else logfile_task
 
+                # ensure directory exists
+                log_dir = os.path.dirname(logfile) or "."
+                if not os.path.exists(log_dir):
+                    self.log.info('creating log directory {0:s}'.format(log_dir))
+                    os.makedirs(log_dir)
+
+                fh = logging.FileHandler(logfile, 'w', delay=True)
+                fh.setLevel(logging.DEBUG)
+                fh.setFormatter(stimela.log_formatter)
+                self.log.addHandler(fh)
 
         self.JOB_TYPE = JOB_TYPE
 
-        # Create file handler which logs even debug
-        # messages
         self.resume_file = '.last_{}.json'.format(self.name_)
 
 
@@ -848,6 +862,7 @@ class Recipe(object):
             build_label=None,
             cpus=None, memory_limit=None,
             time_out=-1,
+            logger=None,
             logfile=None,
             cabpath=None):
 
@@ -861,9 +876,8 @@ class Recipe(object):
 
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit, time_out=time_out,
-                         log_dir=logfile and os.path.dirname(logfile),
                          jtype=self.JOB_TYPE,
-                         logfile=logfile,
+                         logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath)
 
         if callable(image):

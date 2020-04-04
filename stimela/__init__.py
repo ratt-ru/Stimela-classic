@@ -55,28 +55,32 @@ log_console_handler = log_formatter = log_boring_formatter = log_colourful_forma
 
 from .utils.logger import SelectiveFormatter, ColorizingFormatter, MultiplexingHandler
 
-def logger(name="STIMELA", propagate=False, console=True,
+def logger(name="STIMELA", propagate=False, console=True, boring=False,
            fmt="{asctime} {name} {levelname}: {message}",
-           col_fmt="{asctime} {name} <<<<{levelname}: {message}>>>>",
+           col_fmt="{asctime} {name} <:<:{levelname}: {message}:>:>",
            sub_fmt="{message}",
-           datefmt="%Y-%m-%d %H:%M:%S",
-           boring=False):
+           datefmt="%Y-%m-%d %H:%M:%S"):
     """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
     global _logger
     if _logger is None:
         _logger = logging.getLogger(name)
+        _logger.setLevel(logging.INFO)
         _logger.propagate = propagate
 
         global log_console_handler, log_formatter, \
                log_boring_formatter, log_colourful_formatter
 
+        # this function checks if the log record corresponds to stdout/stderr output from a cab
+        def _is_from_subprocess(rec):
+            return hasattr(rec, 'subprocess')
+
         log_boring_formatter = SelectiveFormatter(
-            logging.Formatter(fmt, datefmt, style="{"),
-            {lambda rec: hasattr(rec, 'subprocess'): logging.Formatter(sub_fmt, datefmt, style="{")})
+                                    logging.Formatter(fmt, datefmt, style="{"),
+                                    [(_is_from_subprocess, logging.Formatter(sub_fmt, datefmt, style="{"))])
 
         log_colourful_formatter = SelectiveFormatter(
-            ColorizingFormatter(col_fmt, datefmt, style="{"),
-            {lambda rec: hasattr(rec, 'subprocess'): ColorizingFormatter(sub_fmt, datefmt, style="{")})
+                                        ColorizingFormatter(col_fmt, datefmt, style="{"),
+                                        [(_is_from_subprocess, ColorizingFormatter(sub_fmt, datefmt, style="{"))])
 
         log_formatter = log_boring_formatter if boring else log_colourful_formatter
 

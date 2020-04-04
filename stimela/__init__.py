@@ -72,7 +72,7 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
 
         # this function checks if the log record corresponds to stdout/stderr output from a cab
         def _is_from_subprocess(rec):
-            return hasattr(rec, 'subprocess')
+            return hasattr(rec, 'stimela_subprocess_output')
 
         log_boring_formatter = SelectiveFormatter(
                                     logging.Formatter(fmt, datefmt, style="{"),

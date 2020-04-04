@@ -113,9 +113,6 @@ class StimelaJob(object):
         else:
             self.log = StimelaJob.logs_avail[log_name]
 
-        # the extra attributes are filtered by e.g. the CARACal logger
-        self.log.info("starting job {}".format(self.name), extra=dict(stimela_job_state=(self.name, "starting")))
-
     def run_python_job(self):
         function = self.job['function']
         options = self.job['parameters']
@@ -1045,8 +1042,10 @@ class Recipe(object):
         jobs = [(step, self.jobs[step-1]) for step in steps]
 
         for i, (step, job) in enumerate(jobs):
+            self.log.info('Running job {}'.format(job.name),
+                          # the extra attributes are filtered by e.g. the CARACal logger
+                          extra=dict(stimela_job_state=(job.name, "running")))
 
-            self.log.info('Running job {}'.format(job.name))
             self.log.info('STEP {0} :: {1}'.format(i+1, job.label))
             self.active = job
             try:
@@ -1066,14 +1065,21 @@ class Recipe(object):
 
                 self.log2recipe(job, recipe, step, 'completed')
                 self.completed.append(job)
+
+                self.log.info('Completed job {}'.format(job.name),
+                              # the extra attributes are filtered by e.g. the CARACal logger
+                              extra=dict(stimela_job_state=(job.name, "complete")))
+
             except (utils.StimelaCabRuntimeError,
                     StimelaRecipeExecutionError,
                     StimelaCabParameterError) as e:
                 self.remaining = [jb[1] for jb in jobs[i+1:]]
                 self.failed = job
 
-                self.log.info(
-                    'Recipe execution failed while running job {}'.format(job.name))
+                self.log.error('Failed job {}'.format(job.name),
+                                # the extra attributes are filtered by e.g. the CARACal logger
+                                extra=dict(stimela_job_state=(job.name, "failed")))
+
                 self.log.info('Completed jobs : {}'.format(
                     [c.name for c in self.completed]))
                 self.log.info('Remaining jobs : {}'.format(

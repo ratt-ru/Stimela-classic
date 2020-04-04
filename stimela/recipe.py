@@ -12,6 +12,7 @@ from stimela.dismissable import dismissable
 from future.utils import raise_
 from stimela.main import get_cabs
 from stimela.cargo.cab import StimelaCabParameterError
+from datetime import datetime
 
 version = stimela.__version__
 USER = os.environ["USER"]
@@ -1041,8 +1042,12 @@ class Recipe(object):
 
         jobs = [(step, self.jobs[step-1]) for step in steps]
 
+        # TIMESTR = "%Y-%m-%d %H:%M:%S"
+        # TIMESTR = "%H:%M:%S"
+
         for i, (step, job) in enumerate(jobs):
-            self.log.info('Running job {}'.format(job.name),
+            start_time = datetime.now()
+            job.log.info('job {} started at {}'.format(job.name, start_time),
                           # the extra attributes are filtered by e.g. the CARACal logger
                           extra=dict(stimela_job_state=(job.name, "running")))
 
@@ -1066,7 +1071,8 @@ class Recipe(object):
                 self.log2recipe(job, recipe, step, 'completed')
                 self.completed.append(job)
 
-                self.log.info('Completed job {}'.format(job.name),
+                finished_time = datetime.now()
+                job.log.info('job {} complete at {} after {}'.format(job.name, finished_time, finished_time-start_time),
                               # the extra attributes are filtered by e.g. the CARACal logger
                               extra=dict(stimela_job_state=(job.name, "complete")))
 
@@ -1076,8 +1082,8 @@ class Recipe(object):
                 self.remaining = [jb[1] for jb in jobs[i+1:]]
                 self.failed = job
 
-                self.log.error('Failed job {}'.format(job.name),
-                                # the extra attributes are filtered by e.g. the CARACal logger
+                finished_time = datetime.now()
+                job.log.error('job {} failed at {} after {}'.format(job.name, finished_time, finished_time-start_time),
                                 extra=dict(stimela_job_state=(job.name, "failed")))
 
                 self.log.info('Completed jobs : {}'.format(

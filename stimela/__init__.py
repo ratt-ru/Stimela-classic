@@ -67,8 +67,7 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
         _logger.setLevel(logging.INFO)
         _logger.propagate = propagate
 
-        global log_console_handler, log_formatter, \
-               log_boring_formatter, log_colourful_formatter
+        global log_console_handler, log_formatter, log_boring_formatter, log_colourful_formatter
 
         # this function checks if the log record corresponds to stdout/stderr output from a cab
         def _is_from_subprocess(rec):

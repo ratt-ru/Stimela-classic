@@ -113,6 +113,9 @@ class StimelaJob(object):
         else:
             self.log = StimelaJob.logs_avail[log_name]
 
+        # the extra attributes are filtered by e.g. the CARACal logger
+        self.log.info("starting job {}".format(self.name), extra=dict(stimela_job_state=(self.name, "starting")))
+
     def run_python_job(self):
         function = self.job['function']
         options = self.job['parameters']

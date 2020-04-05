@@ -196,27 +196,37 @@ class MultiplexingHandler(logging.Handler):
         self.err_handler.setFormatter(fmt)
         self.info_handler.setFormatter(fmt)
 
-class Colors():
+class ConsoleColors():
     WARNING = '\033[93m' if sys.stdin.isatty() else ''
     ERROR   = '\033[91m' if sys.stdin.isatty() else ''
     BOLD    = '\033[1m'  if sys.stdin.isatty() else ''
+    DIM     = '\033[2m'  if sys.stdin.isatty() else ''
     GREEN   = '\033[92m' if sys.stdin.isatty() else ''
     ENDC    = '\033[0m'  if sys.stdin.isatty() else ''
 
+    BEGIN = "<COLORIZE>"
+    END   = "</COLORIZE>"
+
+    @staticmethod
+    def colorize(msg, *styles):
+        style = "".join(styles)
+        return msg.replace(ConsoleColors.BEGIN, style).replace(ConsoleColors.END, ConsoleColors.ENDC if style else "")
+
 class ColorizingFormatter(logging.Formatter):
     """This Formatter inserts color codes into the string according to severity"""
+    def __init__(self, fmt=None, datefmt=None, style="%", default_color=None):
+        super(ColorizingFormatter, self).__init__(fmt, datefmt, style)
+        self._default_color = default_color or ""
 
     def format(self, record):
-        style = Colors.BOLD if hasattr(record, 'boldface') else ''
+        style = ConsoleColors.BOLD if hasattr(record, 'boldface') else ""
         if hasattr(record, 'color'):
-            style += getattr(Colors, record.color or "None", "")
+            style += getattr(ConsoleColors, record.color or "None", "")
         elif record.levelno >= logging.ERROR:
-            style += Colors.ERROR
+            style += ConsoleColors.ERROR
         elif record.levelno >= logging.WARNING:
-            style += Colors.WARNING
-        endstyle = Colors.ENDC if style else ""
-        msg = super(ColorizingFormatter, self).format(record)
-        return msg.replace("<:<:", style).replace(":>:>", endstyle)
+            style += ConsoleColors.WARNING
+        return ConsoleColors.colorize(super(ColorizingFormatter, self).format(record), style or self._default_color)
 
 
 class SelectiveFormatter(logging.Formatter):

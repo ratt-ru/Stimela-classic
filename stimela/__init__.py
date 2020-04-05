@@ -53,12 +53,13 @@ _logger = None
 
 log_console_handler = log_formatter = log_boring_formatter = log_colourful_formatter = None
 
-from .utils.logger import SelectiveFormatter, ColorizingFormatter, MultiplexingHandler
+from .utils.logger import SelectiveFormatter, ColorizingFormatter, ConsoleColors, MultiplexingHandler
 
 def logger(name="STIMELA", propagate=False, console=True, boring=False,
            fmt="{asctime} {name} {levelname}: {message}",
-           col_fmt="{asctime} {name} <:<:{levelname}: {message}:>:>",
+           col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
            sub_fmt="{message}",
+           col_sub_fmt="%s{message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
            datefmt="%Y-%m-%d %H:%M:%S"):
     """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
     global _logger
@@ -74,12 +75,13 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
             return hasattr(rec, 'stimela_subprocess_output')
 
         log_boring_formatter = SelectiveFormatter(
-                                    logging.Formatter(fmt, datefmt, style="{"),
-                                    [(_is_from_subprocess, logging.Formatter(sub_fmt, datefmt, style="{"))])
+                    logging.Formatter(fmt, datefmt, style="{"),
+                    [(_is_from_subprocess, logging.Formatter(sub_fmt, datefmt, style="{"))])
 
         log_colourful_formatter = SelectiveFormatter(
-                                        ColorizingFormatter(col_fmt, datefmt, style="{"),
-                                        [(_is_from_subprocess, ColorizingFormatter(sub_fmt, datefmt, style="{"))])
+                    ColorizingFormatter(col_fmt, datefmt, style="{"),
+                    [(_is_from_subprocess, ColorizingFormatter(fmt=col_sub_fmt, datefmt=datefmt, style="{",
+                                                               default_color=ConsoleColors.DIM))])
 
         log_formatter = log_boring_formatter if boring else log_colourful_formatter
 

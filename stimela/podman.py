@@ -132,7 +132,7 @@ class Container(object):
                                             "-w %s" % (self.WORKDIR) if self.WORKDIR else "",
                                             "--name", self.name, "--shm-size", self.shared_memory,
                                             self.image,
-                                            self.COMMAND or ""])
+                                            self.COMMAND or ""], log=self.logger)
 
         self.status = "created"
 

@@ -119,7 +119,7 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
                 line = _remove_ctrls(line)
                 # the extra attributes are filtered by e.g. the CARACal logger
                 if fobj is proc.stderr:
-                    log.error(line, extra=dict(stimela_subprocess_output=(command_name, "stderr")))
+                    log.warning(line, extra=dict(stimela_subprocess_output=(command_name, "stderr")))
                 else:
                     log.info(line, extra=dict(stimela_subprocess_output=(command_name, "stdout")))
             if timeout > 0 and time.time() > start_time + timeout:

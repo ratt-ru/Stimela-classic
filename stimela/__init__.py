@@ -58,8 +58,8 @@ from .utils.logger import SelectiveFormatter, ColorizingFormatter, ConsoleColors
 def logger(name="STIMELA", propagate=False, console=True, boring=False,
            fmt="{asctime} {name} {levelname}: {message}",
            col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
-           sub_fmt="{message}",
-           col_sub_fmt="%s{message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
+           sub_fmt="## {message}",
+           col_sub_fmt="%s## {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
            datefmt="%Y-%m-%d %H:%M:%S"):
     """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
     global _logger

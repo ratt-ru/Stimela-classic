@@ -13,6 +13,7 @@ from future.utils import raise_
 from stimela.main import get_cabs
 from stimela.cargo.cab import StimelaCabParameterError
 from datetime import datetime
+import traceback
 
 version = stimela.__version__
 USER = os.environ["USER"]
@@ -641,8 +642,7 @@ class StimelaJob(object):
             cabpath = cabs_logger['{0:s}_{1:s}'.format(
                 build_label, image)]['DIR']
         except KeyError:
-            raise StimelaCabParameterError(
-                'Cab {} is umknown to stimela. Was it built?'.format(image))
+            raise StimelaCabParameterError('Cab {} is unknown to stimela. Was it built?'.format(image)) from None
         parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image),
@@ -1047,7 +1047,7 @@ class Recipe(object):
 
         for i, (step, job) in enumerate(jobs):
             start_time = datetime.now()
-            job.log.info('job {} started at {}'.format(job.name, start_time),
+            job.log.info('job started at {}'.format(start_time),
                           # the extra attributes are filtered by e.g. the CARACal logger
                           extra=dict(stimela_job_state=(job.name, "running")))
 
@@ -1072,7 +1072,7 @@ class Recipe(object):
                 self.completed.append(job)
 
                 finished_time = datetime.now()
-                job.log.info('job {} complete at {} after {}'.format(job.name, finished_time, finished_time-start_time),
+                job.log.info('job complete at {} after {}'.format(finished_time, finished_time-start_time),
                               # the extra attributes are filtered by e.g. the CARACal logger
                               extra=dict(stimela_job_state=(job.name, "complete")))
 
@@ -1083,8 +1083,11 @@ class Recipe(object):
                 self.failed = job
 
                 finished_time = datetime.now()
-                job.log.error('job {} failed at {} after {}'.format(job.name, finished_time, finished_time-start_time),
-                                extra=dict(stimela_job_state=(job.name, "failed")))
+                job.log.error(str(e), extra=dict(stimela_job_state=(job.name, "failed"), boldface=True))
+                job.log.error('job failed at {} after {}'.format(job.name, finished_time, finished_time-start_time),
+                                extra=dict(stimela_job_state=(job.name, "failed"), color=None))
+                for line in traceback.format_exc().splitlines():
+                    job.log.error(line, extra=dict(traceback_report=True))
 
                 self.log.info('Completed jobs : {}'.format(
                     [c.name for c in self.completed]))
@@ -1101,8 +1104,9 @@ class Recipe(object):
                     'Saving pipeline information in {}'.format(self.resume_file))
                 utils.writeJson(self.resume_file, recipe)
 
-                pe = PipelineException(e, self.completed, job, self.remaining)
-                raise_(pe, None, sys.exc_info()[2])
+                # raise pipeline exception. Original exception context is discarded by "from None" (since we've already
+                # logged it above, we don't need to include it with the new exception)
+                raise PipelineException(e, self.completed, job, self.remaining) from None
             # except:
             #     import traceback
             #     traceback.print_exc()

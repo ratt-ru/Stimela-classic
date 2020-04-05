@@ -207,13 +207,13 @@ class ColorizingFormatter(logging.Formatter):
     """This Formatter inserts color codes into the string according to severity"""
 
     def format(self, record):
-        style = ""
+        style = Colors.BOLD if hasattr(record, 'boldface') else ''
         if hasattr(record, 'color'):
-            style = getattr(Colors, record.color, "")
+            style += getattr(Colors, record.color or "None", "")
         elif record.levelno >= logging.ERROR:
-            style = Colors.ERROR
+            style += Colors.ERROR
         elif record.levelno >= logging.WARNING:
-            style = Colors.WARNING
+            style += Colors.WARNING
         endstyle = Colors.ENDC if style else ""
         msg = super(ColorizingFormatter, self).format(record)
         return msg.replace("<:<:", style).replace(":>:>", endstyle)

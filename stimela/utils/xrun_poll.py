@@ -1,6 +1,7 @@
 import select, traceback, subprocess, errno, re, time
 
-DEBUG = 1
+DEBUG = 0
+from . import StimelaCabRuntimeError
 
 class Poller(object):
     """Poller class. Poor man's select.poll(). Damn you OS/X and your select.poll will-you-won'y-you bollocks"""
@@ -128,22 +129,26 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
 
         proc.wait()
         status = proc.returncode
-        log.warning("{} has exited with code {}".format(command, status))
 
     except SystemExit as exc:
         log.error("{} has exited with code {}".format(command, exc.code))
         proc.wait()
         status = exc.code
+        raise StimelaCabRuntimeError('{}: SystemExit with code {}'.format(command_name, status))
 
     except KeyboardInterrupt:
         log.error("Ctrl+C caught")
         proc.wait()
-        status = 1
+        raise StimelaCabRuntimeError('{} interrupted with Ctrl+C'.format(command_name))
 
     except Exception as exc:
         traceback.print_exc()
         log.error("Exception caught: {}".format(str(exc)))
         proc.wait()
-        status = 1
+        raise StimelaCabRuntimeError("{} throws exception '{}'".format(command_name, str(exc)))
 
+    if status:
+        raise StimelaCabRuntimeError("{} returns error code {}".format(command_name, status))
+    
     return status
+    

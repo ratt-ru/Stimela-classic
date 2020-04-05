@@ -1084,7 +1084,7 @@ class Recipe(object):
 
                 finished_time = datetime.now()
                 job.log.error(str(e), extra=dict(stimela_job_state=(job.name, "failed"), boldface=True))
-                job.log.error('job failed at {} after {}'.format(job.name, finished_time, finished_time-start_time),
+                job.log.error('job failed at {} after {}'.format(finished_time, finished_time-start_time),
                                 extra=dict(stimela_job_state=(job.name, "failed"), color=None))
                 for line in traceback.format_exc().splitlines():
                     job.log.error(line, extra=dict(traceback_report=True))

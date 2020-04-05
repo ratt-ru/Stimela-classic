@@ -642,7 +642,7 @@ class StimelaJob(object):
                 build_label, image)]['DIR']
         except KeyError:
             raise StimelaCabParameterError(
-                'Cab {} is uknown to stimela. Was it built?'.format(image))
+                'Cab {} is umknown to stimela. Was it built?'.format(image))
         parameter_file = cabpath+'/parameters.json'
 
         name = '{0}-{1}{2}'.format(self.name, id(image),

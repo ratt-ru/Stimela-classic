@@ -126,21 +126,24 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
                 kill_callback() if callable(kill_callback) else proc.kill()
                 proc_running = False
 
+        proc.wait()
         status = proc.returncode
+        log.warning("{} has exited with code {}".format(command, status))
 
     except SystemExit as exc:
         log.error("{} has exited with code {}".format(command, exc.code))
+        proc.wait()
         status = exc.code
 
     except KeyboardInterrupt:
         log.error("Ctrl+C caught")
+        proc.wait()
         status = 1
 
     except Exception as exc:
         traceback.print_exc()
         log.error("Exception caught: {}".format(str(exc)))
+        proc.wait()
         status = 1
-
-    proc.wait()
 
     return status

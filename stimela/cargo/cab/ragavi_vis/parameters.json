@@ -1,11 +1,11 @@
 {
     "task": "ragavi",
-    "base": "stimela/ragavi_vis",
-    "tag": "1.2.6",
+    "base": "stimela/ragavi",
+    "tag": "dev",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-vis",
-    "msdir": false,
+    "msdir": true,
     "parameters": [
         {
             "info": "MS to plot.",
@@ -171,8 +171,7 @@
             "info": "Plot only unflagged data. Defaults to true.",
             "dtype": "bool",
             "required": false,
-            "name": "no-flagged",
-            "default": true
+            "name": "no-flagged"
         },
         {
             "info": "Number of CPU cores to be used by Dask. Defaults to half the CPU cores available.",

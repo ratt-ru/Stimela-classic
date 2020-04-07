@@ -7,6 +7,7 @@ import stimela
 from stimela import docker, singularity, udocker, podman, utils
 from stimela.utils import logger
 from stimela.cargo import cab
+import re
 
 BASE = stimela.BASE
 CAB = stimela.CAB
@@ -16,6 +17,7 @@ GID = stimela.GID
 LOG_HOME = stimela.LOG_HOME
 LOG_FILE = stimela.LOG_FILE
 GLOBALS = stimela.GLOBALS
+CAB_USERNAME = re.sub('[^0-9a-zA-Z]+', '_', USER).lower()
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):
@@ -49,7 +51,7 @@ def build(argv):
     parser.add_argument("-nc", "--no-cache", action="store_true",
                         help="Do not use cache when building the image")
 
-    parser.add_argument("-bl", "--build-label", default=USER.lower(),
+    parser.add_argument("-bl", "--build-label", default=CAB_USERNAME,
                         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -232,7 +234,7 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-bl", "--build-label", default=USER.lower(),
+    add("-bl", "--build-label", default=CAB_USERNAME,
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -490,7 +492,7 @@ def clean(argv):
     add("-aC", "--all-containers", action="store_true",
         help="Stop and/or Remove all stimela containers")
 
-    add("-bl", "--build-label", default=USER.lower(),
+    add("-bl", "--build-label", default=CAB_USERNAME,
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)

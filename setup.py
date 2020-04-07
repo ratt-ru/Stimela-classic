@@ -9,15 +9,11 @@ import glob
 requirements = ["pyyaml",
                 "nose>=1.3.7",
                 "future",
+                "udocker",
                 ],
 
-if sys.version_info <= (3, 0):
-    requirements += [
-        "udocker",
-    ],
-
 PACKAGE_NAME = "stimela"
-__version__ = "1.2.6"
+__version__ = "1.3.1"
 
 setup(name=PACKAGE_NAME,
       version=__version__,
@@ -25,7 +21,7 @@ setup(name=PACKAGE_NAME,
       author="Sphesihle Makhathini",
       author_email="sphemakh@gmail.com",
       url="https://github.com/sphemakh/Stimela",
-      packages=["stimela", "stimela_misc", "stimela/cargo",
+      packages=["stimela", "stimela/cargo",
                 "stimela/utils", "stimela/cargo/cab",
                 "stimela/cargo/base"],
       package_data={"stimela/cargo": [

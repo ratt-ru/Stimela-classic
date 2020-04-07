@@ -88,7 +88,7 @@ class Container(object):
                 else "singularity instance start",
                    list(args) + [volumes,
                                  "-c",
-                                 self.image, self.name], logger=self.logger)
+                                 self.image, self.name])
 
         self.status = "created"
 

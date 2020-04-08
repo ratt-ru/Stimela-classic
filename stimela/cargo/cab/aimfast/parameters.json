@@ -164,7 +164,7 @@
             "dtype": "str"
         },
         {
-            "info": "Factor to multiply the field of view for rando points. i.e. 0.0-1.0'",
+            "info": "Factor to multiply the field of view for random points. i.e. 0.0-1.0'",
             "default": null,
             "required": false,
             "name": "fov-factor",

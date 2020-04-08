@@ -8,11 +8,22 @@ import time
 import datetime
 import tempfile
 import hashlib
+from shutil import which
 
+
+binary = which("singularity")
+if binary:
+    __version_string = subprocess.check_output([binary, "--version"]).decode("utf8")
+    version = __version_string.strip().split()[-1]
+    if version < "3.0.0":
+        suffix = ".img"
+    else:
+        suffix = ".sif"
+else:
+    version = None
 
 class SingularityError(Exception):
     pass
-
 
 def pull(image, store_path, docker=True, directory=".", force=False):
     """ 
@@ -50,15 +61,11 @@ class Container(object):
         self.PID = os.getpid()
         self.uptime = "00:00:00"
         self.time_out = time_out
-        #self.cont_logger = utils.logger.StimelaLogger(log_container or stimela.LOG_FILE)
 
-        version_string = subprocess.check_output("singularity --version".split()).decode("utf8")
-        self.singularity_version = version_string.strip().split()[-1]
         hashname = hashlib.md5(name.encode('utf-8')).hexdigest()[:3]
-        self.name = hashname if self.singularity_version < "3.0.0" else name
+        self.name = hashname if version < "3.0.0" else name
 
     def add_volume(self, host, container, perm="rw", noverify=False):
-
         if os.path.exists(host) or noverify:
             if self.logger:
                 self.logger.debug("Mounting volume [{0}] in container [{1}] at [{2}]".format(
@@ -72,28 +79,6 @@ class Container(object):
 
         return 0
 
-    def start(self, *args):
-        """
-        Create a singularity container instance
-        """
-
-        if self.volumes:
-            volumes = " --bind " + " --bind ".join(self.volumes)
-        else:
-            volumes = ""
-
-        self._print("Instantiating container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
-            self.name, self.time_out))
-        utils.xrun("singularity instance.start" if self.singularity_version < "3.0.0" \
-                else "singularity instance start",
-                   list(args) + [volumes,
-                                 "-c",
-                                 self.image, self.name])
-
-        self.status = "created"
-
-        return 0
-
     def run(self, *args):
         """
         Run a singularity container instance
@@ -104,31 +89,17 @@ class Container(object):
         else:
             volumes = ""
 
-        self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
-            self.name, self.time_out))
-        utils.xrun("singularity run", ["instance://{0:s} {1:s}".format(self.name, self.RUNSCRIPT)],
-                   logfile=self.logfile,
-                   log=self.logger,
-                   timeout=self.time_out, kill_callback=self.stop)
+        if not os.path.exists(self.image):
+            self.logger.error(f"The image, {self.image}, required to run this cab does not exist."\
+                    " Please run 'stimela pull --help' for help on how to download the image")
+            raise SystemExit from None
 
         self.status = "running"
-
-        return 0
-
-    def stop(self, *args):
-        """
-        Stop a singularity container instance
-        """
-
-        if self.volumes:
-            volumes = " --bind " + " --bind ".join(self.volumes)
-        else:
-            volumes = ""
-
-        self._print(
-            "Stopping container [{}]. The container ID is printed below.".format(self.name))
-        utils.xrun("singularity", ["instance{1:s} {0:s}".format(self.name, 
-            ".stop" if self.singularity_version < "3.0.0" else " stop")])
+        self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
+            self.name, self.time_out))
+        utils.xrun("singularity", ["run"] + list(args) + [volumes, self.image, self.RUNSCRIPT],
+                   log=self.logger, timeout=self.time_out, 
+                   logfile=self.logfile)
 
         self.status = "exited"
 

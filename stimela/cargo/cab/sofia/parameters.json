@@ -888,6 +888,6 @@
             "dtype": "bool", 
             "default": false, 
             "name": "scaleNoise.perSCkernel"
-        }, 
+        }
     ]
 }

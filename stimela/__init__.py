@@ -2,6 +2,7 @@ import os
 import sys
 import inspect
 import pkg_resources
+import logging
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -46,5 +47,51 @@ for item in os.listdir(CAB_PATH):
         continue
     if dockerfile and paramfile and srcdir:
         CAB.append(item)
+
+
+_logger = None
+
+log_console_handler = log_formatter = log_boring_formatter = log_colourful_formatter = None
+
+from .utils.logger import SelectiveFormatter, ColorizingFormatter, ConsoleColors, MultiplexingHandler
+
+def logger(name="STIMELA", propagate=False, console=True, boring=False,
+           fmt="{asctime} {name} {levelname}: {message}",
+           col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
+           sub_fmt="## {message}",
+           col_sub_fmt="%s## {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
+           datefmt="%Y-%m-%d %H:%M:%S"):
+    """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
+    global _logger
+    if _logger is None:
+        _logger = logging.getLogger(name)
+        _logger.setLevel(logging.INFO)
+        _logger.propagate = propagate
+
+        global log_console_handler, log_formatter, log_boring_formatter, log_colourful_formatter
+
+        # this function checks if the log record corresponds to stdout/stderr output from a cab
+        def _is_from_subprocess(rec):
+            return hasattr(rec, 'stimela_subprocess_output')
+
+        log_boring_formatter = SelectiveFormatter(
+                    logging.Formatter(fmt, datefmt, style="{"),
+                    [(_is_from_subprocess, logging.Formatter(sub_fmt, datefmt, style="{"))])
+
+        log_colourful_formatter = SelectiveFormatter(
+                    ColorizingFormatter(col_fmt, datefmt, style="{"),
+                    [(_is_from_subprocess, ColorizingFormatter(fmt=col_sub_fmt, datefmt=datefmt, style="{",
+                                                               default_color=ConsoleColors.DIM))])
+
+        log_formatter = log_boring_formatter if boring else log_colourful_formatter
+
+        if console:
+            log_console_handler = MultiplexingHandler()
+            log_console_handler.setFormatter(log_formatter)
+            log_console_handler.setLevel(logging.DEBUG)
+            _logger.addHandler(log_console_handler)
+
+    return _logger
+
 
 from stimela.recipe import Recipe

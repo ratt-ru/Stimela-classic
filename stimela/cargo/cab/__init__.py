@@ -1,6 +1,6 @@
+import stimela
 from stimela import utils
 import logging
-import sys
 import os
 import textwrap
 from stimela.pathformatter import pathformatter, placeholder
@@ -115,12 +115,10 @@ class CabDefinition(object):
                  binary=None,
                  description=None,
                  tag=None,
-                 prefix=None, loglevel='INFO',
+                 prefix=None,
                  parameters=[],
                  version=None):
 
-        logging.basicConfig(level=getattr(logging, loglevel))
-        self.log = logging
         self.indir = indir
         self.outdir = outdir
 
@@ -165,7 +163,14 @@ class CabDefinition(object):
             self.description = description
             self.msdir = msdir
             self.tag = tag
-            self.version = vesion
+            self.version = version
+
+        #logging.basicConfig(level=getattr(logging, loglevel))
+        self.log = stimela.logger()
+        #     .getChild(task or "cab")
+        # self.log.propagate = True
+        # self.log.setLevel(getattr(logging, loglevel))
+
 
     def __str__(self):
         res = ""
@@ -260,7 +265,6 @@ class CabDefinition(object):
             if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
-
         self.log.info(
             "Validating parameters...       CAB = {0}".format(self.task))
         for name, value in options.items():
@@ -349,7 +353,7 @@ class CabDefinition(object):
                             raise StimelaCabParameterError("Path formatter type specified, but {} is not io".format(param.name))
 
                         self.log.debug(
-                            "Validating paramter {}".format(param.name))
+                            "Validating parameter {}".format(param.name))
                         param.validate(value)
                         param.value = value
             if not found:

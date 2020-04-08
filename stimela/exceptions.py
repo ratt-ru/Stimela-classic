@@ -11,8 +11,7 @@ class PipelineException(Exception):
     """
 
     def __init__(self, exception, completed, failed, remaining):
-        message = ("Exception occurred while running "
-                   "pipeline component '%s': %s" % (failed.label, str(exception)))
+        message = ("Job '%s' failed: %s" % (failed.label, str(exception)))
 
         super(PipelineException, self).__init__(message)
 

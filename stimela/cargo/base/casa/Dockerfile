@@ -1,4 +1,5 @@
 FROM sphemakh/crasa:5.6.1
+RUN docker-apt-install python-casacore
 RUN pip install -U pip 
 RUN pip install -U crasa pyyaml astropy
 ADD xvfb.init.d /etc/init.d 

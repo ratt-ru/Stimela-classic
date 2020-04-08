@@ -332,7 +332,7 @@ def pull(argv):
     if args.image:
         for image in args.image:
             simage = image.replace("/", "_")
-            simage = simage.replace(":", "_") + ".img"
+            simage = simage.replace(":", "_") + singularity.suffix
             if args.singularity:
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
@@ -357,7 +357,7 @@ def pull(argv):
         for image in base:
             if args.singularity:
                 simage = image.replace("/", "_")
-                simage = simage.replace(":", "_") + ".img"
+                simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
             elif args.docker:

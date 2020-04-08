@@ -86,7 +86,7 @@ class StimelaJob(object):
 
         self.cabpath = cabpath
 
-    def setup_job_log(self, log_name=None, loglevel='INFO'):
+    def setup_job_log(self, log_name=None):
         """ set up a log for the job on the host side 
             log_name: preferably unique name for this jobs log
             log_dir: log base directory, None is current directory
@@ -99,7 +99,6 @@ class StimelaJob(object):
             # self.log = logging.getLogger(log_name)
 
             self.log = stimela.logger().getChild(log_name)
-            self.log.setLevel(getattr(logging, loglevel))
 
             if self.logfile is not False:
                 log_dir = os.path.dirname(self.logfile) or "."
@@ -148,8 +147,8 @@ class StimelaJob(object):
             self.job._cab.update(self.job.config,
                                  self.job.parameter_file_name)
 
-        self.created = False
-        self.job.start()
+        #self.created = False
+        #self.job.start()
         self.created = True
         self.job.run()
         return 0
@@ -452,8 +451,8 @@ class StimelaJob(object):
             'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(output, od))
 
         simage = _cab.base.replace("/", "_")
-        cont.image = '{0:s}/{1:s}_{2:s}.img'.format(
-            singularity_image_dir, simage, _cab.tag)
+        cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(
+            singularity_image_dir, simage, _cab.tag, singularity.suffix)
         # Added and ready for execution
         self.job = cont
 
@@ -750,7 +749,7 @@ class Recipe(object):
                  singularity_image_dir=None, JOB_TYPE='docker',
                  cabpath=None,
                  logger=None,
-                 loglevel='INFO', log_dir=None, logfile=None, logfile_task=None):
+                 log_dir=None, logfile=None, logfile_task=None):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -782,8 +781,6 @@ class Recipe(object):
             self.log = logger
         else:
             self.log = stimela.logger().getChild(name)
-            self.log.setLevel(getattr(logging, loglevel))
-
             self.log.propagate = True # propagate to main stimela logger
 
             # logfile is False: no logfile at recipe level
@@ -1107,15 +1104,6 @@ class Recipe(object):
                 # raise pipeline exception. Original exception context is discarded by "from None" (since we've already
                 # logged it above, we don't need to include it with the new exception)
                 raise PipelineException(e, self.completed, job, self.remaining) from None
-            # except:
-            #     import traceback
-            #     traceback.print_exc()
-            #     raise RuntimeError(
-            #         "An unhandled exception has occured. This is a bug, please report")
-
-            finally:
-                if job.jtype == 'singularity' and job.created:
-                    job.job.stop()
 
         self.log.info(
             'Saving pipeline information in {}'.format(self.resume_file))

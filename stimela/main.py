@@ -7,7 +7,6 @@ import stimela
 from stimela import docker, singularity, udocker, podman, utils
 from stimela.utils import logger
 from stimela.cargo import cab
-import re
 
 BASE = stimela.BASE
 CAB = stimela.CAB
@@ -17,7 +16,7 @@ GID = stimela.GID
 LOG_HOME = stimela.LOG_HOME
 LOG_FILE = stimela.LOG_FILE
 GLOBALS = stimela.GLOBALS
-CAB_USERNAME = re.sub('[^0-9a-zA-Z]+', '_', USER).lower()
+CAB_USERNAME = stimela.CAB_USERNAME
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):

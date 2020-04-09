@@ -33,6 +33,7 @@ mkdir $SINGULARITY_PULLFOLDER
 #########################################################################
 # PYTHON 3 TEST
 #########################################################################
+rm -rf ~/.stimela
 OLDPATH=$PATH
 OLDLDPATH=$LD_LIBRARY_PATH
 

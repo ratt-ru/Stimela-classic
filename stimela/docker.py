@@ -67,6 +67,7 @@ class Container(object):
                  label="", logger=None,
                  shared_memory="1gb",
                  time_out=-1,
+                 workdir=None,
                  log_container=None):
         """
         Python wrapper to docker engine tools for managing containers.
@@ -79,7 +80,7 @@ class Container(object):
         self.environs = environs or []
         self.logger = logger
         self.status = None
-        self.WORKDIR = None
+        self.WORKDIR = workdir
         self.COMMAND = None
         self.shared_memory = shared_memory
         self.PID = os.getpid()
@@ -121,7 +122,7 @@ class Container(object):
         self._print(
             "Instantiating container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("docker create", list(args) + [volumes, environs, "--rm",
-                                                  "-w %s" % (self.WORKDIR) if self.WORKDIR else "",
+                                                  "-w %s" % (self.WORKDIR),
                                                   "--name", self.name, "--shm-size", self.shared_memory,
                                                   self.image,
                                                   self.COMMAND or ""], log=self.logger)

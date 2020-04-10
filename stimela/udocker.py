@@ -33,7 +33,8 @@ class Container(object):
                  time_out=-1,
                  log_container=None,
                  COMMAND="",
-                 use_graphics=False):
+                 use_graphics=False, 
+                 workdir=None):
         """
         Python wrapper to docker engine tools for managing containers.
         """
@@ -45,7 +46,7 @@ class Container(object):
         self.environs = environs or []
         self.logger = logger
         self.status = None
-        self.WORKDIR = None
+        self.WORKDIR = workdir
         self.COMMAND = COMMAND
         self.PID = os.getpid()
         self.uptime = "00:00:00"

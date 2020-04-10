@@ -17,7 +17,7 @@ import traceback
 
 version = stimela.__version__
 USER = os.environ["USER"]
-HOME = os.environ["HOME"]
+WORKDIR = os.path.abspath(".")
 UID = os.getuid()
 GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
@@ -26,28 +26,28 @@ BIN = os.path.abspath(os.path.dirname(sys.executable))
 
 CONT_IO = {
     "docker": {
-        "input": "/input",
-        "output": f"{HOME}/output"
-        "msfile": f"{HOME}/msdir"
-        "tmp": f"{HOME}/output/tmp"
+        "input": f"{WORKDIR}/input",
+        "output": f"{WORKDIR}/output",
+        "msfile": f"{WORKDIR}/msdir",
+        "tmp": f"{WORKDIR}/output/tmp",
     },
     "podman": {
-        "input": "/input",
-        "output": f"{HOME}/output"
-        "msfile": f"{HOME}/msdir"
-        "tmp": f"{HOME}/output/tmp"
+        "input": f"{WORKDIR}/input",
+        "output": f"{WORKDIR}/output",
+        "msfile": f"{WORKDIR}/msdir",
+        "tmp": f"{WORKDIR}/output/tmp",
     },
     "udocker": {
-        "input": "/scratch/input",
-        "output": "/scratch/output",
-        "msfile": "/scratch/msdir",
-        "tmp": "/scratch/output/tmp"
+        "input": f"{WORKDIR}/input",
+        "output": f"{WORKDIR}/output",
+        "msfile": f"{WORKDIR}/msdir",
+        "tmp": f"{WORKDIR}/output/tmp",
     },
     "singularity": {
-        "input": "/scratch/input",
-        "output": "/scratch/output",
-        "msfile": "/scratch/msdir",
-        "tmp": "/scratch/output/tmp"
+        "input": f"{WORKDIR}/input",
+        "output": f"{WORKDIR}/output",
+        "msfile": f"{WORKDIR}/msdir",
+        "tmp": f"{WORKDIR}/output/tmp",
     },
 }
 
@@ -236,7 +236,9 @@ class StimelaJob(object):
         cab.IODEST = CONT_IO["podman"]
         self.setup_job_log()
         cont = podman.Container(image, name,
-                                logger=self.log, time_out=self.time_out)
+                                logger=self.log, 
+                                time_out=self.time_out, 
+                                workdir=WORKDIR)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -307,8 +309,6 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
 
         cont.logfile = self.logfile
-        # cont.add_environ("LOGFILE", "/scratch/logfile")
-        #cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
         cont.add_environ("OUTPUT", od)
 
@@ -440,7 +440,6 @@ class StimelaJob(object):
         od = cab.IODEST["output"]
 
         cont.logfile = self.logfile
-        #cont.add_volume(cont.logfile, "/scratch/logfile", "rw")
         cont.add_volume(output, od, "rw")
 
         # temp files go into output
@@ -508,7 +507,9 @@ class StimelaJob(object):
 
         self.setup_job_log()
         cont = udocker.Container(image, name,
-                                 logger=self.log, time_out=self.time_out)
+                                 logger=self.log, 
+                                 time_out=self.time_out, 
+                                 workdir=WORKDIR)
 
         cont.add_volume(os.path.join(BIN, "stimela_docker_run"), 
                 "/udocker_run")
@@ -580,8 +581,7 @@ class StimelaJob(object):
 
         cont.logfile = self.logfile
         cont.add_environ("LOGFILE", "/scratch/logfile")
-        #cont.add_volume(cont.logfile, "/scratch/logfile")
-        cont.add_volume(output, od)
+        cont.add_volume(output, od, "rw")
         cont.add_environ("OUTPUT", od)
 
         # temp files go into output
@@ -656,7 +656,8 @@ class StimelaJob(object):
                                 label=self.label, logger=self.log,
                                 shared_memory=shared_memory,
                                 log_container=stimela.LOG_FILE,
-                                time_out=self.time_out)
+                                time_out=self.time_out,
+                                workdir=WORKDIR)
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -689,7 +690,7 @@ class StimelaJob(object):
 
         if msdir:
             md = cab.IODEST["msfile"]
-            cont.add_volume(msdir, md)
+            cont.add_volume(msdir, md, "rw")
             cont.add_environ('MSDIR', md)
             # Keep a record of the content of the
             # volume
@@ -722,9 +723,8 @@ class StimelaJob(object):
             os.mkdir(output)
 
         od = cab.IODEST["output"]
-        cont.add_environ('HOME', od)
+        cont.add_volume(output, od, "rw")
         cont.add_environ('OUTPUT', od)
-        cont.add_volume(output, od)
 
         # temp files go into output
         tmpfol = os.path.join(output, "tmp")
@@ -964,7 +964,8 @@ class Recipe(object):
                         step['cab'], step['name']))
                     cont = docker.Container(step['cab'], step['name'],
                                             label=step['label'], logger=self.log,
-                                            shared_memory=step['shared_memory'])
+                                            shared_memory=step['shared_memory'],
+                                            workdir=WORKDIR)
 
                     self.log.debug('Adding volumes {0} and environmental variables {1}'.format(
                         step['volumes'], step['environs']))

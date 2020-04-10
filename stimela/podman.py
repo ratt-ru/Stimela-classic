@@ -67,7 +67,8 @@ class Container(object):
                  label="", logger=None,
                  shared_memory="1gb",
                  time_out=-1,
-                 log_container=None):
+                 log_container=None, 
+                 workdir=None):
         """
         Python wrapper to podman engine tools for managing containers.
         """
@@ -79,7 +80,7 @@ class Container(object):
         self.environs = environs or []
         self.logger = logger
         self.status = None
-        self.WORKDIR = None
+        self.WORKDIR = workdir
         self.COMMAND = None
         self.shared_memory = shared_memory
         self.PID = os.getpid()

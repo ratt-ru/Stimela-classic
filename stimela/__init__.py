@@ -3,6 +3,7 @@ import sys
 import inspect
 import pkg_resources
 import logging
+import re
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -13,6 +14,7 @@ except pkg_resources.DistributionNotFound:
 USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
+CAB_USERNAME = re.sub('[^0-9a-zA-Z]+', '_', USER).lower() 
 
 root = os.path.dirname(__file__)
 

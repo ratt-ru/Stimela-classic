@@ -23,6 +23,7 @@ GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 BIN = os.path.abspath(os.path.dirname(sys.executable))
 
+
 CONT_IO = {
     "docker": {
         "input": "/input",
@@ -819,7 +820,7 @@ class Recipe(object):
 
         self.stimela_path = os.path.dirname(docker.__file__)
 
-        self.build_label = build_label or USER
+        self.build_label = build_label or stimela.CAB_USERNAME
         self.ms_dir = ms_dir
         if not os.path.exists(self.ms_dir):
             self.log.info(

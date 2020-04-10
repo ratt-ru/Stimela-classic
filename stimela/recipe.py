@@ -17,6 +17,7 @@ import traceback
 
 version = stimela.__version__
 USER = os.environ["USER"]
+HOME = os.environ["HOME"]
 UID = os.getuid()
 GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
@@ -25,15 +26,15 @@ BIN = os.path.abspath(os.path.dirname(sys.executable))
 CONT_IO = {
     "docker": {
         "input": "/input",
-        "output": "/home/{0:s}/output".format(USER),
-        "msfile": "/home/{0:s}/msdir".format(USER),
-        "tmp": "/home/{0:s}/output/tmp".format(USER)
+        "output": f"{HOME}/output"
+        "msfile": f"{HOME}/msdir"
+        "tmp": f"{HOME}/output/tmp"
     },
     "podman": {
         "input": "/input",
-        "output": "/home/{0:s}/output".format(USER),
-        "msfile": "/home/{0:s}/msdir".format(USER),
-        "tmp": "/home/{0:s}/output/tmp".format(USER)
+        "output": f"{HOME}/output"
+        "msfile": f"{HOME}/msdir"
+        "tmp": f"{HOME}/output/tmp"
     },
     "udocker": {
         "input": "/scratch/input",

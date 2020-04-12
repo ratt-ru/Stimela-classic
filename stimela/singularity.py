@@ -79,6 +79,17 @@ class Container(object):
 
         return 0
 
+    def add_environ(self, key, value):
+        self.logger.debug("Adding environ varaible [{0}={1}] "\
+                    "in container {2}".format(key, value, self.name))
+        self.environs.append("=".join([key, value]))
+        key_ = f"SINGULARITYENV_{key}"
+	
+        self.logger.debug(f"Setting singularity environmental variable {key_}={value} on host")
+        os.environ[key_] = value
+
+        return 0
+
     def run(self, *args):
         """
         Run a singularity container instance

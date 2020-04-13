@@ -1,7 +1,8 @@
 {
     "task": "fitstool", 
-    "base": "stimela/meqtrees", 
-    "tag": "1.2.0", 
+    "base": "stimela/owlcat", 
+    "tag": "1.2.5-1",
+    "version" : "1.6.0",
     "description": "Convinience tools for manipulating FITS images", 
     "prefix": "--", 
     "binary": "fitstool.py", 
@@ -13,7 +14,7 @@
             "io": "input", 
             "default": null, 
             "dtype": "list:file", 
-            "required": true
+            "required": false
         }, 
         {
             "info": "Output image", 
@@ -163,6 +164,14 @@
             "dtype": "bool", 
             "default": false, 
             "name": "stats"
+        },
+        {
+            "info": "Speicfy input images via a pattern string, e.g, prefix*June2016.fits",
+            "name" : "file_pattern",
+            "dtype": "file",
+            "io": "input",
+            "check_io": false,
+            "default": null
         }
     ]
 }

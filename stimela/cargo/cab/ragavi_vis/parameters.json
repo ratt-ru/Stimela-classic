@@ -1,0 +1,232 @@
+{
+    "task": "ragavi",
+    "base": "stimela/ragavi",
+    "tag": "1.2.6",
+    "description": "Radio Astronomy Gain and Visibility Inspector",
+    "prefix": "--",
+    "binary": "ragavi-vis",
+    "msdir": true,
+    "parameters": [
+        {
+            "info": "MS to plot.",
+            "dtype": "list:file",
+            "required": true,
+            "name": "ms",
+            "default": null,
+            "io": "input"
+        },
+        {
+            "info": "X-axis to plot.",
+            "dtype": "str",
+            "required": true,
+            "name": "xaxis",
+            "default": null,
+            "choices": [
+                "antenna1", 
+                "antenna2", 
+                "baseline",
+                "channel",
+                "corr", 
+                "field", 
+                "frequency",
+                "phase",
+                "real",
+                "scan", 
+                "time",
+                "uvdist",
+                "uvwave"
+                ]
+        },
+        {
+            "info": "Y-axis to plot.",
+            "dtype": "str",
+            "required": true,
+            "name": "yaxis",
+            "default": null,
+            "choices": [
+                "amplitude", 
+                "imaginary", 
+                "phase",
+                "real"
+                ]
+        },
+        {
+            "info": "Set height of the resulting image.",
+            "dtype": "int",
+            "required": false,
+            "name": "canvas-height",
+            "default": 1020
+        },
+        {
+            "info": "Set width of the resulting image.",
+            "dtype": "int",
+            "required": false,
+            "name": "canvas-width",
+            "default": 1280
+        },
+        {
+            "info": "Size of channel bins over which to average.",
+            "dtype": "int",
+            "required": false,
+            "name": "cbin",
+            "default": null
+        },
+        {
+            "info": "Channels to select. Defaults to all.",
+            "dtype": "str",
+            "required": false,
+            "name": "chan",
+            "default": null
+        },
+        {
+            "info": "Chunk sizes to be applied to the dataset. Defaults to 100,000 in the row axis.",
+            "dtype": "str",
+            "required": false,
+            "name": "chunks",
+            "default": null
+        },
+        {
+            "info": "Colour or colour map to use.",
+            "dtype": "str",
+            "required": false,
+            "name": "cmap",
+            "default": "blues"
+        },
+        {
+            "info": "Select column to colourise by.",
+            "dtype": "str",
+            "required": false,
+            "name": "colour-axis",
+            "default": null,
+            "choices": [
+                "antenna1", 
+                "antenna2", 
+                "baseline",
+                "corr", 
+                "field", 
+                "scan", 
+                "spw"
+                ]
+        },
+        {
+            "info": "Correlation index or subset to plot. Can be specified using normal python slicing syntax. Defaults to all.",
+            "dtype": "str",
+            "required": false,
+            "name": "corr",
+            "default": "0:"
+        },
+        {
+            "info": "MS column to use for data.",
+            "dtype": "str",
+            "required": false,
+            "name": "data-column",
+            "default": "DATA"
+        },
+        {
+            "info": "DATA_DESC_ID(s) /spw to select. Can be specified as e.g. 5, 5,6,7, 5~7 (inclusive range), 5:8 (exclusive range), 5:(from 5 to last). Defaults to all",
+            "dtype": "str",
+            "required": false,
+            "name": "ddid",
+            "default": null
+        },
+        {
+            "info": "Field ID(s) / NAME(s) to plot. Can be specified as '0', '0,2,4', '0~3' (inclusive range), '0:3' (exclusive range), '3:' (from 3 to last) or using a field name or comma separated field names. Defaults to all.",
+            "dtype": "str",
+            "required": false,
+            "name": "field",
+            "default": null
+        },
+        {
+            "info": "Output HTML file name",
+            "dtype": "str",
+            "required": false,
+            "name": "htmlname",
+            "default": null,
+            "io": "output"
+        },
+        {
+            "info": "Select column to iterate by.",
+            "dtype": "str",
+            "required": false,
+            "name": "iter-axis",
+            "default": null,
+            "choices": [
+                "antenna1", 
+                "antenna2", 
+                "baseline",
+                "corr", 
+                "field", 
+                "scan", 
+                "spw"
+                ]
+        },
+        {
+            "info": "Memory limit per core.",
+            "dtype": "str",
+            "required": false,
+            "name": "mem-limit",
+            "default": "1GB"
+        },
+        {
+            "info": "Plot only unflagged data. Defaults to true.",
+            "dtype": "bool",
+            "required": false,
+            "name": "no-flagged"
+        },
+        {
+            "info": "Number of CPU cores to be used by Dask. Defaults to half the CPU cores available.",
+            "dtype": "int",
+            "required": false,
+            "name": "num-cores"
+        },
+        {
+            "info": "Scan Number to select. Defaults to all.",
+            "dtype": "str",
+            "required": false,
+            "name": "scan",
+            "default": null
+        },
+        {
+            "info": "TAQL where clause",
+            "dtype": "str",
+            "required": false,
+            "name": "taql",
+            "default": null
+        },
+        {
+            "info": "Time in seconds over which to average.",
+            "dtype": "float",
+            "required": false,
+            "name": "tbin",
+            "default": null
+        },
+        {
+            "info": "Minimum x value to plot",
+            "dtype": "float",
+            "required": false,
+            "name": "xmin",
+            "default": null
+        },
+        {
+            "info": "Maximum x value to plot",
+            "dtype": "float",
+            "required": false,
+            "name": "xmax",
+            "default": null
+        },
+        {
+            "info": "Minimum y value to plot",
+            "dtype": "float",
+            "required": false,
+            "name": "ymin",
+            "default": null
+        },
+        {
+            "info": "Maximum y value to plot",
+            "dtype": "float",
+            "required": false,
+            "name": "ymax",
+            "default": null
+        }
+    ]
+}

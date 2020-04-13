@@ -1,8 +1,0 @@
-FROM kernsuite/base:4
-RUN docker-apt-install python-pip git
-ADD . /code
-ENV USER root
-WORKDIR /code
-RUN pip install pip setuptools -U
-RUN pip install /code
-RUN python -c "import stimela"

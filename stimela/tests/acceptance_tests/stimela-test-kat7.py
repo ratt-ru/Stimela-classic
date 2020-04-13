@@ -105,7 +105,7 @@ class kat7_reduce(unittest.TestCase):
         global IMAGE1, IMAGE2, MASK1, nchans, chans, imname0, maskname0, maskname01, imname1
 
         recipe = stimela.Recipe('Test reduction script',
-                                ms_dir=MSDIR, JOB_TYPE="docker")
+                                ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
 
         recipe.add('cab/casa_listobs', 'listobs', {
             "vis": MS
@@ -262,7 +262,7 @@ class kat7_reduce(unittest.TestCase):
         recipe.run()
 
         recipe = stimela.Recipe('KAT reduction script 2',
-                                ms_dir=MSDIR, JOB_TYPE="docker")
+                                ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
         # Copy CORRECTED_DATA to DATA, so we can start uv_contsub
         recipe.add("cab/msutils", "move_corrdata_to_data", {
             "command": "copycol",
@@ -351,26 +351,6 @@ class kat7_reduce(unittest.TestCase):
             label="extract_init_model:: Make initial model from preselfcal image",
             time_out=1800)
 
-        # Add bitflag column. To keep track of flagsets.
-        recipe.add("cab/msutils", "msutils", {
-            'command': 'prep',
-            'msname': MS,
-        },
-            input=INPUT, output=OUTPUT,
-            label="prepms::Adds flagsets",
-            time_out=1800)
-
-        # Not used currently.
-        recipe.add("cab/flagms", "backup_initial_flags", {
-            "msname": MS,
-            "create": True,
-            "nan": True,
-            "flagged-any": "+L",
-            "flag": "legacy",
-        },
-            input=INPUT, output=OUTPUT,
-            label="backup_initial_flags:: Backup selfcal flags",
-            time_out=1800)
 
         # First selfcal round
         recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {

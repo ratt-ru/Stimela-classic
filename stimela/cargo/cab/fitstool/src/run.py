@@ -45,6 +45,8 @@ for param in cab['parameters']:
     elif name == 'fits-axis':
         axis = value
         continue
+    elif name == 'file_pattern':
+        value = '"%s"' % value
 
     elif value is True:
         value = ""

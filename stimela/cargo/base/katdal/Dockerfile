@@ -1,7 +1,11 @@
-FROM stimela/base:1.2.0
+FROM stimela/base:1.2.5
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install libboost-dev \
     casacore-dev \
-    python-casacore
-RUN pip install -U pip setuptools pyyaml
-RUN pip install katdal[ms,s3]
+    python3-casacore python3-pip
+RUN pip3 install -U pip setuptools pyyaml
+RUN pip3 install katdal[ms,s3]
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
+RUN mvftoms.py -h
+RUN python --version
+

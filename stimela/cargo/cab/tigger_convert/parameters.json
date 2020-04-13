@@ -3,6 +3,7 @@
     "base": "stimela/tigger", 
     "tag": "1.2.0", 
     "description": "Source finding in radio images", 
+    "version" : "1.6.0",
     "prefix": "--", 
     "binary": "tigger-convert", 
     "msdir": true, 

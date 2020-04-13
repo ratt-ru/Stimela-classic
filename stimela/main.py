@@ -16,6 +16,7 @@ GID = stimela.GID
 LOG_HOME = stimela.LOG_HOME
 LOG_FILE = stimela.LOG_FILE
 GLOBALS = stimela.GLOBALS
+CAB_USERNAME = stimela.CAB_USERNAME
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):
@@ -49,7 +50,7 @@ def build(argv):
     parser.add_argument("-nc", "--no-cache", action="store_true",
                         help="Do not use cache when building the image")
 
-    parser.add_argument("-bl", "--build-label", default=USER.lower(),
+    parser.add_argument("-bl", "--build-label", default=CAB_USERNAME,
                         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -113,8 +114,11 @@ def build(argv):
         logged_images = log.read().get('images', {})
         for key, val in logged_images.items():
             if val['CAB']:
-                cabs.append(key)
-                dockerfiles.append(val['DIR'])
+                if key.endswith("custom"):
+                    continue
+                else:
+                    cabs.append(key)
+                    dockerfiles.append(val['DIR'])
         # If user wants to ignore some cabs
         IGNORE = args.ignore_cabs.split(",")
         CABS = set(CAB).difference(set(IGNORE))
@@ -229,7 +233,7 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-bl", "--build-label", default=USER.lower(),
+    add("-bl", "--build-label", default=CAB_USERNAME,
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -327,7 +331,7 @@ def pull(argv):
     if args.image:
         for image in args.image:
             simage = image.replace("/", "_")
-            simage = simage.replace(":", "_") + ".img"
+            simage = simage.replace(":", "_") + singularity.suffix
             if args.singularity:
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
@@ -352,7 +356,7 @@ def pull(argv):
         for image in base:
             if args.singularity:
                 simage = image.replace("/", "_")
-                simage = simage.replace(":", "_") + ".img"
+                simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
             elif args.docker:
@@ -487,7 +491,7 @@ def clean(argv):
     add("-aC", "--all-containers", action="store_true",
         help="Stop and/or Remove all stimela containers")
 
-    add("-bl", "--build-label", default=USER.lower(),
+    add("-bl", "--build-label", default=CAB_USERNAME,
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)

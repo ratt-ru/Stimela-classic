@@ -1,4 +1,4 @@
-FROM stimela/codex-africanus:1.2.5
+FROM stimela/codex-africanus:1.2.5-1
 MAINTAINER <sphemakh@gmial.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

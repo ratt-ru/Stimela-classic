@@ -13,7 +13,7 @@ requirements = ["pyyaml",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.3.1"
+__version__ = "1.3.2"
 
 setup(name=PACKAGE_NAME,
       version=__version__,
@@ -37,6 +37,6 @@ setup(name=PACKAGE_NAME,
       ]},
       install_requires=requirements,
       scripts=["bin/" + i for i in os.listdir("bin")] + 
-                glob.glob("stimela/cargo/cab/*_run"),
+                glob.glob("stimela/cargo/cab/stimela_runscript"),
       classifiers=[],
       )

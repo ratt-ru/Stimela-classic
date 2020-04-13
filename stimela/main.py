@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import os
 import argparse
 from argparse import ArgumentParser
@@ -33,7 +34,7 @@ def build(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit():
             argv = ' ' + arg
-
+    
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
     parser.add_argument("-b", "--base", action="store_true",
                         help="Build base images")
@@ -516,7 +517,7 @@ def clean(argv):
                 log_cabs.write()
 
     if args.all_base:
-        images = log.info['images'].keys()
+        images = list(log.info['images'].keys())
         for image in images:
             if log.info['images'][image]['CAB'] is False:
                 utils.xrun('docker', ['rmi', image])
@@ -524,7 +525,7 @@ def clean(argv):
                 log.write()
 
     if args.all_cabs:
-        images = log_cabs.info['images'].keys()
+        images = list(log_cabs.info['images'].keys())
         for image in images:
             if log_cabs.info['images'][image]['CAB']:
                 utils.xrun('docker', ['rmi', image])
@@ -532,7 +533,7 @@ def clean(argv):
                 log_cabs.write()
 
     if args.all_containers:
-        containers = log.info['containers'].keys()
+        containers = list(log.info['containers'].keys())
         for container in containers:
             cont = docker.Container(
                 log.info['containers'][container]['IMAGE'], container)

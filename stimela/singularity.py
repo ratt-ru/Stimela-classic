@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import subprocess
 import os
 import sys
@@ -29,7 +30,6 @@ def pull(image, store_path, docker=True, directory=".", force=False):
     """ 
         pull an image
     """
-
     if docker:
         fp = "docker://{0:s}".format(image)
     else:
@@ -47,16 +47,19 @@ class Container(object):
                  volumes=None,
                  logger=None,
                  time_out=-1,
-                 runscript="/singularity"):
+                 runscript="/singularity",
+                 environs=None,
+                 workdir=None):
         """
         Python wrapper to singularity tools for managing containers.
         """
 
         self.image = image
         self.volumes = volumes or []
+        self.environs = environs or []
         self.logger = logger
         self.status = None
-        self.WORKDIR = None
+        self.WORKDIR = workdir
         self.RUNSCRIPT = runscript
         self.PID = os.getpid()
         self.uptime = "00:00:00"

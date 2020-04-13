@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import subprocess
 import os
 import sys
@@ -68,20 +69,23 @@ class Container(object):
                  shared_memory="1gb",
                  time_out=-1,
                  workdir=None,
-                 log_container=None):
+                 log_container=None,
+                 cabname=None,
+                 runscript=None):
         """
         Python wrapper to docker engine tools for managing containers.
         """
 
         self.image = image
         self.name = name
+        self.cabnane = cabname
         self.label = label
         self.volumes = volumes or []
         self.environs = environs or []
         self.logger = logger
         self.status = None
         self.WORKDIR = workdir
-        self.COMMAND = None
+        self.RUNSCRIPT = runscript
         self.shared_memory = shared_memory
         self.PID = os.getpid()
         self.uptime = "00:00:00"
@@ -89,9 +93,9 @@ class Container(object):
         self.cont_logger = utils.logger.StimelaLogger(
             log_container or stimela.LOG_FILE, jtype="docker")
 
-    def add_volume(self, host, container, perm="rw"):
+    def add_volume(self, host, container, perm="rw", noverify=False):
 
-        if os.path.exists(host):
+        if os.path.exists(host) or noverify:
             if self.logger:
                 self.logger.debug("Mounting volume [{0}] in container [{1}] at [{2}]".format(
                     host, self.name, container))
@@ -125,7 +129,7 @@ class Container(object):
                                                   "-w %s" % (self.WORKDIR),
                                                   "--name", self.name, "--shm-size", self.shared_memory,
                                                   self.image,
-                                                  self.COMMAND or ""], log=self.logger)
+                                                  self.RUNSCRIPT or ""], log=self.logger)
 
         self.status = "created"
 
@@ -192,6 +196,16 @@ class Container(object):
         if killed:
             self.remove()
             raise KeyboardInterrupt
+
+    def image_exists(self):
+        """
+            Check if image exists 
+        """
+        image_ids = subprocess.check_output(f"docker images -q {self.image}".split())
+        if image_ids:
+            return True
+        else:
+            return False
 
     def remove(self):
         dinfo = self.info()

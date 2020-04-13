@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import subprocess
 import os
 import sys
@@ -68,7 +69,8 @@ class Container(object):
                  shared_memory="1gb",
                  time_out=-1,
                  log_container=None, 
-                 workdir=None):
+                 workdir=None,
+                 runscript=None):
         """
         Python wrapper to podman engine tools for managing containers.
         """
@@ -81,7 +83,7 @@ class Container(object):
         self.logger = logger
         self.status = None
         self.WORKDIR = workdir
-        self.COMMAND = None
+        self.RUNSCRIPT = runscript
         self.shared_memory = shared_memory
         self.PID = os.getpid()
         self.uptime = "00:00:00"
@@ -133,7 +135,7 @@ class Container(object):
                                             "-w %s" % (self.WORKDIR) if self.WORKDIR else "",
                                             "--name", self.name, "--shm-size", self.shared_memory,
                                             self.image,
-                                            self.COMMAND or ""], log=self.logger)
+                                            self.RUNSCRIPT or ""], log=self.logger)
 
         self.status = "created"
 

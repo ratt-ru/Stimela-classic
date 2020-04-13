@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import os
 import sys
 import json
@@ -18,25 +19,6 @@ class StimelaCabRuntimeError(RuntimeError):
 CPUS = 1
 
 from .xrun_poll import xrun
-
-## doesn't seem to be used anywhere
-# def _logger(level=0, logfile=None):
-#
-#     if logfile and not logging.getLogger("STIMELA"):
-#         logging.basicConfig(filename=logfile)
-#     elif not logging.getLogger("STIMELA"):
-#         logging.basicConfig()
-#
-#     LOGL = {"0": "INFO",
-#             "1": "DEBUG",
-#             "2": "ERROR",
-#             "3": "CRITICAL"}
-#
-#     log = logging.getLogger("STIMELA")
-#     log.setLevel(eval("logging."+LOGL[str(level)]))
-#
-#     return log
-
 
 def assign(key, value):
     frame = inspect.currentframe().f_back

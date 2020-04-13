@@ -1,8 +1,9 @@
+# -*- coding: future_fstrings -*-
 import os
 import sys
 import time
 import stimela
-from stimela import docker, singularity, udocker, utils, cargo, podman
+from stimela import docker, singularity, udocker, utils, cargo, podman, main
 from stimela.cargo import cab
 import logging
 import inspect
@@ -16,20 +17,21 @@ from datetime import datetime
 import traceback
 
 version = stimela.__version__
-USER = os.environ["USER"]
-WORKDIR = os.environ["HOME"]
 UID = os.getuid()
 GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 BIN = os.path.abspath(os.path.dirname(sys.executable))
 
+CONT_MOD = {
+        "docker" : docker,
+        "udocker" : udocker,
+        "singularity" : singularity,
+        "podman" : podman
+        }
 
-CONT_IO = {
-        "input": f"{WORKDIR}/input",
-        "output": f"{WORKDIR}/output",
-        "msfile": f"{WORKDIR}/msdir",
-        "tmp": f"{WORKDIR}/output/tmp",
-    }
+CONT_IO = cab.IODEST
+
+WORKDIR = CONT_IO["output"]
 
 class StimelaJob(object):
     logs_avail = dict()
@@ -94,8 +96,8 @@ class StimelaJob(object):
 
 
     def setup_job(self, image, config,
-                   indir=None, outdir=None, msdir=None,
-                   job_type="docker",
+                   indir=None, outdir=None, msdir=None, 
+                   build_label=None, singularity_image_dir=None,
                    **kw):
         """
             Setup job
@@ -106,8 +108,8 @@ class StimelaJob(object):
         config  :   Dictionary of options to parse to the task. This will modify 
                     the parameters in the default parameter file which 
                     can be viewd by running 'stimela cabs -i <cab name>', e.g 'stimela cabs -i simms'
-        input   :   input dirctory for cab
-        output  :   output directory for cab
+        indir   :   input dirctory for cab
+        outdir  :   output directory for cab
         msdir   :   MS directory for cab. Only specify if different from recipe ms_dir
 
         function    :   Python callable to execute
@@ -116,7 +118,7 @@ class StimelaJob(object):
         label       :   Function label; for logging purposes
         """
         
-        if job_type == "python":
+        if self.jtype == "python":
             if not callable(imgae):
                 raise utils.StimelaCabRuntimeError(
                     'Object given as function is not callable')
@@ -142,25 +144,54 @@ class StimelaJob(object):
         indir = script_context.get('_STIMELA_INPUT', None) or indir
         outdir = script_context.get('_STIMELA_OUTPUT', None) or outdir
         msdir = script_context.get('_STIMELA_MSDIR', None) or msdir
+        build_label = script_context.get(
+            '_STIMELA_BUILD_LABEL', None) or build_label
 
-        # Get location of template parameters file
-        cabpath = self.recipe.stimela_path + \
-            "/cargo/cab/{0:s}/".format(image.split("/")[1]) if not self.cabpath else \
-                os.path.join(self.cabpath, image.split("/")[1])
-        parameter_file = cabpath+'/parameters.json'
+        self.setup_job_log()
 
         name = '{0}-{1}{2}'.format(self.name, id(image),
                                    str(time.time()).replace('.', ''))
 
-        _cab = cab.CabDefinition(indir=input, outdir=output,
-                                 msdir=msdir, parameter_file=parameter_file)
-
-        _cab.IODEST = CONT_IO
-        self.setup_job_log()
-        cont = getattr(job_type, "Container")(image, name,
+        cont = getattr(CONT_MOD[self.jtype], "Container")(image, name,
                                      logger=self.log, 
+                                     workdir=WORKDIR,
                                      time_out=self.time_out)
-    
+        if self.jtype == "docker":
+            # Get location of template parameters file
+            cabs_loc = f"{stimela.LOG_HOME}/{build_label}_stimela_logfile.json"
+            cabs_logger = get_cabs(cabs_loc)
+            try:
+                cabpath = cabs_logger[f'{build_label}_{cont.image}']['DIR']
+            except KeyError:
+                main.build(["--us-only", cont.image.split("/")[-1],
+                        "--no-cache", "--build-label", build_label])
+                cabs_logger = get_cabs(cabs_loc)
+                cabpath = cabs_logger[f'{build_label}_{cont.image}']['DIR']
+
+        else:
+            cabpath = self.recipe.stimela_path + \
+                    "/cargo/cab/{0:s}/".format(image.split("/")[1]) if not self.cabpath else \
+                    os.path.join(self.cabpath, image.split("/")[1])
+
+        parameter_file = os.path.join(cabpath, 'parameters.json')
+        _cab = cab.CabDefinition(indir=indir, outdir=outdir,
+                                 msdir=msdir, parameter_file=parameter_file)
+        _cab.IODEST = CONT_IO
+        cont.cabname = _cab.task
+
+        if self.jtype == "docker":
+            cont.image = '{0}_{1}'.format(build_label, image)
+        elif self.jtype == "singularity":
+            simage = _cab.base.replace("/", "_")
+            if singularity_image_dir is None:
+                singularity_image_dir = os.path.join(".", "stimela_singularity_images")
+            cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
+                    simage, _cab.tag, singularity.suffix)
+            if not os.path.exists(cont.image):
+                main.pull(f"-s -cb {cont.cabname} -pf {singularity_image_dir}".split())
+        else:
+            cont.image = ":".join([_cab.base, _cab.tag])
+
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
         cont.parameter_file_name = '{0}/{1}.json'.format(
@@ -188,11 +219,12 @@ class StimelaJob(object):
             self.cabpath or "{0:s}/cargo/cab".format(self.recipe.stimela_path), 
                                     _cab.task), "/scratch/code", "ro")
 
-        cont.COMMAND = f"/bin/sh -c /{job_type}_run"
+        cont.RUNSCRIPT = f"/bin/sh -c /{self.jtype}_run"
         cont.add_volume(f"{BIN}/stimela_runscript", 
-                cont.COMMAND, perm="ro")
+                f"/{self.jtype}_run", perm="ro")
 
-        cont.add_environ('CONFIG', '/scratch/configfile'.format(name))
+        cont.add_environ('CONFIG', '/scratch/configfile')
+        cont.add_environ('HOME', WORKDIR)
 
         if msdir:
             md = cab.IODEST["msfile"]
@@ -211,8 +243,8 @@ class StimelaJob(object):
                 'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
 
         if indir:
-            cont.add_volume(indir, cab.IODEST["input"], perm='ro')
-            cont.add_environ("INPUT", cab.IODEST["input"])
+            cont.add_volume(indir, _cab.IODEST["input"], perm='ro')
+            cont.add_environ("INPUT", _cab.IODEST["input"])
             # Keep a record of the content of the
             # volume
             dirname, dirs, files = [a for a in next(os.walk(indir))]
@@ -223,12 +255,12 @@ class StimelaJob(object):
             }
 
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(
-                indir, cab.IODEST["input"]))
+                indir, _cab.IODEST["input"]))
 
         if not os.path.exists(outdir):
             os.mkdir(outdir)
 
-        od = cab.IODEST["output"]
+        od = _cab.IODEST["output"]
 
         cont.logfile = self.logfile
         cont.add_volume(outdir, od, "rw")
@@ -238,13 +270,12 @@ class StimelaJob(object):
         tmpfol = os.path.join(outdir, "tmp")
         if not os.path.exists(tmpfol):
             os.mkdir(tmpfol)
-        cont.add_volume(tmpfol, cab.IODEST["tmp"], "rw")
-        cont.add_environ("TMPDIR", cab.IODEST["tmp"])
+        cont.add_volume(tmpfol, _cab.IODEST["tmp"], "rw")
+        cont.add_environ("TMPDIR", _cab.IODEST["tmp"])
 
         self.log.debug(
             'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(outdir, od))
 
-        cont.image = ":".join([_cab.base, _cab.tag])
         # Added and ready for execution
         self.job = cont
 
@@ -262,7 +293,7 @@ class StimelaJob(object):
             self.job._cab.update(self.job.config,
                                  self.job.parameter_file_name)
 
-        if self.job_type == "singularity":
+        if self.jtype == "singularity":
             self.created = True
             self.job.run()
             return 0
@@ -398,16 +429,14 @@ class Recipe(object):
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath)
-
         if callable(image):
             job.jtype = 'function'
             job.python_job(image, parameters=config)
             self.jobs.append(job)
             self.log.info('Adding Python job \'{0}\' to recipe.'.format(name))
         else:
-            job.jtype = self.JOB_TYPE
             job.setup_job(image=image, config=config,
-                     indir=input, output=output, msdir=msdir or self.ms_dir,
+                     indir=input, outdir=output, msdir=msdir or self.ms_dir,
                      shared_memory=shared_memory, build_label=build_label or self.build_label,
                      singularity_image_dir=self.singularity_image_dir,
                      time_out=time_out)
@@ -434,7 +463,7 @@ class Recipe(object):
                 "label":   getattr(cont, "label", ""),
                 "logfile":   cont.logfile,
                 "status":   status,
-                "jtype":   'docker',
+                "jtype":   job.jtype,
             }
         else:
             step = {
@@ -497,7 +526,6 @@ class Recipe(object):
                         step['name'], recipe=self, label=step['label'], cabpath=self.cabpath)
                     job.job = cont
                     job.jtype = 'docker'
-
                 elif step['jtype'] == 'function':
                     name = step['name']
                     func = inspect.currentframe(
@@ -557,7 +585,6 @@ class Recipe(object):
                 steps = _steps
         else:
             steps = range(1, len(self.jobs)+1)
-
         jobs = [(step, self.jobs[step-1]) for step in steps]
 
         # TIMESTR = "%Y-%m-%d %H:%M:%S"
@@ -624,7 +651,6 @@ class Recipe(object):
         self.log.info(
             'Saving pipeline information in {}'.format(self.resume_file))
         utils.writeJson(self.resume_file, recipe)
-
         self.log.info('Recipe executed successfully')
 
         return 0

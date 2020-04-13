@@ -1,5 +1,6 @@
 FROM bhugo/ddfacet:0.5.2
 MAINTAINER Ben Hugo "bhugo@ska.ac.za"
+RUN rm /usr/local/lib/python3.6/dist-packages/scipy -rf
 RUN pip install -U --force-reinstall scipy==1.3.3
 RUN pip3 install pyyaml
 RUN rm /usr/bin/python

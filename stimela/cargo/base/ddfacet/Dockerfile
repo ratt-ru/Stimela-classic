@@ -1,5 +1,6 @@
 FROM bhugo/ddfacet:0.5.2
 MAINTAINER Ben Hugo "bhugo@ska.ac.za"
+RUN pip install scipy=1.3.3
 RUN pip3 install pyyaml
 RUN rm /usr/bin/python
 RUN ln -s /usr/bin/python3 /usr/bin/python

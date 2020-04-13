@@ -8,5 +8,6 @@ RUN apt install xvfb -y
 COPY xvfb.init.d /etc/init.d/xvfb
 RUN chmod 755 /etc/init.d/xvfb
 RUN chmod 777 /var/run
-ENV DISPLAY :99 
+ENV DISPLAY :99
+RUN DDF.py --help 
 ENTRYPOINT []

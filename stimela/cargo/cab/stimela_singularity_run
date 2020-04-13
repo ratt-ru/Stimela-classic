@@ -11,5 +11,3 @@ test -d $OUTPUT/.casa || { test -d /root/.casa && cp -r /root/.casa $OUTPUT/.cas
 export HOME=$OUTPUT
 cd $HOME
 xvfb-run python /scratch/code/run.py 2>&1
-EXIT_STAT=${PIPESTATUS[0]}
-exit $EXIT_STAT

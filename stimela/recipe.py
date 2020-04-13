@@ -106,7 +106,7 @@ class StimelaJob(object):
                 if not os.path.exists(log_dir):
                     os.mkdir(log_dir)
                 fh = logging.FileHandler(self.logfile, 'w', delay=True)
-                fh.setLevel(logging.DEBUG)
+                fh.setLevel(logging.INFO)
                 self.log.addHandler(fh)
 
             self.log.propagate = True            # propagate also to main stimela logger
@@ -801,7 +801,7 @@ class Recipe(object):
                     os.makedirs(log_dir)
 
                 fh = logging.FileHandler(logfile, 'w', delay=True)
-                fh.setLevel(logging.DEBUG)
+                fh.setLevel(logging.INFO)
                 fh.setFormatter(stimela.log_formatter)
                 self.log.addHandler(fh)
 

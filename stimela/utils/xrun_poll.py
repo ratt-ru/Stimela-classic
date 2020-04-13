@@ -137,7 +137,12 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
         raise StimelaCabRuntimeError('{}: SystemExit with code {}'.format(command_name, status))
 
     except KeyboardInterrupt:
-        log.error("Ctrl+C caught")
+        if callable(kill_callback):
+            log.warning("Ctrl+C caught, invoking kill callback on {} process".format(command_name))
+            kill_callback() 
+        else:
+            log.warning("Ctrl+C caught, killing {} process".format(command_name))
+            proc.kill()
         proc.wait()
         raise StimelaCabRuntimeError('{} interrupted with Ctrl+C'.format(command_name))
 

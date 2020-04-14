@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import stimela
 import os
 import sys
@@ -152,7 +153,8 @@ class basicrecipe_test(unittest.TestCase):
         }, input=INPUT, output=OUTPUT)
         rrr.run() #validate and run
         assert rrr.jobs[0].job._cab.parameters[0].value == "a"
-        assert rrr.jobs[0].job._cab.parameters[1].value == "/input/testinput.txt"
+        assert rrr.jobs[0].job._cab.parameters[1].value == os.path.join(rrr.jobs[0].job.IODEST["input"], 
+                "testinput.txt")
 
     def test_iopathval(self):
         global MSDIR
@@ -182,18 +184,16 @@ class basicrecipe_test(unittest.TestCase):
                      spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
         }, input=INPUT, output=OUTPUT)
         rrr.run() #validate and run
-        assert rrr.jobs[0].job._cab.parameters[4].value[0] == "/input/testinput2.txt"
-        assert rrr.jobs[0].job._cab.parameters[4].value[1] == os.path.join("/",
-                                                                           "home",
-                                                                           os.environ["USER"],
-                                                                           "msdir",
-                                                                           "testinput3.txt")
+        assert rrr.jobs[0].job._cab.parameters[4].value[0] == os.path.join(rrr.jobs[0].job.IODEST["input"], 
+                "testinput2.txt")
+        assert rrr.jobs[0].job._cab.parameters[4].value[1] == os.path.join(rrr.jobs[0].job.IODEST["msfile"],
+                "testinput3.txt")
         assert rrr.jobs[0].job._cab.parameters[4].value[2] == \
-                "{}hello{{reim}}.fits,{}to.fits,{}world.fits".format(
-                    "/input/",
-                    os.path.join("/", "home", os.environ["USER"], "msdir/"),
-                    os.path.join("/", "home", os.environ["USER"], "output/"),
-                )
+                "{}/hello{{reim}}.fits,{}/to.fits,{}/world.fits".format(rrr.jobs[0].job.IODEST["input"],
+                    rrr.jobs[0].job.IODEST["msfile"],
+                    rrr.jobs[0].job.IODEST["output"]
+                    )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import subprocess
 import os
 import sys
@@ -29,15 +30,18 @@ def pull(image, store_path, docker=True, directory=".", force=False):
     """ 
         pull an image
     """
-
     if docker:
         fp = "docker://{0:s}".format(image)
     else:
         fp = image
     if not os.path.exists(directory):
         os.mkdir(directory)
-    utils.xrun("cd", [directory, "&&", "singularity", "pull", "--force" if force else "",
-                      "--name", store_path, fp])
+    if version < "3.0.0":
+        utils.xrun("cd", [directory, "&&", "singularity", "pull", "--force" if force else "",
+                "--name", store_path, fp])
+    else:
+        utils.xrun("singularity", ["pull", "--dir", directory,
+            "--force" if force else "", store_path, fp])
 
     return 0
 
@@ -47,16 +51,19 @@ class Container(object):
                  volumes=None,
                  logger=None,
                  time_out=-1,
-                 runscript="/singularity"):
+                 runscript="/singularity",
+                 environs=None,
+                 workdir=None):
         """
         Python wrapper to singularity tools for managing containers.
         """
 
         self.image = image
         self.volumes = volumes or []
+        self.environs = environs or []
         self.logger = logger
         self.status = None
-        self.WORKDIR = None
+        self.WORKDIR = workdir
         self.RUNSCRIPT = runscript
         self.PID = os.getpid()
         self.uptime = "00:00:00"
@@ -76,6 +83,17 @@ class Container(object):
                 "Path {0} cannot be mounted on container: File doesn't exist".format(host))
 
         self.volumes.append(":".join([host, container, perm]))
+
+        return 0
+
+    def add_environ(self, key, value):
+        self.logger.debug("Adding environ varaible [{0}={1}] "\
+                    "in container {2}".format(key, value, self.name))
+        self.environs.append("=".join([key, value]))
+        key_ = f"SINGULARITYENV_{key}"
+	
+        self.logger.debug(f"Setting singularity environmental variable {key_}={value} on host")
+        os.environ[key_] = value
 
         return 0
 

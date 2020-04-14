@@ -118,7 +118,8 @@ class StimelaJob(object):
         """
         
         if self.jtype == "python":
-            if not callable(imgae):
+            self.image = image.__name__
+            if not callable(image):
                 raise utils.StimelaCabRuntimeError(
                     'Object given as function is not callable')
 
@@ -195,6 +196,8 @@ class StimelaJob(object):
         cont._cab = _cab
         cont.parameter_file_name = '{0}/{1}.json'.format(
             self.recipe.parameter_file_dir, name)
+
+        self.image = str(cont.image)
 
         # Remove dismissable kw arguments:
         ops_to_pop = []
@@ -426,21 +429,19 @@ class Recipe(object):
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath)
-        if callable(image):
-            job.jtype = 'function'
-            job.python_job(image, parameters=config)
-            self.jobs.append(job)
-            self.log.info('Adding Python job \'{0}\' to recipe.'.format(name))
-        else:
-            job.setup_job(image=image, config=config,
-                     indir=input, outdir=output, msdir=msdir or self.ms_dir,
-                     shared_memory=shared_memory, build_label=build_label or self.build_label,
-                     singularity_image_dir=self.singularity_image_dir,
-                     time_out=time_out)
 
-            self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
-                job.job.image, name))
-            self.jobs.append(job)
+        if callable(image):
+            job.jtype = 'python'
+        
+        job.setup_job(image=image, config=config,
+                 indir=input, outdir=output, msdir=msdir or self.ms_dir,
+                 shared_memory=shared_memory, build_label=build_label or self.build_label,
+                 singularity_image_dir=self.singularity_image_dir,
+                 time_out=time_out)
+
+        self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
+            job.image, name))
+        self.jobs.append(job)
 
         return 0
 
@@ -601,7 +602,7 @@ class Recipe(object):
                     astd.write(
                         'Stimela version     : {}\n'.format(version))
                     astd.write(
-                        'Cab name            : {}\n'.format(job.job.image))
+                        'Cab name            : {}\n'.format(job.image))
                     astd.write('-------------------------------------\n')
                 job.run_job()
 

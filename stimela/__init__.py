@@ -5,6 +5,7 @@ import inspect
 import pkg_resources
 import logging
 import re
+from pathlib import Path
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -24,6 +25,8 @@ BASE_PATH = os.path.join(root, "cargo/base")
 
 # Set up logging infrastructure
 LOG_HOME = os.path.expanduser("~/.stimela")
+# make sure directory exists
+Path(LOG_HOME).mkdir(exist_ok=True)
 # This is is the default log file. It logs stimela images, containers and processes
 LOG_FILE = "{0:s}/stimela_logfile.json".format(LOG_HOME)
 

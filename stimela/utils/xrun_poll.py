@@ -3,6 +3,8 @@ import select, traceback, subprocess, errno, re, time, logging, os, sys
 DEBUG = 0
 from . import StimelaCabRuntimeError, StimelaProcessRuntimeError
 
+log = None
+
 def get_stimela_logger():
     """Returns Stimela's logger, or None if no Stimela installed"""
     try:

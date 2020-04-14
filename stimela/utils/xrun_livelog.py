@@ -1,4 +1,3 @@
-# -*- coding: future_fstrings -*-
 import sys, os, codecs, time, hashlib, subprocess
 
 from threading import Event, Thread

@@ -10,7 +10,6 @@ import inspect
 import re
 from stimela.exceptions import *
 from stimela.dismissable import dismissable
-from future.utils import raise_
 from stimela.main import get_cabs
 from stimela.cargo.cab import StimelaCabParameterError
 from datetime import datetime
@@ -169,14 +168,14 @@ class StimelaJob(object):
                 cabpath = cabs_logger[f'{build_label}_{cont.image}']['DIR']
 
         else:
-            cabpath = self.recipe.stimela_path + \
-                    "/cargo/cab/{0:s}/".format(image.split("/")[1]) if not self.cabpath else \
-                    os.path.join(self.cabpath, image.split("/")[1])
-
+            cabpath = os.path.join(CAB_PATH, image.split("/")[1])
+        
+        # In case the user specified a custom cab
+        cabpath = os.path.join(self.cabpath, image.split("/")[1]) if self.cabpath else cabpath
         parameter_file = os.path.join(cabpath, 'parameters.json')
         _cab = cab.CabDefinition(indir=indir, outdir=outdir,
                                  msdir=msdir, parameter_file=parameter_file)
-        _cab.IODEST = CONT_IO
+        cont.IODEST = CONT_IO
         cont.cabname = _cab.task
 
         if self.jtype == "docker":
@@ -215,9 +214,7 @@ class StimelaJob(object):
                         '/scratch/stimela', perm='ro')
         cont.add_volume(cont.parameter_file_name,
                         '/scratch/configfile', perm='ro', noverify=True)
-        cont.add_volume("{0:s}/{1:s}/src/".format(
-            self.cabpath or "{0:s}/cargo/cab".format(self.recipe.stimela_path), 
-                                    _cab.task), "/scratch/code", "ro")
+        cont.add_volume(os.path.join(cabpath, "src"), "/scratch/code", "ro")
 
         cont.RUNSCRIPT = f"/bin/sh -c /{self.jtype}_run"
         cont.add_volume(f"{BIN}/stimela_runscript", 
@@ -227,7 +224,7 @@ class StimelaJob(object):
         cont.add_environ('HOME', WORKDIR)
 
         if msdir:
-            md = cab.IODEST["msfile"]
+            md = cont.IODEST["msfile"]
             cont.add_volume(msdir, md)
             cont.add_environ("MSDIR", md)
             # Keep a record of the content of the
@@ -243,8 +240,8 @@ class StimelaJob(object):
                 'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
 
         if indir:
-            cont.add_volume(indir, _cab.IODEST["input"], perm='ro')
-            cont.add_environ("INPUT", _cab.IODEST["input"])
+            cont.add_volume(indir, cont.IODEST["input"], perm='ro')
+            cont.add_environ("INPUT", cont.IODEST["input"])
             # Keep a record of the content of the
             # volume
             dirname, dirs, files = [a for a in next(os.walk(indir))]
@@ -255,12 +252,12 @@ class StimelaJob(object):
             }
 
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(
-                indir, _cab.IODEST["input"]))
+                indir, cont.IODEST["input"]))
 
         if not os.path.exists(outdir):
             os.mkdir(outdir)
 
-        od = _cab.IODEST["output"]
+        od = cont.IODEST["output"]
 
         cont.logfile = self.logfile
         cont.add_volume(outdir, od, "rw")
@@ -270,8 +267,8 @@ class StimelaJob(object):
         tmpfol = os.path.join(outdir, "tmp")
         if not os.path.exists(tmpfol):
             os.mkdir(tmpfol)
-        cont.add_volume(tmpfol, _cab.IODEST["tmp"], "rw")
-        cont.add_environ("TMPDIR", _cab.IODEST["tmp"])
+        cont.add_volume(tmpfol, cont.IODEST["tmp"], "rw")
+        cont.add_environ("TMPDIR", cont.IODEST["tmp"])
 
         self.log.debug(
             'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(outdir, od))

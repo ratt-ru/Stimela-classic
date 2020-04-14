@@ -1,4 +1,3 @@
-# -*- coding: future_fstrings -*-
 import select, traceback, subprocess, errno, re, time
 
 DEBUG = 0

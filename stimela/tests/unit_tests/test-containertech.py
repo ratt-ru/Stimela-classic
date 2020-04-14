@@ -62,7 +62,8 @@ class basicrecipe_test(unittest.TestCase):
                              ms_dir=MSDIR,
                              JOB_TYPE="singularity",
                              cabpath="cab/",
-                             singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"])
+                             singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"],
+                             log_dir="logs")
         assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
@@ -95,7 +96,8 @@ class basicrecipe_test(unittest.TestCase):
         rrr = stimela.Recipe("singularitypaths",
                              ms_dir=MSDIR,
                              JOB_TYPE="udocker",
-                             cabpath="cab/")
+                             cabpath="cab/",
+                             log_dir="logs")
         assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
@@ -124,7 +126,8 @@ class basicrecipe_test(unittest.TestCase):
         rrr = stimela.Recipe("podmanpaths",
                              ms_dir=MSDIR,
                              JOB_TYPE="podman",
-                             cabpath="cab/")
+                             cabpath="cab/",
+                             log_dir="logs")
         assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c

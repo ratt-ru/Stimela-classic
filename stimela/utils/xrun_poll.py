@@ -1,7 +1,22 @@
-import select, traceback, subprocess, errno, re, time, os
+import select, traceback, subprocess, errno, re, time, logging, os
 
 DEBUG = 0
-from . import StimelaCabRuntimeError
+from . import StimelaCabRuntimeError, StimelaProcessRuntimeError
+
+log = None
+
+def global_logger():
+    """Returns Stimela logger if running in stimela, else inits a global logger"""
+    global log
+    if log is None:
+        try:
+            import stimela
+            log = stimela.logger()
+        except ImportError:
+            # no stimela => running payload inside a cab -- just use the global logger and make it echo everything to the console
+            logging.basicConfig(format="%(message)s", level=logging.INFO)
+            log = logging.getLogger()
+    return log
 
 class Poller(object):
     """Poller class. Poor man's select.poll(). Damn you OS/X and your select.poll will-you-won'y-you bollocks"""
@@ -55,38 +70,43 @@ def _remove_ctrls(msg):
     return ansi_escape.sub('', msg)
 
 
-def xrun_nolog(command):
+def xrun_nolog(command, name=None):
+    log = global_logger()
+    name = name or command.split(" ", 1)[0]
     try:
-        print("## running", command)
+        log.info("# running {}".format(command))
         status = subprocess.call(command, shell=True)
 
     except KeyboardInterrupt:
-        print("## Ctrl+C caught")
-        status = 1
+        log.error("# {} interrupted by Ctrl+C".format(name))
+        raise
 
     except Exception as exc:
-        traceback.print_exc()
-        print("## exception caught: {}".format(str(exc)))
-        status = 1
+        for line in traceback.format_exc():
+            log.error("# {}".format(line.strip()))
+        log.error("# {} raised exception: {}".format(name, str(exc)))
+        raise
 
-    return status
+    if status:
+        raise StimelaProcessRuntimeError("{} returns error code {}".format(name, status))
+
+    return 0
 
 def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=None):
-
     command_name = command
 
     # this part could be inside the container
     command = " ".join([command] + list(map(str, options)))
 
-    if not log:
-        return xrun_nolog(command)
+    if log is None:
+        return xrun_nolog(command, name=command_name)
 
     # this part is never inside the container
     import stimela
 
     log = log or stimela.logger()
 
-    log.info("running " + command, extra=dict(stimela_subprocess_output=(command_name, "status")))
+    log.info("running " + command, extra=dict(stimela_subprocess_output=(command_name, "start")))
 
     start_time = time.time()
 

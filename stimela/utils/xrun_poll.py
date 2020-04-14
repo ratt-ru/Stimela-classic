@@ -1,4 +1,4 @@
-import select, traceback, subprocess, errno, re, time
+import select, traceback, subprocess, errno, re, time, os
 
 DEBUG = 0
 from . import StimelaCabRuntimeError
@@ -57,15 +57,16 @@ def _remove_ctrls(msg):
 
 def xrun_nolog(command):
     try:
+        print("## running", command)
         status = subprocess.call(command, shell=True)
 
     except KeyboardInterrupt:
-        print("Ctrl+C caught")
+        print("## Ctrl+C caught")
         status = 1
 
     except Exception as exc:
         traceback.print_exc()
-        print("Exception caught: {}".format(str(exc)))
+        print("## exception caught: {}".format(str(exc)))
         status = 1
 
     return status
@@ -85,7 +86,7 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
 
     log = log or stimela.logger()
 
-    log.info("running " + command)
+    log.info("running " + command, extra=dict(stimela_subprocess_output=(command_name, "status")))
 
     start_time = time.time()
 
@@ -138,8 +139,9 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
 
     except KeyboardInterrupt:
         if callable(kill_callback):
-            log.warning("Ctrl+C caught, invoking kill callback on {} process".format(command_name))
+            log.warning("Ctrl+C caught: shutting down {} process, please give it a few moments".format(command_name))
             kill_callback() 
+            log.info("the {} process was shut down successfully".format(command_name), extra=dict(stimela_subprocess_output=(command_name, "status")))
         else:
             log.warning("Ctrl+C caught, killing {} process".format(command_name))
             proc.kill()

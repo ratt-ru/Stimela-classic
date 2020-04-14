@@ -1,20 +1,26 @@
-import select, traceback, subprocess, errno, re, time, logging, os
+import select, traceback, subprocess, errno, re, time, logging, os, sys
 
 DEBUG = 0
 from . import StimelaCabRuntimeError, StimelaProcessRuntimeError
 
 log = None
 
+def get_stimela_logger():
+    """Returns Stimela's logger, or None if no Stimela installed"""
+    try:
+        import stimela
+        return stimela.logger()
+    except ImportError:
+        return None
+
 def global_logger():
     """Returns Stimela logger if running in stimela, else inits a global logger"""
     global log
     if log is None:
-        try:
-            import stimela
-            log = stimela.logger()
-        except ImportError:
+        log = get_stimela_logger()
+        if log is None:
             # no stimela => running payload inside a cab -- just use the global logger and make it echo everything to the console
-            logging.basicConfig(format="%(message)s", level=logging.INFO)
+            logging.basicConfig(format="%(message)s", level=logging.INFO, stream=sys.stdout)
             log = logging.getLogger()
     return log
 
@@ -98,6 +104,8 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
     # this part could be inside the container
     command = " ".join([command] + list(map(str, options)))
 
+    log = log or get_stimela_logger()
+
     if log is None:
         return xrun_nolog(command, name=command_name)
 
@@ -161,7 +169,8 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
         if callable(kill_callback):
             log.warning("Ctrl+C caught: shutting down {} process, please give it a few moments".format(command_name))
             kill_callback() 
-            log.info("the {} process was shut down successfully".format(command_name), extra=dict(stimela_subprocess_output=(command_name, "status")))
+            log.info("the {} process was shut down successfully".format(command_name),
+                     extra=dict(stimela_subprocess_output=(command_name, "status")))
         else:
             log.warning("Ctrl+C caught, killing {} process".format(command_name))
             proc.kill()

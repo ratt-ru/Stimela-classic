@@ -50,7 +50,7 @@ class StimelaJob(object):
         """
         self.name = name
         self.recipe = recipe
-        self.label = label or '{0}_{1}'.format(name, id(name))
+        self.label = label or '{0}({1})'.format(name, id(name))
         self.log = recipe.log
         self.active = False
         self.jtype = jtype  # ['docker', 'python', singularity', 'udocker']
@@ -133,11 +133,11 @@ class StimelaJob(object):
 
             return 0
 
-        # check if name has any offending charecters
-        offenders = re.findall('\W', self.name)
+        # check if name has any offending characters
+        offenders = re.findall('[^\w .-]', self.name)
         if offenders:
-            raise StimelaCabParameterError('The cab name \'{:s}\' has some non-alphanumeric characters.'
-                                           ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
+            raise StimelaCabParameterError('The cab name \'{:s}\' contains invalid characters.'
+                                           ' Allowed charcaters are alphanumeric, plus [-_. ].'.format(self.name))
 
         # Update I/O with values specified on command line
         script_context = self.recipe.stimela_context
@@ -149,7 +149,10 @@ class StimelaJob(object):
 
         self.setup_job_log()
 
-        name = '{0}-{1}{2}'.format(self.name, id(image),
+        # make name palatable as container name
+        pausterized_name = re.sub("[\W]", "_", self.name)
+
+        name = '{0}-{1}{2}'.format(pausterized_name, id(image),
                                    str(time.time()).replace('.', ''))
 
         cont = getattr(CONT_MOD[self.jtype], "Container")(image, name,
@@ -332,12 +335,12 @@ class Recipe(object):
                       logfile_task may contain a "{task}" entry which will be substituted for a task name.
         """
         self.name = name
-        self.name_ = self.name.lower().replace(' ', '_')
+        self.name_ = re.sub(r'\W', '_', name)  # pausterized name
 
         self.cabpath = cabpath
 
         # set default name for task-level logfiles
-        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_.split('-')[0]) \
+        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name) \
             if logfile_task is None else logfile_task
 
         if logger is not None:
@@ -350,7 +353,7 @@ class Recipe(object):
             if logfile is not False:
                 # logfile is None: use default name
                 if logfile is None:
-                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_.split('-')[0])
+                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name)
 
                 # reset default name for task-level logfiles based on logfile
                 self.logfile_task = os.path.splitext(logfile)[0] + "-{task}.txt" \

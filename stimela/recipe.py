@@ -222,7 +222,7 @@ class StimelaJob(object):
                         '/scratch/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), "/scratch/code", "ro")
 
-        cont.RUNSCRIPT = f"/bin/sh -c /{self.jtype}_run"
+        cont.RUNSCRIPT = f"/{self.jtype}_run"
         cont.add_volume(f"{BIN}/stimela_runscript", 
                 f"/{self.jtype}_run", perm="ro")
 

@@ -1,4 +1,4 @@
-import select, traceback, subprocess, errno, re, time, logging, os
+import select, traceback, subprocess, errno, re, time, logging, os, sys
 
 DEBUG = 0
 from . import StimelaCabRuntimeError, StimelaProcessRuntimeError
@@ -14,7 +14,7 @@ def global_logger():
             log = stimela.logger()
         except ImportError:
             # no stimela => running payload inside a cab -- just use the global logger and make it echo everything to the console
-            logging.basicConfig(format="%(message)s", level=logging.INFO)
+            logging.basicConfig(format="%(message)s", level=logging.INFO, stream=sys.stdout)
             log = logging.getLogger()
     return log
 
@@ -161,7 +161,8 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
         if callable(kill_callback):
             log.warning("Ctrl+C caught: shutting down {} process, please give it a few moments".format(command_name))
             kill_callback() 
-            log.info("the {} process was shut down successfully".format(command_name), extra=dict(stimela_subprocess_output=(command_name, "status")))
+            log.info("the {} process was shut down successfully".format(command_name),
+                     extra=dict(stimela_subprocess_output=(command_name, "status")))
         else:
             log.warning("Ctrl+C caught, killing {} process".format(command_name))
             proc.kill()

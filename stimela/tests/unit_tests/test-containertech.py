@@ -10,6 +10,7 @@ import glob
 from stimela.exceptions import *
 from stimela.dismissable import dismissable as sdm
 from stimela.pathformatter import pathformatter as spf
+import stimela.cargo as cargo
 
 class basicrecipe_test(unittest.TestCase):
     @classmethod
@@ -24,9 +25,9 @@ class basicrecipe_test(unittest.TestCase):
         # Start stimela Recipe instance
         import stimela.main as main
         os.chdir(os.path.dirname(__file__))
-        main.pull(["-s", "--force", "-im", "stimela/base:1.2.0"])
-        if sys.version_info[0] == 2:
-            main.pull(["--force", "-im", "stimela/base:1.2.0"])
+        cab = cargo.cab.CabDefinition(parameter_file="cab/custom/parameters.json")
+        main.pull(["-s", "--force", "-im", f"stimela/base:{cab.tag}"])
+        #main.pull(["--force", "-im", f"stimela/base:{cab.tag}"])
         #main.pull(["-p", "--force", "-im", "stimela/base:1.2.0"])
 
     @classmethod

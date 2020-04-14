@@ -10,6 +10,7 @@ import glob
 from stimela.exceptions import *
 from stimela.dismissable import dismissable as sdm
 from stimela.pathformatter import pathformatter as spf
+import stimela.cargo as cargo
 
 class basicrecipe_test(unittest.TestCase):
     @classmethod

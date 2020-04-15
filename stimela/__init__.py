@@ -4,6 +4,7 @@ import sys
 import inspect
 import pkg_resources
 import logging
+from logging import StreamHandler
 import re
 from pathlib import Path
 
@@ -92,7 +93,10 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
         log_formatter = log_boring_formatter if boring else log_colourful_formatter
 
         if console:
-            log_console_handler = MultiplexingHandler()
+            if "SILENT_STDERR" in os.environ and os.environ["SILENT_STDERR"].upper()=="ON":
+                log_console_handler = StreamHandler(stream=sys.stdout)
+            else:  
+                log_console_handler = MultiplexingHandler()
             log_console_handler.setFormatter(log_formatter)
             log_console_handler.setLevel(logging.INFO)
             _logger.addHandler(log_console_handler)

@@ -1,7 +1,28 @@
-import select, traceback, subprocess, errno, re, time
+import select, traceback, subprocess, errno, re, time, logging, os, sys
 
 DEBUG = 0
-from . import StimelaCabRuntimeError
+from . import StimelaCabRuntimeError, StimelaProcessRuntimeError
+
+log = None
+
+def get_stimela_logger():
+    """Returns Stimela's logger, or None if no Stimela installed"""
+    try:
+        import stimela
+        return stimela.logger()
+    except ImportError:
+        return None
+
+def global_logger():
+    """Returns Stimela logger if running in stimela, else inits a global logger"""
+    global log
+    if log is None:
+        log = get_stimela_logger()
+        if log is None:
+            # no stimela => running payload inside a cab -- just use the global logger and make it echo everything to the console
+            logging.basicConfig(format="%(message)s", level=logging.INFO, stream=sys.stdout)
+            log = logging.getLogger()
+    return log
 
 class Poller(object):
     """Poller class. Poor man's select.poll(). Damn you OS/X and your select.poll will-you-won'y-you bollocks"""
@@ -55,37 +76,45 @@ def _remove_ctrls(msg):
     return ansi_escape.sub('', msg)
 
 
-def xrun_nolog(command):
+def xrun_nolog(command, name=None):
+    log = global_logger()
+    name = name or command.split(" ", 1)[0]
     try:
+        log.info("# running {}".format(command))
         status = subprocess.call(command, shell=True)
 
     except KeyboardInterrupt:
-        print("Ctrl+C caught")
-        status = 1
+        log.error("# {} interrupted by Ctrl+C".format(name))
+        raise
 
     except Exception as exc:
-        traceback.print_exc()
-        print("Exception caught: {}".format(str(exc)))
-        status = 1
+        for line in traceback.format_exc():
+            log.error("# {}".format(line.strip()))
+        log.error("# {} raised exception: {}".format(name, str(exc)))
+        raise
 
-    return status
+    if status:
+        raise StimelaProcessRuntimeError("{} returns error code {}".format(name, status))
+
+    return 0
 
 def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=None):
-
     command_name = command
 
     # this part could be inside the container
     command = " ".join([command] + list(map(str, options)))
 
-    if not log:
-        return xrun_nolog(command)
+    log = log or get_stimela_logger()
+
+    if log is None:
+        return xrun_nolog(command, name=command_name)
 
     # this part is never inside the container
     import stimela
 
     log = log or stimela.logger()
 
-    log.info("running " + command)
+    log.info("running " + command, extra=dict(stimela_subprocess_output=(command_name, "start")))
 
     start_time = time.time()
 
@@ -137,7 +166,14 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
         raise StimelaCabRuntimeError('{}: SystemExit with code {}'.format(command_name, status))
 
     except KeyboardInterrupt:
-        log.error("Ctrl+C caught")
+        if callable(kill_callback):
+            log.warning("Ctrl+C caught: shutting down {} process, please give it a few moments".format(command_name))
+            kill_callback() 
+            log.info("the {} process was shut down successfully".format(command_name),
+                     extra=dict(stimela_subprocess_output=(command_name, "status")))
+        else:
+            log.warning("Ctrl+C caught, killing {} process".format(command_name))
+            proc.kill()
         proc.wait()
         raise StimelaCabRuntimeError('{} interrupted with Ctrl+C'.format(command_name))
 

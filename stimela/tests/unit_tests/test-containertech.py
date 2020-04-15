@@ -10,6 +10,7 @@ import glob
 from stimela.exceptions import *
 from stimela.dismissable import dismissable as sdm
 from stimela.pathformatter import pathformatter as spf
+from stimela import cargo, singularity
 
 class basicrecipe_test(unittest.TestCase):
     @classmethod
@@ -24,9 +25,15 @@ class basicrecipe_test(unittest.TestCase):
         # Start stimela Recipe instance
         import stimela.main as main
         os.chdir(os.path.dirname(__file__))
-        main.pull(["-s", "--force", "-im", "stimela/base:1.2.0"])
-        if sys.version_info[0] == 2:
-            main.pull(["--force", "-im", "stimela/base:1.2.0"])
+        cab = cargo.cab.CabDefinition(parameter_file="cab/custom/parameters.json")
+        global SINGULARITY, PODMAN, UDOCKER
+        SINGULARITY = False
+        PODMAN = False
+        UDOCKER = False
+        if singularity.version and singularity.version >= "2.6.0":
+            main.pull(["-s", "--force", "-im", f"stimela/base:{cab.tag}"])
+            SINGULARITY = True
+        #main.pull(["--force", "-im", f"stimela/base:{cab.tag}"])
         #main.pull(["-p", "--force", "-im", "stimela/base:1.2.0"])
 
     @classmethod
@@ -57,12 +64,17 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global SINGULARITY
+        if SINGULARITY is False:
+            return
+
         stimela.register_globals()
         rrr = stimela.Recipe("singularitypaths",
                              ms_dir=MSDIR,
                              JOB_TYPE="singularity",
                              cabpath="cab/",
-                             singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"])
+                             singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"],
+                             log_dir="logs")
         assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
@@ -85,17 +97,19 @@ class basicrecipe_test(unittest.TestCase):
 
     def test_udocker(self):
         import sys
-        if sys.version_info[0] > 2:
-            return
-
         global MSDIR
         global INPUT
         global OUTPUT
+        global UDOCKER
+        if UDOCKER is False:
+            return
+
         stimela.register_globals()
         rrr = stimela.Recipe("singularitypaths",
                              ms_dir=MSDIR,
                              JOB_TYPE="udocker",
-                             cabpath="cab/")
+                             cabpath="cab/",
+                             log_dir="logs")
         assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
@@ -116,15 +130,18 @@ class basicrecipe_test(unittest.TestCase):
                 )
     
     def test_podman(self):
-        return
         global MSDIR
         global INPUT
         global OUTPUT
+        global PODMAN
+        if PODMAN is False:
+            return
         stimela.register_globals()
         rrr = stimela.Recipe("podmanpaths",
                              ms_dir=MSDIR,
                              JOB_TYPE="podman",
-                             cabpath="cab/")
+                             cabpath="cab/",
+                             log_dir="logs")
         assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c

@@ -50,7 +50,7 @@ class StimelaJob(object):
         """
         self.name = name
         self.recipe = recipe
-        self.label = label or '{0}_{1}'.format(name, id(name))
+        self.label = label or '{0}({1})'.format(name, id(name))
         self.log = recipe.log
         self.active = False
         self.jtype = jtype  # ['docker', 'python', singularity', 'udocker']
@@ -83,7 +83,7 @@ class StimelaJob(object):
                 if not os.path.exists(log_dir):
                     os.mkdir(log_dir)
                 fh = logging.FileHandler(self.logfile, 'w', delay=True)
-                fh.setLevel(logging.DEBUG)
+                fh.setLevel(logging.INFO)
                 self.log.addHandler(fh)
 
             self.log.propagate = True            # propagate also to main stimela logger
@@ -118,7 +118,8 @@ class StimelaJob(object):
         """
         
         if self.jtype == "python":
-            if not callable(imgae):
+            self.image = image.__name__
+            if not callable(image):
                 raise utils.StimelaCabRuntimeError(
                     'Object given as function is not callable')
 
@@ -132,11 +133,11 @@ class StimelaJob(object):
 
             return 0
 
-        # check if name has any offending charecters
-        offenders = re.findall('\W', self.name)
+        # check if name has any offending characters
+        offenders = re.findall('[^\w .-]', self.name)
         if offenders:
-            raise StimelaCabParameterError('The cab name \'{:s}\' has some non-alphanumeric characters.'
-                                           ' Charecters making up this name must be in [a-z,A-Z,0-9,_]'.format(self.name))
+            raise StimelaCabParameterError('The cab name \'{:s}\' contains invalid characters.'
+                                           ' Allowed charcaters are alphanumeric, plus [-_. ].'.format(self.name))
 
         # Update I/O with values specified on command line
         script_context = self.recipe.stimela_context
@@ -148,7 +149,10 @@ class StimelaJob(object):
 
         self.setup_job_log()
 
-        name = '{0}-{1}{2}'.format(self.name, id(image),
+        # make name palatable as container name
+        pausterized_name = re.sub("[\W]", "_", self.name)
+
+        name = '{0}-{1}{2}'.format(pausterized_name, id(image),
                                    str(time.time()).replace('.', ''))
 
         cont = getattr(CONT_MOD[self.jtype], "Container")(image, name,
@@ -196,6 +200,8 @@ class StimelaJob(object):
         cont.parameter_file_name = '{0}/{1}.json'.format(
             self.recipe.parameter_file_dir, name)
 
+        self.image = str(cont.image)
+
         # Remove dismissable kw arguments:
         ops_to_pop = []
         for op in config:
@@ -216,7 +222,7 @@ class StimelaJob(object):
                         '/scratch/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), "/scratch/code", "ro")
 
-        cont.RUNSCRIPT = f"/bin/sh -c /{self.jtype}_run"
+        cont.RUNSCRIPT = f"/{self.jtype}_run"
         cont.add_volume(f"{BIN}/stimela_runscript", 
                 f"/{self.jtype}_run", perm="ro")
 
@@ -329,12 +335,12 @@ class Recipe(object):
                       logfile_task may contain a "{task}" entry which will be substituted for a task name.
         """
         self.name = name
-        self.name_ = self.name.lower().replace(' ', '_')
+        self.name_ = re.sub(r'\W', '_', name)  # pausterized name
 
         self.cabpath = cabpath
 
         # set default name for task-level logfiles
-        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_.split('-')[0]) \
+        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name) \
             if logfile_task is None else logfile_task
 
         if logger is not None:
@@ -347,7 +353,7 @@ class Recipe(object):
             if logfile is not False:
                 # logfile is None: use default name
                 if logfile is None:
-                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_.split('-')[0])
+                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name)
 
                 # reset default name for task-level logfiles based on logfile
                 self.logfile_task = os.path.splitext(logfile)[0] + "-{task}.txt" \
@@ -360,7 +366,7 @@ class Recipe(object):
                     os.makedirs(log_dir)
 
                 fh = logging.FileHandler(logfile, 'w', delay=True)
-                fh.setLevel(logging.DEBUG)
+                fh.setLevel(logging.INFO)
                 fh.setFormatter(stimela.log_formatter)
                 self.log.addHandler(fh)
 
@@ -426,21 +432,19 @@ class Recipe(object):
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath)
-        if callable(image):
-            job.jtype = 'function'
-            job.python_job(image, parameters=config)
-            self.jobs.append(job)
-            self.log.info('Adding Python job \'{0}\' to recipe.'.format(name))
-        else:
-            job.setup_job(image=image, config=config,
-                     indir=input, outdir=output, msdir=msdir or self.ms_dir,
-                     shared_memory=shared_memory, build_label=build_label or self.build_label,
-                     singularity_image_dir=self.singularity_image_dir,
-                     time_out=time_out)
 
-            self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
-                job.job.image, name))
-            self.jobs.append(job)
+        if callable(image):
+            job.jtype = 'python'
+        
+        job.setup_job(image=image, config=config,
+                 indir=input, outdir=output, msdir=msdir or self.ms_dir,
+                 shared_memory=shared_memory, build_label=build_label or self.build_label,
+                 singularity_image_dir=self.singularity_image_dir,
+                 time_out=time_out)
+
+        self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
+            job.image, name))
+        self.jobs.append(job)
 
         return 0
 
@@ -601,7 +605,7 @@ class Recipe(object):
                     astd.write(
                         'Stimela version     : {}\n'.format(version))
                     astd.write(
-                        'Cab name            : {}\n'.format(job.job.image))
+                        'Cab name            : {}\n'.format(job.image))
                     astd.write('-------------------------------------\n')
                 job.run_job()
 

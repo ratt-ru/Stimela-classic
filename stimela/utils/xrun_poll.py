@@ -61,7 +61,7 @@ class Poller(object):
                     if verbose:
                         self.log.debug("poll(): retrying")
                 else:
-                    raise
+                    raise ioerr
 
     def unregister_file(self, fobj):
         if fobj.fileno() in self.fdlabels:

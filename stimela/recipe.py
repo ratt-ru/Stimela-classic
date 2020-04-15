@@ -222,9 +222,15 @@ class StimelaJob(object):
                         '/scratch/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), "/scratch/code", "ro")
 
-        cont.RUNSCRIPT = f"/{self.jtype}_run"
+
+
+        if self.jtype == "singularity":
+            cont.RUNSCRIPT = f"/{self.jtype}"
+        else:
+            cont.RUNSCRIPT = f"/{self.jtype}_run"
+
         cont.add_volume(f"{BIN}/stimela_runscript", 
-                f"/{self.jtype}_run", perm="ro")
+                cont.RUNSCRIPT, perm="ro")
 
         cont.add_environ('CONFIG', '/scratch/configfile')
         cont.add_environ('HOME', WORKDIR)

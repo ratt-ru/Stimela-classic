@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import subprocess
 import os
 import sys
@@ -29,15 +30,16 @@ def pull(image, store_path, docker=True, directory=".", force=False):
     """ 
         pull an image
     """
-
     if docker:
         fp = "docker://{0:s}".format(image)
     else:
         fp = image
     if not os.path.exists(directory):
         os.mkdir(directory)
-    utils.xrun("cd", [directory, "&&", "singularity", "pull", "--force" if force else "",
-                      "--name", store_path, fp])
+
+    utils.xrun("singularity", ["build", 
+        	"--force" if force else "", 
+         	os.path.join(directory,store_path), fp])
 
     return 0
 
@@ -47,16 +49,19 @@ class Container(object):
                  volumes=None,
                  logger=None,
                  time_out=-1,
-                 runscript="/singularity"):
+                 runscript="/singularity",
+                 environs=None,
+                 workdir=None):
         """
         Python wrapper to singularity tools for managing containers.
         """
 
         self.image = image
         self.volumes = volumes or []
+        self.environs = environs or []
         self.logger = logger
         self.status = None
-        self.WORKDIR = None
+        self.WORKDIR = workdir
         self.RUNSCRIPT = runscript
         self.PID = os.getpid()
         self.uptime = "00:00:00"
@@ -79,6 +84,17 @@ class Container(object):
 
         return 0
 
+    def add_environ(self, key, value):
+        self.logger.debug("Adding environ varaible [{0}={1}] "\
+                    "in container {2}".format(key, value, self.name))
+        self.environs.append("=".join([key, value]))
+        key_ = f"SINGULARITYENV_{key}"
+	
+        self.logger.debug(f"Setting singularity environmental variable {key_}={value} on host")
+        os.environ[key_] = value
+
+        return 0
+
     def run(self, *args):
         """
         Run a singularity container instance
@@ -97,9 +113,10 @@ class Container(object):
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun("singularity", ["run"] + list(args) + [volumes, self.image, self.RUNSCRIPT],
-                   log=self.logger, timeout=self.time_out, 
-                   logfile=self.logfile)
+        utils.xrun("singularity", ["run", "--workdir", self.WORKDIR] \
+                    + list(args) + [volumes, self.image, self.RUNSCRIPT],
+                    log=self.logger, timeout=self.time_out, 
+                    logfile=self.logfile)
 
         self.status = "exited"
 

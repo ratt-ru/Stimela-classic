@@ -1,13 +1,13 @@
+# -*- coding: future_fstrings -*-
 import stimela
-from stimela import utils
+from stimela import utils, recipe
 import logging
 import os
+import sys
 import textwrap
 from stimela.pathformatter import pathformatter, placeholder
 from stimela.exceptions import *
-
-
-USER = os.environ['USER']
+import time
 
 TYPES = {
     "str":   str,
@@ -17,12 +17,18 @@ TYPES = {
     "list":   list,
 }
 
-IODEST = {
-    "input":   "/input",
-    "output":   "/home/{}/output".format(USER),
-    "msfile":   "/home/{}/msdir".format(USER),
-}
+# Home in container
+HOME = "/stimela_home"
+if os.path.exists(HOME):
+    __timestamp = str(time.time())[:8]
+    HOME = f"{HOME}-{__timestamp}"
 
+IODEST = { 
+        "input": f"{HOME}/input",
+        "output": f"{HOME}/output",
+        "msfile": f"{HOME}/msdir",
+        "tmp": f"{HOME}/output/tmp",
+    }  
 
 class Parameter(object):
     def __init__(self, name, dtype, info,
@@ -138,7 +144,6 @@ class CabDefinition(object):
             parameters0 = cab["parameters"]
             self.parameters = []
 
-            import sys
             for param in parameters0:
                 default = param.get("default", param.get("value", None))
                 addme = Parameter(name=param["name"],
@@ -148,7 +153,6 @@ class CabDefinition(object):
                                       "info", None) or "No documentation. Bad! Very bad...",
                                   default=default,
                                   mapping=param.get("mapping", None),
-                                  #delimiter=param.get("delimiter", None),
                                   required=param.get("required", False),
                                   choices=param.get("choices", False),
                                   check_io=param.get("check_io", True))
@@ -165,12 +169,7 @@ class CabDefinition(object):
             self.tag = tag
             self.version = version
 
-        #logging.basicConfig(level=getattr(logging, loglevel))
         self.log = stimela.logger()
-        #     .getChild(task or "cab")
-        # self.log.propagate = True
-        # self.log.setLevel(getattr(logging, loglevel))
-
 
     def __str__(self):
         res = ""

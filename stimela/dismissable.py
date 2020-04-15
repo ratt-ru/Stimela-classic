@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 class dismissable:
     '''
     Wrapper for optional parameters to stimela

@@ -1,5 +1,5 @@
 FROM stimela/tricolour:1.2.5
-MAINTAINER <sphemakh@gmial.com>
+MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt
 RUN rm /usr/bin/python

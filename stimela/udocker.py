@@ -32,8 +32,9 @@ class Container(object):
                  shared_memory="1gb",
                  time_out=-1,
                  log_container=None,
-                 COMMAND="",
-                 use_graphics=False):
+                 runscript=None,
+                 use_graphics=False, 
+                 workdir=None):
         """
         Python wrapper to docker engine tools for managing containers.
         """
@@ -45,8 +46,8 @@ class Container(object):
         self.environs = environs or []
         self.logger = logger
         self.status = None
-        self.WORKDIR = None
-        self.COMMAND = COMMAND
+        self.WORKDIR = workdir
+        self.RUNSCRIPT = runscript
         self.PID = os.getpid()
         self.uptime = "00:00:00"
         self.time_out = time_out
@@ -91,7 +92,7 @@ class Container(object):
                                                           self.WORKDIR) if self.WORKDIR else "",
                                                       "--rm",
                                                       "--dri" if self.use_graphics else "",
-                                                      self.name, self.COMMAND or ""], 
+                                                      self.name, self.RUNSCRIPT or ""], 
                    logfile=self.logfile,
                    log=self.logger,
                    timeout=self.time_out)

@@ -1,7 +1,12 @@
+# -*- coding: future_fstrings -*-
 import os
 import sys
 import inspect
 import pkg_resources
+import logging
+from logging import StreamHandler
+import re
+from pathlib import Path
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -12,6 +17,7 @@ except pkg_resources.DistributionNotFound:
 USER = os.environ["USER"]
 UID = os.getuid()
 GID = os.getgid()
+CAB_USERNAME = re.sub('[^0-9a-zA-Z]+', '_', USER).lower() 
 
 root = os.path.dirname(__file__)
 
@@ -20,6 +26,8 @@ BASE_PATH = os.path.join(root, "cargo/base")
 
 # Set up logging infrastructure
 LOG_HOME = os.path.expanduser("~/.stimela")
+# make sure directory exists
+Path(LOG_HOME).mkdir(exist_ok=True)
 # This is is the default log file. It logs stimela images, containers and processes
 LOG_FILE = "{0:s}/stimela_logfile.json".format(LOG_HOME)
 
@@ -47,4 +55,53 @@ for item in os.listdir(CAB_PATH):
     if dockerfile and paramfile and srcdir:
         CAB.append(item)
 
+
+_logger = None
+
+from .utils.logger import SelectiveFormatter, ColorizingFormatter, ConsoleColors, MultiplexingHandler
+
+log_console_handler = log_formatter = log_boring_formatter = log_colourful_formatter = None
+
+def logger(name="STIMELA", propagate=False, console=True, boring=False,
+           fmt="{asctime} {name} {levelname}: {message}",
+           col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
+           sub_fmt="# {message}",
+           col_sub_fmt="%s# {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
+           datefmt="%Y-%m-%d %H:%M:%S"):
+    """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
+    global _logger
+    if _logger is None:
+        _logger = logging.getLogger(name)
+        _logger.setLevel(logging.DEBUG)
+        _logger.propagate = propagate
+
+        global log_console_handler, log_formatter, log_boring_formatter, log_colourful_formatter
+
+        # this function checks if the log record corresponds to stdout/stderr output from a cab
+        def _is_from_subprocess(rec):
+            return hasattr(rec, 'stimela_subprocess_output')
+
+        log_boring_formatter = SelectiveFormatter(
+                    logging.Formatter(fmt, datefmt, style="{"),
+                    [(_is_from_subprocess, logging.Formatter(sub_fmt, datefmt, style="{"))])
+
+        log_colourful_formatter = SelectiveFormatter(
+                    ColorizingFormatter(col_fmt, datefmt, style="{"),
+                    [(_is_from_subprocess, ColorizingFormatter(fmt=col_sub_fmt, datefmt=datefmt, style="{",
+                                                               default_color=ConsoleColors.DIM))])
+
+        log_formatter = log_boring_formatter if boring else log_colourful_formatter
+
+        if console:
+            if "SILENT_STDERR" in os.environ and os.environ["SILENT_STDERR"].upper()=="ON":
+                log_console_handler = StreamHandler(stream=sys.stdout)
+            else:  
+                log_console_handler = MultiplexingHandler()
+            log_console_handler.setFormatter(log_formatter)
+            log_console_handler.setLevel(logging.INFO)
+            _logger.addHandler(log_console_handler)
+
+    return _logger
+
 from stimela.recipe import Recipe
+

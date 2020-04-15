@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import stimela
 import os
 import unittest
@@ -39,6 +40,7 @@ class kat7_reduce(unittest.TestCase):
                 continue
             dockerfile = os.path.join(CAB_PATH, item, "Dockerfile")
             # First get base image from json file
+            print(f'Dockerfile : {dockerfile}')
             with open(parfile, "r") as stdr:
                 cabdict = json.load(stdr)
                 parfile_base = ":".join([cabdict["base"], cabdict["tag"]])

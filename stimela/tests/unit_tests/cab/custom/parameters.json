@@ -1,7 +1,7 @@
 {
     "task": "custom", 
     "base": "stimela/base", 
-    "tag": "1.2.0", 
+    "tag": "1.2.4", 
     "description": "Custom", 
     "prefix": "--", 
     "binary": "echo", 

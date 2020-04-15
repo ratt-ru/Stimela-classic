@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import os
 import argparse
 from argparse import ArgumentParser
@@ -16,6 +17,7 @@ GID = stimela.GID
 LOG_HOME = stimela.LOG_HOME
 LOG_FILE = stimela.LOG_FILE
 GLOBALS = stimela.GLOBALS
+CAB_USERNAME = stimela.CAB_USERNAME
 
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):
@@ -32,7 +34,7 @@ def build(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit():
             argv = ' ' + arg
-
+    
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
     parser.add_argument("-b", "--base", action="store_true",
                         help="Build base images")
@@ -49,7 +51,7 @@ def build(argv):
     parser.add_argument("-nc", "--no-cache", action="store_true",
                         help="Do not use cache when building the image")
 
-    parser.add_argument("-bl", "--build-label", default=USER.lower(),
+    parser.add_argument("-bl", "--build-label", default=CAB_USERNAME,
                         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -232,7 +234,7 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-bl", "--build-label", default=USER.lower(),
+    add("-bl", "--build-label", default=CAB_USERNAME,
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -330,7 +332,7 @@ def pull(argv):
     if args.image:
         for image in args.image:
             simage = image.replace("/", "_")
-            simage = simage.replace(":", "_") + ".img"
+            simage = simage.replace(":", "_") + singularity.suffix
             if args.singularity:
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
@@ -355,7 +357,7 @@ def pull(argv):
         for image in base:
             if args.singularity:
                 simage = image.replace("/", "_")
-                simage = simage.replace(":", "_") + ".img"
+                simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
             elif args.docker:
@@ -490,7 +492,7 @@ def clean(argv):
     add("-aC", "--all-containers", action="store_true",
         help="Stop and/or Remove all stimela containers")
 
-    add("-bl", "--build-label", default=USER.lower(),
+    add("-bl", "--build-label", default=CAB_USERNAME,
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
     args = parser.parse_args(argv)
@@ -515,7 +517,7 @@ def clean(argv):
                 log_cabs.write()
 
     if args.all_base:
-        images = log.info['images'].keys()
+        images = list(log.info['images'].keys())
         for image in images:
             if log.info['images'][image]['CAB'] is False:
                 utils.xrun('docker', ['rmi', image])
@@ -523,7 +525,7 @@ def clean(argv):
                 log.write()
 
     if args.all_cabs:
-        images = log_cabs.info['images'].keys()
+        images = list(log_cabs.info['images'].keys())
         for image in images:
             if log_cabs.info['images'][image]['CAB']:
                 utils.xrun('docker', ['rmi', image])
@@ -531,7 +533,7 @@ def clean(argv):
                 log_cabs.write()
 
     if args.all_containers:
-        containers = log.info['containers'].keys()
+        containers = list(log.info['containers'].keys())
         for container in containers:
             cont = docker.Container(
                 log.info['containers'][container]['IMAGE'], container)

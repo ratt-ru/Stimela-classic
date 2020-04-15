@@ -1,13 +1,12 @@
-from stimela import utils
+# -*- coding: future_fstrings -*-
+import stimela
+from stimela import utils, recipe
 import logging
-import sys
 import os
+import sys
 import textwrap
 from stimela.pathformatter import pathformatter, placeholder
 from stimela.exceptions import *
-
-
-USER = os.environ['USER']
 
 TYPES = {
     "str":   str,
@@ -17,12 +16,15 @@ TYPES = {
     "list":   list,
 }
 
-IODEST = {
-    "input":   "/input",
-    "output":   "/home/{}/output".format(USER),
-    "msfile":   "/home/{}/msdir".format(USER),
-}
+# Home in container
+HOME = "/scratch"
 
+IODEST = { 
+        "input": f"{HOME}/input",
+        "output": f"{HOME}/output",
+        "msfile": f"{HOME}/msdir",
+        "tmp": f"{HOME}/output/tmp",
+    }  
 
 class Parameter(object):
     def __init__(self, name, dtype, info,
@@ -115,12 +117,10 @@ class CabDefinition(object):
                  binary=None,
                  description=None,
                  tag=None,
-                 prefix=None, loglevel='INFO',
+                 prefix=None,
                  parameters=[],
                  version=None):
 
-        logging.basicConfig(level=getattr(logging, loglevel))
-        self.log = logging
         self.indir = indir
         self.outdir = outdir
 
@@ -140,7 +140,6 @@ class CabDefinition(object):
             parameters0 = cab["parameters"]
             self.parameters = []
 
-            import sys
             for param in parameters0:
                 default = param.get("default", param.get("value", None))
                 addme = Parameter(name=param["name"],
@@ -150,7 +149,6 @@ class CabDefinition(object):
                                       "info", None) or "No documentation. Bad! Very bad...",
                                   default=default,
                                   mapping=param.get("mapping", None),
-                                  #delimiter=param.get("delimiter", None),
                                   required=param.get("required", False),
                                   choices=param.get("choices", False),
                                   check_io=param.get("check_io", True))
@@ -165,7 +163,9 @@ class CabDefinition(object):
             self.description = description
             self.msdir = msdir
             self.tag = tag
-            self.version = vesion
+            self.version = version
+
+        self.log = stimela.logger()
 
     def __str__(self):
         res = ""
@@ -260,7 +260,6 @@ class CabDefinition(object):
             if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
-
         self.log.info(
             "Validating parameters...       CAB = {0}".format(self.task))
         for name, value in options.items():
@@ -349,7 +348,7 @@ class CabDefinition(object):
                             raise StimelaCabParameterError("Path formatter type specified, but {} is not io".format(param.name))
 
                         self.log.debug(
-                            "Validating paramter {}".format(param.name))
+                            "Validating parameter {}".format(param.name))
                         param.validate(value)
                         param.value = value
             if not found:

@@ -1,7 +1,7 @@
 {
-    "task": "aimfast", 
-    "base": "stimela/aimfast", 
-    "tag": "1.2.0", 
+    "task": "aimfast",
+    "base": "stimela/aimfast",
+    "tag": "dev",
     "description": "An Astronomical Image Fidelity Assessment Tool", 
     "prefix": "--", 
     "binary": "aimfast", 
@@ -104,6 +104,71 @@
             "required": false, 
             "name": "data-points", 
             "dtype": "int"
+        },
+        {
+            "info": "Tolerance to cross-match sources in arcsec",
+            "default": null,
+            "required": false,
+            "name": "tolerance",
+            "dtype": "float"
+        },
+        {
+            "info": "Get stats of channels with pixel flux above thresh in Jy/Beam",
+            "default": null,
+            "required": false,
+            "name": "threshold",
+            "dtype": "float"
+        },
+        {
+            "info": "Get stats of specified channels e.g. '10~20;100~1000'",
+            "default": null,
+            "required": false,
+            "name": "channels",
+            "dtype": "str"
+        },
+        {
+            "info": "Window size to compute rms",
+            "default": null,
+            "required": false,
+            "name": "window-size",
+            "dtype": "int"
+        },
+        {
+            "info": "Step size of sliding window",
+            "default": null,
+            "required": false,
+            "name": "step-size",
+            "dtype": "int"
+        },
+        {
+            "info": "Name of the mask image fits file", 
+            "default": null, 
+            "required": false, 
+            "name": "mask-image", 
+            "io": "input",
+            "dtype": "file"
+        },
+        {
+            "info": "Name of the mask image fits file", 
+            "default": null, 
+            "required": false, 
+            "name": "outfile", 
+            "io": "output",
+            "dtype": "file"
+        },
+        {
+            "info": "Prefix of output html files",
+            "default": null,
+            "required": false,
+            "name": "html-prefix",
+            "dtype": "str"
+        },
+        {
+            "info": "Factor to multiply the field of view for random points. i.e. 0.0-1.0'",
+            "default": null,
+            "required": false,
+            "name": "fov-factor",
+            "dtype": "float"
         }
     ]
 }

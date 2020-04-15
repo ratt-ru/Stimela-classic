@@ -1,5 +1,5 @@
 FROM stimela/shadems:1.2.4
-MAINTAINER <sphemakh@gmial.com>
+MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt
 CMD /scratch/code/run.sh

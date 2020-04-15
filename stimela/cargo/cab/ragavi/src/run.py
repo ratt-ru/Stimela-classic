@@ -15,7 +15,7 @@ args = []
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
-    if value is None:
+    if value in [None, "", " "]:
         continue
     elif value is False:
         continue

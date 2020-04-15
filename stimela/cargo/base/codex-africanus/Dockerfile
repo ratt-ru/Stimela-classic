@@ -8,7 +8,7 @@ RUN docker-apt-install python3-casacore \
     libcfitsio-dev \
     wcslib-dev \
     python3-pip    
-RUN pip3 install --upgrade pip setuptools astropy pyyaml
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
-RUN pip3 install crystalball>=0.2.4
+RUN pip install --upgrade pip setuptools astropy pyyaml
+RUN pip install crystalball>=0.3.0
 RUN crystalball -h

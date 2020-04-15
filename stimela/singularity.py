@@ -36,12 +36,10 @@ def pull(image, store_path, docker=True, directory=".", force=False):
         fp = image
     if not os.path.exists(directory):
         os.mkdir(directory)
-    if version < "3.1.1":
-        utils.xrun("cd", [directory, "&&", "singularity", "pull", "--force" if force else "",
-                "--name", store_path, fp])
-    else:
-        utils.xrun("singularity", ["pull", "--dir", directory,
-            "--force" if force else "", store_path, fp])
+
+    utils.xrun("singularity", ["build", 
+        	"--force" if force else "", 
+         	os.path.join(directory,store_path), fp])
 
     return 0
 

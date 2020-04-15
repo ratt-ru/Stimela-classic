@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 set -u
-xvfb-run python /scratch/code/run.py 2>&1
+xvfb-run -a python /scratch/code/run.py 2>&1

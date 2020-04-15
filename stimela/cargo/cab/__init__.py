@@ -7,6 +7,7 @@ import sys
 import textwrap
 from stimela.pathformatter import pathformatter, placeholder
 from stimela.exceptions import *
+import time
 
 TYPES = {
     "str":   str,
@@ -17,7 +18,10 @@ TYPES = {
 }
 
 # Home in container
-HOME = "/scratch"
+HOME = "/stimela_home"
+if os.path.exists(HOME):
+    __timestamp = str(time.time())[:8]
+    HOME = f"{HOME}-{__timestamp}"
 
 IODEST = { 
         "input": f"{HOME}/input",

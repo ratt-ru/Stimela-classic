@@ -113,9 +113,10 @@ class Container(object):
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun("singularity", ["run"] + list(args) + [volumes, self.image, self.RUNSCRIPT],
-                   log=self.logger, timeout=self.time_out, 
-                   logfile=self.logfile)
+        utils.xrun("singularity", ["run", "--workdir", self.WORKDIR] \
+                    + list(args) + [volumes, self.image, self.RUNSCRIPT],
+                    log=self.logger, timeout=self.time_out, 
+                    logfile=self.logfile)
 
         self.status = "exited"
 

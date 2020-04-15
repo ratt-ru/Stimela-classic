@@ -16,7 +16,8 @@ TYPES = {
     "list":   list,
 }
 
-HOME = os.environ["HOME"]
+# Home in container
+HOME = "/scratch"
 
 IODEST = { 
         "input": f"{HOME}/input",

@@ -13,6 +13,9 @@ import codecs
 class StimelaCabRuntimeError(RuntimeError):
     pass
 
+class StimelaProcessRuntimeError(RuntimeError):
+    pass
+
 
 
 CPUS = 1

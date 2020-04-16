@@ -3,9 +3,10 @@ import sys
 import logging
 import Crasa.Crasa as crasa
 
-sys.path.append("/scratch/stimela")
+HOME = os.environ["HOME"]
+sys.path.append(os.path.join(HOME,"/stimela"))
 
-utils = __import__('utils')
+print(sys.path)
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]

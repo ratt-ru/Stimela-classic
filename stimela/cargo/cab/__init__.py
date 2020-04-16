@@ -19,6 +19,8 @@ TYPES = {
 
 # Home in container
 HOME = "/stimela_home"
+USER_HOME = os.environ["HOME"]
+
 if os.path.exists(HOME):
     __timestamp = str(time.time())[:8]
     HOME = f"{HOME}-{__timestamp}"

@@ -217,10 +217,10 @@ class StimelaJob(object):
         # environmental variables. These will be
         # always exist in a cab container
         cont.add_volume(self.recipe.stimela_path,
-                        '/scratch/stimela', perm='ro')
+                        f'{cab.HOME}/stimela', perm='ro')
         cont.add_volume(cont.parameter_file_name,
-                        '/scratch/configfile', perm='ro', noverify=True)
-        cont.add_volume(os.path.join(cabpath, "src"), "/scratch/code", "ro")
+                        f'{cab.HOME}/configfile', perm='ro', noverify=True)
+        cont.add_volume(os.path.join(cabpath, "src"), f"{cab.HOME}/code", "ro")
 
 
 
@@ -232,8 +232,8 @@ class StimelaJob(object):
         cont.add_volume(f"{BIN}/stimela_runscript", 
                 cont.RUNSCRIPT, perm="ro")
 
-        cont.add_environ('CONFIG', '/scratch/configfile')
-        cont.add_environ('HOME', WORKDIR)
+        cont.add_environ('CONFIG', f'{cab.HOME}/configfile')
+        cont.add_environ('HOME', cab.HOME)
 
         if msdir:
             md = cont.IODEST["msfile"]

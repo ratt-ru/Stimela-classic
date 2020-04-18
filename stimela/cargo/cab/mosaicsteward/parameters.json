@@ -6,6 +6,7 @@
     "description": "A package that allows continuum (2D) images and spectral (3D) images to be mosaicked together, using montage commands.", 
     "prefix": "--", 
     "binary": "MosaicSteward", 
+    "junk": [],
     "msdir": false, 
     "parameters": [
         {

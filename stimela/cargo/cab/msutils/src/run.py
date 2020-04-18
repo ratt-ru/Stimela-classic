@@ -4,17 +4,18 @@ from MSUtils import msutils
 import MSUtils.ClassESW as esw
 import inspect
 from MSUtils.imp_plotter import gain_plotter
+import glob
+import shutil
+import yaml
 
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
 
 args = {}
 for param in cab['parameters']:
@@ -66,5 +67,15 @@ _args = {}
 for arg in args.keys():
     if arg in func_args:
         _args[arg] = args[arg]
-        
-run_func(**_args)
+
+try:
+    run_func(**_args)
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)

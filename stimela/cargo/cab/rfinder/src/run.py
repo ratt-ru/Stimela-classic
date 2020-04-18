@@ -2,10 +2,10 @@ import os
 import sys
 import yaml
 import rfinder
-
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
+import glob
+import subprocess
+import shelx
+import shutil
 
 
 CONFIG = os.environ["CONFIG"]
@@ -13,7 +13,10 @@ INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 OUTPUT = os.environ["OUTPUT"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
 args = []
 msname = None
 
@@ -55,4 +58,19 @@ edited_file = 'rfinder_default.yml'
 with open(edited_file, "w") as f:
     yaml.dump(list_doc, f)
 
-utils.xrun('rfinder -c', [edited_file])
+
+_runc = 'rfinder -c %s' % edited_file
+
+try:
+    subprocess.check_call(shlex.split(_rnc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types
+

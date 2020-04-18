@@ -5,6 +5,7 @@
     "description": "List the summary of a data set in the logger or in a file", 
     "prefix": "-", 
     "binary": "listobs", 
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

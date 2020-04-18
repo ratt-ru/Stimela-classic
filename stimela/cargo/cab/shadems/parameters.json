@@ -6,6 +6,7 @@
     "prefix": "--", 
     "binary": "shadems", 
     "msdir": true, 
+    "junk": ["log-shadems.txt"],
     "parameters": [
         {
             "info": "Measurement set", 

@@ -6,6 +6,7 @@
     "description": "Plots elevation tracks from an measurement set",
     "prefix": "--",
     "binary": "plot-elevation-tracks.py",
+    "junk":[],
     "msdir": true,
     "parameters": [
         {

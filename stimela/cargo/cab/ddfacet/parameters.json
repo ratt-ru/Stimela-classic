@@ -6,6 +6,7 @@
     "prefix": "--", 
     "binary": "DDF.py", 
     "msdir": "true", 
+    "junk": [],
     "parameters": [
         {
             "info": "Custom parset file (note: all paths in the parset must be relative to the mount points inside the container). Advance usage only.", 

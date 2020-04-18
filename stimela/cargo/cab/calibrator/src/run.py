@@ -3,20 +3,24 @@ import os
 import sys
 from pyrap.tables import table
 import subprocess
+import shlex
+import yaml
+import glob
+import shutil
 
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
-CODE = "/scratch/code"
+CODE = os.path.join(os.environ["STIMELA_MOUNT"], "code")
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
 binary = cab['binary']
 parameters = cab['parameters']
+junk = cab["junk"]
 
 jdict = {}
 for param in parameters:
@@ -228,8 +232,9 @@ def run_meqtrees(msname):
 
     args = prefix + args + suffix
 
-    utils.xrun(cab['binary'], args +
-               ['-s {}'.format(saveconf) if saveconf else ''])
+    _runc = " ".join([cab['binary']] + args + \ 
+            ['-s {}'.format(saveconf) if saveconf else ''])
+    subprocess.check_call(shutil.split(_runc))
 
     print("MeqTrees Done!")
     # now plot the gains
@@ -267,7 +272,16 @@ def run_meqtrees(msname):
             plotgains.make_ifrgain_plots(
                 ifrjones_gains, prefix=ifrjones_plotprefix, feed_type=feed_type)
 
-    sys.exit(0)
+try:
+    run_meqtrees(msname)
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types
 
-
-run_meqtrees(msname)

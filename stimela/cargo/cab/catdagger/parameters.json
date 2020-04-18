@@ -4,7 +4,8 @@
     "tag": "1.2.0", 
     "description": "CATDagger - An automatic differential gain catalog tagger", 
     "prefix": "--", 
-    "binary": "dagger", 
+    "binary": "dagger",
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

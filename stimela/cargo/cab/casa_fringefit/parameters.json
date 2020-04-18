@@ -5,6 +5,7 @@
     "description": "Phase offsets, groups delays and delay rates are calculated with respect to a specified referance antenna by a two-dimensional FFT and subsequent least-squares optimisation.",
     "prefix": "-", 
     "binary": "fringefit", 
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

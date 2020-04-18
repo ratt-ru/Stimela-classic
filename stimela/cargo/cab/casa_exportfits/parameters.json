@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Convert a CASA image to a FITS file", 
     "prefix": " ", 
-    "binary": "exportfits", 
+    "binary": "exportfits",
+    "junk":[],
     "msdir": false, 
     "parameters": [
         {

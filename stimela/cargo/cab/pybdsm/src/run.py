@@ -5,22 +5,25 @@ import bdsf as bdsm  # bdsm it is and bdsm it shall remain
 import numpy
 import Tigger
 import tempfile
-import pyfits
+import astropy.io.fits as pyfits
+import yaml
+import shlex
+import shutil
+import glob
+import subprocess
 
 from astLib.astWCS import WCS
 from Tigger.Models import SkyModel, ModelClasses
-
-
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
 
 CONFIG = os.environ['CONFIG']
 INPUT = os.environ['INPUT']
 OUTPUT = os.environ['OUTPUT']
 MSDIR = os.environ['MSDIR']
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
 
 write_catalog = ['bbs_patches', 'bbs_patches_mask',
                  'catalog_type', 'clobber', 'correct_proj', 'format',
@@ -74,19 +77,28 @@ if spi_do and multi_chan_beam:
     img_opts['beam_spectrum'] = beams
 
 image = img_opts.pop('filename')
-#img_opts["indir"] = os.path.dirname(image) + "/"
 filename = os.path.basename(image)
 
 outfile = write_opts.pop('outfile')
 
-img = bdsm.process_image(image, **img_opts)
+try:
+    img = bdsm.process_image(image, **img_opts)
 
-port2tigger = write_opts.pop('port2tigger', True)
+    port2tigger = write_opts.pop('port2tigger', True)
 
-if port2tigger:
-    write_opts['format'] = 'fits'
+    if port2tigger:
+        write_opts['format'] = 'fits'
 
-img.write_catalog(outfile=outfile, **write_opts)
+    img.write_catalog(outfile=outfile, **write_opts)
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
 
 if not port2tigger:
     sys.exit(0)
@@ -157,4 +169,15 @@ model.ra0, model.dec0 = map(numpy.deg2rad, centre)
 
 model.save(tname_lsm)
 # Rename using CORPAT
-utils.xrun("tigger-convert", [tname_lsm, "--rename -f"])
+_runc = "tigger-convert %s --rename -f" % tname_lsm
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)

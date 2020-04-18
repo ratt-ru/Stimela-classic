@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Subtract/add model from/to the corrected visibility data.", 
     "prefix": "", 
-    "binary": "uvsub", 
+    "binary": "uvsub",
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

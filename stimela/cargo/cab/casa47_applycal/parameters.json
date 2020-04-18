@@ -5,6 +5,7 @@
     "description": "Apply calibrations solutions(s) to data", 
     "prefix": "-", 
     "binary": "applycal", 
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

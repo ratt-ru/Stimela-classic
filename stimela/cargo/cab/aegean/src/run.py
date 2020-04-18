@@ -4,20 +4,23 @@ import numpy
 import Tigger
 import tempfile
 import pyfits
+import shutil
+import shlex
+import subprocess
+import yaml
 
 from astLib.astWCS import WCS
 from astropy.table import Table
 from Tigger.Models import SkyModel, ModelClasses
 
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
-
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
+OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+junk = cab["junk"]
 
 write_catalog = ['port2tigger', 'table']
 
@@ -43,7 +46,20 @@ for param in cab['parameters']:
     else:
         img_opts[name] = value
 
-utils.xrun(cab['binary'], args)
+_runc = " ".join([cab["binary"]] + args)
+
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types
 
 port2tigger = write_opts.pop('port2tigger')
 outfile = write_opts.pop('table')

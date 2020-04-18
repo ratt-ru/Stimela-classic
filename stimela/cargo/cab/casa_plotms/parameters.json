@@ -5,6 +5,7 @@
     "description": "CASA plotms task", 
     "prefix": " ", 
     "binary": "plotms", 
+    "junk" :["*.last"],
     "msdir": true, 
     "parameters": [
         {

@@ -4,7 +4,8 @@
     "tag": "0.3.0", 
     "description": "Specify Calibration Values of Various Types", 
     "prefix": "-", 
-    "binary": "polcal", 
+    "binary": "polcal",
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

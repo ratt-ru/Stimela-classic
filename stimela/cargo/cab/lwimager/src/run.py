@@ -4,16 +4,23 @@ import sys
 from pyrap.tables import table
 from MSUtils import msutils
 import tempfile
-import pyfits
+import astropy.io.fits as pyfits
+import subprocess
+import shlex
+import shutil
+import yaml
 
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
 
 CONFIG = os.environ['CONFIG']
 OUTPUT = os.environ['OUTPUT']
+INPPUT = os.environ['INPUT']
+MSDIR = os.environ['MSDIR']
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
+
 params = cab['parameters']
 
 tdir = tempfile.mkdtemp(dir='.')
@@ -31,7 +38,8 @@ def _run(prefix=None, predict=False, **kw):
 
     if predict:
         args = ['{0}={1}'.format(a, b) for a, b in kw.iteritems()]
-        utils.xrun(cab['binary'], args)
+        _runc = " ".join([cab["binary"]] + args)
+        subprocess.check_call(shlex.split(_runc))
         return
 
     if kw.get('niter', 0) > 0:
@@ -54,7 +62,8 @@ def _run(prefix=None, predict=False, **kw):
         kw[key] = value[1]
 
     args = ['{0}={1}'.format(a, b) for a, b in kw.iteritems()]
-    utils.xrun(cab['binary'], args)
+    _runc = " ".join([cab["binary"]] + args)
+    subprocess.check_call(shlex.split(_runc))
 
     if port2fits:
         print('Converting CASA iamges to FITS images')
@@ -204,8 +213,9 @@ if predict:
         raise RuntimeError('The size of a pixel in this FITS image was not specified \
 in FITS header (CDELT1/2), or as parameter for this module ("cellsize"). Cannot proceed')
 
-    utils.xrun('python /scratch/code/predict_from_fits.py', [predict, options['ms'], cell,
+    _runc = " ".join(['python /scratch/code/predict_from_fits.py'] + [predict, options['ms'], cell,
                                                              tfile.name])
+    subprocess.check_call(shlex.split(_runc))
     predict_vis(msname=options['ms'], image=tfile.name, column=options.get('data', 'MODEL_DATA'),
                 chanchunk=options.get('chanchunk', None), chanstart=options.get('img_chanstart', 0),
                 chanstep=options.get('img_chanstep', 1))

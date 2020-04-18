@@ -27,11 +27,10 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
         stdw = tempfile.NamedTemporaryFile(dir=bdir, mode='w')
         with open("{}/Dockerfile".format(bdir)) as std:
             dfile = std.readlines()
-
         for line in dfile:
             if fromline and line.lower().startswith('from'):
                 stdw.write('FROM {:s}\n'.format(fromline))
-            elif line.lower().startswith("cmd"):
+            elif line.lower().startswith("cmd") or line == dfile[-1]:
                 for arg in build_args:
                     stdw.write(arg+"\n")
                 stdw.write(line)

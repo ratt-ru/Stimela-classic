@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Plot the antenna distribution in the local reference frame", 
     "prefix": "", 
-    "binary": "plotants", 
+    "binary": "plotants",
+    "junk":[".last"],
     "msdir": true, 
     "parameters": [
         {

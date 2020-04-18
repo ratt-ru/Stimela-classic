@@ -5,7 +5,8 @@
     "version" : "1.6.0",
     "description": "Convinience tools for manipulating FITS images", 
     "prefix": "--", 
-    "binary": "fitstool.py", 
+    "binary": "fitstool.py",
+    "junk":[],
     "msdir": "false", 
     "parameters": [
         {

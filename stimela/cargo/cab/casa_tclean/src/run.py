@@ -3,17 +3,19 @@ import sys
 import logging
 import Crasa.Crasa as crasa
 import astropy.io.fits as pyfits
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import yaml
+import glob
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
 
 args = {}
 for param in cab['parameters']:
@@ -40,9 +42,19 @@ prefix = args['imagename']
 port2fits = args.pop('port2fits', True)
 keep_casa_images = args.pop("keep_casa_images", False)
 
-sys.stdout.write(repr(args))
 task = crasa.CasaTask(cab["binary"], **args)
-task.run()
+try:
+    task.run()
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types
 
 nterms = args.get("nterms", 1)
 images = ["flux", "model", "residual", "psf", "image", "mask", "pb", "sumwt"]
@@ -78,8 +90,19 @@ for _image in convert:
     elif os.path.exists(_image):
         task = crasa.CasaTask(
             "exportfits", **dict(imagename=_image, fitsimage=_image+".fits", overwrite=True))
-        task.run()
+        try:
+            task.run()
+        finally:
+            for item in junk:
+                for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+                    items = glob.glob("{dest}/{item}".format(**locals()))
+                    for f in items:
+                        if os.path.isfile(f):
+                            os.remove(f)
+                        elif os.path.isdir(f):
+                            shutil.rmtree(f)
+                        # Leave other types
 
 if not keep_casa_images:
     for _image in convert:
-        utils.xrun("rm", ["-rf", _image])
+        os.system("rm -rf {0:s}".format(_image))

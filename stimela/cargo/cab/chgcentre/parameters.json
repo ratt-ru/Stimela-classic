@@ -6,6 +6,7 @@
     "prefix": "-", 
     "binary": "chgcentre", 
     "msdir": true, 
+    "junk": [],
     "parameters": [
         {
             "info": "Name of MS file to change the phase centre", 

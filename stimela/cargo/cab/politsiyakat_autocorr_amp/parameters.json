@@ -5,6 +5,7 @@
     "description": "Routines for automated post-1GC error detection and mitigation", 
     "prefix": "--", 
     "binary": "python -m politsiyakat", 
+    "junk":[],
     "msdir": "true", 
     "parameters": [
         {

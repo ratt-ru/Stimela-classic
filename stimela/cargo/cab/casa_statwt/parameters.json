@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Reweight visibilities according to their scatter (Experimental)", 
     "prefix": "", 
-    "binary": "statwt", 
+    "binary": "statwt",
+    "junk":[".last"]
     "msdir": true, 
     "parameters": [
         {

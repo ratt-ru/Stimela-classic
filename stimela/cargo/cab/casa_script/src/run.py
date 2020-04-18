@@ -1,16 +1,22 @@
 import os
 import sys
-
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
+import yaml
+import shlex
+import shutil
+import subprocess
+import glob
 
 
 CONFIG = os.environ["CONFIG"]
+OUTPUT = os.environ["OUTPUT"]
 INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
+
 args = []
 msname = None
 
@@ -32,4 +38,17 @@ for param in cab['parameters']:
 
 with open("casajob.py.last", "w") as f:
     f.write(custom_script)
-utils.xrun(cab['binary'], ["-c", "casajob.py.last"] + args)
+
+
+_runc = " ".join([cab['binary']] + ["-c", "casajob.py.last"] + args)
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)

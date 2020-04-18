@@ -1,16 +1,19 @@
 import os
 import sys
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import shutil
+import shlex
+import subprocess
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
 
 args = []
 inimage = None
@@ -62,4 +65,17 @@ elif unstack and axis:
     outimage = None
 else:
     outimage = '{0}output {1}'.format(cab['prefix'], outimage)
-utils.xrun(cab['binary'], args+[inimage, outimage or ""])
+
+_runc = " ".join([cab['binary']] + args + [inimage, outimage or ""])
+
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)

@@ -5,13 +5,13 @@ import numpy
 import tempfile
 import json
 import codecs
+import shlex
+import shutil
+import glob
+import subprocess
 
 from astLib.astWCS import WCS
 from Tigger.Models import SkyModel, ModelClasses
-
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
 
 
 CONFIG = os.environ["CONFIG"]
@@ -22,6 +22,7 @@ OUTPUT = os.environ["OUTPUT"]
 with codecs.open(CONFIG, "r", "utf8") as stdr:
     cab = json.load(stdr)
 
+junk = cab["junk"]
 args = []
 msname = None
 
@@ -54,7 +55,20 @@ for param in cab['parameters']:
 
 wstd.close()
 
-utils.xrun('sofia_pipeline.py', [sofia_file])
+_runc = " ".join(['sofia_pipeline.py', sofia_file])
+
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types
 
 if not port2tigger:
     sys.exit(0)

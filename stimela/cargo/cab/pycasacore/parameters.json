@@ -5,6 +5,7 @@
     "description": "Runs a user defined script in a python environment with python-casaore", 
     "prefix": "", 
     "binary": "python", 
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

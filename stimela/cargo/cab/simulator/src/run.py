@@ -2,20 +2,47 @@ import numpy
 import os
 import sys
 from pyrap.tables import table
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import shlex
+import yaml
+import math
+import subprocess
+import glob
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
-CODE = "/scratch/code/"
+CODE = os.path.join(os.environ["STIMELA_MOUNT"], "code")
 
-cab = utils.readJson(CONFIG)
+def compute_vis_noise(msname, sefd, spw_id=0):
+    """Computes nominal per-visibility noise"""
+    tab = table(msname)
+    spwtab = table(msname + "/SPECTRAL_WINDOW")
+
+    freq0 = spwtab.getcol("CHAN_FREQ")[spw_id, 0]
+    wavelength = 300e+6/freq0
+    bw = spwtab.getcol("CHAN_WIDTH")[spw_id, 0]
+    dt = tab.getcol("EXPOSURE", 0, 1)[0]
+    dtf = (tab.getcol("TIME", tab.nrows()-1, 1)-tab.getcol("TIME", 0, 1))[0]
+
+    # close tables properly, else the calls below will hang waiting for a lock...
+    tab.close()
+    spwtab.close()
+
+    print(">>> %s freq %.2f MHz (lambda=%.2fm), bandwidth %.2g kHz, %.2fs integrations, %.2fh synthesis" % (
+        msname, freq0*1e-6, wavelength, bw*1e-3, dt, dtf/3600))
+    noise = sefd/math.sqrt(abs(2*bw*dt))
+    print(">>> SEFD of %.2f Jy gives per-visibility noise of %.2f mJy" %
+          (sefd, noise*1000))
+
+    return noise
+
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
 
 _params = cab['parameters']
+junk = cab["junk"]
 
 params = {}
 options = {}
@@ -66,7 +93,7 @@ addnoise = params.pop("addnoise", False)
 options["ms_sel.tile_size"] = params.pop("tile-size", 16)
 
 if addnoise:
-    noise = params.pop("noise", 0) or utils.compute_vis_noise(
+    noise = params.pop("noise", 0) or compute_vis_noise(
         msname, params.pop("sefd", 551))
     options["noise_stddev"] = noise
 
@@ -143,4 +170,17 @@ for key, value in options.iteritems():
         value = '"{:s}"'.format(value)
     args.append('{0}={1}'.format(key, value))
 
-utils.xrun(cab['binary'], prefix + args + suffix)
+_runc = " ".join([cab['binary']] + prefix + args + suffix)
+
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types

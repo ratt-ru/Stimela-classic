@@ -2,17 +2,20 @@ import sys
 import os
 from sunblocker.sunblocker import Sunblocker
 import inspect
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import yaml
+import subprocess
+import glob
+import shlex
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+junk = cab["junk"]
 
 args = {}
 for param in cab['parameters']:
@@ -33,11 +36,19 @@ if run_func is None:
     raise RuntimeError(
         "Function '{}' is not part of Sunblocker()".format(function))
 
-# Reove default parameters that are not part of this particular function
-sys.stdout.write(repr(args))
 func_args = inspect.getargspec(run_func)[0]
 for arg in args.keys():
     if arg not in func_args:
         args.pop(arg, None)
 
-run_func(**args)
+try:
+    run_func(**args)
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)

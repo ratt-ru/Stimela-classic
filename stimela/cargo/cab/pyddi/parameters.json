@@ -6,6 +6,7 @@
     "prefix": "--", 
     "binary": "pyddi", 
     "msdir": false, 
+    "junk": [],
     "use_graphics": true,
     "parameters": [
         {

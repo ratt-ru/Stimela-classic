@@ -6,6 +6,7 @@
     "description": "Distributed prediction of visibilities from a sky model", 
     "prefix": "--", 
     "binary": "crystalball", 
+    "junk": [],
     "msdir": true, 
     "parameters": [
         {

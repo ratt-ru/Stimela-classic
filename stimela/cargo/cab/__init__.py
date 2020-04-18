@@ -17,19 +17,28 @@ TYPES = {
     "list":   list,
 }
 
-# Home in container
-HOME = "/stimela_home"
+__vol = {
+        "home" : "/stimela_home",
+        "mount": "/stimela_mount",
+        }
+
 USER_HOME = os.environ["HOME"]
 
-if os.path.exists(HOME):
-    __timestamp = str(time.time())[:8]
-    HOME = f"{HOME}-{__timestamp}"
+for item in list(__vol.keys()):
+    val = __vol[item]
+    while os.path.exists(val):
+        __timestamp = str(time.time()).replace(".", "")
+        val = "{0:s}-{1:s}".format(val.split("-")[0], __timestamp)
+    __vol[item] = val
+
+HOME = __vol["home"]
+MOUNT = __vol["mount"]
 
 IODEST = { 
-        "input": f"{HOME}/input",
-        "output": f"{HOME}/output",
-        "msfile": f"{HOME}/msdir",
-        "tmp": f"{HOME}/output/tmp",
+        "input": f"{MOUNT}/input",
+        "output": f"{MOUNT}/output",
+        "msfile": f"{MOUNT}/msdir",
+        "tmp": f"{MOUNT}/output/tmp",
     }  
 
 class Parameter(object):
@@ -125,7 +134,8 @@ class CabDefinition(object):
                  tag=None,
                  prefix=None,
                  parameters=[],
-                 version=None):
+                 version=None, 
+                 junk=[]):
 
         self.indir = indir
         self.outdir = outdir
@@ -136,6 +146,7 @@ class CabDefinition(object):
             self.base = cab["base"]
             self.binary = cab["binary"]
             self.tag = cab["tag"]
+            self.junk = cab.get("junk", [])
             self.version = cab.get("version", "x.x.x")
             if cab["msdir"]:
                 self.msdir = msdir
@@ -170,6 +181,7 @@ class CabDefinition(object):
             self.msdir = msdir
             self.tag = tag
             self.version = version
+            self.junk = []
 
         self.log = stimela.logger()
 
@@ -227,7 +239,7 @@ class CabDefinition(object):
 
     def toDict(self):
         conf = {}
-        for item in "task base binary msdir description prefix tag".split():
+        for item in "task base binary msdir description prefix tag version junk".split():
             if item == 'msdir':
                 conf[item] = getattr(self, item, False)
             else:

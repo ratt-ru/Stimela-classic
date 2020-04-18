@@ -5,6 +5,7 @@
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-gains",
+    "junk":[],
     "msdir": false,
     "parameters": [
         {

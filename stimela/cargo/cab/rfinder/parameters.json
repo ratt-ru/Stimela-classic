@@ -6,6 +6,7 @@
     "prefix": "--", 
     "binary": "rfinder", 
     "msdir": true, 
+    "junk": [],
     "parameters": [
         {
             "info": "Name of telescope", 

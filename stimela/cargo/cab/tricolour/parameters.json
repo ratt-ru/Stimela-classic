@@ -5,7 +5,7 @@
     "version" : "0.1.7",
     "description": "A variant of the Science Data Processing flagging code, wrapped in dask, operating on Measurement Sets", 
     "prefix": "--", 
-    "binary": "/opt/code/dist/tricolourexe/tricolourexe", 
+    "binary": "tricolour", 
     "junk": [],
     "msdir": true, 
     "parameters": [

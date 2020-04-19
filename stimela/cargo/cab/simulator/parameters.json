@@ -5,7 +5,8 @@
     "description": "Uses MeqTrees to simulate a sky model (Gaussians and point sources) into measurement set (MS)", 
     "prefix": " ", 
     "binary": "meqtree-pipeliner.py", 
-    "msdir": true, 
+    "msdir": true,
+    "junk" : ["core"],
     "parameters": [
         {
             "info": "MS to simulate sky model into", 

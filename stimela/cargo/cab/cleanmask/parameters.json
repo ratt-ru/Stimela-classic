@@ -5,6 +5,7 @@
     "description": "Creates a binary mask from a FITS image", 
     "prefix": "--", 
     "binary": "cleanmask", 
+    "junk":[],
     "msdir": false, 
     "parameters": [
         {

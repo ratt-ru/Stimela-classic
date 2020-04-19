@@ -4,7 +4,8 @@
     "tag": "1.2.0", 
     "description": "A source finding program designed to find and characterise compact continuum radio sources", 
     "prefix": "--", 
-    "binary": "aegean", 
+    "binary": "aegean",
+    "junk":[],
     "msdir": false, 
     "parameters": [
         {

@@ -4,7 +4,8 @@
     "tag": "1.2.0", 
     "description": "Download data from a remote path", 
     "prefix": "--", 
-    "binary": "curl", 
+    "binary": "curl",
+    "junk":[],
     "msdir": false, 
     "parameters": [
         {

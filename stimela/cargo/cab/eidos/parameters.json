@@ -6,6 +6,7 @@
     "description": "Create primary beam model of MeerKAT", 
     "prefix": "--", 
     "binary": "eidos", 
+    "junk": [],
     "msdir": false, 
     "parameters": [
         {

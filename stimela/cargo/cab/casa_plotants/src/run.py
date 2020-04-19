@@ -1,20 +1,19 @@
 import os
 import sys
 import logging
-import drivecasa
-import logging
-casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600*10)
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import Crasa.Crasa as crasa
+import yaml
+import glob
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+junk = cab["junk"]
 
 args = {}
 for param in cab['parameters']:
@@ -26,17 +25,16 @@ for param in cab['parameters']:
 
     args[name] = value
 
-script = ['{0}(**{1})'.format(cab['binary'], args)]
-
-
-def log2term(result):
-    if result[1]:
-        err = '\n'.join(result[1] if result[1] else [''])
-        failed = err.lower().find('an error occurred running task') >= 0
-        if failed:
-            raise RuntimeError('CASA Task failed. See error message above')
-        sys.stdout.write('WARNING:: SEVERE messages from CASA run')
-
-
-result = casa.run_script(script, raise_on_severe=False)
-log2term(result)
+task = crasa.CasaTask(cab["binary"], **args)
+try:
+    task.run()
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types

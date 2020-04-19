@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Bootstrap the flux density scale from standard calibrators", 
     "prefix": "-", 
-    "binary": "fluxscale", 
+    "binary": "fluxscale",
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

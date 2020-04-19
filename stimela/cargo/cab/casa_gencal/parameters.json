@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Specify Calibration Values of Various Types", 
     "prefix": " ", 
-    "binary": "gencal", 
+    "binary": "gencal",
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

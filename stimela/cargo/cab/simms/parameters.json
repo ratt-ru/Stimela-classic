@@ -5,7 +5,8 @@
     "description": "Uses the CASA simulator tool to create a simulated measurement set (MS)", 
     "prefix": "--", 
     "binary": "simms", 
-    "msdir": true, 
+    "msdir": true,
+    "junk" : ["log-simms.txt"],
     "parameters": [
         {
             "info": "Name of MS file to be created", 

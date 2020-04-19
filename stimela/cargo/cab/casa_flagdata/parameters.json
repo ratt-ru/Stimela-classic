@@ -3,7 +3,8 @@
     "base": "stimela/casa", 
     "tag": "1.2.5", 
     "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.", 
-    "prefix": " ", 
+    "prefix": " ",
+    "junk":[],
     "binary": "flagdata", 
     "msdir": true, 
     "parameters": [

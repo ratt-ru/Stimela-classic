@@ -1,15 +1,21 @@
 import os
 import sys
-
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
+import subprocess
+import shlex
+import glob
+import shutil
+import yaml
 
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
 OUTPUT = os.environ["OUTPUT"]
+
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
 
 cab = utils.readJson(CONFIG)
 args = []
@@ -37,8 +43,18 @@ target_images = "--target-images " + " --target-images ".join(target_names)
 args += ["--input {0:s} {1:s} --output {2:s}".format(indir, target_images,
                                                      OUTPUT)]
 
-if target_images:
-    utils.xrun(cab['binary'], args)
-else:
-    raise RuntimeError(
-        'Filenames of the images to be mosaicked have not been specified.')
+if not target_images:
+    raise RuntimeError('Filenames of the images to be mosaicked have not been specified.')
+_runc = " ".join([cab["binary"]] + args)
+
+try:
+    subprocess.check_cal(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)

@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Recalculates (u, v, w) and/or changes Phase Center", 
     "prefix": "", 
-    "binary": "fixvis", 
+    "binary": "fixvis",
+    "junk":[".last"],
     "msdir": true, 
     "parameters": [
         {

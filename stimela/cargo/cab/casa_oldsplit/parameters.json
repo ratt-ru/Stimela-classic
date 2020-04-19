@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Create a visibility subset from an existing visibility set", 
     "prefix": "-", 
-    "binary": "oldsplit", 
+    "binary": "oldsplit",
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

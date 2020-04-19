@@ -5,6 +5,7 @@
     "description": "Specify Calibration Values of Various Types", 
     "prefix": "-", 
     "binary": "gaincal", 
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

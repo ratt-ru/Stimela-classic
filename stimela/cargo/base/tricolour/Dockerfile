@@ -1,13 +1,13 @@
-FROM bhugo/tricolour:0.1.6
+FROM stimela/base:1.2.5
 MAINTAINER <sphemakh@gmail.com>
-RUN pip3 install pyyaml
-RUN cp -r /code /opt
-RUN docker-apt-install xvfb
-COPY xvfb.init.d /etc/init.d/xvfb
-RUN rm /usr/bin/python
-RUN ln -s /usr/bin/python3 /usr/bin/python
-RUN chmod 755 /etc/init.d/xvfb
-RUN chmod 777 /var/run
-ENV DISPLAY :99
-ENTRYPOINT [] # PLEASE DONT CHANGE THIS TO ANYTHING ELSE!!!!!
-
+RUN docker-apt-install python3-casacore \
+    casacore-dev \
+    python3-numpy \
+    python3-setuptools \
+    libboost-python-dev \
+    libcfitsio-dev \
+    wcslib-dev \
+    python3-pip    
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
+RUN pip install --upgrade pip setuptools astropy pyyaml tricolour>=0.1.7
+RUN tricolour --help

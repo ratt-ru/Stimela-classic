@@ -5,6 +5,7 @@
     "description": "Calculates a bandpass calibration solution", 
     "prefix": "-", 
     "binary": "bandpass", 
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

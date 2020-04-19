@@ -5,7 +5,8 @@
     "version" : "1.0.0",
     "description": "Tools for manipulating measurement sets (MSs)", 
     "prefix": " ", 
-    "binary": "msutils", 
+    "binary": "msutils",
+    "junk": [],
     "msdir": true, 
     "parameters": [
         {

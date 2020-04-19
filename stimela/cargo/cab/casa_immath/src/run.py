@@ -2,17 +2,18 @@ import os
 import sys
 import logging
 import Crasa.Crasa as crasa
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import yaml
+import glob
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+junk = cab["junk"]
 
 unstack_params = ['unstack', 'nchans', 'keep_casa_images', 'port2fits']
 unstack_args = {}
@@ -39,7 +40,17 @@ unstack = unstack_args.pop(cab["binary"], False)
 
 if not unstack:
     task = crasa.CasaTask("immath", **immath_args)
-    task.run()
+    try:
+        task.run()
+    finally:
+        for item in junk:
+            for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+                items = glob.glob("{dest}/{item}".format(**locals()))
+                for f in items:
+                    if os.path.isfile(f):
+                        os.remove(f)
+                    elif os.path.isdir(f):
+                        shutil.rmtree(f)
 else:
     images = immath_args['imagename']
     for image in images:

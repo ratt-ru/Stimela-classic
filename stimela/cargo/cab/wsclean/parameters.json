@@ -6,6 +6,7 @@
     "version" : "2.8",
     "prefix": "-", 
     "binary": "wsclean", 
+    "junk" : [],
     "msdir": true, 
     "parameters": [
         {

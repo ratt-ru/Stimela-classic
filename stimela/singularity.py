@@ -3,6 +3,7 @@ import subprocess
 import os
 import sys
 from stimela import utils
+from stimela.cargo import cab
 import json
 import stimela
 import time
@@ -113,7 +114,7 @@ class Container(object):
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun("singularity", ["run", "--workdir", self.WORKDIR] \
+        utils.xrun("singularity", ["run", "--workdir", self.WORKDIR, "--home", f"{cab.USER_HOME}:{cab.HOME}"] \
                     + list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, 
                     logfile=self.logfile)

@@ -5,6 +5,7 @@
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-vis",
+    "junk":[],
     "msdir": true,
     "parameters": [
         {
@@ -13,7 +14,7 @@
             "required": true,
             "name": "ms",
             "default": null,
-            "io": "input"
+            "io": "msfile"
         },
         {
             "info": "X-axis to plot.",

@@ -6,7 +6,8 @@
     "description": "SoFiA, the Source Finding Application, is a new HI source finding pipeline intended to detect and parameterise galaxies in HI data cubes. While the software is still under development, several stable versions of SoFiA have already been released. This wiki contains user documentation and technical information on SoFiA and its individual modules.", 
     "prefix": "--", 
     "binary": "sofia_pipeline.py", 
-    "msdir": false, 
+    "msdir": false,
+    "junk": [],
     "parameters": [
         {
             "info": "The maximum size of test regions. The default value of -1 is a flag value that sets the maximum size to half of the size of the spectral axis.", 

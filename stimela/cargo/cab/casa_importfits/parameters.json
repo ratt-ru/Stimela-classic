@@ -5,6 +5,7 @@
     "description": "Convert aFITS image to a CASA file", 
     "prefix": " ", 
     "binary": "importfits", 
+    "junk":[],
     "msdir": false, 
     "parameters": [
         {

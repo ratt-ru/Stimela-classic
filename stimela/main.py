@@ -78,9 +78,7 @@ def build(argv):
 
         return 0
 
-    workdir = "/home/{}/output/".format(USER)
     build_args = [
-        "WORKDIR {:s}".format(workdir),
         "RUN useradd -r -u {0:d} -U {1:s}".format(UID, USER),
         "USER {0:s}".format(USER),
     ]
@@ -89,11 +87,11 @@ def build(argv):
         cab_args = args.cab.split(",")
 
         if len(cab_args) == 2:
-            cab, path = cab_args
+            cab_, path = cab_args
         else:
             raise ValueError("Not enough arguments for build command.")
 
-        image = "{:s}_cab/{:s}".format(args.build_label, cab)
+        image = "{:s}_cab/{:s}".format(args.build_label, cab_)
 
         docker.build(image,
                      path,

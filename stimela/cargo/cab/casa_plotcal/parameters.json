@@ -5,6 +5,7 @@
     "description": "An all-purpose plotter for calibration results", 
     "prefix": "-", 
     "binary": "plotcal", 
+    "junk": ["*.last"],
     "msdir": false, 
     "parameters": [
         {

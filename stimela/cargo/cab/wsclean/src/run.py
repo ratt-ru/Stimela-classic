@@ -2,18 +2,21 @@ import os
 import sys
 import re
 import astropy.io.fits as pyfits
-
-sys.path.append('/scratch/stimela')
-
-utils = __import__('utils')
+import yaml
+import subprocess
+import shlex
+import glob
 
 CONFIG = os.environ['CONFIG']
 INPUT = os.environ['INPUT']
 OUTPUT = os.environ['OUTPUT']
 MSDIR = os.environ['MSDIR']
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
 params = cab['parameters']
+junk = cab["junk"]
 args = []
 
 # new interface as of WSCLEAN v2.5
@@ -126,4 +129,17 @@ if '{0}auto-threshold'.format(cab['prefix']) not in args:
 else:
     args.remove('{0}noise-sigma 3.0'.format(cab['prefix']))
 
-utils.xrun(cab['binary'], args + [mslist])
+_runc = " ".join([cab["binary"]] + args + [mslist])
+
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types

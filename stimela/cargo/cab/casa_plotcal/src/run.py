@@ -2,17 +2,15 @@ import os
 import sys
 import logging
 import Crasa.Crasa as crasa
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import yaml
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
 
 args = {}
 for param in cab['parameters']:

@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "Concatenate several visibility data sets", 
     "prefix": "", 
-    "binary": "concat", 
+    "binary": "concat",
+    "junk":[".last"],
     "msdir": true, 
     "parameters": [
         {

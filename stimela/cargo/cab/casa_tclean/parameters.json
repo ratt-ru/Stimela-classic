@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "CASA tclean task. Clean based algorithm for multi-scale and wideband image reconstruction, widefield imaging correcting for the w-term", 
     "prefix": "", 
-    "binary": "tclean", 
+    "binary": "tclean",
+    "junk": ["*.last"],
     "msdir": true, 
     "parameters": [
         {

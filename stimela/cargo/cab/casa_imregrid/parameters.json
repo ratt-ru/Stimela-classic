@@ -4,7 +4,8 @@
     "tag": "1.2.5", 
     "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.", 
     "prefix": " ", 
-    "binary": "imregrid", 
+    "binary": "imregrid",
+    "junk":[],
     "msdir": false, 
     "parameters": [
         {

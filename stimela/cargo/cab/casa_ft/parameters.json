@@ -5,6 +5,7 @@
     "description": "Insert a source model  a visibility set", 
     "prefix": "", 
     "binary": "ft", 
+    "junk":[],
     "msdir": true, 
     "parameters": [
         {

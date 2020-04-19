@@ -5,6 +5,7 @@
     "description": "An Astronomical Image Fidelity Assessment Tool", 
     "prefix": "--", 
     "binary": "aimfast", 
+    "junk":[],
     "msdir": false, 
     "parameters": [
         {

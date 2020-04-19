@@ -6,6 +6,7 @@
     "prefix": "", 
     "binary": "clean", 
     "msdir": true, 
+    "junk": ["*.last"],
     "parameters": [
         {
             "info": "Name of input visibility file", 

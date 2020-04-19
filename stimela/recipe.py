@@ -378,10 +378,10 @@ class Recipe(object):
         script_context = self.stimela_context
         self.indir = script_context.get('_STIMELA_INPUT', None)
         self.outdir = script_context.get('_STIMELA_OUTPUT', None)
-        self.msdir = script_context.get('_STIMELA_MSDIR', None) or self.ms_dir
+        self.msdir = script_context.get('_STIMELA_MSDIR', None) or ms_dir
         build_label = script_context.get(
             '_STIMELA_BUILD_LABEL', None) or build_label
-         self.JOB_TYPE = script_context.get(
+        self.JOB_TYPE = script_context.get(
             '_JOB_TYPE', None) or JOB_TYPE
         # set to default if not set
         self.build_label = build_label or stimela.CAB_USERNAME

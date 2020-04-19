@@ -37,7 +37,7 @@ for param in cab['parameters']:
 _runc = " ".join( [cab["binary"]] + args + [ms] )
 
 try:
-    subrocess.check_call(shlex.split(_runc))
+    subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

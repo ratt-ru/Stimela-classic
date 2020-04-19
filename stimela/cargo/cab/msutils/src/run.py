@@ -17,6 +17,7 @@ MSDIR = os.environ["MSDIR"]
 with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)
 
+junk = cab["junk"]
 args = {}
 for param in cab['parameters']:
     name = param['name']

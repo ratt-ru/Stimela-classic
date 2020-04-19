@@ -54,7 +54,7 @@ opts = ["{0:s}sol-jones {1:s}".format(cab["prefix"], soljones)] + \
 
 _runc = " ".join([cab["binary"]] + parset + opts)
 try:
-    subprocess.check_cal(shlex.split(_runc))
+    subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

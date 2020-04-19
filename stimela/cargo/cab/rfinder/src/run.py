@@ -4,7 +4,7 @@ import yaml
 import rfinder
 import glob
 import subprocess
-import shelx
+import shlex
 import shutil
 
 
@@ -62,7 +62,7 @@ with open(edited_file, "w") as f:
 _runc = 'rfinder -c %s' % edited_file
 
 try:
-    subprocess.check_call(shlex.split(_rnc))
+    subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

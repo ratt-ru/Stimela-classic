@@ -6,7 +6,7 @@
     "version" : "2.8",
     "prefix": "-", 
     "binary": "wsclean", 
-    "junk" : ["*.tmp"],
+    "junk" : [],
     "msdir": true, 
     "parameters": [
         {

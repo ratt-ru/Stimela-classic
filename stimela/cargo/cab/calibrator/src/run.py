@@ -232,9 +232,9 @@ def run_meqtrees(msname):
 
     args = prefix + args + suffix
 
-    _runc = " ".join([cab['binary']] + args + \ 
+    _runc = " ".join([cab['binary']] + args + \
             ['-s {}'.format(saveconf) if saveconf else ''])
-    subprocess.check_call(shutil.split(_runc))
+    subprocess.check_call(shlex.split(_runc))
 
     print("MeqTrees Done!")
     # now plot the gains

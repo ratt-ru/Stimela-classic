@@ -4,6 +4,8 @@ import shutil
 import shlex
 import subprocess
 import shutil
+import glob
+import yaml
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -22,6 +24,7 @@ stack = False
 unstack = False
 axis = None
 chunk = 1
+file_pattern = False
 
 for param in cab['parameters']:
     value = param['value']
@@ -50,6 +53,7 @@ for param in cab['parameters']:
         continue
     elif name == 'file_pattern':
         value = '"%s"' % value
+        file_pattern = True
 
     elif value is True:
         value = ""
@@ -65,6 +69,9 @@ elif unstack and axis:
     outimage = None
 else:
     outimage = '{0}output {1}'.format(cab['prefix'], outimage)
+
+if file_pattern:
+    inimage = ""
 
 _runc = " ".join([cab['binary']] + args + [inimage, outimage or ""])
 

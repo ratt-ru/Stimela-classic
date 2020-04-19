@@ -39,8 +39,9 @@ for param in cab['parameters']:
 if msname is None:
     raise RuntimeError('MS name has not be specified')
 
+_runc = " ".join([cab['binary']] + args + [msname])
 try:
-    utils.xrun(cab['binary'], args+[msname])
+    subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

@@ -41,7 +41,8 @@ class StimelaJob(object):
                  logger=None,
                  logfile=None,
                  cabpath=None,
-                 workdir=None):
+                 workdir=None,
+                 shared_memory=None):
         """
 
         logger:   if set to a logger object, uses the specified logger.
@@ -62,6 +63,8 @@ class StimelaJob(object):
             self.args.append("--cpus {0:f}".format(cpus))
         if memory_limit:
             self.args.append("--memory {0:s}".format(memory_limit))
+        if shared_memory:
+            self.args.append("--shm-size {0:s}".format(shared_memory))
         self.time_out = time_out
 
         self.logfile = logfile
@@ -211,8 +214,6 @@ class StimelaJob(object):
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container
-#        cont.add_volume(self.workdir,
-#                        cont.IODEST["output"], perm='rw')
         cont.add_volume(cont.parameter_file_name,
                         f'{cab.MOUNT}/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), f"{cab.MOUNT}/code", "ro")
@@ -299,13 +300,12 @@ class StimelaJob(object):
         if self.jtype == "singularity":
             self.created = True
             self.job.run()
-            return 0
-        else:
+        elif self.jtype in ["podman", "docker"]:
             self.created = False
             self.job.create(*self.args)
             self.created = True
             self.job.start()
-            return 0
+        return 0
 
 
 class Recipe(object):
@@ -454,7 +454,9 @@ class Recipe(object):
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
 
         job = StimelaJob(name, recipe=self, label=label,
-                         cpus=cpus, memory_limit=memory_limit, time_out=time_out,
+                         cpus=cpus, memory_limit=memory_limit,
+                         shared_memory=shared_memory,
+                         time_out=time_out,
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath,
@@ -468,7 +470,7 @@ class Recipe(object):
         msdir = self.msdir or msdir
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
-             shared_memory=shared_memory, build_label=build_label or self.build_label,
+             build_label=build_label or self.build_label,
              singularity_image_dir=self.singularity_image_dir,
              time_out=time_out)
 

@@ -65,7 +65,6 @@ class Container(object):
     def __init__(self, image, name,
                  volumes=None, environs=None,
                  label="", logger=None,
-                 shared_memory="1gb",
                  time_out=-1,
                  workdir=None,
                  log_container=None,
@@ -85,7 +84,6 @@ class Container(object):
         self.status = None
         self.WORKDIR = workdir
         self.RUNSCRIPT = runscript
-        self.shared_memory = shared_memory
         self.PID = os.getpid()
         self.uptime = "00:00:00"
         self.time_out = time_out
@@ -126,7 +124,7 @@ class Container(object):
             "Instantiating container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("docker create", list(args) + [volumes, environs, "--rm",
                                                   "-w %s" % (self.WORKDIR),
-                                                  "--name", self.name, "--shm-size", self.shared_memory,
+                                                  "--name", self.name,
                                                   self.image,
                                                   self.RUNSCRIPT or ""], log=self.logger)
 

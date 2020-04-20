@@ -214,8 +214,6 @@ class StimelaJob(object):
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container
-#        cont.add_volume(self.workdir,
-#                        cont.IODEST["output"], perm='rw')
         cont.add_volume(cont.parameter_file_name,
                         f'{cab.MOUNT}/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), f"{cab.MOUNT}/code", "ro")

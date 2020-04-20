@@ -41,7 +41,8 @@ class StimelaJob(object):
                  logger=None,
                  logfile=None,
                  cabpath=None,
-                 workdir=None):
+                 workdir=None,
+                 shared_memory=None):
         """
 
         logger:   if set to a logger object, uses the specified logger.
@@ -62,6 +63,8 @@ class StimelaJob(object):
             self.args.append("--cpus {0:f}".format(cpus))
         if memory_limit:
             self.args.append("--memory {0:s}".format(memory_limit))
+        if shared_memory:
+            self.args.append("--shm-size {0:s}".format(shared_memory))
         self.time_out = time_out
 
         self.logfile = logfile
@@ -299,13 +302,12 @@ class StimelaJob(object):
         if self.jtype == "singularity":
             self.created = True
             self.job.run()
-            return 0
-        else:
+        elif self.jtype in ["podman", "docker"]:
             self.created = False
             self.job.create(*self.args)
             self.created = True
             self.job.start()
-            return 0
+        return 0
 
 
 class Recipe(object):

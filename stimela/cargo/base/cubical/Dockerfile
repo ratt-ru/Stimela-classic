@@ -6,7 +6,7 @@ RUN pip3 install -U pip setuptools wheel
 RUN apt-get update && apt-get install -y wget git-all
 RUN git clone https://github.com/ratt-ru/CubiCal
 WORKDIR CubiCal
-RUN git checkout v1.4.4
+RUN git checkout v1.5.0
 RUN pip3 install ".[lsm-support,degridder-support]"
 RUN DDF.py --help
 RUN gocubical --help

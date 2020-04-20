@@ -447,7 +447,7 @@ class kat7_reduce(unittest.TestCase):
                 'g-update-type': "phase-diag",
         }, input=INPUT, output=OUTPUT, 
         label="cubical",
-        shared_memory="8g")
+        shared_memory="100g")
 
         recipe.add('cab/casa_uvcontsub', 'uvcontsub',
                    {

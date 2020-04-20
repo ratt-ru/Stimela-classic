@@ -420,10 +420,10 @@ class kat7_reduce(unittest.TestCase):
             label="stitch_lsms1::Create master lsm file",
             time_out=300)
         
-        recipe.add("cab/cubical", "de_calibrate_{}_{}".format(label, ti), {
+        recipe.add("cab/cubical", "cubical_cal", {
                 'data-ms': MS,
                 'data-column': "DATA",
-                'dist-nworker': 8,
+                'dist-nworker': 2,
                 'dist-nthread': 4,
                 'dist-max-chunks': 8,
                 'data-time-chunk': 24,
@@ -432,27 +432,24 @@ class kat7_reduce(unittest.TestCase):
                 'weight-column': "WEIGHT",
                 'flags-apply': "FLAG",
                 'flags-auto-init': "legacy",
-                'madmax-enable': True,
+                'madmax-enable': False,
                 'madmax-threshold': [0,0,10],
                 'madmax-global-threshold': [0,0],
                 'sol-jones': 'g',
                 'sol-stall-quorum': 0.95,
-                'sol-term-iters': [50,90,50,90],
                 'out-name': "cubicaltest",
                 'out-mode': "sc",
                 'out-column': "CORRECTED_DATA",
-                'out-model-column': "MODEL_OUT",
+                'out-model-column': "MODEL_DATA",
                 'log-verbose': "solver=2",
                 'g-type': "complex-diag",
                 'g-freq-int': 0,
-                'g-time-int': interval,
-                'g-max-iter': 100,
+                'g-time-int': 10,
+                'g-max-iter': 20,
                 'g-update-type': "phase-diag",
-                'g-clip-high': 0,
-                'g-clip-low': 0,
-                'g-max-prior-error': 0.35,
-                'g-max-post-error': 0.35,
-        }, input=INPUT, output=OUTPUT, label="g_calibrate_cubical_{}_{}".format(label, ti), shared_memory="250g")
+        }, input=INPUT, output=OUTPUT, 
+        label="cubical",
+        shared_memory="8g")
 
         recipe.add('cab/casa_uvcontsub', 'uvcontsub',
                    {

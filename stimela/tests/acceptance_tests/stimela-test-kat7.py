@@ -390,7 +390,7 @@ class kat7_reduce(unittest.TestCase):
                        "Deconv-MaxMajorIter": 1,
                        "Deconv-MaxMinorIter": 20,
                    },
-                   input=INPUT, output=OUTPUT, shared_memory="200gb",
+                   input=INPUT, output=OUTPUT, shared_memory="8gb",
                    label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
                    time_out=120)
 

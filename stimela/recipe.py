@@ -456,7 +456,9 @@ class Recipe(object):
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
 
         job = StimelaJob(name, recipe=self, label=label,
-                         cpus=cpus, memory_limit=memory_limit, time_out=time_out,
+                         cpus=cpus, memory_limit=memory_limit,
+                         shared_memory=shared_memory,
+                         time_out=time_out,
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath,
@@ -470,7 +472,7 @@ class Recipe(object):
         msdir = self.msdir or msdir
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
-             shared_memory=shared_memory, build_label=build_label or self.build_label,
+             build_label=build_label or self.build_label,
              singularity_image_dir=self.singularity_image_dir,
              time_out=time_out)
 

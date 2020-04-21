@@ -423,9 +423,11 @@ class kat7_reduce(unittest.TestCase):
         recipe.add("cab/cubical", "cubical_cal", {
                 'data-ms': MS,
                 'data-column': "DATA",
-                'dist-nworker': 2,
-                'dist-nthread': 4,
-                'data-freq-chunk': 0,
+                'dist-nworker': 4,
+                'dist-nthread': 1,
+                'dist-max-chunks': 4, 
+                'data-freq-chunk': 10,
+                'data-time-chunk': 10,
                 'model-list': "%s.lsm.html:output" % lsm2,
                 'weight-column': "WEIGHT",
                 'flags-apply': "FLAG",
@@ -439,10 +441,11 @@ class kat7_reduce(unittest.TestCase):
                 'out-column': "CORRECTED_DATA",
                 'log-verbose': "solver=2",
                 'g-type': "complex-diag",
-                'g-freq-int': 0,
+                'g-freq-int': 10,
                 'g-time-int': 10,
                 'g-max-iter': 20,
                 'g-update-type': "phase-diag",
+                 
         }, input=INPUT, output=OUTPUT, 
         label="cubical",
         shared_memory="100gb")

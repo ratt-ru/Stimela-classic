@@ -49,7 +49,7 @@ class kat7_reduce(unittest.TestCase):
         global LABEL
         LABEL = "test_reduction"
         global OUTPUT
-        OUTPUT = "/tmp/output_%s" % LABEL
+        OUTPUT = "output_%s" % LABEL
         global MSCONTSUB
         MSCONTSUB = MS+'.contsub'
 
@@ -355,35 +355,22 @@ class kat7_reduce(unittest.TestCase):
 
         # First selfcal round
 
-        recipe.add("cab/cubical", "cubical_cal", {
-                'data-ms': MS,
-                'data-column': "DATA",
-                'dist-nworker': 1,
-                'dist-nthread': 1,
-                'dist-max-chunks': 1, 
-                'data-freq-chunk': 0,
-                'data-time-chunk': 512,
-                'model-list': "%s.lsm.html:output" % lsm0,
-                'weight-column': "WEIGHT",
-                'flags-apply': "FLAG",
-                'flags-auto-init': "legacy",
-                'madmax-enable': False,
-                'madmax-threshold': [0,0,10],
-                'madmax-global-threshold': [0,0],
-                'sol-jones': 'g',
-                'sol-stall-quorum': 0.95,
-                'out-name': "cubicaltest",
-                'out-column': "CORRECTED_DATA",
-                'log-verbose': "solver=2",
-                'g-type': "complex-2x2",
-                'g-freq-int': 0,
-                'g-time-int': 512,
-                'g-max-iter': 20,
-                'g-update-type': "complex-2x2",
-                 
-            }, input=INPUT, output=OUTPUT, 
-            label="cubical",
-            shared_memory="100gb")
+        recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
+            "skymodel": "%s.lsm.html:output" % (lsm0),
+            "msname": MS,
+            "threads": 16,
+            "column": "DATA",
+            "output-data": "CORR_RES",
+            "Gjones": True,
+            # Ad-hoc right now, subject to change
+            "Gjones-solution-intervals": [20, 0],
+            "Gjones-matrix-type": "GainDiagPhase",
+            "tile-size": 512,
+            "field-id": 0,
+        },
+            input=INPUT, output=OUTPUT,
+            label="calibrator_Gjones_subtract_lsm0:: Calibrate and subtract LSM0",
+            time_out=1800)
 
         # Diversity is a good thing... lets add some DDFacet to this soup bowl
         imname = PREFIX+'ddfacet'

@@ -425,8 +425,6 @@ class kat7_reduce(unittest.TestCase):
                 'data-column': "DATA",
                 'dist-nworker': 2,
                 'dist-nthread': 4,
-                'dist-max-chunks': 8,
-                'data-time-chunk': 24,
                 'data-freq-chunk': 0,
                 'model-list': "%s.lsm.html:output" % lsm2,
                 'weight-column': "WEIGHT",
@@ -447,7 +445,7 @@ class kat7_reduce(unittest.TestCase):
                 'g-update-type': "phase-diag",
         }, input=INPUT, output=OUTPUT, 
         label="cubical",
-        shared_memory="100g")
+        shared_memory="200gb")
 
         recipe.add('cab/casa_uvcontsub', 'uvcontsub',
                    {

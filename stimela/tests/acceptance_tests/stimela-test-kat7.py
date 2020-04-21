@@ -89,8 +89,6 @@ class kat7_reduce(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         unittest.TestCase.tearDownClass()
-        global OUTPUT
-        shutil.rmtree(OUTPUT)
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)

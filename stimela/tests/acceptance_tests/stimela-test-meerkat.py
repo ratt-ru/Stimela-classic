@@ -7,7 +7,7 @@ from nose.tools import timed
 import shutil
 
 
-class kat7_reduce(unittest.TestCase):
+class mk_reduce(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         unittest.TestCase.setUpClass()
@@ -32,8 +32,8 @@ class kat7_reduce(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         unittest.TestCase.tearDownClass()
-        global OUTPUT
-        shutil.rmtree(OUTPUT)
+        #global OUTPUT
+        #shutil.rmtree(OUTPUT)
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)
@@ -47,7 +47,7 @@ class kat7_reduce(unittest.TestCase):
                                 ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
         imname1 = "deep2.1gc"
         imname2 = "deep2.2gc"
-        recipe.add("cab/ddfacet", "ddfacet_test",
+        recipe.add("cab/ddfacet", "ddfacet_test1",
                    {
                        "Data-MS": [MS],
                        "Output-Name": imname1,
@@ -64,8 +64,8 @@ class kat7_reduce(unittest.TestCase):
                        "Deconv-MaxMinorIter": 500,
                    },
                    input=INPUT, output=OUTPUT, shared_memory="8gb",
-                   label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
-                   time_out=120)
+                   label="image1",
+                   time_out=600)
 
         maskname0 = "MASK.fits"
         recipe.add('cab/cleanmask', 'mask0', {
@@ -79,7 +79,7 @@ class kat7_reduce(unittest.TestCase):
             label='mask0:: Make mask',
             time_out=1800)
 
-        recipe.add("cab/ddfacet", "ddfacet_test",
+        recipe.add("cab/ddfacet", "ddfacet_test2",
                    {
                        "Data-MS": [MS],
                        "Output-Name": imname1,
@@ -97,7 +97,7 @@ class kat7_reduce(unittest.TestCase):
                        "Deconv-MaxMinorIter": 1500,
                    },
                    input=INPUT, output=OUTPUT, shared_memory="24gb",
-                   label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
+                   label="image2",
                    time_out=600)
         
         recipe.add('cab/tricolour', "flag_data",
@@ -143,7 +143,7 @@ class kat7_reduce(unittest.TestCase):
             label="cubical",
             shared_memory="24gb")
 
-        recipe.add("cab/ddfacet", "ddfacet_test",
+        recipe.add("cab/ddfacet", "ddfacet_test3",
                    {
                        "Data-MS": [MS],
                        "Output-Name": imname2,
@@ -162,7 +162,7 @@ class kat7_reduce(unittest.TestCase):
                        "Deconv-MaxMinorIter": 1500,
                    },
                    input=INPUT, output=OUTPUT, shared_memory="24gb",
-                   label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
+                   label="image3",
                    time_out=600)
 
         recipe.run()

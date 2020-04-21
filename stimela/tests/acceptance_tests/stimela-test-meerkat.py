@@ -100,7 +100,7 @@ class kat7_reduce(unittest.TestCase):
                    label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
                    time_out=600)
         
-        recipe.add('cab/tricolour', steplabel,
+        recipe.add('cab/tricolour', "flag_data",
         {
                   "ms"                  : MS,
                   "data-column"         : "DATA",
@@ -109,7 +109,7 @@ class kat7_reduce(unittest.TestCase):
                   "flagging-strategy"   : "total_power",
                   "subtract-model-column": "MODEL_DATA",
         },
-        input=INPUT, output=OUTPUT, label=steplabel)
+        input=INPUT, output=OUTPUT, label="flag_data")
 
         # First selfcal round
 

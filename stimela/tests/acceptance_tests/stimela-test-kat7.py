@@ -430,7 +430,7 @@ class kat7_reduce(unittest.TestCase):
                 'weight-column': "WEIGHT",
                 'flags-apply': "FLAG",
                 'flags-auto-init': "legacy",
-                'madmax-enable': False,
+                'madmax-enable': True,
                 'madmax-threshold': [0,0,10],
                 'madmax-global-threshold': [0,0],
                 'sol-jones': 'g',

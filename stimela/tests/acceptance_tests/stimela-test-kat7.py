@@ -419,6 +419,33 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT, output=OUTPUT,
             label="stitch_lsms1::Create master lsm file",
             time_out=300)
+        
+        recipe.add("cab/cubical", "cubical_cal", {
+                'data-ms': MS,
+                'data-column': "DATA",
+                'dist-nworker': 2,
+                'dist-nthread': 4,
+                'data-freq-chunk': 0,
+                'model-list': "%s.lsm.html:output" % lsm2,
+                'weight-column': "WEIGHT",
+                'flags-apply': "FLAG",
+                'flags-auto-init': "legacy",
+                'madmax-enable': False,
+                'madmax-threshold': [0,0,10],
+                'madmax-global-threshold': [0,0],
+                'sol-jones': 'g',
+                'sol-stall-quorum': 0.95,
+                'out-name': "cubicaltest",
+                'out-column': "CORRECTED_DATA",
+                'log-verbose': "solver=2",
+                'g-type': "complex-diag",
+                'g-freq-int': 0,
+                'g-time-int': 10,
+                'g-max-iter': 20,
+                'g-update-type': "phase-diag",
+        }, input=INPUT, output=OUTPUT, 
+        label="cubical",
+        shared_memory="100gb")
 
         recipe.add('cab/casa_uvcontsub', 'uvcontsub',
                    {

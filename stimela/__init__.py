@@ -72,7 +72,7 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
     global _logger
     if _logger is None:
         _logger = logging.getLogger(name)
-        _logger.setLevel(logging.DEBUG)
+        _logger.setLevel(logging.INFO)
         _logger.propagate = propagate
 
         global log_console_handler, log_formatter, log_boring_formatter, log_colourful_formatter

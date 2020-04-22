@@ -18,7 +18,7 @@ class mk_reduce(unittest.TestCase):
         MSDIR = 'msdir'
 
         global MS
-        MS = 'DEEP2.ms'
+        MS = '1491291289.1GC.ms'
         global PREFIX
         PREFIX = 'deep2'
 

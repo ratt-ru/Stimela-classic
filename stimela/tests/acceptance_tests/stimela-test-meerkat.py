@@ -65,7 +65,7 @@ class mk_reduce(unittest.TestCase):
                    },
                    input=INPUT, output=OUTPUT, shared_memory="8gb",
                    label="image1",
-                   time_out=600)
+                   time_out=1800)
 
         maskname0 = "MASK.fits"
         recipe.add('cab/cleanmask', 'mask0', {
@@ -98,7 +98,7 @@ class mk_reduce(unittest.TestCase):
                    },
                    input=INPUT, output=OUTPUT, shared_memory="24gb",
                    label="image2",
-                   time_out=600)
+                   time_out=1800)
         
         recipe.add('cab/tricolour', "flag_data",
         {
@@ -141,7 +141,8 @@ class mk_reduce(unittest.TestCase):
                  
             }, input=INPUT, output=OUTPUT, 
             label="cubical",
-            shared_memory="24gb")
+            shared_memory="24gb",
+            time_out=1800)
 
         recipe.add("cab/ddfacet", "ddfacet_test3",
                    {
@@ -163,6 +164,6 @@ class mk_reduce(unittest.TestCase):
                    },
                    input=INPUT, output=OUTPUT, shared_memory="24gb",
                    label="image3",
-                   time_out=600)
+                   time_out=1800)
 
         recipe.run()

@@ -105,7 +105,7 @@ class mk_reduce(unittest.TestCase):
                   "ms"                  : MS,
                   "data-column"         : "DATA",
                   "window-backend"      : 'numpy',
-                  "field-names"         : 0,
+                  "field-names"         : "DEEP_2",
                   "flagging-strategy"   : "total_power",
                   "subtract-model-column": "MODEL_DATA",
         },

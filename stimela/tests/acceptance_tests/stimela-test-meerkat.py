@@ -62,9 +62,21 @@ class mk_reduce(unittest.TestCase):
                        "Log-Boring": True,
                        "Deconv-MaxMajorIter": 3,
                        "Deconv-MaxMinorIter": 500,
+                       "Predict-ColName": "MODEL_DATA"
                    },
                    input=INPUT, output=OUTPUT, shared_memory="8gb",
                    label="image1",
+                   time_out=1800)
+        
+        recipe.add('cab/tricolour', "flag_data",
+        {
+                  "ms"                  : MS,
+                  "data-column"         : "DATA",
+                  "window-backend"      : 'numpy',
+                  "flagging-strategy"   : "total_power",
+                  "subtract-model-column": "MODEL_DATA",
+        },
+        input=INPUT, output=OUTPUT, label="flag_data",
                    time_out=1800)
 
         maskname0 = "MASK.fits"
@@ -77,7 +89,7 @@ class mk_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label='mask0:: Make mask',
-            time_out=1800)
+                   time_out=1800)
 
         recipe.add("cab/ddfacet", "ddfacet_test2",
                    {
@@ -99,17 +111,6 @@ class mk_reduce(unittest.TestCase):
                    input=INPUT, output=OUTPUT, shared_memory="24gb",
                    label="image2",
                    time_out=1800)
-        
-        recipe.add('cab/tricolour', "flag_data",
-        {
-                  "ms"                  : MS,
-                  "data-column"         : "DATA",
-                  "window-backend"      : 'numpy',
-                  "field-names"         : "DEEP_2",
-                  "flagging-strategy"   : "total_power",
-                  "subtract-model-column": "MODEL_DATA",
-        },
-        input=INPUT, output=OUTPUT, label="flag_data")
 
         # First selfcal round
 

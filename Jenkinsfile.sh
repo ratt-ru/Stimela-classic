@@ -21,6 +21,7 @@ ln -s ${SINGULARITY_STORAGE}/podman ${POD_STORAGE}
 # Copy a clean dataset over
 mkdir $TEST_OUTPUT_DIR/msdir
 tar -xzvf $TEST_DATA_DIR/kat-7-small.ms.tar.gz -C $TEST_OUTPUT_DIR/msdir
+tar -xvf $TEST_DATA_DIR/DEEP2.ms.tar.gz -C $TEST_OUTPUT_DIR/msdir
 mkdir $TEST_OUTPUT_DIR/input
 cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 

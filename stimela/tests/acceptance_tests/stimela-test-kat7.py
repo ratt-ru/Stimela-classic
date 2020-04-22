@@ -49,7 +49,7 @@ class kat7_reduce(unittest.TestCase):
         global LABEL
         LABEL = "test_reduction"
         global OUTPUT
-        OUTPUT = "/tmp/output_%s" % LABEL
+        OUTPUT = "output_%s" % LABEL
         global MSCONTSUB
         MSCONTSUB = MS+'.contsub'
 
@@ -89,8 +89,6 @@ class kat7_reduce(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         unittest.TestCase.tearDownClass()
-        global OUTPUT
-        shutil.rmtree(OUTPUT)
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)
@@ -354,6 +352,7 @@ class kat7_reduce(unittest.TestCase):
 
 
         # First selfcal round
+
         recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
             "skymodel": "%s.lsm.html:output" % (lsm0),
             "msname": MS,
@@ -420,32 +419,22 @@ class kat7_reduce(unittest.TestCase):
             label="stitch_lsms1::Create master lsm file",
             time_out=300)
         
-        recipe.add("cab/cubical", "cubical_cal", {
-                'data-ms': MS,
-                'data-column': "DATA",
-                'dist-nworker': 2,
-                'dist-nthread': 4,
-                'data-freq-chunk': 0,
-                'model-list': "%s.lsm.html:output" % lsm2,
-                'weight-column': "WEIGHT",
-                'flags-apply': "FLAG",
-                'flags-auto-init': "legacy",
-                'madmax-enable': False,
-                'madmax-threshold': [0,0,10],
-                'madmax-global-threshold': [0,0],
-                'sol-jones': 'g',
-                'sol-stall-quorum': 0.95,
-                'out-name': "cubicaltest",
-                'out-column': "CORRECTED_DATA",
-                'log-verbose': "solver=2",
-                'g-type': "complex-diag",
-                'g-freq-int': 0,
-                'g-time-int': 10,
-                'g-max-iter': 20,
-                'g-update-type': "phase-diag",
-        }, input=INPUT, output=OUTPUT, 
-        label="cubical",
-        shared_memory="100gb")
+        recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
+            "skymodel": "%s.lsm.html:output" % (lsm2),
+            "msname": MS,
+            "threads": 16,
+            "column": "DATA",
+            "output-data": "CORR_RES",
+            "Gjones": True,
+            # Ad-hoc right now, subject to change
+            "Gjones-solution-intervals": [20, 0],
+            "Gjones-matrix-type": "GainDiagPhase",
+            "tile-size": 512,
+            "field-id": 0,
+        },
+            input=INPUT, output=OUTPUT,
+            label="calibrator_Gjones_subtract_lsm0:: Calibrate and subtract LSM0",
+            time_out=1800)
 
         recipe.add('cab/casa_uvcontsub', 'uvcontsub',
                    {

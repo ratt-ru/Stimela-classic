@@ -1,5 +1,6 @@
 # -*- coding: future_fstrings -*-
 import stimela
+from stimela.pathformatter import pathformatter as spf
 import os
 import unittest
 import subprocess
@@ -122,7 +123,7 @@ class mk_reduce(unittest.TestCase):
                 'dist-max-chunks': 20, 
                 'data-freq-chunk': 0,
                 'data-time-chunk': 5,
-                'model-list': "MODEL_DATA",
+                'model-list': spf("MODEL_DATA"),
                 'weight-column': "WEIGHT",
                 'flags-apply': "FLAG",
                 'flags-auto-init': "legacy",

@@ -99,7 +99,6 @@ class StimelaJob(object):
             self.log = StimelaJob.logs_avail[log_name]
 
 
-
     def setup_job(self, image, config,
                    indir=None, outdir=None, msdir=None, 
                    build_label=None, singularity_image_dir=None,

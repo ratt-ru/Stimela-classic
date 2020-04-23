@@ -74,11 +74,12 @@ class StimelaJob(object):
         self.cabpath = cabpath
         self.workdir = workdir
 
-    def setup_job_log(self, log_name=None):
+    def setup_job_log(self, log_name=None, loglevel=None):
         """ set up a log for the job on the host side 
             log_name: preferably unique name for this jobs log
             log_dir: log base directory, None is current directory
         """
+        loglevel = loglevel or self.recipe.loglevel
         log_name = log_name or self.name
         if log_name not in StimelaJob.logs_avail:
             self.log = stimela.logger().getChild(log_name)
@@ -88,7 +89,7 @@ class StimelaJob(object):
                 if not os.path.exists(log_dir):
                     os.mkdir(log_dir)
                 fh = logging.FileHandler(self.logfile, 'w', delay=True)
-                fh.setLevel(logging.INFO)
+                fh.setLevel(getattr(logging, loglevel))
                 self.log.addHandler(fh)
 
             self.log.propagate = True            # propagate also to main stimela logger
@@ -232,6 +233,7 @@ class StimelaJob(object):
 
         if msdir:
             md = cont.IODEST["msfile"]
+            os.makedirs(msdir, exist_ok=True)
             cont.add_volume(msdir, md)
             cont.add_environ("MSDIR", md)
             # Keep a record of the content of the
@@ -261,8 +263,7 @@ class StimelaJob(object):
             self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(
                 indir, cont.IODEST["input"]))
 
-        if not os.path.exists(outdir):
-            os.mkdir(outdir)
+        os.makedirs(outdir, exist_ok=True)
 
         od = cont.IODEST["output"]
 
@@ -315,7 +316,8 @@ class Recipe(object):
                  singularity_image_dir=None, JOB_TYPE='docker',
                  cabpath=None,
                  logger=None,
-                 log_dir=None, logfile=None, logfile_task=None):
+                 log_dir=None, logfile=None, logfile_task=None,
+                 loglevel="INFO"):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -336,24 +338,37 @@ class Recipe(object):
         """
         self.name = name
         self.name_ = re.sub(r'\W', '_', name)  # pausterized name
+        self.ms_dir = ms_dir
+
+        self.stimela_context = inspect.currentframe().f_back.f_globals
+        self.stimela_path = os.path.dirname(docker.__file__)
+        # Update I/O with values specified on command line
+        script_context = self.stimela_context
+        self.indir = script_context.get('_STIMELA_INPUT', None)
+        self.outdir = script_context.get('_STIMELA_OUTPUT', None)
+        self.msdir = script_context.get('_STIMELA_MSDIR', None)
+        self.loglevel = script_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
+        self.build_label = script_context.get('_STIMELA_BUILD_LABEL', None) or build_label
+        self.JOB_TYPE = script_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 
         self.cabpath = cabpath
 
         # set default name for task-level logfiles
-        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name) \
+        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_) \
             if logfile_task is None else logfile_task
 
         if logger is not None:
             self.log = logger
         else:
-            self.log = stimela.logger().getChild(name)
+            logger = stimela.logger(loglevel=self.loglevel)
+            self.log = logger.getChild(name)
             self.log.propagate = True # propagate to main stimela logger
 
             # logfile is False: no logfile at recipe level
             if logfile is not False:
                 # logfile is None: use default name
                 if logfile is None:
-                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name)
+                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_)
 
                 # reset default name for task-level logfiles based on logfile
                 self.logfile_task = os.path.splitext(logfile)[0] + "-{task}.txt" \
@@ -366,30 +381,15 @@ class Recipe(object):
                     os.makedirs(log_dir)
 
                 fh = logging.FileHandler(logfile, 'w', delay=True)
-                fh.setLevel(logging.INFO)
+                #fh.setLevel(getattr(logging, self.loglevel))
                 fh.setFormatter(stimela.log_formatter)
                 self.log.addHandler(fh)
 
 
         self.resume_file = '.last_{}.json'.format(self.name_)
-        self.stimela_context = inspect.currentframe().f_back.f_globals
-        self.stimela_path = os.path.dirname(docker.__file__)
-        # Update I/O with values specified on command line
-        script_context = self.stimela_context
-        self.indir = script_context.get('_STIMELA_INPUT', None)
-        self.outdir = script_context.get('_STIMELA_OUTPUT', None)
-        self.msdir = script_context.get('_STIMELA_MSDIR', None) or ms_dir
-        build_label = script_context.get(
-            '_STIMELA_BUILD_LABEL', None) or build_label
-        self.JOB_TYPE = script_context.get(
-            '_JOB_TYPE', None) or JOB_TYPE
         # set to default if not set
-        self.build_label = build_label or stimela.CAB_USERNAME
+        self.build_label = self.build_label or stimela.CAB_USERNAME
 
-        if not os.path.exists(self.msdir):
-            self.log.info(
-                'MS directory \'{}\' does not exist. Will create it'.format(self.msdir))
-            os.mkdir(self.msdir)
         self.tag = tag
         # create a folder to store config files
         # if it doesn't exist. These config
@@ -416,7 +416,6 @@ class Recipe(object):
         self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
-
 
         
         self.workdir = None
@@ -445,10 +444,8 @@ class Recipe(object):
             logfile=None,
             cabpath=None):
 
-        if not os.path.exists(output):
-            self.log.info(
-                    'The Log directory \'{0:s}\' cannot be found. Will create it'.format(output))
-            os.mkdir(output)
+        if build_label:
+            self.build_label = build_label
 
         if logfile is None:
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
@@ -465,9 +462,11 @@ class Recipe(object):
         if callable(image):
             job.jtype = 'python'
         
+        # The hirechy is command line, Recipe.add, and then Recipe
         indir = self.indir or input
         outdir = self.outdir or output
-        msdir = self.msdir or msdir
+        msdir = self.msdir or msdir or self.ms_dir
+
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
              build_label=build_label or self.build_label,

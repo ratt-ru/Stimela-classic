@@ -381,7 +381,7 @@ class Recipe(object):
                     os.makedirs(log_dir)
 
                 fh = logging.FileHandler(logfile, 'w', delay=True)
-                #fh.setLevel(getattr(logging, self.loglevel))
+                fh.setLevel(getattr(logging, self.loglevel))
                 fh.setFormatter(stimela.log_formatter)
                 self.log.addHandler(fh)
 

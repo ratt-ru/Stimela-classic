@@ -114,7 +114,7 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
 
     log = log or stimela.logger()
 
-    log.info("running " + command, extra=dict(stimela_subprocess_output=(command_name, "start")))
+    log.debug("running " + command, extra=dict(stimela_subprocess_output=(command_name, "start")))
 
     start_time = time.time()
 

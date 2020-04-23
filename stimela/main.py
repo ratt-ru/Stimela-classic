@@ -19,6 +19,8 @@ LOG_FILE = stimela.LOG_FILE
 GLOBALS = stimela.GLOBALS
 CAB_USERNAME = stimela.CAB_USERNAME
 
+loglevels = "info debug error"
+
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):
         text = self._whitespace_matcher.sub(' ', text).strip()
@@ -235,12 +237,16 @@ def run(argv):
     add("-bl", "--build-label", default=CAB_USERNAME,
         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
+    add("-ll", "--log-level", default="INFO", choices=loglevels.upper().split() + loglevels.split(),
+        help="Log level. set to DEBUG/debug for verbose logging")
+
     args = parser.parse_args(argv)
     tag = None
 
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
-                    CAB_TAG=tag, _STIMELA_BUILD_LABEL=args.build_label)
+                    CAB_TAG=tag, _STIMELA_BUILD_LABEL=args.build_label,
+                    _STIMELA_LOG_LEVEL=args.log_level.upper())
 
     nargs = len(args.globals)
 

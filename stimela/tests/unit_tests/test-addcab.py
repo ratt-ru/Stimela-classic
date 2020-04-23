@@ -57,7 +57,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("customcab", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a"
         }, input=INPUT, output=OUTPUT)
@@ -73,7 +72,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("invchoice", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
         "bla1": "d" # only accepts a, b or c
         }, input=INPUT, output=OUTPUT)
@@ -86,7 +84,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("testdismissable", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla4": sdm("abc"),
@@ -104,7 +101,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("testfloattypefail", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla3": "1.0a",
@@ -118,7 +114,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("testfloattypesuccess", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla3": 4.0,
@@ -132,7 +127,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("testrequired", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla3": 4.0,
         }, input=INPUT, output=OUTPUT)
@@ -147,7 +141,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("testiooverrides", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla2": "testinput.txt:input",
@@ -163,7 +156,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("ioval", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla2": "testinput2.txt:input",
@@ -177,7 +169,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("pathlist", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla5": ["testinput2.txt:input",

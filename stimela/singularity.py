@@ -12,7 +12,6 @@ import tempfile
 import hashlib
 from shutil import which
 
-
 binary = which("singularity")
 if binary:
     __version_string = subprocess.check_output([binary, "--version"]).decode("utf8")
@@ -26,6 +25,20 @@ else:
 
 class SingularityError(Exception):
     pass
+
+
+def make_overlay(name, directory, size=5):
+    """
+    Make overlay file system
+    """
+
+    upper = os.path.join(directory, "overlay", "upper")
+    overlay = os.path.join(directory, "overlay")
+    name = os.path.join(directory, name)
+    os.makedirs(upper, exist_ok=True)
+    utils.xrun("dd", f"if=/dev/zero of={name} bs=1M count={size} && \
+                mkfs.ext3 -d {overlay} {name}".split())
+    return name
 
 def pull(image, store_path, docker=True, directory=".", force=False):
     """ 
@@ -111,17 +124,24 @@ class Container(object):
                     " Please run 'stimela pull --help' for help on how to download the image")
             raise SystemExit from None
 
+        if hasattr(self, "overlay"):
+            args = list(args)
+            args.append(f"--overlay {self.overlay}")
+        else:
+            args = list(args)
+
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun("singularity", ["run", "--workdir", self.WORKDIR, "--home", f"{cab.USER_HOME}:{cab.HOME}"] \
-                    + list(args) + [volumes, self.image, self.RUNSCRIPT],
+        utils.xrun(f"cd {self.workdir_host} && singularity", ["run", "--workdir", self.workdir_host] \
+                    + args + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, 
                     logfile=self.logfile)
 
         self.status = "exited"
 
         return 0
+
 
     def _print(self, message):
         if self.logger:

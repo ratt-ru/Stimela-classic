@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 import textwrap as _textwrap
 import signal
 import stimela
-from stimela import docker, singularity, udocker, podman, utils
+from stimela import docker, singularity, podman, utils
 from stimela.utils import logger
 from stimela.cargo import cab
 
@@ -51,9 +51,6 @@ def build(argv):
     parser.add_argument("-nc", "--no-cache", action="store_true",
                         help="Do not use cache when building the image")
 
-    parser.add_argument("-bl", "--build-label", default=CAB_USERNAME,
-                        help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
-
     args = parser.parse_args(argv)
     log = logger.StimelaLogger(
         '{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label), jtype="docker")
@@ -77,66 +74,7 @@ def build(argv):
         log.write()
 
         return 0
-
-    build_args = [
-        "RUN useradd -r -u {0:d} -U {1:s}".format(UID, USER),
-        "USER {0:s}".format(USER),
-    ]
-
-    if args.cab:
-        cab_args = args.cab.split(",")
-
-        if len(cab_args) == 2:
-            cab_, path = cab_args
-        else:
-            raise ValueError("Not enough arguments for build command.")
-
-        image = "{:s}_cab/{:s}".format(args.build_label, cab_)
-
-        docker.build(image,
-                     path,
-                     build_args=build_args, args=no_cache)
-
-        log.log_image(image, path, replace=True, cab=True)
-        log.write()
-        return
-
-    # Cabs and their locations
-    cabs = []
-    dockerfiles = []
-
-    if args.us_only:
-        CABS = args.us_only.split(',')
-    else:
-        # Images that have been logged
-        # This is crucial for making custom cabs
-        logged_images = log.read().get('images', {})
-        for key, val in logged_images.items():
-            if val['CAB']:
-                if key.endswith("custom"):
-                    continue
-                else:
-                    cabs.append(key)
-                    dockerfiles.append(val['DIR'])
-        # If user wants to ignore some cabs
-        IGNORE = args.ignore_cabs.split(",")
-        CABS = set(CAB).difference(set(IGNORE))
-
-    # Prioritise package images over logged images
-    cabs = ["{:s}_cab/{:s}".format(args.build_label, cab)
-            for cab in CABS] + cabs
-    dockerfiles = ["{:s}/{:s}".format(stimela.CAB_PATH, cab)
-                   for cab in CABS] + dockerfiles
-    built = []
-    for image, dockerfile in zip(cabs, dockerfiles):
-        if image not in built:
-            docker.build(image,
-                         dockerfile,
-                         build_args=build_args, args=no_cache)
-
-            log.log_image(image, dockerfile, replace=True, cab=True)
-            log.write()
-            built.append(image)
+    raise SystemExit("DEPRECATION NOTICE: The building of cab images has been deprecated")
 
 
 def get_cabs(logfile):
@@ -180,9 +118,6 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
     parser.add_argument("-ls", "--list-summary", action="store_true",
                         help="List cabs with a summary of the cab")
 
-    parser.add_argument("-bl", "--build-label", default=USER,
-                        help="Label for build you want documentation for. See --build-label option in 'stimela help build'")
-
     args = parser.parse_args(argv)
     logfile = '{0:s}/{1:s}_stimela_logfile.json'.format(
         LOG_HOME, args.build_label)
@@ -200,7 +135,6 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
             except IOError:
                 pass
     else:
-        # print them cabs
         print(', '.join(CAB))
 
 
@@ -232,15 +166,15 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-bl", "--build-label", default=CAB_USERNAME,
-        help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
+    add("-jt", "--job-type", default="docker",
+        help="Container technology to use when running jobs")
 
     args = parser.parse_args(argv)
     tag = None
 
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
-                    CAB_TAG=tag, _STIMELA_BUILD_LABEL=args.build_label)
+                    CAB_TAG=tag, _STIMELA_JOB_TYPE=args.job_type)
 
     nargs = len(args.globals)
 
@@ -307,14 +241,15 @@ def pull(argv):
         except KeyError:
             pull_folder = "."
 
-    if args.docker:
-        jtype = "docker"
-    elif args.podman:
+    if args.podman:
         jtype = "podman"
     elif args.singularity:
         jtype = "singularity"
+    elif args.docker:
+        jtype = "docker"
     else:
-        jtype = "udocker"
+        jtype = "docker"
+
 
     log = logger.StimelaLogger(LOG_FILE, jtype=jtype)
     images = log.read()['images']
@@ -341,7 +276,7 @@ def pull(argv):
                 podman.pull(image)
                 log.log_image(image, 'pulled')
             else:
-                udocker.pull(image)
+                docker.pull(image)
                 log.log_image(image, 'pulled')
     else:
 
@@ -365,7 +300,7 @@ def pull(argv):
                 podman.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
             else:
-                udocker.pull(image, force=args.force)
+                docker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
 
     log.write()

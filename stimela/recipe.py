@@ -3,7 +3,7 @@ import os
 import sys
 import time
 import stimela
-from stimela import docker, singularity, udocker, utils, cargo, podman, main
+from stimela import docker, singularity, utils, cargo, podman, main
 from stimela.cargo import cab
 import logging
 import inspect
@@ -19,12 +19,12 @@ import shutil
 version = stimela.__version__
 UID = os.getuid()
 GID = os.getgid()
+USER = os.environ["USER"]
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 BIN = os.path.abspath(os.path.dirname(sys.executable))
 
 CONT_MOD = {
         "docker" : docker,
-        "udocker" : udocker,
         "singularity" : singularity,
         "podman" : podman
         }
@@ -41,6 +41,9 @@ class StimelaJob(object):
                  logger=None,
                  logfile=None,
                  cabpath=None,
+                 input=None,
+                 output=None,
+                 msdir=None,
                  workdir=None,
                  shared_memory=None):
         """
@@ -55,7 +58,7 @@ class StimelaJob(object):
         self.label = label or '{0}({1})'.format(name, id(name))
         self.log = recipe.log
         self.active = False
-        self.jtype = jtype  # ['docker', 'python', singularity', 'udocker']
+        self.jtype = jtype  # ['docker', 'python', singularity']
         self.job = None
         self.created = False
         self.args = ['--user {}:{}'.format(UID, GID)]
@@ -73,6 +76,32 @@ class StimelaJob(object):
 
         self.cabpath = cabpath
         self.workdir = workdir
+        self.workdir_cont = CDIR
+        self.input = input
+        self.msdir = msdir
+        self.output = output
+        self.tmp = os.path.join(self.workdir, "tmp")
+
+
+    def setup_contIO(self, cont):
+        for item,perm in zip("input output msdir tmp workdir".split(), "ro rw rw rw rw".split()):
+            host = getattr(self, item)
+            basename = os.path.basename(host)
+            mount = os.path.join(f"{self.workdir_cont}", basename)
+            if item == "tmp":
+                io_cont = "TMPDIR"
+                mount = os.path.join(f"{self.workdir_cont}", self.OUTPUT, basename)
+            else:
+                io_cont = item.upper()
+                mount = os.path.join(f"{self.workdir_cont}", basename)
+            setattr(self, io_cont, mount)
+            cont.add_environ(io_cont, mount)
+            if not os.path.exists(host):
+                if item == "input":
+                    raise RuntimeError(f"Input directory '{host}' is required but does not exist.")
+                else:
+                    os.mkdir(host)
+            cont.add_volume(host, mount, perm)
 
     def setup_job_log(self, log_name=None):
         """ set up a log for the job on the host side 
@@ -97,11 +126,9 @@ class StimelaJob(object):
         else:
             self.log = StimelaJob.logs_avail[log_name]
 
-
-
     def setup_job(self, image, config,
-                   indir=None, outdir=None, msdir=None, 
-                   build_label=None, singularity_image_dir=None,
+                   build_label=None,
+                   singularity_image_dir=None,
                    **kw):
         """
             Setup job
@@ -144,7 +171,6 @@ class StimelaJob(object):
             raise StimelaCabParameterError('The cab name \'{:s}\' contains invalid characters.'
                                            ' Allowed charcaters are alphanumeric, plus [-_. ].'.format(self.name))
 
-
         self.setup_job_log()
 
         # make name palatable as container name
@@ -155,39 +181,33 @@ class StimelaJob(object):
 
         cont = getattr(CONT_MOD[self.jtype], "Container")(image, name,
                                      logger=self.log, 
-                                     workdir=CONT_IO["output"],
+                                     workdir=self.workdir_cont,
                                      time_out=self.time_out)
-        if self.jtype == "docker":
-            # Get location of template parameters file
-            cabs_loc = f"{stimela.LOG_HOME}/{build_label}_stimela_logfile.json"
-            cabs_logger = get_cabs(cabs_loc)
-            try:
-                cabpath = cabs_logger[f'{build_label}_{cont.image}']['DIR']
-            except KeyError:
-                main.build(["--us-only", cont.image.split("/")[-1],
-                        "--no-cache", "--build-label", build_label])
-                cabs_logger = get_cabs(cabs_loc)
-                cabpath = cabs_logger[f'{build_label}_{cont.image}']['DIR']
+        self.setup_contIO(cont)
+        cont.workdir_host = self.workdir
 
-        else:
-            cabpath = os.path.join(CAB_PATH, image.split("/")[1])
-        
+        cabpath = os.path.join(CAB_PATH, image.split("/")[1])
         # In case the user specified a custom cab
         cabpath = os.path.join(self.cabpath, image.split("/")[1]) if self.cabpath else cabpath
         parameter_file = os.path.join(cabpath, 'parameters.json')
-        _cab = cab.CabDefinition(indir=indir, outdir=outdir,
-                                 msdir=msdir, parameter_file=parameter_file)
+        cab.IODEST = {
+                "input" : self.INPUT,
+                "output" : self.OUTPUT,
+                "msfile" : self.MSDIR,
+                "tmp"    : self.TMPDIR,
+                }
+        _cab = cab.CabDefinition(indir=self.input, outdir=self.output,
+                                 msdir=self.msdir, parameter_file=parameter_file)
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
 
-        if self.jtype == "docker":
-            cont.image = '{0}_{1}'.format(build_label, image)
-        elif self.jtype == "singularity":
+        if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
             if singularity_image_dir is None:
                 singularity_image_dir = os.path.join(".", "stimela_singularity_images")
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
                     simage, _cab.tag, singularity.suffix)
+            cont.image = os.path.abspath(cont.image)
             if not os.path.exists(cont.image):
                 main.pull(f"-s -cb {cont.cabname} -pf {singularity_image_dir}".split())
         else:
@@ -214,6 +234,7 @@ class StimelaJob(object):
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container
+        cab.MOUNT = self.workdir
         cont.add_volume(cont.parameter_file_name,
                         f'{cab.MOUNT}/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), f"{cab.MOUNT}/code", "ro")
@@ -227,63 +248,19 @@ class StimelaJob(object):
                 cont.RUNSCRIPT, perm="ro")
 
         cont.add_environ('CONFIG', f'{cab.MOUNT}/configfile')
-        cont.add_environ('HOME', cont.IODEST["output"])
+        cont.add_environ('HOME', cab.MOUNT)
         cont.add_environ('STIMELA_MOUNT', cab.MOUNT)
 
-        if msdir:
-            md = cont.IODEST["msfile"]
-            cont.add_volume(msdir, md)
-            cont.add_environ("MSDIR", md)
-            # Keep a record of the content of the
-            # volume
-            dirname, dirs, files = [a for a in next(os.walk(msdir))]
-            cont.msdir_content = {
-                "volume":   dirname,
-                "dirs":   dirs,
-                "files":   files,
-            }
-
-            self.log.debug(
-                'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(msdir, md))
-
-        if indir:
-            cont.add_volume(indir, cont.IODEST["input"], perm='ro')
-            cont.add_environ("INPUT", cont.IODEST["input"])
-            # Keep a record of the content of the
-            # volume
-            dirname, dirs, files = [a for a in next(os.walk(indir))]
-            cont.input_content = {
-                "volume":   dirname,
-                "dirs":   dirs,
-                "files":   files,
-            }
-
-            self.log.debug('Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(
-                indir, cont.IODEST["input"]))
-
-        if not os.path.exists(outdir):
-            os.mkdir(outdir)
-
-        od = cont.IODEST["output"]
-
         cont.logfile = self.logfile
-        cont.add_volume(outdir, od, "rw")
-        cont.add_environ("OUTPUT", od)
-
-        # temp files go into output
-        tmpfol = os.path.join(outdir, "tmp")
-        if not os.path.exists(tmpfol):
-            os.mkdir(tmpfol)
-        cont.add_volume(tmpfol, cont.IODEST["tmp"], "rw")
-        cont.add_environ("TMPDIR", cont.IODEST["tmp"])
-
-        self.log.debug(
-            'Mounting volume \'{0}\' from local file system to \'{1}\' in the container'.format(outdir, od))
-
+        cont.add_environ("USER", USER)
         # Added and ready for execution
         self.job = cont
 
         return 0
+    def __del__(self):
+        """Clean up"""
+        if hasattr(self, "overlay") and os.path.exists(self.overlay):
+            os.remove(self.overlay)
 
     def run_job(self):
 
@@ -379,8 +356,6 @@ class Recipe(object):
         self.indir = script_context.get('_STIMELA_INPUT', None)
         self.outdir = script_context.get('_STIMELA_OUTPUT', None)
         self.msdir = script_context.get('_STIMELA_MSDIR', None) or ms_dir
-        build_label = script_context.get(
-            '_STIMELA_BUILD_LABEL', None) or build_label
         self.JOB_TYPE = script_context.get(
             '_JOB_TYPE', None) or JOB_TYPE
         # set to default if not set
@@ -416,11 +391,9 @@ class Recipe(object):
         self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
-
-
         
-        self.workdir = None
-        #self.__make_workdir()
+        #self.workdir = None
+        self.__make_workdir()
 
     def __make_workdir(self):
         timestamp = str(time.time()).replace(".", "")
@@ -429,11 +402,6 @@ class Recipe(object):
             timestamp = str(time.time()).replace(".", "")
             self.workdir = os.path.join(CDIR, f".stimela_workdir-{timestamp}")
         os.mkdir(self.workdir)
-
-    def __remove_workdir(self):
-        if os.path.exists(self.workdir):
-            shutil.rmtree(self.workdir)
-
 
     def add(self, image, name, config=None,
             input=None, output=None, msdir=None,
@@ -453,6 +421,9 @@ class Recipe(object):
         if logfile is None:
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
 
+        indir = self.indir or input
+        outdir = self.outdir or output
+        msdir = self.msdir or msdir
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit,
                          shared_memory=shared_memory,
@@ -460,16 +431,13 @@ class Recipe(object):
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath,
-                         workdir=self.workdir)
+                         workdir=self.workdir,
+                         input=indir, output=outdir, msdir=msdir)
 
         if callable(image):
             job.jtype = 'python'
         
-        indir = self.indir or input
-        outdir = self.outdir or output
-        msdir = self.msdir or msdir
         job.setup_job(image=image, config=config,
-             indir=indir, outdir=outdir, msdir=msdir,
              build_label=build_label or self.build_label,
              singularity_image_dir=self.singularity_image_dir,
              time_out=time_out)
@@ -477,39 +445,6 @@ class Recipe(object):
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
             job.image, name))
         self.jobs.append(job)
-
-        return 0
-
-    def log2recipe(self, job, recipe, num, status):
-
-        if job.jtype in ['docker', 'singularity', 'udocker', 'podman']:
-            cont = job.job
-            step = {
-                "name":   cont.name,
-                "number":   num,
-                "cab":   cont.image,
-                "volumes":   cont.volumes,
-                "environs":   getattr(cont, "environs", None),
-                "shared_memory":   getattr(cont, "shared_memory", None),
-                "input_content":   cont.input_content,
-                "msdir_content":   cont.msdir_content,
-                "label":   getattr(cont, "label", ""),
-                "logfile":   cont.logfile,
-                "status":   status,
-                "jtype":   job.jtype,
-            }
-        else:
-            step = {
-                "name":   job.name,
-                "number":   num,
-                "label":   job.label,
-                "status":   status,
-                "function":   job.job['function'].__name__,
-                "jtype":   'function',
-                "parameters":   job.job['parameters'],
-            }
-
-        recipe['steps'].append(step)
 
         return 0
 
@@ -573,7 +508,6 @@ class Recipe(object):
                     astd.write('-------------------------------------\n')
                 job.run_job()
 
-                self.log2recipe(job, recipe, step, 'completed')
                 self.completed.append(job)
 
                 finished_time = datetime.now()
@@ -599,11 +533,9 @@ class Recipe(object):
                 self.log.info('Remaining jobs : {}'.format(
                     [c.name for c in self.remaining]))
 
-                self.log2recipe(job, recipe, step, 'failed')
                 for step, jb in jobs[i+1:]:
                     self.log.info(
                         'Logging remaining task: {}'.format(jb.label))
-                    self.log2recipe(jb, recipe, step, 'remaining')
 
                 self.log.info(
                     'Saving pipeline information in {}'.format(self.resume_file))
@@ -612,8 +544,6 @@ class Recipe(object):
                 # raise pipeline exception. Original exception context is discarded by "from None" (since we've already
                 # logged it above, we don't need to include it with the new exception)
                 raise PipelineException(e, self.completed, job, self.remaining) from None
-#            finally:
-#                self.__remove_workdir()
 
         self.log.info(
             'Saving pipeline information in {}'.format(self.resume_file))
@@ -623,6 +553,6 @@ class Recipe(object):
         return 0
 
     def __del__(self):
-        """Failsafe"""
-#        if os.path.exists(self.workdir):
-#            shutil.rmtree(self.workdir)
+        """Delete working directory after recipe executes"""
+        if os.path.exists(self.workdir):
+            shutil.rmtree(self.workdir)

@@ -127,7 +127,6 @@ class basicrecipe_test(unittest.TestCase):
         global OUTPUT
         stimela.register_globals()
         rrr = stimela.Recipe("testrequired", ms_dir=MSDIR)
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla3": 4.0,
         }, input=INPUT, output=OUTPUT)

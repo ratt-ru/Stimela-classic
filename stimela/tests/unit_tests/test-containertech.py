@@ -75,7 +75,6 @@ class basicrecipe_test(unittest.TestCase):
                              cabpath="cab/",
                              singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"],
                              log_dir="logs")
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla5": ["testinput2.txt:input",
@@ -110,7 +109,6 @@ class basicrecipe_test(unittest.TestCase):
                              JOB_TYPE="udocker",
                              cabpath="cab/",
                              log_dir="logs")
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla5": ["testinput2.txt:input",
@@ -142,7 +140,6 @@ class basicrecipe_test(unittest.TestCase):
                              JOB_TYPE="podman",
                              cabpath="cab/",
                              log_dir="logs")
-        assert os.path.exists(MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla5": ["testinput2.txt:input",

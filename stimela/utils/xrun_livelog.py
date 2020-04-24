@@ -72,7 +72,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 print("Log contains unicode and will not be printed")
 
 
-    _print_info(u"Running: {0:s}".format(cmd), loglevel="DEBUG")
+    _print_info(u"Running: {0:s}".format(cmd), loglevel="INFO")
 
     sys.stdout.flush()
     starttime = time.time()

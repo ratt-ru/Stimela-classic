@@ -504,4 +504,1596 @@
             "name": "log-memory"
         }, 
         {
-            "info": "Disabl
+            "info": "Disable progress bars and some console output.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "log-boring"
+        }, 
+        {
+            "info": "Append to log file if it exists.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "log-append"
+        }, 
+        {
+            "info": "Default console output verbosity level. \nCan either be a single number, or a sequence of \"name=level,name=level,...\"\nassignments.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "log-verbose"
+        }, 
+        {
+            "info": "Default logfile output verbosity level. \nCan either be a single number, or a sequence of \"name=level,name=level,...\"\nassignments. If None, then this simply follows the console level.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "log-file-verbose"
+        }, 
+        {
+            "info": "Jumps into pdb on error.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "debug-pdb"
+        }, 
+        {
+            "info": "Throw an error if a visibility amplitude in the results exceeds the given value.\nUseful for troubleshooting.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "debug-panic-amplitude"
+        }, 
+        {
+            "info": "Invoke pdb before entering the solver.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "debug-stop-before-solver"
+        }, 
+        {
+            "info": "Seed random number generator with explicit seed. Useful for reproducibility\nof the random-based optimizations (sparsification, etc.).", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "misc-random-seed"
+        }, 
+        {
+            "info": "Parset version number, for migration purposes. Can't be specified on command\nline.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "misc-parset-version"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "float", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "g-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "g-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "g-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g1-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "g1-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "g1-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g1-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g1-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g1-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g1-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g1-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g1-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g1-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g1-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g1-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g1-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "g1-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g1-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g1-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g1-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g1-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g1-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g2-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "g2-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "g2-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g2-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g2-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g2-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g2-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g2-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g2-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g2-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g2-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g2-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g2-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "g2-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g2-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g2-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g2-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g2-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g2-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g3-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "g3-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "g3-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g3-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g3-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g3-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g3-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g3-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "g3-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g3-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g3-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g3-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "g3-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "g3-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g3-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g3-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "g3-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "g3-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "g3-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "b-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b1-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b1-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b1-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b1-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b1-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b1-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b1-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b1-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b1-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b1-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b1-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b1-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b1-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "b1-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b1-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b1-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b1-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b1-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b1-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b2-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b2-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b2-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b2-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b2-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b2-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b2-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b2-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b2-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b2-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b2-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b2-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b2-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "b2-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b2-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b2-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b2-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b2-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b2-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b3-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b3-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "b3-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b3-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b3-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b3-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b3-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b3-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "b3-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b3-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b3-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b3-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "b3-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": [
+                "str", 
+                "int"
+            ], 
+            "default": null, 
+            "name": "b3-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b3-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b3-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "b3-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "b3-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "b3-prop-flags"
+        }, 
+        {
+            "info": "Determines whether this term is direction dependent. --model-ddes must", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "dd-dd-term"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "dd-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd-prop-flags"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd1-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd1-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd1-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd1-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd1-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd1-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd1-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "dd1-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd1-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd1-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd1-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd1-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd1-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd1-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd1-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd1-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd1-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd1-prop-flags"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd2-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd2-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd2-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd2-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd2-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd2-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd2-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "dd2-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd2-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd2-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd2-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd2-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd2-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd2-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd2-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd2-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd2-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd2-prop-flags"
+        }, 
+        {
+            "info": "Time solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd3-time-int"
+        }, 
+        {
+            "info": "Frequency solution interval for this term. 0 means use entire chunk.", 
+            "dtype": [
+                "int", 
+                "float"
+            ], 
+            "default": null, 
+            "name": "dd3-freq-int"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with diagonal amplitudes below this\nvalue.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd3-clip-low"
+        }, 
+        {
+            "info": "Amplitude clipping - flag solutions with any amplitudes above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd3-clip-high"
+        }, 
+        {
+            "info": "Number of iterations after which to clip this gain.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd3-clip-after"
+        }, 
+        {
+            "info": "Minimum percentage of converged solutions to accept.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd3-conv-quorum"
+        }, 
+        {
+            "info": "Reference antenna - its phase is guaranteed to be zero.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd3-ref-ant"
+        }, 
+        {
+            "info": "Set to 0 (and specify -load-from or -xfer-from) to load a non-solvable\nterm is loaded from disk. Not to be confused with --sol-jones, which\ndetermines the active Jones terms.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "dd3-solvable"
+        }, 
+        {
+            "info": "Type of Jones matrix to solve for. Note that if multiple Jones terms are\nenabled, then only complex-2x2 is supported.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd3-type"
+        }, 
+        {
+            "info": "Load solutions from given database. The DB must define solutions\non the same time/frequency grid (i.e. should normally come from\ncalibrating the same pointing/observation). By default, the Jones\nmatrix label is used to form up parameter names, but his may be\noverridden by adding an explicit \"//LABEL\" to the database filename.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd3-load-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Transfer solutions from given database. Similar to -load-from, but\nsolutions will be interpolated onto the required time/frequency grid,\nso they can originate from a different field (e.g. from a calibrator).", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd3-xfer-from", 
+            "io": "input"
+        }, 
+        {
+            "info": "Save solutions to given database.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "dd3-save-to", 
+            "io": "output"
+        }, 
+        {
+            "info": "For DD terms, makes the listed directions non-solvable.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd3-fix-dirs"
+        }, 
+        {
+            "info": "Determines update type. This does not change the Jones solver type, but\nrestricts the update rule to pin the solutions within a certain subspace:\n'full' is the default behaviour;\n'diag' pins the off-diagonal terms to 0;\n'phase-diag' also pins the amplitudes of the diagonal terms to unity;\n'amp-diag' also pins the phases to 0.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd3-update-type"
+        }, 
+        {
+            "info": "Flag solution intervals where the prior error estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd3-max-prior-error"
+        }, 
+        {
+            "info": "Flag solution intervals where the posterior variance estimate is above this value.", 
+            "dtype": "float", 
+            "default": null, 
+            "name": "dd3-max-post-error"
+        }, 
+        {
+            "info": "Maximum number of iterations spent on this term.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "dd3-max-iter"
+        }, 
+        {
+            "info": "Flag propagation policy. Determines how flags raised on gains propagate back\ninto the data. Options are 'never' to never propagate, 'always' to always\npropagate, 'default' to only propagate flags from direction-independent gains.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "dd3-prop-flags"
+        }, 
+        {
+            "info": "Default console output verbosity level", 
+            "dtype": [
+                "bool", 
+                "str"
+            ], 
+            "name": "log-verbose"
+        },
+        {
+            "info": "Oversampling factor.",
+            "dtype": "int",
+            "name": "degridding-OverS",
+            "default": 11
+        },
+        {
+            "info": "CF support size.",
+            "dtype": "int",
+            "name": "degridding-Support",
+            "default": 7
+        },
+        {
+            "info": "Number of w-planes.",
+            "dtype": "int",
+            "name": "degridding-Nw",
+            "default": 100
+        },
+        {
+            "info": "Maximum w coordinate (meters). Visibilities with larger w will not be gridded. If 0, no maximum is imposed.",
+            "dtype": "float",
+            "name": "degridding-wmax",
+            "default": 0
+        },
+        {
+            "info": "Facet padding factor.",
+            "dtype": "float",
+            "name": "degridding-Padding",
+            "default": 1.7
+        },
+        {
+            "info": "Number of image bands for degridding. 0 means degrid each channel.",
+            "dtype": "int",
+            "name": "degridding-NDegridBand",
+            "default": 16
+        },
+        {
+            "info": "Maximum facet size in degrees",
+            "dtype": "float",
+            "name": "degridding-MaxFacetSize",
+            "default": 0.25
+        },
+        {
+            "info": "Minimum number of facets per direction",
+            "dtype": "int",
+            "name": "degridding-MinNFacetPerAxis",
+            "default": 1
+        }
+    ]
+}

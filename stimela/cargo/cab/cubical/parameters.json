@@ -6,7 +6,7 @@
     "prefix": "--",
     "version":"1.5.1",
     "binary": "gocubical",
-    "junk":[],
+    "junk":["cubical.last"],
     "msdir": true, 
     "parameters": [
         {

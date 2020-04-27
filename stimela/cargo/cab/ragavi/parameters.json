@@ -6,7 +6,7 @@
     "prefix": "--",
     "binary": "ragavi-gains",
     "junk":[],
-    "msdir": false,
+    "msdir": true,
     "parameters": [
         {
             "info": "Gain table(s) to plot. Specify space separated list for multiple",

@@ -1,2 +1,2 @@
-FROM stimela/shadems:1.2.4
+FROM stimela/shadems:dev
 MAINTAINER <sphemakh@gmail.com>

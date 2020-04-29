@@ -164,7 +164,7 @@ class Container(object):
         stdout.close()
         return output
 
-    def start(self):
+    def start(self, output_wrangler=None):
         running = True
         tstart = time.time()
         self.status = "running"
@@ -177,7 +177,7 @@ class Container(object):
         utils.xrun("podman", ["start", "-a", self.name],
                    timeout=self.time_out,
                    kill_callback=lambda: utils.xrun("podman", ["kill", self.name]),
-                   logfile=self.logfile,
+                   logfile=self.logfile, output_wrangler=output_wrangler,
                    log=self.logger)
 
         uptime = seconds_hms(time.time() - tstart)

@@ -6,7 +6,13 @@
     "prefix": "-", 
     "binary": "listobs", 
     "junk":[],
-    "msdir": true, 
+    "msdir": true,
+    "wranglers": {
+        "PIPELINE CASA":        ["replace:MI CASA ES TU CASA", "ERROR"],
+        "[tT]elemetry":         "SUPPRESS",
+        "(Begin|End) Task:":    ["replace:Sisyphus, \\1 your task", "WARN"],
+        "End Task:":            ["DECLARE_FAILURE"]
+    },
     "parameters": [
         {
             "info": "Name of input visibility file", 

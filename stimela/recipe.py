@@ -15,6 +15,7 @@ from stimela.cargo.cab import StimelaCabParameterError
 from datetime import datetime
 import traceback
 import shutil
+import re
 
 version = stimela.__version__
 UID = os.getuid()
@@ -31,6 +32,15 @@ CONT_MOD = {
 
 CONT_IO = cab.IODEST
 CDIR = os.environ["PWD"]
+
+# make dictionary of wrangler actions. First, add all logging levels
+_actions = {attr: value for attr, value in logging.__dict__.items() if attr.upper() == attr and type(value) is int}
+
+# then add constants for other wrangler actions
+_SUPPRESS = _actions["SUPPRESS"] = "SUPPRESS"
+_DECLARE_SUCCESS = _actions["DECLARE_SUCCESS"] = "DECLARE_SUPPRESS"
+_DECLARE_FAILURE = _actions["DECLARE_FAILURE"] = "DECLARE_FAILURE"
+
 
 class StimelaJob(object):
     logs_avail = dict()
@@ -58,6 +68,7 @@ class StimelaJob(object):
         self.jtype = jtype  # ['docker', 'python', singularity', 'udocker']
         self.job = None
         self.created = False
+        self.wranglers = []
         self.args = ['--user {}:{}'.format(UID, GID)]
         if cpus:
             self.args.append("--cpus {0:f}".format(cpus))
@@ -98,6 +109,46 @@ class StimelaJob(object):
         else:
             self.log = StimelaJob.logs_avail[log_name]
 
+    def setup_output_wranglers(self, wranglers):
+        self._wranglers = []
+        if not wranglers:
+            return
+        if type(wranglers) is not dict:
+            raise utils.StimelaCabRuntimeError("wranglers: dict expected")
+        for match, actions in wranglers.items():
+            replace = None
+            if type(actions) is str:
+                actions = [actions]
+            if type(actions) is not list:
+                raise utils.StimelaCabRuntimeError(f"wrangler entry {match}: expected action or list of action")
+            for action in actions:
+                if action.startswith("replace:"):
+                    replace = action.split(":", 1)[1]
+                elif action not in _actions:
+                    raise utils.StimelaCabRuntimeError(f"wrangler entry {match}: unknown action '{action}'")
+            actions = [_actions[act] for act in actions if act in _actions]
+            self._wranglers.append((re.compile(match), replace, actions))
+
+    def apply_output_wranglers(self, output, severity, logger):
+        suppress = False
+        modified_output = output
+        for regex, replace, actions in self._wranglers:
+            if regex.search(output):
+                if replace is not None:
+                    modified_output = regex.sub(replace, output)
+                for action in actions:
+                    if type(action) is int:
+                        severity = action
+                    elif action is _SUPPRESS:
+                        suppress = True
+                    elif action is _DECLARE_FAILURE and self.declare_status is None:
+                        self.declare_status = False
+                        modified_output = "[FAILURE] " + modified_output
+                        severity = logging.ERROR
+                    elif action is _DECLARE_SUCCESS and self.declare_status is None:
+                        self.declare_status = True
+                        modified_output = "[SUCCESS] " + modified_output
+        return (None, 0) if suppress else (modified_output, severity)
 
     def setup_job(self, image, config,
                    indir=None, outdir=None, msdir=None, 
@@ -121,7 +172,7 @@ class StimelaJob(object):
         parameters  :   Parameters to parse to function
         label       :   Function label; for logging purposes
         """
-        
+
         if self.jtype == "python":
             self.image = image.__name__
             if not callable(image):
@@ -135,6 +186,7 @@ class StimelaJob(object):
                 'function':   image,
                 'parameters':   config,
             }
+            self.setup_job_log()
 
             return 0
 
@@ -143,7 +195,6 @@ class StimelaJob(object):
         if offenders:
             raise StimelaCabParameterError('The cab name \'{:s}\' contains invalid characters.'
                                            ' Allowed charcaters are alphanumeric, plus [-_. ].'.format(self.name))
-
 
         self.setup_job_log()
 
@@ -177,6 +228,7 @@ class StimelaJob(object):
         parameter_file = os.path.join(cabpath, 'parameters.json')
         _cab = cab.CabDefinition(indir=indir, outdir=outdir,
                                  msdir=msdir, parameter_file=parameter_file)
+        self.setup_output_wranglers(_cab.wranglers)
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
 
@@ -286,6 +338,7 @@ class StimelaJob(object):
         return 0
 
     def run_job(self):
+        self.declare_status = None
 
         if isinstance(self.job, dict):
             function = self.job['function']
@@ -299,12 +352,12 @@ class StimelaJob(object):
 
         if self.jtype == "singularity":
             self.created = True
-            self.job.run()
+            self.job.run(output_wrangler=self.apply_output_wranglers)
         elif self.jtype in ["podman", "docker"]:
             self.created = False
             self.job.create(*self.args)
             self.created = True
-            self.job.start()
+            self.job.start(output_wrangler=self.apply_output_wranglers)
         return 0
 
 
@@ -570,6 +623,9 @@ class Recipe(object):
                         'Cab name            : {}\n'.format(job.image))
                     astd.write('-------------------------------------\n')
                 job.run_job()
+                # raise exception if wranglers declared the job a failure
+                if job.declare_status is False:
+                    raise StimelaRecipeExecutionError("job declared as failed")
 
                 self.log2recipe(job, recipe, step, 'completed')
                 self.completed.append(job)
@@ -581,12 +637,20 @@ class Recipe(object):
 
             except (utils.StimelaCabRuntimeError,
                     StimelaRecipeExecutionError,
-                    StimelaCabParameterError) as e:
+                    StimelaCabParameterError) as exc:
+                # ignore exceptions if wranglers declared the job a success
+                if job.declare_status is True:
+                    finished_time = datetime.now()
+                    job.log.info('job complete (declared successful) at {} after {}'.format(finished_time, finished_time - start_time),
+                                 # the extra attributes are filtered by e.g. the CARACal logger
+                                 extra=dict(stimela_job_state=(job.name, "complete")))
+                    continue
+
                 self.remaining = [jb[1] for jb in jobs[i+1:]]
                 self.failed = job
 
                 finished_time = datetime.now()
-                job.log.error(str(e), extra=dict(stimela_job_state=(job.name, "failed"), boldface=True))
+                job.log.error(str(exc), extra=dict(stimela_job_state=(job.name, "failed"), boldface=True))
                 job.log.error('job failed at {} after {}'.format(finished_time, finished_time-start_time),
                                 extra=dict(stimela_job_state=(job.name, "failed"), color=None))
                 for line in traceback.format_exc().splitlines():
@@ -609,7 +673,7 @@ class Recipe(object):
 
                 # raise pipeline exception. Original exception context is discarded by "from None" (since we've already
                 # logged it above, we don't need to include it with the new exception)
-                raise PipelineException(e, self.completed, job, self.remaining) from None
+                raise PipelineException(exc, self.completed, job, self.remaining) from None
 #            finally:
 #                self.__remove_workdir()
 

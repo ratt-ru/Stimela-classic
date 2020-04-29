@@ -96,7 +96,7 @@ class Container(object):
 
         return 0
 
-    def run(self, *args):
+    def run(self, *args, output_wrangler=None):
         """
         Run a singularity container instance
         """
@@ -116,7 +116,7 @@ class Container(object):
             self.name, self.time_out))
         utils.xrun("singularity", ["run", "--workdir", self.WORKDIR, "--home", f"{cab.USER_HOME}:{cab.HOME}"] \
                     + list(args) + [volumes, self.image, self.RUNSCRIPT],
-                    log=self.logger, timeout=self.time_out, 
+                    log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     logfile=self.logfile)
 
         self.status = "exited"

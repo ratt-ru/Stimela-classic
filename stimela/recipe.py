@@ -20,7 +20,6 @@ version = stimela.__version__
 UID = os.getuid()
 GID = os.getgid()
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
-BIN = os.path.abspath(os.path.dirname(sys.executable))
 
 CONT_MOD = {
         "docker" : docker,
@@ -222,9 +221,15 @@ class StimelaJob(object):
             cont.RUNSCRIPT = f"/{self.jtype}"
         else:
             cont.RUNSCRIPT = f"/{self.jtype}_run"
-
-        cont.add_volume(f"{BIN}/stimela_runscript", 
-                cont.RUNSCRIPT, perm="ro")
+        
+        runscript = shutil.which("stimela_runscript")
+        if runscript:
+            cont.add_volume(runscript, 
+                    cont.RUNSCRIPT, perm="ro")
+        else:
+            self.log.error("Stimela container runscript could not found.\
+                    This may due to conflicting python or stimela installations in your $PATH.")
+            raise OSError
 
         cont.add_environ('CONFIG', f'{cab.MOUNT}/configfile')
         cont.add_environ('HOME', cont.IODEST["output"])

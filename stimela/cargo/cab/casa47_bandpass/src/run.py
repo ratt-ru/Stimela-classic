@@ -1,19 +1,22 @@
 import os
 import sys
-import drivecasa
 import logging
-casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600*10)
-
-sys.path.append("/scratch/stimela")
-
-utils = __import__('utils')
+import Crasa.Crasa as crasa
+from casacore.tables import table
+import numpy
+import yaml
+import glob
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
 MSDIR = os.environ["MSDIR"]
 
-cab = utils.readJson(CONFIG)
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+junk = cab["junk"]
 
 args = {}
 for param in cab['parameters']:
@@ -25,17 +28,39 @@ for param in cab['parameters']:
 
     args[name] = value
 
-script = ['{0}(**{1})'.format(cab['binary'], args)]
+task = crasa.CasaTask(cab["binary"], **args)
+try:
+    task.run()
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types
 
 
-def log2term(result):
-    if result[1]:
-        err = '\n'.join(result[1] if result[1] else [''])
-        failed = err.lower().find('an error occurred running task') >= 0
-        if failed:
-            raise RuntimeError('CASA Task failed. See error message above')
-        sys.stdout.write('WARNING:: SEVERE messages from CASA run')
+gtab = args["caltable"]
+if not os.path.exists(gtab):
+    raise RuntimeError("The gaintable was not created. Please refer to CASA {0:s} logfile for further details".format(cab["binary"]))
 
+tab = table(gtab)
+field_ids = numpy.unique(tab.getcol("FIELD_ID"))
+tab.close()
 
-result = casa.run_script(script, raise_on_severe=False)
-log2term(result)
+tab = table(gtab+"::FIELD")
+field_names = tab.getcol("NAME")
+tab.close()
+
+field_in = args["field"].split(",")
+
+try:
+    ids = map(int, field_in)
+except ValueError:
+    ids = map(lambda a: field_names.index(a), field_in)
+
+if not set(ids).intersection(field_ids):
+    raise RuntimeError("None of the fields has solutions after the calibration. Please refer to the CASA {} logfile for further details".format(cab["prefix"]))

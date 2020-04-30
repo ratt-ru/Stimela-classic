@@ -9,7 +9,6 @@ import glob
 requirements = ["pyyaml",
                 "nose>=1.3.7",
                 "future-fstrings",
-                "udocker",
                 ],
 
 PACKAGE_NAME = "stimela"
@@ -28,7 +27,6 @@ setup(name=PACKAGE_NAME,
           "cab/*/Dockerfile",
           "base/*/Dockerfile",
           "cab/*/src/*.py",
-          "cab/*/src/*.sh",
           "cab/*/src/*.json",
           "base/*/xvfb.init.d",
           "cab/*/xvfb.init.d",

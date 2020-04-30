@@ -25,7 +25,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           log_dir=os.path.join(OUTPUT, "logs"),
                           )
 
-pipeline.JOB_TYPE = "singularity"
+pipeline.JOB_TYPE = "docker"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
@@ -110,4 +110,4 @@ pipeline.add("cab/casa_rmtables", "delete_ms", {
     label="Remove MS")
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added
-pipeline.run([1,2])
+pipeline.run()

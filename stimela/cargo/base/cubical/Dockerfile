@@ -1,4 +1,4 @@
-FROM stimela/ddfacet:1.3.1
+FROM stimela/ddfacet:1.3.3
 MAINTAINER <sphemakh@gmail.com>
 ENV GIT_LFS_SKIP_SMUDGE 1
 RUN pip3 install -U pip setuptools wheel

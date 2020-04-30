@@ -19,6 +19,8 @@ LOG_FILE = stimela.LOG_FILE
 GLOBALS = stimela.GLOBALS
 CAB_USERNAME = stimela.CAB_USERNAME
 
+loglevels = "info debug error"
+
 class MultilineFormatter(argparse.HelpFormatter):
     def _fill_text(self, text, width, indent):
         text = self._whitespace_matcher.sub(' ', text).strip()
@@ -47,13 +49,17 @@ def build(argv):
 
     parser.add_argument("-i", "--ignore-cabs", default="",
                         help="Comma separated cabs (executor images) to ignore.")
+    
+    parser.add_argument("-p", "--podman", action="store_true",
+        help="Build images using podman.")
 
     parser.add_argument("-nc", "--no-cache", action="store_true",
                         help="Do not use cache when building the image")
 
+
+    jtype = "podman" if podman else "docker"
     args = parser.parse_args(argv)
-    log = logger.StimelaLogger(
-        '{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label), jtype="docker")
+    log = logger.StimelaLogger(LOG_FILE, jtype=jtype)
 
     no_cache = ["--no-cache"] if args.no_cache else []
 
@@ -67,7 +73,7 @@ def build(argv):
         for image in ["base", "meqtrees", "casa", "astropy"] + BASE:
             dockerfile = "{:s}/{:s}".format(stimela.BASE_PATH, image)
             image = "stimela/{0}:{1}".format(image, stimela.__version__)
-            docker.build(image,
+            __call__(jytpe).build(image,
                          dockerfile, args=no_cache)
 
         log.log_image(image, dockerfile, replace=True)
@@ -169,12 +175,14 @@ def run(argv):
     add("-jt", "--job-type", default="docker",
         help="Container technology to use when running jobs")
 
+    add("-ll", "--log-level", default="INFO", choices=loglevels.upper().split() + loglevels.split(),
+        help="Log level. set to DEBUG/debug for verbose logging")
+
     args = parser.parse_args(argv)
-    tag = None
 
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
-                    CAB_TAG=tag, _STIMELA_JOB_TYPE=args.job_type)
+                    _STIMELA_LOG_LEVEL=args.log_level.upper())
 
     nargs = len(args.globals)
 

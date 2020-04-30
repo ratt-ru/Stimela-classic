@@ -38,14 +38,12 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
                 stdw.write(line)
         stdw.flush()
         utils.xrun("docker build", args+["--force-rm", "-f", stdw.name,
-                                         "-t", image,
-                                         bdir])
+                                         "-t", image, bdir])
 
         stdw.close()
     else:
         utils.xrun("docker build", args+["--force-rm", "-t", image,
                                          bdir])
-
     os.system('rm -rf {:s}'.format(bdir))
 
 
@@ -119,12 +117,12 @@ class Container(object):
             environs = environs = " -e "+" -e ".join(self.environs)
         else:
             environs = ""
-
+        
         self._print(
             "Instantiating container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("docker create", list(args) + [volumes, environs, "--rm",
-                                                  "-w %s" % (self.WORKDIR),
                                                   "--name", self.name,
+                                                  "--workdir", self.WORKDIR,
                                                   self.image,
                                                   self.RUNSCRIPT or ""], log=self.logger)
 

@@ -166,7 +166,7 @@
             "dtype": "str",
             "required": false,
             "name": "mem-limit",
-            "default": "1GB"
+            "default": "8GB"
         },
         {
             "info": "Plot only unflagged data. Defaults to true.",

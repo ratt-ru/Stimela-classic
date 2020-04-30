@@ -21,7 +21,6 @@ UID = os.getuid()
 GID = os.getgid()
 USER = os.environ["USER"]
 CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
-BIN = os.path.abspath(os.path.dirname(sys.executable))
 
 CONT_MOD = {
         "docker" : docker,
@@ -68,6 +67,7 @@ class StimelaJob(object):
             self.args.append("--memory {0:s}".format(memory_limit))
         if shared_memory:
             self.args.append("--shm-size {0:s}".format(shared_memory))
+        self.args.append(f"-e USER={USER}")
         self.time_out = time_out
 
         self.logfile = logfile
@@ -81,33 +81,37 @@ class StimelaJob(object):
         self.msdir = msdir
         self.output = output
         self.tmp = os.path.join(self.workdir, "tmp")
+        self.overlay = singularity.make_overlay("overlay.img", self.workdir, size=5)
 
 
     def setup_contIO(self, cont):
         for item,perm in zip("input output msdir tmp workdir".split(), "ro rw rw rw rw".split()):
             host = getattr(self, item)
-            basename = os.path.basename(host)
-            mount = os.path.join(f"{self.workdir_cont}", basename)
-            if item == "tmp":
-                io_cont = "TMPDIR"
-                mount = os.path.join(f"{self.workdir_cont}", self.OUTPUT, basename)
-            else:
-                io_cont = item.upper()
-                mount = os.path.join(f"{self.workdir_cont}", basename)
-            setattr(self, io_cont, mount)
-            cont.add_environ(io_cont, mount)
             if not os.path.exists(host):
                 if item == "input":
                     raise RuntimeError(f"Input directory '{host}' is required but does not exist.")
                 else:
                     os.mkdir(host)
+            basename = os.path.basename(host)
+            if item == "tmp":
+                io_cont = "TMPDIR"
+                mount = os.path.join(f"{self.workdir_cont}", basename)
+            elif item == "workdir":
+                io_cont = item.upper()
+                mount = self.workdir_cont
+            else:
+                io_cont = item.upper()
+                mount = os.path.join(f"{self.workdir_cont}", basename)
+            setattr(self, io_cont, mount)
+            cont.add_environ(io_cont, mount)
             cont.add_volume(host, mount, perm)
 
-    def setup_job_log(self, log_name=None):
+    def setup_job_log(self, log_name=None, loglevel=None):
         """ set up a log for the job on the host side 
             log_name: preferably unique name for this jobs log
             log_dir: log base directory, None is current directory
         """
+        loglevel = loglevel or self.recipe.loglevel
         log_name = log_name or self.name
         if log_name not in StimelaJob.logs_avail:
             self.log = stimela.logger().getChild(log_name)
@@ -117,7 +121,7 @@ class StimelaJob(object):
                 if not os.path.exists(log_dir):
                     os.mkdir(log_dir)
                 fh = logging.FileHandler(self.logfile, 'w', delay=True)
-                fh.setLevel(logging.INFO)
+                fh.setLevel(getattr(logging, loglevel))
                 self.log.addHandler(fh)
 
             self.log.propagate = True            # propagate also to main stimela logger
@@ -154,7 +158,6 @@ class StimelaJob(object):
             if not callable(image):
                 raise utils.StimelaCabRuntimeError(
                     'Object given as function is not callable')
-
             if self.name is None:
                 self.name = image.__name__
 
@@ -185,12 +188,13 @@ class StimelaJob(object):
                                      time_out=self.time_out)
         self.setup_contIO(cont)
         cont.workdir_host = self.workdir
+        cont.overlay = self.overlay
 
         cabpath = os.path.join(CAB_PATH, image.split("/")[1])
         # In case the user specified a custom cab
         cabpath = os.path.join(self.cabpath, image.split("/")[1]) if self.cabpath else cabpath
         parameter_file = os.path.join(cabpath, 'parameters.json')
-        cab.IODEST = {
+        cab.IODEST = cont.IODEST = {
                 "input" : self.INPUT,
                 "output" : self.OUTPUT,
                 "msfile" : self.MSDIR,
@@ -198,7 +202,7 @@ class StimelaJob(object):
                 }
         _cab = cab.CabDefinition(indir=self.input, outdir=self.output,
                                  msdir=self.msdir, parameter_file=parameter_file)
-        cont.IODEST = CONT_IO
+        # cont.IODEST = CONT_IO
         cont.cabname = _cab.task
 
         if self.jtype == "singularity":
@@ -234,7 +238,7 @@ class StimelaJob(object):
         # These are standard volumes and
         # environmental variables. These will be
         # always exist in a cab container
-        cab.MOUNT = self.workdir
+        cab.MOUNT = self.workdir_cont
         cont.add_volume(cont.parameter_file_name,
                         f'{cab.MOUNT}/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), f"{cab.MOUNT}/code", "ro")
@@ -243,9 +247,15 @@ class StimelaJob(object):
             cont.RUNSCRIPT = f"/{self.jtype}"
         else:
             cont.RUNSCRIPT = f"/{self.jtype}_run"
-
-        cont.add_volume(f"{BIN}/stimela_runscript", 
+        
+        runscript = shutil.which("stimela_runscript")
+        if runscript:
+            cont.add_volume(runscript, 
                 cont.RUNSCRIPT, perm="ro")
+        else:
+            self.log.error("Stimela container runscript could not found.\
+                    This may due to conflicting python or stimela installations in your $PATH.")
+            raise OSError
 
         cont.add_environ('CONFIG', f'{cab.MOUNT}/configfile')
         cont.add_environ('HOME', cab.MOUNT)
@@ -292,7 +302,8 @@ class Recipe(object):
                  singularity_image_dir=None, JOB_TYPE='docker',
                  cabpath=None,
                  logger=None,
-                 log_dir=None, logfile=None, logfile_task=None):
+                 log_dir=None, logfile=None, logfile_task=None,
+                 loglevel="INFO"):
         """
         Deifine and manage a stimela recipe instance.        
 
@@ -313,24 +324,37 @@ class Recipe(object):
         """
         self.name = name
         self.name_ = re.sub(r'\W', '_', name)  # pausterized name
+        self.ms_dir = ms_dir
+
+        self.stimela_context = inspect.currentframe().f_back.f_globals
+        self.stimela_path = os.path.dirname(docker.__file__)
+        # Update I/O with values specified on command line
+        script_context = self.stimela_context
+        self.indir = script_context.get('_STIMELA_INPUT', None)
+        self.outdir = script_context.get('_STIMELA_OUTPUT', None)
+        self.msdir = script_context.get('_STIMELA_MSDIR', None)
+        self.loglevel = script_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
+        self.build_label = script_context.get('_STIMELA_BUILD_LABEL', None) or build_label
+        self.JOB_TYPE = script_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 
         self.cabpath = cabpath
 
         # set default name for task-level logfiles
-        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name) \
+        self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_) \
             if logfile_task is None else logfile_task
 
         if logger is not None:
             self.log = logger
         else:
-            self.log = stimela.logger().getChild(name)
+            logger = stimela.logger(loglevel=self.loglevel)
+            self.log = logger.getChild(name)
             self.log.propagate = True # propagate to main stimela logger
 
             # logfile is False: no logfile at recipe level
             if logfile is not False:
                 # logfile is None: use default name
                 if logfile is None:
-                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name)
+                    logfile = "{0}/log-{1}.txt".format(log_dir or ".", self.name_)
 
                 # reset default name for task-level logfiles based on logfile
                 self.logfile_task = os.path.splitext(logfile)[0] + "-{task}.txt" \
@@ -343,28 +367,15 @@ class Recipe(object):
                     os.makedirs(log_dir)
 
                 fh = logging.FileHandler(logfile, 'w', delay=True)
-                fh.setLevel(logging.INFO)
+                fh.setLevel(getattr(logging, self.loglevel))
                 fh.setFormatter(stimela.log_formatter)
                 self.log.addHandler(fh)
 
 
         self.resume_file = '.last_{}.json'.format(self.name_)
-        self.stimela_context = inspect.currentframe().f_back.f_globals
-        self.stimela_path = os.path.dirname(docker.__file__)
-        # Update I/O with values specified on command line
-        script_context = self.stimela_context
-        self.indir = script_context.get('_STIMELA_INPUT', None)
-        self.outdir = script_context.get('_STIMELA_OUTPUT', None)
-        self.msdir = script_context.get('_STIMELA_MSDIR', None) or ms_dir
-        self.JOB_TYPE = script_context.get(
-            '_JOB_TYPE', None) or JOB_TYPE
         # set to default if not set
-        self.build_label = build_label or stimela.CAB_USERNAME
+        self.build_label = self.build_label or stimela.CAB_USERNAME
 
-        if not os.path.exists(self.msdir):
-            self.log.info(
-                'MS directory \'{}\' does not exist. Will create it'.format(self.msdir))
-            os.mkdir(self.msdir)
         self.tag = tag
         # create a folder to store config files
         # if it doesn't exist. These config
@@ -392,7 +403,6 @@ class Recipe(object):
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
         
-        #self.workdir = None
         self.__make_workdir()
 
     def __make_workdir(self):
@@ -413,17 +423,17 @@ class Recipe(object):
             logfile=None,
             cabpath=None):
 
-        if not os.path.exists(output):
-            self.log.info(
-                    'The Log directory \'{0:s}\' cannot be found. Will create it'.format(output))
-            os.mkdir(output)
+        if build_label:
+            self.build_label = build_label
 
         if logfile is None:
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
 
+        # The hirechy is command line, Recipe.add, and then Recipe
         indir = self.indir or input
         outdir = self.outdir or output
-        msdir = self.msdir or msdir
+        msdir = self.msdir or msdir or self.ms_dir
+
         job = StimelaJob(name, recipe=self, label=label,
                          cpus=cpus, memory_limit=memory_limit,
                          shared_memory=shared_memory,
@@ -431,12 +441,13 @@ class Recipe(object):
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath,
-                         workdir=self.workdir,
-                         input=indir, output=outdir, msdir=msdir)
+                         workdir=self.workdir, input=indir,
+                         output=outdir, msdir=msdir)
 
         if callable(image):
             job.jtype = 'python'
         
+
         job.setup_job(image=image, config=config,
              build_label=build_label or self.build_label,
              singularity_image_dir=self.singularity_image_dir,

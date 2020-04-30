@@ -126,7 +126,7 @@ class Container(object):
 
         if hasattr(self, "overlay"):
             args = list(args)
-            args.append(f"--overlay {self.overlay}")
+            args.append(f"--overlay {self.overlay} --no-home")
         else:
             args = list(args)
 

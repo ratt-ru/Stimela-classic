@@ -63,6 +63,10 @@ def build(argv):
 
     no_cache = ["--no-cache"] if args.no_cache else []
 
+    if args.cab:
+        raise SystemExit("DEPRECATION NOTICE: This feature has been deprecated. Please specify your \
+                custom cab via the 'cabpath' option of the Recipe.add() function.")
+
     if args.base:
         # Build base and meqtrees images first
         BASE.remove("base")

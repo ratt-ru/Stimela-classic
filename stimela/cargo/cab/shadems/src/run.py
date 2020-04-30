@@ -27,6 +27,8 @@ for param in cab['parameters']:
     if name == "ms":
         ms = value
         continue
+    if name in ["debug", "iter-scan", "iter-field", "iter-corr", "iter-spw", "iter-antenna", "noconj", "noflags", "profile"]:
+        value = ""
 
     if isinstance(value, list):
         val = map(str, value)
@@ -41,7 +43,7 @@ try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [OUTPUT, MSDIR]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

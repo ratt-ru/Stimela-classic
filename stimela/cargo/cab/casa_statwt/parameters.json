@@ -5,7 +5,7 @@
     "description": "Reweight visibilities according to their scatter (Experimental)", 
     "prefix": "", 
     "binary": "statwt",
-    "junk":[".last"]
+    "junk":[".last"],
     "msdir": true, 
     "parameters": [
         {

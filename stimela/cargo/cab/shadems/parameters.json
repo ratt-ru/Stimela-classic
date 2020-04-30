@@ -26,7 +26,7 @@
             "info": "Y axis to plot. Must be given the same number of times as --xaxis.", 
             "dtype": "str", 
             "default": null,
-            "name": "yaxis",
+            "name": "yaxis"
         }, 
         {
             "info": "Intensity axis. If none, plot intensity (a.k.a. alpha channel) is proportional to density of points.Otherwise, a reduction function (--ared) is applied to the given values, and the result is used to determine intensity.", 
@@ -257,7 +257,7 @@
             "dtype": "str", 
             "default": "plot-{ms}{_field}{_Spw}{_Scan}{_Ant}-{label}{_alphalabel}{_colorlabel}{_suffix}.png",
             "name": "png",
-            "io": "output",
+            "io": "output"
         },
         {
             "info": "Template for plot titles. Default title includes ms name, field, spw, scan, antenna, plot title, alpha title and colour title.", 
@@ -300,6 +300,6 @@
             "dtype": "bool", 
             "default": false,
             "name": "profile"
-        },       
+        }
     ]
 }

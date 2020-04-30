@@ -1,6 +1,6 @@
 {
     "task": "casa47_bandpass", 
-    "base": "stimela/casa", 
+    "base": "stimela/casa47", 
     "tag": "1.4.2",
     "version": "4.7.2",
     "description": "Calculates a bandpass calibration solution", 

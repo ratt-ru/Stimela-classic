@@ -47,12 +47,11 @@ for item in os.listdir(CAB_PATH):
     try:
         # These files must exist for a cab image to be valid
         ls_cabdir = os.listdir('{0}/{1}'.format(CAB_PATH, item))
-        dockerfile = 'Dockerfile' in ls_cabdir
         paramfile = 'parameters.json' in ls_cabdir
         srcdir = 'src' in ls_cabdir
     except OSError:
         continue
-    if dockerfile and paramfile and srcdir:
+    if paramfile and srcdir:
         CAB.append(item)
 
 

@@ -268,6 +268,7 @@ def pull(argv):
 
     images_ = []
     for cab in args.cab_base or []:
+        print(cab in CAB)
         if cab in CAB:
             filename = "/".join([stimela.CAB_PATH, cab, "parameters.json"])
             param = utils.readJson(filename)

@@ -7,9 +7,9 @@
     "binary": "listobs", 
     "junk":[],
     "msdir": true,
-    "wranglers": {
+    "wranglers_demo": {
         "PIPELINE CASA":        ["replace:MI CASA ES TU CASA", "ERROR"],
-        "[tT]elemetry":         "SUPPRESS",
+       "[tT]elemetry":         "SUPPRESS",
         "(Begin|End) Task:":    ["replace:Sisyphus, \\1 your task", "WARN"],
         "End Task:":            ["DECLARE_FAILURE"]
     },

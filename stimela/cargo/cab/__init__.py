@@ -147,6 +147,7 @@ class CabDefinition(object):
             self.binary = cab["binary"]
             self.tag = cab["tag"]
             self.junk = cab.get("junk", [])
+            self.wranglers = cab.get("wranglers", [])
             self.version = cab.get("version", "x.x.x")
             if cab["msdir"]:
                 self.msdir = msdir
@@ -182,13 +183,14 @@ class CabDefinition(object):
             self.tag = tag
             self.version = version
             self.junk = []
+            self.wranglers = []
 
         self.log = stimela.logger()
 
     def __str__(self):
         res = ""
         res += "Cab definition for {}\n".format(self.task)
-        for b in ["base", "binary", "prefix", "description", "tag", "version"]:
+        for b in ["base", "binary", "prefix", "description", "tag", "version", "junk", "wranglers"]:
             res += "\t {}: {}\n".format(b, getattr(self, b))
         res += "\t Parameters:\n"
         for p in self.parameters:
@@ -239,7 +241,7 @@ class CabDefinition(object):
 
     def toDict(self):
         conf = {}
-        for item in "task base binary msdir description prefix tag version junk".split():
+        for item in "task base binary msdir description prefix tag version junk wranglers".split():
             if item == 'msdir':
                 conf[item] = getattr(self, item, False)
             else:

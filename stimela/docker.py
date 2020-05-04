@@ -155,7 +155,7 @@ class Container(object):
         stdout.close()
         return output
 
-    def start(self):
+    def start(self, output_wrangler=None):
         running = True
         tstart = time.time()
         self.status = "running"
@@ -167,7 +167,7 @@ class Container(object):
         utils.xrun("docker", ["start", "-a", self.name],
                        timeout=self.time_out,
                        logfile=self.logfile,
-                       log=self.logger,
+                       log=self.logger, output_wrangler=output_wrangler,
                        kill_callback=lambda: utils.xrun("docker", ["kill", self.name]))
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime

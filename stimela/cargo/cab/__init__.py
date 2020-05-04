@@ -280,8 +280,8 @@ class CabDefinition(object):
             if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
-        self.log.info(
-            "Validating parameters...       CAB = {0}".format(self.task))
+        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{self.tag})")
+
         for name, value in options.items():
             found = False
             for param in self.parameters:
@@ -377,5 +377,4 @@ class CabDefinition(object):
         conf = {}
         conf.update(self.toDict())
         utils.writeJson(saveconf, conf)
-        self.log.info(
-            "Parameters validated and saved. Parameter file is: {}".format(saveconf))
+        self.log.info(f"Parameters validated and saved to {saveconf}")

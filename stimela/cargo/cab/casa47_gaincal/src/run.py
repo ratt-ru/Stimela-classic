@@ -1,13 +1,12 @@
 import os
 import sys
-import drivecasa
 import logging
+import Crasa.Crasa as crasa
+from casacore.tables import table
+import numpy
 import glob
-import shutil
-import shlex
 import yaml
-
-casa = drivecasa.Casapy(log2term=True, echo_to_stdout=True, timeout=24*3600*10)
+import shutil
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -16,6 +15,7 @@ MSDIR = os.environ["MSDIR"]
 
 with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)
+
 junk = cab["junk"]
 
 args = {}
@@ -28,20 +28,9 @@ for param in cab['parameters']:
 
     args[name] = value
 
-script = ['{0}(**{1})'.format(cab['binary'], args)]
-
-
-def log2term(result):
-    if result[1]:
-        err = '\n'.join(result[1] if result[1] else [''])
-        failed = err.lower().find('an error occurred running task') >= 0
-        if failed:
-            raise RuntimeError('CASA Task failed. See error message above')
-        sys.stdout.write('WARNING:: SEVERE messages from CASA run')
-
+task = crasa.CasaTask(cab["binary"], **args)
 try:
-    result = casa.run_script(script, raise_on_severe=False)
-    log2term(result)
+    task.run()
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
@@ -51,3 +40,26 @@ finally:
                     os.remove(f)
                 elif os.path.isdir(f):
                     shutil.rmtree(f)
+                # Leave other types
+
+gtab = args["caltable"]
+if not os.path.exists(gtab):
+    raise RuntimeError("The gaintable was not created. Please refer to CASA {0:s} logfile for further details".format(cab["binary"]))
+
+tab = table(gtab)
+field_ids = numpy.unique(tab.getcol("FIELD_ID"))
+tab.close()
+
+tab = table(gtab+"::FIELD")
+field_names = tab.getcol("NAME")
+tab.close()
+
+field_in = args["field"].split(",")
+
+try:
+    ids = map(int, field_in)
+except ValueError:
+    ids = map(lambda a: field_names.index(a), field_in)
+
+if not set(ids).intersection(field_ids):
+    raise RuntimeError("None of the fields has solutions after the calibration. Please refer to CASA the {} logfile for further details".format(cab["prefix"]))

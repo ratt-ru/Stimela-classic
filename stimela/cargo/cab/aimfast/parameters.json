@@ -75,21 +75,21 @@
             "dtype": "int"
         }, 
         {
-            "info": "Two tigger model (text/lsm.html) files to compare", 
-            "delimiter": " ", 
-            "name": "compare-models", 
-            "io": "output", 
-            "default": null, 
-            "dtype": "list:file", 
+            "info": "Tigger model (text/lsm.html) files to compare",
+            "delimiter": " ",
+            "name": "compare-models",
+            "io": "output",
+            "default": null,
+            "dtype": "list:file",
             "required": false
         }, 
         {
-            "info": "Two residual (fits) files to compare. e.g: ['res1.fits:res2.fits']", 
-            "delimiter": " ", 
-            "name": "compare-residuals", 
-            "io": "output", 
-            "default": null, 
-            "dtype": "list:file", 
+            "info": "Residual (fits) files to compare. e.g: ['res1.fits', 'res2.fits']",
+            "delimiter": " ",
+            "name": "compare-residuals",
+            "io": "output",
+            "default": null,
+            "dtype": "list:file",
             "required": false
         }, 
         {
@@ -170,6 +170,14 @@
             "required": false,
             "name": "fov-factor",
             "dtype": "float"
+        },
+        {
+            "info": "aimfast fidelity results file (JSON format)",
+            "default": null,
+            "required": false,
+            "name": "fidelity-results",
+            "io": "output",
+            "dtype": "file"
         }
     ]
 }

@@ -1,0 +1,36 @@
+{
+    "task": "shadems", 
+    "base": "stimela/shadems", 
+    "tag": "1.4.2-4",
+    "description": "Rapid Measurement Set plotting with xarray-ms and datashader.", 
+    "prefix": "--", 
+    "binary": "shadems", 
+    "msdir": true, 
+    "junk": ["log-shadems.txt"],
+    "wranglers": {
+        "^ERROR:": "ERROR"
+    },
+    "parameters": [
+        {
+            "info": "Measurement set to plot", 
+            "dtype": "file",
+            "default": null,
+            "name": "ms", 
+            "io": "msfile",  
+            "required": true
+        }, 
+        {
+            "info": "Plot specification(s)",
+            "dtype": "list:str",
+            "name": "args",
+            "required": true,
+            "default": null
+        },
+        {
+            "info": "If true, do not return error code if plot(s) fail",
+            "dtype": "bool",
+            "default": false,
+            "name": "ignore_errors"
+        }
+    ]
+}

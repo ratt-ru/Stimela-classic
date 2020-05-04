@@ -147,6 +147,7 @@ class CabDefinition(object):
             self.binary = cab["binary"]
             self.tag = cab["tag"]
             self.junk = cab.get("junk", [])
+            self.wranglers = cab.get("wranglers", [])
             self.version = cab.get("version", "x.x.x")
             if cab["msdir"]:
                 self.msdir = msdir
@@ -182,13 +183,14 @@ class CabDefinition(object):
             self.tag = tag
             self.version = version
             self.junk = []
+            self.wranglers = []
 
         self.log = stimela.logger()
 
     def __str__(self):
         res = ""
         res += "Cab definition for {}\n".format(self.task)
-        for b in ["base", "binary", "prefix", "description", "tag", "version"]:
+        for b in ["base", "binary", "prefix", "description", "tag", "version", "junk", "wranglers"]:
             res += "\t {}: {}\n".format(b, getattr(self, b))
         res += "\t Parameters:\n"
         for p in self.parameters:
@@ -239,7 +241,7 @@ class CabDefinition(object):
 
     def toDict(self):
         conf = {}
-        for item in "task base binary msdir description prefix tag version junk".split():
+        for item in "task base binary msdir description prefix tag version junk wranglers".split():
             if item == 'msdir':
                 conf[item] = getattr(self, item, False)
             else:
@@ -278,8 +280,8 @@ class CabDefinition(object):
             if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
-        self.log.info(
-            "Validating parameters...       CAB = {0}".format(self.task))
+        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{self.tag})")
+
         for name, value in options.items():
             found = False
             for param in self.parameters:
@@ -375,5 +377,4 @@ class CabDefinition(object):
         conf = {}
         conf.update(self.toDict())
         utils.writeJson(saveconf, conf)
-        self.log.info(
-            "Parameters validated and saved. Parameter file is: {}".format(saveconf))
+        self.log.info(f"Parameters validated and saved to {saveconf}")

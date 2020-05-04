@@ -9,7 +9,7 @@ RUN docker-apt-install python3-casacore \
     wcslib-dev \
     python3-pip 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
-RUN pip install git+https://github.com/ratt-ru/shadeMS.git@v0.3.0
+RUN pip install git+https://github.com/ratt-ru/shadeMS.git@auto-bounds
 RUN pip install git+https://github.com/o-smirnov/datashader
 RUN pip install -I numpy
 RUN shadems -h

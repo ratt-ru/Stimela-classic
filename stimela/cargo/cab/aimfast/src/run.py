@@ -26,9 +26,15 @@ for param in cab['parameters']:
     elif value is False:
         continue
 
-    if type(value) is list:
-        args += ['{0}{1} {2}'.format(cab['prefix'], name,
-                                     " ".join([val.replace(':output', '') for val in value]))]
+    if 'compare' in name:
+        compare = []
+        for i, val in enumerate(value):
+            compare.append(val)
+            # Compare models/images in pairs
+            if i%2:
+                args += ['{0}{1} {2}'.format(cab['prefix'],
+                                            name, " ".join(compare))]
+                compare = []
     else:
         args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 

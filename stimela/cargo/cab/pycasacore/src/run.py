@@ -34,7 +34,7 @@ with tempfile.NamedTemporaryFile(suffix=".py") as tfile:
     tfile.write(custom_script)
     tfile.flush()
 
-    _runc = " ".join([cab["binary"] + tfile.name])
+    _runc = " ".join([cab["binary"], tfile.name])
     try:
         subprocess.check_call(shlex.split(_runc))
     finally:

@@ -63,4 +63,4 @@ except ValueError:
     ids = map(lambda a: field_names.index(a), field_in)
 
 if not set(ids).intersection(field_ids):
-    raise RuntimeError("None of the fields has solutions after the calibration. Please refer to the CASA {} logfile for further details".format(cab["prefix"]))
+    raise RuntimeError("None of the fields has solutions after the calibration. Please refer to the CASA {} logfile for further details".format(cab["binary"]))

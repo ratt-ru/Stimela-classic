@@ -10,7 +10,7 @@ import subprocess
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]
-MSDIR = os.environ["OUTPUT"]
+OUTPUT = os.environ["OUTPUT"]
 with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)
 junk = cab["junk"]
@@ -44,6 +44,7 @@ if msname is None:
     raise RuntimeError('MS name has not be specified')
 
 _runc = " ".join([cab['binary']] + args + [fields, msname])
+print("running", _runc)
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:

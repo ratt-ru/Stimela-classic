@@ -1,4 +1,4 @@
-FROM stimela/ragavi:1.2.6
+FROM stimela/ragavi:1.4.4
 MAINTAINER <sphemakh@gmail.com>
 ADD src /scratch/code
 ENV LOGFILE ${OUTPUT}/logfile.txt

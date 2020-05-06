@@ -236,7 +236,8 @@ class StimelaJob(object):
         elif self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
             if singularity_image_dir is None:
-                singularity_image_dir = os.path.join(".", "stimela_singularity_images")
+                singularity_image_dir = os.path.join(CDIR, "stimela_singularity_images")
+                singularity_image_dir = os.path.abspath(singularity_image_dir)
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
                     simage, _cab.tag, singularity.suffix)
             if not os.path.exists(cont.image):
@@ -271,6 +272,7 @@ class StimelaJob(object):
 
         if self.jtype == "singularity":
             cont.RUNSCRIPT = f"/{self.jtype}"
+            cont.execdir = self.workdir
         else:
             cont.RUNSCRIPT = f"/{self.jtype}_run"
         
@@ -476,7 +478,7 @@ class Recipe(object):
 
         
         self.workdir = None
-        #self.__make_workdir()
+        self.__make_workdir()
 
     def __make_workdir(self):
         timestamp = str(time.time()).replace(".", "")
@@ -485,11 +487,6 @@ class Recipe(object):
             timestamp = str(time.time()).replace(".", "")
             self.workdir = os.path.join(CDIR, f".stimela_workdir-{timestamp}")
         os.mkdir(self.workdir)
-
-    def __remove_workdir(self):
-        if os.path.exists(self.workdir):
-            shutil.rmtree(self.workdir)
-
 
     def add(self, image, name, config=None,
             input=None, output=None, msdir=None,
@@ -679,8 +676,6 @@ class Recipe(object):
                 # raise pipeline exception. Original exception context is discarded by "from None" (since we've already
                 # logged it above, we don't need to include it with the new exception)
                 raise PipelineException(exc, self.completed, job, self.remaining) from None
-#            finally:
-#                self.__remove_workdir()
 
         self.log.info(
             'Saving pipeline information in {}'.format(self.resume_file))
@@ -691,5 +686,5 @@ class Recipe(object):
 
     def __del__(self):
         """Failsafe"""
-#        if os.path.exists(self.workdir):
-#            shutil.rmtree(self.workdir)
+        if os.path.exists(self.workdir):
+            shutil.rmtree(self.workdir)

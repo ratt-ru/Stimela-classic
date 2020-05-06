@@ -52,7 +52,8 @@ class Container(object):
                  time_out=-1,
                  runscript="/singularity",
                  environs=None,
-                 workdir=None):
+                 workdir=None,
+                 execdir="."):
         """
         Python wrapper to singularity tools for managing containers.
         """
@@ -67,6 +68,7 @@ class Container(object):
         self.PID = os.getpid()
         self.uptime = "00:00:00"
         self.time_out = time_out
+        self.execdir = execdir
 
         hashname = hashlib.md5(name.encode('utf-8')).hexdigest()[:3]
         self.name = hashname if version < "3.0.0" else name
@@ -114,7 +116,7 @@ class Container(object):
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun("singularity", ["run", "--workdir", self.WORKDIR, "--home", f"{cab.USER_HOME}:{cab.HOME}"] \
+        utils.xrun(f"cd {self.execdir} && singularity", ["run", "--workdir", self.execdir] \
                     + list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     logfile=self.logfile)

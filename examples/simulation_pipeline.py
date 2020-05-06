@@ -25,7 +25,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           log_dir=os.path.join(OUTPUT, "logs"),
                           )
 
-pipeline.JOB_TYPE = "docker"
+pipeline.JOB_TYPE = "singularity"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
@@ -64,19 +64,6 @@ pipeline.add("cab/simulator",
              input=INPUT, output=OUTPUT,
              label="Simulating visibilities")
 
-
-pipeline.add('cab/shadems',
-             'plot_vis',
-             {
-                 "ms":   MS,
-                 "xaxis":   'uv',
-                 "yaxis":   'a',
-                 "col":   'CORRECTED_DATA',
-                 "png":   PREFIX+'-amp_uvdist.png',
-             },
-             input=INPUT,
-             output=OUTPUT,
-             label='plot_amp_uvdist:: Plot amplitude vs uv-distance')
 
 # 3: Image
 # Make things a bit interesting by imaging with different weights

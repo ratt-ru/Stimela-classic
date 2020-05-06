@@ -47,6 +47,8 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              memory_limit="2gb")
 
 
+recipe.run()
+sys.exit(0)
 # 2: Simulate visibilities into it
 pipeline.add("cab/simulator",
              "simulator_example",

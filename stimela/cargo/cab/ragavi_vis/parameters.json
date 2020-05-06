@@ -34,7 +34,7 @@
                 "scan", 
                 "time",
                 "uvdist",
-                "uvwave"
+                "uvwave",
                 ]
         },
         {
@@ -47,7 +47,7 @@
                 "amplitude", 
                 "imaginary", 
                 "phase",
-                "real"
+                "real",
                 ]
         },
         {
@@ -165,7 +165,7 @@
             "name": "iter-axis",
             "default": null,
             "choices": [
-                "antenna"
+                "antenna",
                 "antenna1", 
                 "antenna2", 
                 "baseline",

@@ -1,7 +1,7 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.2.6",
+    "tag": "1.4.4",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-vis",
@@ -25,17 +25,16 @@
             "choices": [
                 "antenna1", 
                 "antenna2", 
-                "baseline",
+                "amplitude",
                 "channel",
-                "corr", 
-                "field", 
                 "frequency",
+                "imaginary",
                 "phase",
                 "real",
                 "scan", 
                 "time",
                 "uvdist",
-                "uvwave"
+                "uvwave",
                 ]
         },
         {
@@ -48,7 +47,7 @@
                 "amplitude", 
                 "imaginary", 
                 "phase",
-                "real"
+                "real",
                 ]
         },
         {
@@ -70,6 +69,13 @@
             "dtype": "int",
             "required": false,
             "name": "cbin",
+            "default": null
+        },
+        {
+            "info": "Select baselines where ANTENNA1 corresponds to the supplied antenna(s)",
+            "dtype": "str",
+            "required": false,
+            "name": "ant",
             "default": null
         },
         {
@@ -110,6 +116,13 @@
                 ]
         },
         {
+            "info": "Number columns in grid if iteration is active",
+            "dtype": "int",
+            "required": false,
+            "name": "cols",
+            "default": 5
+        },
+        {
             "info": "Correlation index or subset to plot. Can be specified using normal python slicing syntax. Defaults to all.",
             "dtype": "str",
             "required": false,
@@ -138,7 +151,7 @@
             "default": null
         },
         {
-            "info": "Output HTML file name",
+            "info": "Output HTML file name (without .html suffix)",
             "dtype": "str",
             "required": false,
             "name": "htmlname",
@@ -152,6 +165,7 @@
             "name": "iter-axis",
             "default": null,
             "choices": [
+                "antenna",
                 "antenna1", 
                 "antenna2", 
                 "baseline",

@@ -1,7 +1,7 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.2.6",
+    "tag": "1.4.4",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-gains",
@@ -73,7 +73,7 @@
             "name": "field"
         },
         {
-            "info": "Output HTML file name",
+            "info": "Output HTML file name (without .html suffix)",
             "dtype": "str",
             "required": false,
             "name": "htmlname",

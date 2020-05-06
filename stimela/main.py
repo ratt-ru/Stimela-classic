@@ -21,7 +21,9 @@ CAB_USERNAME = stimela.CAB_USERNAME
 
 loglevels = "info debug error"
 
+
 class MultilineFormatter(argparse.HelpFormatter):
+
     def _fill_text(self, text, width, indent):
         text = self._whitespace_matcher.sub(' ', text).strip()
         paragraphs = text.split('|n ')
@@ -32,11 +34,12 @@ class MultilineFormatter(argparse.HelpFormatter):
             multiline_text = multiline_text + formatted_paragraph
         return multiline_text
 
+
 def build(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit():
             argv = ' ' + arg
-    
+
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
     parser.add_argument("-b", "--base", action="store_true",
                         help="Build base images")
@@ -335,9 +338,11 @@ def pull(argv):
     args.image = images_ or args.image
     if args.image:
         for image in args.image:
-            simage = image.replace("/", "_")
-            simage = simage.replace(":", "_") + singularity.suffix
             if args.singularity:
+                simage = image.replace("/", "_")
+                if not hasattr(singularity, "suffix"):
+                    raise SystemExit("Cannot find singularity on this system")
+                simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
             elif args.docker:
@@ -361,6 +366,8 @@ def pull(argv):
         for image in base:
             if args.singularity:
                 simage = image.replace("/", "_")
+                if not hasattr(singularity, "suffix"):
+                    raise SystemExit("Cannot find singularity on this system")
                 simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
@@ -549,7 +556,8 @@ def clean(argv):
                 status = "no there"
 
             if status == 'running':
-                # Kill the container instead of stopping it, so that effect can be felt py parent process
+                # Kill the container instead of stopping it, so that effect can
+                # be felt py parent process
                 utils.xrun('docker', ['kill', container])
                 cont.remove()
             elif status in ['exited', 'dead']:
@@ -595,8 +603,8 @@ def main(argv):
             command = cmd
 
             index = argv.index(cmd)
-            options = argv[index+1:]
-            argv = argv[:index+1]
+            options = argv[index + 1:]
+            argv = argv[:index + 1]
 
     args = parser.parse_args(argv)
 

@@ -25,7 +25,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           log_dir=os.path.join(OUTPUT, "logs"),
                           )
 
-pipeline.JOB_TYPE = "singularity"
+pipeline.JOB_TYPE = "docker"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
@@ -47,8 +47,6 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              memory_limit="2gb")
 
 
-recipe.run()
-sys.exit(0)
 # 2: Simulate visibilities into it
 pipeline.add("cab/simulator",
              "simulator_example",

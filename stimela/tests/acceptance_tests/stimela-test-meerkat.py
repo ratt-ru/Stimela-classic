@@ -120,7 +120,7 @@ class mk_reduce(unittest.TestCase):
                        'xaxis': 'DATA:imag',
                        'yaxis': 'real',
                        'col': 'DATA',
-                       'png': 'shadems_test_real_imag'
+                       'png': '%s_shadems_test_real_imag' % (PREFIX)
                    },
                    input=INPUT, output=OUTPUT,
                    label="shadems_test",
@@ -167,7 +167,7 @@ class mk_reduce(unittest.TestCase):
                        'xaxis': 'imaginary',
                        'yaxis': 'real',
                        'data-column': 'CORRECTED_DATA',
-                       'htmlname': "ragavi_vis_test_real_imag"
+                       'htmlname': "%s_ragavi_vis_real_imag" % (PREFIX)
                    },
                    input=INPUT, output=OUTPUT,
                    label="ragavi_vis_test",

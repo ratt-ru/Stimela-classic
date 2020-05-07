@@ -70,6 +70,8 @@ class Container(object):
         self.time_out = time_out
         self.execdir = execdir
 
+        self._env = os.environ.copy()
+
         hashname = hashlib.md5(name.encode('utf-8')).hexdigest()[:3]
         self.name = hashname if version < "3.0.0" else name
 
@@ -94,7 +96,7 @@ class Container(object):
         key_ = f"SINGULARITYENV_{key}"
 	
         self.logger.debug(f"Setting singularity environmental variable {key_}={value} on host")
-        os.environ[key_] = value
+        self._env[key_] = value
 
         return 0
 
@@ -119,7 +121,7 @@ class Container(object):
         utils.xrun(f"cd {self.execdir} && singularity", ["run", "--workdir", self.execdir] \
                     + list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
-                    logfile=self.logfile)
+                    env=self._env, logfile=self.logfile)
 
         self.status = "exited"
 

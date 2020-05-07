@@ -98,7 +98,7 @@ def xrun_nolog(command, name=None):
 
     return 0
 
-def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=None, output_wrangler=None):
+def xrun(command, options, log=None, logfile=None, env=None, timeout=-1, kill_callback=None, output_wrangler=None):
     command_name = command
 
     # this part could be inside the container
@@ -119,7 +119,7 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
     start_time = time.time()
 
     proc = subprocess.Popen([command], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            bufsize=1, universal_newlines=True, shell=True)
+                            env=env, bufsize=1, universal_newlines=True, shell=True)
 
     poller = Poller(log=log)
     poller.register_process(proc)

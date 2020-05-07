@@ -272,6 +272,10 @@ class StimelaJob(object):
 
         if self.jtype == "singularity":
             cont.RUNSCRIPT = f"/{self.jtype}"
+            if _cab.base.startswith("stimela/casa") or _cab.base.startswith("stimela/simms"):
+                cont.add_environ("LANGUAGE", "en_US.UTF-8")
+                cont.add_environ("LANG", "en_US.UTF-8")
+                cont.add_environ("LC_ALL", "en_US.UTF-8")
             cont.execdir = self.workdir
         else:
             cont.RUNSCRIPT = f"/{self.jtype}_run"

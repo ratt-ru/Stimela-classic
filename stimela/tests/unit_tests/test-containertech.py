@@ -26,15 +26,12 @@ class basicrecipe_test(unittest.TestCase):
         import stimela.main as main
         os.chdir(os.path.dirname(__file__))
         cab = cargo.cab.CabDefinition(parameter_file="cab/custom/parameters.json")
-        global SINGULARITY, PODMAN, UDOCKER
+        global SINGULARITY, PODMAN
         SINGULARITY = False
         PODMAN = False
-        UDOCKER = False
         if singularity.version and singularity.version >= "2.6.0":
             main.pull(["-s", "--force", "-im", f"stimela/base:{cab.tag}"])
             SINGULARITY = True
-        #main.pull(["--force", "-im", f"stimela/base:{cab.tag}"])
-        #main.pull(["-p", "--force", "-im", "stimela/base:1.2.0"])
 
     @classmethod
     def tearDownClass(cls):
@@ -94,39 +91,6 @@ class basicrecipe_test(unittest.TestCase):
                     rrr.jobs[0].job.IODEST["output"]
                 )
 
-    def test_udocker(self):
-        import sys
-        global MSDIR
-        global INPUT
-        global OUTPUT
-        global UDOCKER
-        if UDOCKER is False:
-            return
-
-        stimela.register_globals()
-        rrr = stimela.Recipe("singularitypaths",
-                             ms_dir=MSDIR,
-                             JOB_TYPE="udocker",
-                             cabpath="cab/",
-                             log_dir="logs")
-        rrr.add("cab/custom", "test1", {
-            "bla1": "a", # only accepts a, b or c
-            "bla5": ["testinput2.txt:input",
-                     "testinput3.txt:msfile",
-                     spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
-        }, input=INPUT, output=OUTPUT)
-        rrr.run() #validate and run
-        assert rrr.jobs[0].job._cab.parameters[4].value[0] == os.path.join(rrr.jobs[0].job.IODEST["input"], 
-                    "testinput2.txt")
-        assert rrr.jobs[0].job._cab.parameters[4].value[1] == os.path.join(rrr.jobs[0].job.IODEST["msfile"],
-                    "testinput3.txt")
-        assert rrr.jobs[0].job._cab.parameters[4].value[2] == \
-                "{}/hello{{reim}}.fits,{}/to.fits,{}/world.fits".format(
-                    rrr.jobs[0].job.IODEST["input"],
-                    rrr.jobs[0].job.IODEST["msfile"],
-                    rrr.jobs[0].job.IODEST["output"]
-                )
-    
     def test_podman(self):
         global MSDIR
         global INPUT

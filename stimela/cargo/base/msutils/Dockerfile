@@ -1,5 +1,4 @@
-FROM stimela/base:1.2.5
+FROM stimela/base:1.4.6
 MAINTAINER <sphemakh@gmail.com>
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
-RUN pip install git+https://github.com/SpheMakh/msutils
+RUN pip install msutils>1.1.3
 RUN python -c "import MSUtils.msutils"

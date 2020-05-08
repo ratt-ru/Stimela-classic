@@ -136,7 +136,7 @@ class mk_reduce(unittest.TestCase):
                        'dist-nthread': 1,
                        'dist-max-chunks': 20,
                        'data-freq-chunk': 0,
-                       'data-time-chunk': 1, tstodf,
+                       'data-time-chunk': 1,
                        'model-list': spf("MODEL_DATA"),
                        'weight-column': "WEIGHT",
                        'flags-apply': "FLAG",

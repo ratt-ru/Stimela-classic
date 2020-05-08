@@ -109,7 +109,10 @@ def info(cabdir, header=False):
         raise RuntimeError("Cab could not be found at : {}".format(cabdir))
     # Get cab info
     cab_definition = cab.CabDefinition(parameter_file=pfile)
-    cab_definition.display(header)
+    if header:
+        cab_definition.display(header)
+
+    return cab_definition
 
 
 def cabs(argv):
@@ -130,10 +133,10 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
 
     args = parser.parse_args(argv)
     logfile = '{0:s}/{1:s}_stimela_logfile.json'.format(
-        LOG_HOME, args.build_label)
+        LOG_HOME, CAB_USERNAME)
 
     if args.cab_doc:
-        name = '{0:s}_cab/{1:s}'.format(args.build_label, args.cab_doc)
+        name = '{0:s}_cab/{1:s}'.format(CAB_USERNAME, args.cab_doc)
         cabdir = "{:s}/{:s}".format(stimela.CAB_PATH, args.cab_doc)
         info(cabdir)
 
@@ -268,7 +271,6 @@ def pull(argv):
 
     images_ = []
     for cab in args.cab_base or []:
-        print(cab in CAB)
         if cab in CAB:
             filename = "/".join([stimela.CAB_PATH, cab, "parameters.json"])
             param = utils.readJson(filename)
@@ -292,12 +294,11 @@ def pull(argv):
                 docker.pull(image)
                 log.log_image(image, 'pulled')
     else:
-
         base = []
-        for cab in CAB:
-            image = "{:s}/{:s}".format(stimela.CAB_PATH, cab)
-            base.append(utils.get_Dockerfile_base_image(image).split()[-1])
-
+        for cab_ in CAB:
+            cabdir = "{:s}/{:s}".format(stimela.CAB_PATH, cab_)
+            _cab = info(cabdir)
+            base.append(f"{_cab.base}:{_cab.tag}")
         base = set(base)
 
         for image in base:

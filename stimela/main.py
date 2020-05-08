@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 import textwrap as _textwrap
 import signal
 import stimela
-from stimela import docker, singularity, udocker, podman, utils
+from stimela import docker, singularity, podman, utils
 from stimela.utils import logger
 from stimela.cargo import cab
 
@@ -21,9 +21,7 @@ CAB_USERNAME = stimela.CAB_USERNAME
 
 loglevels = "info debug error"
 
-
 class MultilineFormatter(argparse.HelpFormatter):
-
     def _fill_text(self, text, width, indent):
         text = self._whitespace_matcher.sub(' ', text).strip()
         paragraphs = text.split('|n ')
@@ -34,12 +32,11 @@ class MultilineFormatter(argparse.HelpFormatter):
             multiline_text = multiline_text + formatted_paragraph
         return multiline_text
 
-
 def build(argv):
     for i, arg in enumerate(argv):
         if (arg[0] == '-') and arg[1].isdigit():
             argv = ' ' + arg
-
+    
     parser = ArgumentParser(description='Build executor (a.k.a cab) images')
     parser.add_argument("-b", "--base", action="store_true",
                         help="Build base images")
@@ -52,18 +49,23 @@ def build(argv):
 
     parser.add_argument("-i", "--ignore-cabs", default="",
                         help="Comma separated cabs (executor images) to ignore.")
+    
+    parser.add_argument("-p", "--podman", action="store_true",
+        help="Build images using podman.")
 
     parser.add_argument("-nc", "--no-cache", action="store_true",
                         help="Do not use cache when building the image")
 
-    parser.add_argument("-bl", "--build-label", default=CAB_USERNAME,
-                        help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
 
+    jtype = "podman" if podman else "docker"
     args = parser.parse_args(argv)
-    log = logger.StimelaLogger(
-        '{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME, args.build_label), jtype="docker")
+    log = logger.StimelaLogger(LOG_FILE, jtype=jtype)
 
     no_cache = ["--no-cache"] if args.no_cache else []
+
+    if args.cab:
+        raise SystemExit("DEPRECATION NOTICE: This feature has been deprecated. Please specify your \
+                custom cab via the 'cabpath' option of the Recipe.add() function.")
 
     if args.base:
         # Build base and meqtrees images first
@@ -75,73 +77,14 @@ def build(argv):
         for image in ["base", "meqtrees", "casa", "astropy"] + BASE:
             dockerfile = "{:s}/{:s}".format(stimela.BASE_PATH, image)
             image = "stimela/{0}:{1}".format(image, stimela.__version__)
-            docker.build(image,
+            __call__(jytpe).build(image,
                          dockerfile, args=no_cache)
 
         log.log_image(image, dockerfile, replace=True)
         log.write()
 
         return 0
-
-    build_args = [
-        "RUN useradd -r -u {0:d} -U {1:s}".format(UID, USER),
-        "USER {0:s}".format(USER),
-    ]
-
-    if args.cab:
-        cab_args = args.cab.split(",")
-
-        if len(cab_args) == 2:
-            cab_, path = cab_args
-        else:
-            raise ValueError("Not enough arguments for build command.")
-
-        image = "{:s}_cab/{:s}".format(args.build_label, cab_)
-
-        docker.build(image,
-                     path,
-                     build_args=build_args, args=no_cache)
-
-        log.log_image(image, path, replace=True, cab=True)
-        log.write()
-        return
-
-    # Cabs and their locations
-    cabs = []
-    dockerfiles = []
-
-    if args.us_only:
-        CABS = args.us_only.split(',')
-    else:
-        # Images that have been logged
-        # This is crucial for making custom cabs
-        logged_images = log.read().get('images', {})
-        for key, val in logged_images.items():
-            if val['CAB']:
-                if key.endswith("custom"):
-                    continue
-                else:
-                    cabs.append(key)
-                    dockerfiles.append(val['DIR'])
-        # If user wants to ignore some cabs
-        IGNORE = args.ignore_cabs.split(",")
-        CABS = set(CAB).difference(set(IGNORE))
-
-    # Prioritise package images over logged images
-    cabs = ["{:s}_cab/{:s}".format(args.build_label, cab)
-            for cab in CABS] + cabs
-    dockerfiles = ["{:s}/{:s}".format(stimela.CAB_PATH, cab)
-                   for cab in CABS] + dockerfiles
-    built = []
-    for image, dockerfile in zip(cabs, dockerfiles):
-        if image not in built:
-            docker.build(image,
-                         dockerfile,
-                         build_args=build_args, args=no_cache)
-
-            log.log_image(image, dockerfile, replace=True, cab=True)
-            log.write()
-            built.append(image)
+    raise SystemExit("DEPRECATION NOTICE: The building of cab images has been deprecated")
 
 
 def get_cabs(logfile):
@@ -185,9 +128,6 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
     parser.add_argument("-ls", "--list-summary", action="store_true",
                         help="List cabs with a summary of the cab")
 
-    parser.add_argument("-bl", "--build-label", default=USER,
-                        help="Label for build you want documentation for. See --build-label option in 'stimela help build'")
-
     args = parser.parse_args(argv)
     logfile = '{0:s}/{1:s}_stimela_logfile.json'.format(
         LOG_HOME, args.build_label)
@@ -205,7 +145,6 @@ to get help on the 'cleanmask cab' run 'stimela cabs --cab-doc cleanmask'")
             except IOError:
                 pass
     else:
-        # print them cabs
         print(', '.join(CAB))
 
 
@@ -237,18 +176,16 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-bl", "--build-label", default=CAB_USERNAME,
-        help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
+    add("-jt", "--job-type", default="docker",
+        help="Container technology to use when running jobs")
 
     add("-ll", "--log-level", default="INFO", choices=loglevels.upper().split() + loglevels.split(),
         help="Log level. set to DEBUG/debug for verbose logging")
 
     args = parser.parse_args(argv)
-    tag = None
 
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
-                    CAB_TAG=tag, _STIMELA_BUILD_LABEL=args.build_label,
                     _STIMELA_LOG_LEVEL=args.log_level.upper())
 
     nargs = len(args.globals)
@@ -316,20 +253,22 @@ def pull(argv):
         except KeyError:
             pull_folder = "."
 
-    if args.docker:
-        jtype = "docker"
-    elif args.podman:
+    if args.podman:
         jtype = "podman"
     elif args.singularity:
         jtype = "singularity"
+    elif args.docker:
+        jtype = "docker"
     else:
-        jtype = "udocker"
+        jtype = "docker"
+
 
     log = logger.StimelaLogger(LOG_FILE, jtype=jtype)
     images = log.read()['images']
 
     images_ = []
     for cab in args.cab_base or []:
+        print(cab in CAB)
         if cab in CAB:
             filename = "/".join([stimela.CAB_PATH, cab, "parameters.json"])
             param = utils.readJson(filename)
@@ -338,11 +277,9 @@ def pull(argv):
     args.image = images_ or args.image
     if args.image:
         for image in args.image:
+            simage = image.replace("/", "_")
+            simage = simage.replace(":", "_") + singularity.suffix
             if args.singularity:
-                simage = image.replace("/", "_")
-                if not hasattr(singularity, "suffix"):
-                    raise SystemExit("Cannot find singularity on this system")
-                simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
             elif args.docker:
@@ -352,7 +289,7 @@ def pull(argv):
                 podman.pull(image)
                 log.log_image(image, 'pulled')
             else:
-                udocker.pull(image)
+                docker.pull(image)
                 log.log_image(image, 'pulled')
     else:
 
@@ -366,8 +303,6 @@ def pull(argv):
         for image in base:
             if args.singularity:
                 simage = image.replace("/", "_")
-                if not hasattr(singularity, "suffix"):
-                    raise SystemExit("Cannot find singularity on this system")
                 simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
@@ -378,7 +313,7 @@ def pull(argv):
                 podman.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
             else:
-                udocker.pull(image, force=args.force)
+                docker.pull(image, force=args.force)
                 log.log_image(image, 'pulled')
 
     log.write()
@@ -556,8 +491,7 @@ def clean(argv):
                 status = "no there"
 
             if status == 'running':
-                # Kill the container instead of stopping it, so that effect can
-                # be felt py parent process
+                # Kill the container instead of stopping it, so that effect can be felt py parent process
                 utils.xrun('docker', ['kill', container])
                 cont.remove()
             elif status in ['exited', 'dead']:
@@ -603,8 +537,8 @@ def main(argv):
             command = cmd
 
             index = argv.index(cmd)
-            options = argv[index + 1:]
-            argv = argv[:index + 1]
+            options = argv[index+1:]
+            argv = argv[:index+1]
 
     args = parser.parse_args(argv)
 

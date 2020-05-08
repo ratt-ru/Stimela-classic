@@ -3,7 +3,7 @@ import os
 import sys
 import time
 import stimela
-from stimela import docker, singularity, udocker, utils, cargo, podman, main
+from stimela import docker, singularity, utils, cargo, podman, main
 from stimela.cargo import cab
 import logging
 import inspect
@@ -24,7 +24,6 @@ CAB_PATH = os.path.abspath(os.path.dirname(cab.__file__))
 
 CONT_MOD = {
         "docker" : docker,
-        "udocker" : udocker,
         "singularity" : singularity,
         "podman" : podman
         }
@@ -64,7 +63,7 @@ class StimelaJob(object):
         self.label = label or '{0}({1})'.format(name, id(name))
         self.log = recipe.log
         self.active = False
-        self.jtype = jtype  # ['docker', 'python', singularity', 'udocker']
+        self.jtype = jtype  # ['docker', 'python', singularity']
         self.job = None
         self.created = False
         self.wranglers = []
@@ -151,7 +150,7 @@ class StimelaJob(object):
 
     def setup_job(self, image, config,
                    indir=None, outdir=None, msdir=None, 
-                   build_label=None, singularity_image_dir=None,
+                   singularity_image_dir=None,
                    **kw):
         """
             Setup job
@@ -207,20 +206,8 @@ class StimelaJob(object):
                                      logger=self.log, 
                                      workdir=CONT_IO["output"],
                                      time_out=self.time_out)
-        if self.jtype == "docker":
-            # Get location of template parameters file
-            cabs_loc = f"{stimela.LOG_HOME}/{build_label}_stimela_logfile.json"
-            cabs_logger = get_cabs(cabs_loc)
-            try:
-                cabpath = cabs_logger[f'{build_label}_{cont.image}']['DIR']
-            except KeyError:
-                main.build(["--us-only", cont.image.split("/")[-1],
-                        "--no-cache", "--build-label", build_label])
-                cabs_logger = get_cabs(cabs_loc)
-                cabpath = cabs_logger[f'{build_label}_{cont.image}']['DIR']
 
-        else:
-            cabpath = os.path.join(CAB_PATH, image.split("/")[1])
+        cabpath = os.path.join(CAB_PATH, image.split("/")[1])
         
         # In case the user specified a custom cab
         cabpath = os.path.join(self.cabpath, image.split("/")[1]) if self.cabpath else cabpath
@@ -231,9 +218,7 @@ class StimelaJob(object):
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
 
-        if self.jtype == "docker":
-            cont.image = '{0}_{1}'.format(build_label, image)
-        elif self.jtype == "singularity":
+        if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
             if singularity_image_dir is None:
                 singularity_image_dir = os.path.join(CDIR, "stimela_singularity_images")
@@ -278,6 +263,7 @@ class StimelaJob(object):
                 cont.add_environ("LC_ALL", "en_US.UTF-8")
             cont.execdir = self.workdir
         else:
+            cont.add_environ("USER", stimela.USER)
             cont.RUNSCRIPT = f"/{self.jtype}_run"
         
         runscript = shutil.which("stimela_runscript")
@@ -411,7 +397,6 @@ class Recipe(object):
         self.outdir = script_context.get('_STIMELA_OUTPUT', None)
         self.msdir = script_context.get('_STIMELA_MSDIR', None)
         self.loglevel = script_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
-        self.build_label = script_context.get('_STIMELA_BUILD_LABEL', None) or build_label
         self.JOB_TYPE = script_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 
         self.cabpath = cabpath
@@ -451,7 +436,6 @@ class Recipe(object):
 
         self.resume_file = '.last_{}.json'.format(self.name_)
         # set to default if not set
-        self.build_label = self.build_label or stimela.CAB_USERNAME
 
         self.tag = tag
         # create a folder to store config files
@@ -502,9 +486,6 @@ class Recipe(object):
             logfile=None,
             cabpath=None):
 
-        if build_label:
-            self.build_label = build_label
-
         if logfile is None:
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
 
@@ -527,7 +508,6 @@ class Recipe(object):
 
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
-             build_label=build_label or self.build_label,
              singularity_image_dir=self.singularity_image_dir,
              time_out=time_out)
 
@@ -539,7 +519,7 @@ class Recipe(object):
 
     def log2recipe(self, job, recipe, num, status):
 
-        if job.jtype in ['docker', 'singularity', 'udocker', 'podman']:
+        if job.jtype in ['docker', 'singularity', 'podman']:
             cont = job.job
             step = {
                 "name":   cont.name,

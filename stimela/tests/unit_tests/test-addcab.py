@@ -16,16 +16,14 @@ class basicrecipe_test(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         unittest.TestCase.setUpClass()
+        DIR = os.path.dirname(__file__)
         global INPUT, MSDIR, OUTPUT, MS, PREFIX, LSM, MS_SIM
-        INPUT = os.path.join(os.path.dirname(__file__), "input")
+        INPUT = os.path.join(DIR, "input")
         MSDIR = "msdir"
         global OUTPUT
         OUTPUT = "/tmp/output"
-
-        # Start stimela Recipe instance
-        import stimela.main as main
-        os.chdir(os.path.dirname(__file__))
-        main.build(["-c", "custom,cab/custom"])
+        global CABPATH 
+        CABPATH = os.path.join(DIR, "cab")
 
     @classmethod
     def tearDownClass(cls):
@@ -55,11 +53,14 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("customcab", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a"
-        }, input=INPUT, output=OUTPUT)
+        }, 
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         assert len(rrr.jobs) == 1
         rrr.run() #validate and run
         assert rrr.jobs[0].job._cab.parameters[0].value == "a"
@@ -70,11 +71,14 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("invchoice", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
         "bla1": "d" # only accepts a, b or c
-        }, input=INPUT, output=OUTPUT)
+        },
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         with self.assertRaises(PipelineException):
             rrr.run() #validate and run
 
@@ -82,13 +86,16 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("testdismissable", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla4": sdm("abc"),
             "bla3": sdm(None)
-        }, input=INPUT, output=OUTPUT)
+        }, 
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         rrr.run() #validate and run
         assert rrr.jobs[0].job._cab.parameters[0].value == "a"
         assert rrr.jobs[0].job._cab.parameters[1].value is None
@@ -99,12 +106,15 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("testfloattypefail", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla3": "1.0a",
-        }, input=INPUT, output=OUTPUT)
+        },
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         with self.assertRaises(PipelineException):
             rrr.run() #validate and run
 
@@ -112,12 +122,15 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("testfloattypesuccess", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla3": 4.0,
-        }, input=INPUT, output=OUTPUT)
+        },
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         rrr.run() #validate and run
         assert rrr.jobs[0].job._cab.parameters[2].value == [4.0]
 
@@ -125,17 +138,21 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("testrequired", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla3": 4.0,
-        }, input=INPUT, output=OUTPUT)
+        },
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         with self.assertRaises(PipelineException):
             rrr.run() #validate and run
 
     def test_iooverride(self):
         global MSDIR
         global INPUT
+        global CABPATH
         with open(os.path.join(INPUT, "testinput.txt"), "w+") as f:
             pass
         global OUTPUT
@@ -144,7 +161,9 @@ class basicrecipe_test(unittest.TestCase):
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla2": "testinput.txt:input",
-        }, input=INPUT, output=OUTPUT)
+        },
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         rrr.run() #validate and run
         assert rrr.jobs[0].job._cab.parameters[0].value == "a"
         assert rrr.jobs[0].job._cab.parameters[1].value == os.path.join(rrr.jobs[0].job.IODEST["input"], 
@@ -154,12 +173,15 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("ioval", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c
             "bla2": "testinput2.txt:input",
-        }, input=INPUT, output=OUTPUT)
+        },
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         with self.assertRaises(PipelineException): # not exist during validation
             rrr.run() #validate and run
 
@@ -167,6 +189,7 @@ class basicrecipe_test(unittest.TestCase):
         global MSDIR
         global INPUT
         global OUTPUT
+        global CABPATH
         stimela.register_globals()
         rrr = stimela.Recipe("pathlist", ms_dir=MSDIR)
         rrr.add("cab/custom", "test1", {
@@ -174,7 +197,9 @@ class basicrecipe_test(unittest.TestCase):
             "bla5": ["testinput2.txt:input",
                      "testinput3.txt:msfile",
                      spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
-        }, input=INPUT, output=OUTPUT)
+        },
+        cabpath=CABPATH,
+        input=INPUT, output=OUTPUT)
         rrr.run() #validate and run
         assert rrr.jobs[0].job._cab.parameters[4].value[0] == os.path.join(rrr.jobs[0].job.IODEST["input"], 
                 "testinput2.txt")

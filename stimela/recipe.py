@@ -262,8 +262,11 @@ class StimelaJob(object):
                 cont.add_environ("LANG", "en_US.UTF-8")
                 cont.add_environ("LC_ALL", "en_US.UTF-8")
             cont.execdir = self.workdir
+        elif self.jtype == "docker":
+            cont.add_volume("/etc/passwd", "/etc/passwd", "ro")
+            cont.add_volume("/etc/group", "/etc/group", "ro")
+            cont.RUNSCRIPT = f"/{self.jtype}_run"
         else:
-            cont.add_environ("USER", stimela.USER)
             cont.RUNSCRIPT = f"/{self.jtype}_run"
         
         runscript = shutil.which("stimela_runscript")

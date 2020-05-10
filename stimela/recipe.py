@@ -29,7 +29,9 @@ CONT_MOD = {
         }
 
 CONT_IO = cab.IODEST
-CDIR = os.environ["PWD"]
+CDIR = os.getcwd()
+
+PULLFOLDER = os.environ.get("STIMELA_PULLFOLDER", CDIR)
 
 # make dictionary of wrangler actions. First, add all logging levels
 _actions = {attr: value for attr, value in logging.__dict__.items() if attr.upper() == attr and type(value) is int}
@@ -445,11 +447,6 @@ class Recipe(object):
         # if it doesn't exist. These config
         # files can be resued to re-run the
         # task
-        self.parameter_file_dir = parameter_file_dir or "stimela_parameter_files"
-        if not os.path.exists(self.parameter_file_dir):
-            self.log.info(
-                'Config directory cannot be found. Will create ./{}'.format(self.parameter_file_dir))
-            os.mkdir(self.parameter_file_dir)
 
         self.jobs = []
         self.completed = []
@@ -457,7 +454,7 @@ class Recipe(object):
         self.remaining = []
 
         self.pid = os.getpid()
-        self.singularity_image_dir = singularity_image_dir
+        self.singularity_image_dir = singularity_image_dir or PULLFOLDER
         if self.singularity_image_dir and not self.JOB_TYPE:
             self.JOB_TYPE = "singularity"
 
@@ -470,6 +467,12 @@ class Recipe(object):
         
         self.workdir = None
         self.__make_workdir()
+
+        self.parameter_file_dir = parameter_file_dir or f'{self.workdir}/stimela_parameter_files'
+        if not os.path.exists(self.parameter_file_dir):
+            self.log.info(
+                f'Config directory cannot be found. Will create {self.parameter_file_dir}')
+            os.mkdir(self.parameter_file_dir)
 
     def __make_workdir(self):
         timestamp = str(time.time()).replace(".", "")

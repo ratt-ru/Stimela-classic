@@ -1,6 +1,6 @@
 {
     "task": "ragavi",
-    "base": "stimela/ragavi",
+    "base": "stimela/ragavi_vis",
     "tag": "1.4.6-2",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",

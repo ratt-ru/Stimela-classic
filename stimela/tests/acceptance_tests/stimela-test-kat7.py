@@ -274,7 +274,7 @@ class kat7_reduce(unittest.TestCase):
         # Flag the autocorrelations
         recipe.add("cab/politsiyakat_cal_phase", "flag_calphase", {
             "msname": MS,
-            "field": ",".join([BPCAL,GCAL,TARGET]),
+            "field": ",".join([BPCAL,GCAL,"W2332-5056"]),
             "cal_field": ",".join([BPCAL,GCAL]),
             "nrows_chunk": 5000,
             "data_column": "CORRECTED_DATA",

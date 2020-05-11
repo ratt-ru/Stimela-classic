@@ -130,6 +130,16 @@ class kat7_reduce(unittest.TestCase):
             time_out=300)
 
         # Flag the autocorrelations
+        recipe.add("cab/politsiyakat_autocorr_amp", "flag_autopower", {
+            "msname": MS,
+            "field": "0,1,2",
+            "cal_field": "0,2",
+            "nrows_chunk": 5000,
+            "scan_to_scan_threshold": 1.5,
+            "antenna_to_group_threshold": 4,
+            "nio_threads": 1,
+            "nproc_threads": 32,
+            },input=INPUT, output=OUTPUT, label="flag_autopower")
 
         recipe.add('cab/casa_flagdata', 'autocorr_flagging', {
             "vis":   MS,
@@ -271,18 +281,18 @@ class kat7_reduce(unittest.TestCase):
             label='applycal_bp:: Apply calibration to Bandpass Calibrator',
             time_out=1800)
 
-        # # Flag the autocorrelations
-        # recipe.add("cab/politsiyakat_cal_phase", "flag_calphase", {
-        #     "msname": MS,
-        #     "field": ",".join([BPCAL,GCAL,"W2332-5056"]),
-        #     "cal_field": ",".join([BPCAL,GCAL]),
-        #     "nrows_chunk": 5000,
-        #     "data_column": "CORRECTED_DATA",
-        #     "scan_to_scan_threshold": 1.5,
-        #     "baseline_to_group_threshold": 4,
-        #     "nio_threads": 1,
-        #     "nproc_threads": 32,
-        #     },input=INPUT, output=OUTPUT, label="flag_calphase")
+        # Flag the phase
+        recipe.add("cab/politsiyakat_cal_phase", "flag_calphase", {
+            "msname": MS,
+            "field": ",".join(["0","1","2"]),
+            "cal_field": ",".join(["0","2"]),
+            "nrows_chunk": 5000,
+            "data_column": "CORRECTED_DATA",
+            "scan_to_scan_threshold": 1.5,
+            "baseline_to_group_threshold": 4,
+            "nio_threads": 1,
+            "nproc_threads": 32,
+            },input=INPUT, output=OUTPUT, label="flag_calphase")
 
         recipe.run()
 

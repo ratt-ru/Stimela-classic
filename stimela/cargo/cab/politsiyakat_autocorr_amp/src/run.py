@@ -34,8 +34,9 @@ ARGS = ["flag_autocorr_drifts",
         "-s antenna_mod",
         kwargs]
 
+_runc = " ".join([cab['binary']] + ARGS)
 try:
-    _runc = " ".join([cab['binary']] + ARGS)
+    subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

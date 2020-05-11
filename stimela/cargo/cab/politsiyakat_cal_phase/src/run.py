@@ -3,8 +3,8 @@ import os
 import json
 import yaml
 import subprocess
-import shutil
 import shlex
+import shutil
 import glob
 
 CONFIG = os.environ["CONFIG"]
@@ -30,12 +30,11 @@ for param in cab['parameters']:
 
 kwargs = "'{}'".format(json.dumps(args))
 
-ARGS = ["flag_phase_drifts",
+ARGS = ["flag_autocorr_drifts",
         "-s antenna_mod",
         kwargs]
 
 _runc = " ".join([cab['binary']] + ARGS)
-
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:

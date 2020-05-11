@@ -3,8 +3,8 @@ import os
 import json
 import yaml
 import subprocess
-import shutil
 import shlex
+import shutil
 import glob
 
 CONFIG = os.environ["CONFIG"]
@@ -35,7 +35,6 @@ ARGS = ["flag_phase_drifts",
         kwargs]
 
 _runc = " ".join([cab['binary']] + ARGS)
-
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:

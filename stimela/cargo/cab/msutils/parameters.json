@@ -1,7 +1,7 @@
 {
     "task": "msutils", 
     "base": "stimela/msutils", 
-    "tag": "1.2.5-2", 
+    "tag": "1.4.6", 
     "version" : "1.0.1",
     "description": "Tools for manipulating measurement sets (MSs)", 
     "prefix": " ", 

@@ -63,4 +63,4 @@ except ValueError:
     ids = map(lambda a: field_names.index(a), field_in)
 
 if not set(ids).issubset(field_ids):
-    raise RuntimeError("Some field(s) do not have solutions after the calibration. Please refer to CASA {task} logfile for further details".format(cab["prefix"]))
+    raise RuntimeError("Some field(s) do not have solutions after the calibration. Please refer to CASA {0} logfile for further details".format(cab["binary"]))

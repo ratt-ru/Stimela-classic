@@ -9,6 +9,7 @@ import shutil
 
 
 class mk_reduce(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         unittest.TestCase.setUpClass()
@@ -34,7 +35,7 @@ class mk_reduce(unittest.TestCase):
     def tearDownClass(cls):
         unittest.TestCase.tearDownClass()
         #global OUTPUT
-        #shutil.rmtree(OUTPUT)
+        # shutil.rmtree(OUTPUT)
 
     def tearDown(self):
         unittest.TestCase.tearDown(self)
@@ -52,32 +53,32 @@ class mk_reduce(unittest.TestCase):
                    {
                        "Data-MS": [MS],
                        "Output-Name": imname1,
-                       "Image-NPix": 5000,
-                       "Image-Cell": 1.6,
+                       "Image-NPix": 2048,
+                       "Image-Cell": 2,
                        "Cache-Reset": True,
                        "Freq-NBand": 2,
-                       "Freq-NDegridBand": 6,
+                       "Freq-NDegridBand": 4,
                        "Weight-ColName": "WEIGHT",
                        "Data-ChunkHours": 0.1,
                        "Data-Sort": True,
                        "Log-Boring": True,
-                       "Deconv-MaxMajorIter": 3,
-                       "Deconv-MaxMinorIter": 500,
+                       "Deconv-MaxMajorIter": 2,
+                       "Deconv-MaxMinorIter": 1500,
                        "Predict-ColName": "MODEL_DATA"
                    },
                    input=INPUT, output=OUTPUT, shared_memory="8gb",
                    label="image1",
                    time_out=1800)
-        
+
         recipe.add('cab/tricolour', "flag_data",
-        {
-                  "ms"                  : MS,
-                  "data-column"         : "DATA",
-                  "window-backend"      : 'numpy',
-                  "flagging-strategy"   : "total_power",
-                  "subtract-model-column": "MODEL_DATA",
-        },
-        input=INPUT, output=OUTPUT, label="flag_data",
+                   {
+                       "ms": MS,
+                       "data-column": "DATA",
+                       "window-backend": 'numpy',
+                       "flagging-strategy": "total_power",
+                       "subtract-model-column": "MODEL_DATA",
+                   },
+                   input=INPUT, output=OUTPUT, label="flag_data",
                    time_out=1800)
 
         maskname0 = "MASK.fits"
@@ -90,82 +91,85 @@ class mk_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label='mask0:: Make mask',
-                   time_out=1800)
+            time_out=1800)
 
         recipe.add("cab/ddfacet", "ddfacet_test2",
                    {
                        "Data-MS": [MS],
                        "Output-Name": imname1,
-                       "Image-NPix": 5000,
-                       "Image-Cell": 1.6,
+                       "Image-NPix": 2048,
+                       "Image-Cell": 2.0,
                        "Cache-Reset": True,
                        "Freq-NBand": 2,
-                       "Freq-NDegridBand": 6,
+                       "Freq-NDegridBand": 4,
                        "Mask-External": '%s:output' % (maskname0),
                        "Weight-ColName": "WEIGHT",
                        "Data-ChunkHours": 0.1,
                        "Data-Sort": True,
                        "Log-Boring": True,
-                       "Deconv-MaxMajorIter": 3,
+                       "Deconv-MaxMajorIter": 2,
                        "Deconv-MaxMinorIter": 1500,
                    },
                    input=INPUT, output=OUTPUT, shared_memory="24gb",
                    label="image2",
                    time_out=1800)
 
-        # First selfcal round
-
-        recipe.add("cab/cubical", "cubical_cal", {
-                'data-ms': MS,
-                'data-column': "DATA",
-                'dist-nworker': 4,
-                'dist-nthread': 1,
-                'dist-max-chunks': 20, 
-                'data-freq-chunk': 0,
-                'data-time-chunk': 5,
-                'model-list': spf("MODEL_DATA"),
-                'weight-column': "WEIGHT",
-                'flags-apply': "FLAG",
-                'flags-auto-init': "legacy",
-                'madmax-enable': False,
-                'madmax-threshold': [0,0,10],
-                'madmax-global-threshold': [0,0],
-                'sol-jones': 'g',
-                'sol-stall-quorum': 0.95,
-                'out-name': "cubicaltest",
-                'out-column': "CORRECTED_DATA",
-                'log-verbose': "solver=2",
-                'g-type': "complex-2x2",
-                'g-freq-int': 0,
-                'g-time-int': 20,
-                'g-max-iter': 20,
-                'g-update-type': "complex-2x2",
-                 
-            }, input=INPUT, output=OUTPUT, 
-            label="cubical",
-            shared_memory="24gb",
-            time_out=1800)
-
-        recipe.add("cab/ddfacet", "ddfacet_test3",
+        recipe.add("cab/shadems", "shadems_test",
                    {
-                       "Data-MS": [MS],
-                       "Output-Name": imname2,
-                       "Image-NPix": 5000,
-                       "Image-Cell": 1.6,
-                       "Data-ColName": "CORRECTED_DATA",
-                       "Cache-Reset": True,
-                       "Freq-NBand": 2,
-                       "Freq-NDegridBand": 6,
-                       "Mask-External": '%s:output' % (maskname0),
-                       "Weight-ColName": "WEIGHT",
-                       "Data-ChunkHours": 0.1,
-                       "Data-Sort": True,
-                       "Log-Boring": True,
-                       "Deconv-MaxMajorIter": 3,
-                       "Deconv-MaxMinorIter": 1500,
+                       'ms': MS,
+                       'xaxis': 'DATA:imag',
+                       'yaxis': 'real',
+                       'col': 'DATA',
+                       'png': '%s_shadems_test_real_imag' % (PREFIX)
                    },
-                   input=INPUT, output=OUTPUT, shared_memory="24gb",
-                   label="image3",
+                   input=INPUT, output=OUTPUT,
+                   label="shadems_test",
                    time_out=1800)
 
+        # # First selfcal round
+
+        recipe.add("cab/cubical", "cubical_cal",
+                   {
+                       'data-ms': MS,
+                       'data-column': "DATA",
+                       'dist-nworker': 4,
+                       'dist-nthread': 1,
+                       'dist-max-chunks': 20,
+                       'data-freq-chunk': 0,
+                       'data-time-chunk': 1,
+                       'model-list': spf("MODEL_DATA"),
+                       'weight-column': "WEIGHT",
+                       'flags-apply': "FLAG",
+                       'flags-auto-init': "legacy",
+                       'madmax-enable': False,
+                       'madmax-threshold': [0, 0, 10],
+                       'madmax-global-threshold': [0, 0],
+                       'sol-jones': 'g',
+                       'sol-stall-quorum': 0.95,
+                       'out-name': "cubicaltest",
+                       'out-column': "CORRECTED_DATA",
+                       'log-verbose': "solver=2",
+                       'g-type': "complex-2x2",
+                       'g-freq-int': 0,
+                       'g-time-int': 20,
+                       'g-max-iter': 10,
+                       'sol-term-iters': 10,
+                       'g-update-type': "complex-2x2",
+
+                   }, input=INPUT, output=OUTPUT,
+                   label="cubical",
+                   shared_memory="24gb",
+                   time_out=1800)
+
+        recipe.add("cab/ragavi_vis", "ragavi_vis_test",
+                   {
+                       'ms': MS,
+                       'xaxis': 'imaginary',
+                       'yaxis': 'real',
+                       'data-column': 'CORRECTED_DATA',
+                       'htmlname': "%s_ragavi_vis_real_imag" % (PREFIX)
+                   },
+                   input=INPUT, output=OUTPUT,
+                   label="ragavi_vis_test",
+                   time_out=1800)
         recipe.run()

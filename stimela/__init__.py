@@ -47,12 +47,11 @@ for item in os.listdir(CAB_PATH):
     try:
         # These files must exist for a cab image to be valid
         ls_cabdir = os.listdir('{0}/{1}'.format(CAB_PATH, item))
-        dockerfile = 'Dockerfile' in ls_cabdir
         paramfile = 'parameters.json' in ls_cabdir
         srcdir = 'src' in ls_cabdir
     except OSError:
         continue
-    if dockerfile and paramfile and srcdir:
+    if paramfile and srcdir:
         CAB.append(item)
 
 
@@ -67,12 +66,12 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
            col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
            sub_fmt="# {message}",
            col_sub_fmt="%s# {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
-           datefmt="%Y-%m-%d %H:%M:%S"):
+           datefmt="%Y-%m-%d %H:%M:%S", loglevel="INFO"):
     """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
     global _logger
     if _logger is None:
         _logger = logging.getLogger(name)
-        _logger.setLevel(logging.DEBUG)
+        _logger.setLevel(getattr(logging, loglevel))
         _logger.propagate = propagate
 
         global log_console_handler, log_formatter, log_boring_formatter, log_colourful_formatter
@@ -98,7 +97,7 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
             else:  
                 log_console_handler = MultiplexingHandler()
             log_console_handler.setFormatter(log_formatter)
-            log_console_handler.setLevel(logging.INFO)
+            log_console_handler.setLevel(getattr(logging, loglevel))
             _logger.addHandler(log_console_handler)
 
     return _logger

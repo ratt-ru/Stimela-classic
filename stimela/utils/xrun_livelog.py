@@ -39,14 +39,14 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
         ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
         return ansi_escape.sub('', msg)
 
-    def _print_info(msg):
+    def _print_info(msg, loglevel="INFO"):
         if msg is None:
             return
         msg = _remove_ctrls(msg)
         if msg.strip() == "": return
         if log:
             try:
-                log.info(msg.rstrip('\n'))
+                getattr(log, loglevel.lower())(msg.rstrip('\n'))
             except UnicodeError:
                 log.warn("Log contains unicode and will not be printed")
         else:
@@ -72,7 +72,7 @@ def xrun(command, options, log=None, _log_container_as_started=False, logfile=No
                 print("Log contains unicode and will not be printed")
 
 
-    _print_info(u"Running: {0:s}".format(cmd))
+    _print_info(u"Running: {0:s}".format(cmd), loglevel="INFO")
 
     sys.stdout.flush()
     starttime = time.time()

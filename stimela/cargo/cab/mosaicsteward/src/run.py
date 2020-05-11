@@ -14,10 +14,8 @@ OUTPUT = os.environ["OUTPUT"]
 
 with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)
-
 junk = cab["junk"]
 
-cab = utils.readJson(CONFIG)
 args = []
 targets = None
 for param in cab['parameters']:
@@ -48,7 +46,7 @@ if not target_images:
 _runc = " ".join([cab["binary"]] + args)
 
 try:
-    subprocess.check_cal(shlex.split(_runc))
+    subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

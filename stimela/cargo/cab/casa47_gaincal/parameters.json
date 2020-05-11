@@ -1,9 +1,10 @@
 {
     "task": "casa47_gaincal", 
-    "base": "stimela/casa", 
-    "tag": "0.3.0", 
+    "base": "stimela/casa47", 
+    "tag": "1.4.2", 
     "description": "Specify Calibration Values of Various Types", 
-    "prefix": "-", 
+    "prefix": "-",
+    "version": "4.7.2",
     "binary": "gaincal", 
     "junk":[],
     "msdir": true, 

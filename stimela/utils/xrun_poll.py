@@ -98,7 +98,7 @@ def xrun_nolog(command, name=None):
 
     return 0
 
-def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=None):
+def xrun(command, options, log=None, logfile=None, env=None, timeout=-1, kill_callback=None, output_wrangler=None):
     command_name = command
 
     # this part could be inside the container
@@ -119,7 +119,7 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
     start_time = time.time()
 
     proc = subprocess.Popen([command], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            bufsize=1, universal_newlines=True, shell=True)
+                            env=env, bufsize=1, universal_newlines=True, shell=True)
 
     poller = Poller(log=log)
     poller.register_process(proc)
@@ -146,11 +146,13 @@ def xrun(command, options, log=None, logfile=None, timeout=-1, kill_callback=Non
                     continue
                 # dispatch output to log
                 line = _remove_ctrls(line)
-                # the extra attributes are filtered by e.g. the CARACal logger
-                if fobj is proc.stderr:
-                    log.warning(line, extra=dict(stimela_subprocess_output=(command_name, "stderr")))
-                else:
-                    log.info(line, extra=dict(stimela_subprocess_output=(command_name, "stdout")))
+                severity = logging.WARNING if fobj is proc.stderr else logging.INFO
+                stream_name = "stderr" if fobj is proc.stderr else "stdout"
+                # feed through wrangler to adjust severity and content
+                if output_wrangler is not None:
+                    line, severity = output_wrangler(line, severity, log)
+                if line is not None:
+                    log.log(severity, line, extra=dict(stimela_subprocess_output=(command_name, stream_name)))
             if timeout > 0 and time.time() > start_time + timeout:
                 log.error("timeout, killing {} process".format(command))
                 kill_callback() if callable(kill_callback) else proc.kill()

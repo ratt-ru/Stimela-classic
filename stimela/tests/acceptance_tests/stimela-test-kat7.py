@@ -8,6 +8,7 @@ import shutil
 
 
 class kat7_reduce(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         unittest.TestCase.setUpClass()
@@ -51,7 +52,7 @@ class kat7_reduce(unittest.TestCase):
         global OUTPUT
         OUTPUT = "output_%s" % LABEL
         global MSCONTSUB
-        MSCONTSUB = MS+'.contsub'
+        MSCONTSUB = MS + '.contsub'
 
         global SPW
         SPW = '0:100~355'
@@ -61,11 +62,11 @@ class kat7_reduce(unittest.TestCase):
         global SELFCAL_TABLE1
         SELFCAL_TABLE1 = PREFIX + '.SF1:output'
         global IMAGE1
-        IMAGE1 = PREFIX+'image1:output'
+        IMAGE1 = PREFIX + 'image1:output'
         global MASK1
-        MASK1 = PREFIX+'mask1.fits'
+        MASK1 = PREFIX + 'mask1.fits'
         global IMAGE2
-        IMAGE2 = PREFIX+'image2:output'
+        IMAGE2 = PREFIX + 'image2:output'
         global nchans
         nchans = 256
         global chans
@@ -73,17 +74,17 @@ class kat7_reduce(unittest.TestCase):
 
         # Clean-Mask-Clean
         global imname0
-        imname0 = PREFIX+'image0'
+        imname0 = PREFIX + 'image0'
         global maskname0
-        maskname0 = PREFIX+'mask0.fits'
+        maskname0 = PREFIX + 'mask0.fits'
         global maskname01
-        maskname01 = PREFIX+'mask01.fits'
+        maskname01 = PREFIX + 'mask01.fits'
         global imname1
-        imname1 = PREFIX+'image1'
+        imname1 = PREFIX + 'image1'
         global corr_ms
-        corr_ms = MS+'-corr.ms'
+        corr_ms = MS + '-corr.ms'
         global lsm0
-        lsm0 = PREFIX+'-LSM0'
+        lsm0 = PREFIX + '-LSM0'
         stimela.register_globals()
 
     @classmethod
@@ -115,7 +116,8 @@ class kat7_reduce(unittest.TestCase):
             time_out=300)
 
         # It is common for the array to require a small amount of time to settle down at the start of a scan. Consequently, it has
-        # become standard practice to flag the initial samples from the start of each scan. This is known as 'quack' flagging
+        # become standard practice to flag the initial samples from the start
+        # of each scan. This is known as 'quack' flagging
         recipe.add('cab/casa_flagdata', 'quack_flagging', {
             "vis": MS,
             "mode": 'quack',
@@ -199,6 +201,17 @@ class kat7_reduce(unittest.TestCase):
             label='bandpass_cal:: Bandpass calibration',
             time_out=300)
 
+        recipe.add('cab/ragavi', 'ragavi_gains_plot_bandpass', {
+                   'table': BPCAL_TABLE,
+                   'gaintype': "B",
+                   'htmlname': PREFIX + '_B0_amp_chan'
+                   },
+                   input=INPUT,
+                   output=OUTPUT,
+                   label='ragavi_gains_plot_bandpass:: Plot bandpass table',
+                   time_out=1200
+                   )
+
         # display the bandpass solutions. Note that in the plotcal inputs below, the amplitudes are being displayed as a function of
         # frequency channel. The parameter subplot=221 is used to display multiple plots per page (2 plots per page in the y
         # direction and 2 in the x direction). The first two commands below show the amplitude solutions (one per each polarization)
@@ -212,7 +225,7 @@ class kat7_reduce(unittest.TestCase):
             "field": BPCAL,
             "spw": SPW,
             "subplot": 221,
-            "figfile": PREFIX+'-B0-R-amp.png',
+            "figfile": PREFIX + '-B0-R-amp.png',
         },
             input=INPUT,
             output=OUTPUT,
@@ -299,7 +312,7 @@ class kat7_reduce(unittest.TestCase):
         recipe.add('cab/casa_split', 'split_corr_data',
                    {
                        "vis":   MS,
-                       "outputvis":   MS[:-3]+'-corr.ms',
+                       "outputvis":   MS[:-3] + '-corr.ms',
                        "field":   str(BPCAL),
                        "spw":   SPW,
                        "datacolumn":   'data',
@@ -309,7 +322,7 @@ class kat7_reduce(unittest.TestCase):
                    label='split_corr_data:: Split corrected data from MS',
                    time_out=1800)
 
-        MS = MS[:-3]+'-corr.ms'
+        MS = MS[:-3] + '-corr.ms'
 
         recipe.add('cab/casa_clearcal', 'prep_split_data',
                    {
@@ -322,10 +335,10 @@ class kat7_reduce(unittest.TestCase):
                    time_out=1800)
 
         # Clean-Mask-Clean
-        imname0 = PREFIX+'image0'
-        maskname0 = PREFIX+'mask0.fits'
-        maskname01 = PREFIX+'mask01.fits'
-        imname1 = PREFIX+'image1'
+        imname0 = PREFIX + 'image0'
+        maskname0 = PREFIX + 'mask0.fits'
+        maskname01 = PREFIX + 'mask01.fits'
+        imname1 = PREFIX + 'image1'
 
         recipe.add('cab/casa_tclean', 'image_target_field_r1', {
             "vis":   MS,
@@ -359,7 +372,7 @@ class kat7_reduce(unittest.TestCase):
             label='mask0:: Make mask',
             time_out=1800)
 
-        lsm0 = PREFIX+'-LSM0'
+        lsm0 = PREFIX + '-LSM0'
         # Source finding for initial model
         recipe.add("cab/pybdsm", "extract_init_model", {
             "image":  '%s.image.fits:output' % (imname1),
@@ -371,7 +384,6 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT, output=OUTPUT,
             label="extract_init_model:: Make initial model from preselfcal image",
             time_out=1800)
-
 
         # First selfcal round
 
@@ -393,7 +405,7 @@ class kat7_reduce(unittest.TestCase):
             time_out=1800)
 
         # Diversity is a good thing... lets add some DDFacet to this soup bowl
-        imname = PREFIX+'ddfacet'
+        imname = PREFIX + 'ddfacet'
 
         recipe.add("cab/ddfacet", "ddfacet_test",
                    {
@@ -415,7 +427,7 @@ class kat7_reduce(unittest.TestCase):
                    label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
                    time_out=120)
 
-        lsm1 = PREFIX+'-LSM0'
+        lsm1 = PREFIX + '-LSM0'
         # Source finding for initial model
         recipe.add("cab/pybdsm", "extract_init_model", {
             "image":  '%s.app.restored.fits:output' % (imname),
@@ -429,7 +441,7 @@ class kat7_reduce(unittest.TestCase):
             time_out=1800)
 
         # Stitch LSMs together
-        lsm2 = PREFIX+'-LSM2'
+        lsm2 = PREFIX + '-LSM2'
         recipe.add("cab/tigger_convert", "stitch_lsms1", {
             "input-skymodel":   "%s.lsm.html:output" % lsm0,
             "output-skymodel":   "%s.lsm.html:output" % lsm2,
@@ -440,7 +452,7 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT, output=OUTPUT,
             label="stitch_lsms1::Create master lsm file",
             time_out=300)
-        
+
         recipe.add("cab/calibrator", "calibrator_Gjones_subtract_lsm0", {
             "skymodel": "%s.lsm.html:output" % (lsm2),
             "msname": MS,
@@ -472,7 +484,7 @@ class kat7_reduce(unittest.TestCase):
         # Image HI
         recipe.add('cab/casa_clean', 'casa_dirty_cube',
                    {
-                       "msname": MS+".contsub",
+                       "msname": MS + ".contsub",
                        "prefix": PREFIX,
                        "mode": 'channel',
                        "nchan": nchans,

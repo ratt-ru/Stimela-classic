@@ -74,7 +74,7 @@ class Container(object):
                 key, value, self.name))
         self.environs.append('"{0:s}={1:s}"'.format(key, value))
 
-    def run(self, *args):
+    def run(self, *args, output_wrangler=None):
 
         if self.volumes:
             volumes = " --volume=" + " --volume=".join(self.volumes)
@@ -94,7 +94,7 @@ class Container(object):
                                                       "--dri" if self.use_graphics else "",
                                                       self.name, self.RUNSCRIPT or ""], 
                    logfile=self.logfile,
-                   log=self.logger,
+                   log=self.logger, output_wrangler=output_wrangler,
                    timeout=self.time_out)
 
         self.status = "running"

@@ -262,6 +262,10 @@ class StimelaJob(object):
                 cont.add_environ("LANG", "en_US.UTF-8")
                 cont.add_environ("LC_ALL", "en_US.UTF-8")
             cont.execdir = self.workdir
+            homedir = os.path.join(os.environ.get("TMPDIR", "/tmp"),
+                                   "stimela.{}".format(int(datetime.utcnow().timestamp())))
+            if not os.path.exists(homedir): os.mkdir(homedir)
+            cont.add_volume(homedir, os.environ["HOME"], "rw") # ensure clean home directory
         elif self.jtype == "docker":
             cont.add_volume("/etc/passwd", "/etc/passwd", "ro")
             cont.add_volume("/etc/group", "/etc/group", "ro")

@@ -130,16 +130,6 @@ class kat7_reduce(unittest.TestCase):
             time_out=300)
 
         # Flag the autocorrelations
-        recipe.add("cab/politsiyakat_autocorr_amp", "flag_autopower", {
-            "msname": MS,
-            "field": ",".join([BPCAL,GCAL,TARGET]),
-            "cal_field": ",".join([BPCAL,GCAL]),
-            "nrows_chunk": 15000,
-            "scan_to_scan_threshold": 1.5,
-            "antenna_to_group_threshold": 4,
-            "nio_threads": 1,
-            "nproc_threads": 32,
-            },input=INPUT, output=OUTPUT, label="flag_autopower")
 
         recipe.add('cab/casa_flagdata', 'autocorr_flagging', {
             "vis":   MS,

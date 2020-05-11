@@ -47,6 +47,18 @@ class mk_reduce(unittest.TestCase):
         global INPUT, OUTPUT, MSDIR, MS, LABEL
         recipe = stimela.Recipe('Test reduction script',
                                 ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
+
+        recipe.add("cab/politsiyakat_autocorr_amp", "flag_autopower", {
+            "msname": MS,
+            "field": ",".join([TARGET]),
+            "cal_field": ""
+            "nrows_chunk": 15000,
+            "scan_to_scan_threshold": 1.5,
+            "antenna_to_group_threshold": 4,
+            "nio_threads": 1,
+            "nproc_threads": 32,
+            },input=INPUT, output=OUTPUT, label="flag_autopower")
+
         imname1 = "deep2.1gc"
         imname2 = "deep2.2gc"
         recipe.add("cab/ddfacet", "ddfacet_test1",

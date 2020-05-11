@@ -271,18 +271,18 @@ class kat7_reduce(unittest.TestCase):
             label='applycal_bp:: Apply calibration to Bandpass Calibrator',
             time_out=1800)
 
-        # Flag the autocorrelations
-        recipe.add("cab/politsiyakat_cal_phase", "flag_calphase", {
-            "msname": MS,
-            "field": ",".join([BPCAL,GCAL,"W2332-5056"]),
-            "cal_field": ",".join([BPCAL,GCAL]),
-            "nrows_chunk": 5000,
-            "data_column": "CORRECTED_DATA",
-            "scan_to_scan_threshold": 1.5,
-            "baseline_to_group_threshold": 4,
-            "nio_threads": 1,
-            "nproc_threads": 32,
-            },input=INPUT, output=OUTPUT, label="flag_calphase")
+        # # Flag the autocorrelations
+        # recipe.add("cab/politsiyakat_cal_phase", "flag_calphase", {
+        #     "msname": MS,
+        #     "field": ",".join([BPCAL,GCAL,"W2332-5056"]),
+        #     "cal_field": ",".join([BPCAL,GCAL]),
+        #     "nrows_chunk": 5000,
+        #     "data_column": "CORRECTED_DATA",
+        #     "scan_to_scan_threshold": 1.5,
+        #     "baseline_to_group_threshold": 4,
+        #     "nio_threads": 1,
+        #     "nproc_threads": 32,
+        #     },input=INPUT, output=OUTPUT, label="flag_calphase")
 
         recipe.run()
 

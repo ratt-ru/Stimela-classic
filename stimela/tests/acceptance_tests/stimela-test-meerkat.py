@@ -51,8 +51,8 @@ class mk_reduce(unittest.TestCase):
         recipe.add("cab/politsiyakat_autocorr_amp", "flag_autopower", {
             "msname": MS,
             "field": ",".join([TARGET]),
-            "cal_field": ""
-            "nrows_chunk": 15000,
+            "cal_field": "",
+            "nrows_chunk": 5000,
             "scan_to_scan_threshold": 1.5,
             "antenna_to_group_threshold": 4,
             "nio_threads": 1,

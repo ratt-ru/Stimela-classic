@@ -34,6 +34,7 @@ for param in cab['parameters']:
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
 _runc = " ".join([cab['binary']] + args)
+print("Running", _runc)
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:

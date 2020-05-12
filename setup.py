@@ -9,11 +9,10 @@ import glob
 requirements = ["pyyaml",
                 "nose>=1.3.7",
                 "future-fstrings",
-                "udocker",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.4.6"
+__version__ = "1.5.1"
 
 setup(name=PACKAGE_NAME,
       version=__version__,
@@ -25,13 +24,11 @@ setup(name=PACKAGE_NAME,
                 "stimela/utils", "stimela/cargo/cab",
                 "stimela/cargo/base"],
       package_data={"stimela/cargo": [
-          "cab/*/Dockerfile",
           "base/*/Dockerfile",
+          "base/*.template",
           "cab/*/src/*.py",
-          "cab/*/src/*.sh",
           "cab/*/src/*.json",
           "base/*/xvfb.init.d",
-          "cab/*/xvfb.init.d",
           "cab/*/parameters.json",
           "cab/*/src/tdlconf.profiles",
       ]},

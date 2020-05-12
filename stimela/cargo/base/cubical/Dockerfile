@@ -1,13 +1,13 @@
-FROM stimela/ddfacet:1.3.3
-MAINTAINER <sphemakh@gmail.com>
-ENV GIT_LFS_SKIP_SMUDGE 1
-RUN pip3 install -U pip setuptools wheel
-RUN apt-get update && apt-get install -y wget git-all
-RUN git clone https://github.com/ratt-ru/CubiCal.git
-WORKDIR CubiCal
-RUN git checkout v1.5.1
-RUN pip3 install ".[lsm-support,degridder-support]"
-RUN DDF.py --help
+FROM stimela/base:1.2.5
+RUN docker-apt-install casacore-dev \
+    casacore-data \
+    build-essential \
+    python3-pip \
+    libboost-all-dev \
+    wcslib-dev \
+    git \
+    libcfitsio-dev
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
+RUN pip3 install --upgrade --force pip
+RUN pip install "cubical[lsm-support]@git+https://github.com/ratt-ru/CubiCal.git@v1.5.2"
 RUN gocubical --help
-ENV NUMBA_CACHE_DIR /tmp
-ENTRYPOINT []

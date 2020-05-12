@@ -100,7 +100,7 @@ def get_cabs(logfile):
     return cabs_
 
 
-def info(cabdir, header=False):
+def info(cabdir, header=False, display=True):
     """ prints out help information about a cab """
 
     # First check if cab exists
@@ -109,7 +109,7 @@ def info(cabdir, header=False):
         raise RuntimeError("Cab could not be found at : {}".format(cabdir))
     # Get cab info
     cab_definition = cab.CabDefinition(parameter_file=pfile)
-    if header:
+    if display:
         cab_definition.display(header)
 
     return cab_definition
@@ -297,7 +297,7 @@ def pull(argv):
         base = []
         for cab_ in CAB:
             cabdir = "{:s}/{:s}".format(stimela.CAB_PATH, cab_)
-            _cab = info(cabdir)
+            _cab = info(cabdir, display=False)
             base.append(f"{_cab.base}:{_cab.tag}")
         base = set(base)
 

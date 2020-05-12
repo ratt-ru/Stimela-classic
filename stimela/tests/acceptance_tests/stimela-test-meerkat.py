@@ -129,7 +129,7 @@ class mk_reduce(unittest.TestCase):
 
         # # First selfcal round
 
-        recipe.add("cab/cubical", "cubical_cal",
+        recipe.add("cab/cubical_ddf", "cubical_cal",
                    {
                        'data-ms': MS,
                        'data-column': "DATA",

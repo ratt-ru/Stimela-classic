@@ -1,7 +1,7 @@
 {
     "task": "cubical_ddf", 
     "base": "stimela/cubical", 
-    "tag": "1.4.2", 
+    "tag": "1.4.3", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--",
     "version":"1.5.1",

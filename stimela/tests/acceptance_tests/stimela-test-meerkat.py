@@ -162,6 +162,40 @@ class mk_reduce(unittest.TestCase):
                    shared_memory="24gb",
                    time_out=1800)
 
+        recipe.add("cab/cubical", "cubical_cal",
+                   {
+                       'data-ms': MS,
+                       'data-column': "DATA",
+                       'dist-nworker': 4,
+                       'dist-nthread': 1,
+                       'dist-max-chunks': 20,
+                       'data-freq-chunk': 0,
+                       'data-time-chunk': 1,
+                       'model-list': spf("MODEL_DATA"),
+                       'weight-column': "WEIGHT",
+                       'flags-apply': "FLAG",
+                       'flags-auto-init': "legacy",
+                       'madmax-enable': False,
+                       'madmax-threshold': [0, 0, 10],
+                       'madmax-global-threshold': [0, 0],
+                       'sol-jones': 'g',
+                       'sol-stall-quorum': 0.95,
+                       'out-name': "cubicaltest",
+                       'out-column': "CORRECTED_DATA",
+                       'log-verbose': "solver=2",
+                       'g-type': "complex-2x2",
+                       'g-freq-int': 0,
+                       'g-time-int': 20,
+                       'g-max-iter': 10,
+                       'sol-term-iters': 10,
+                       'g-update-type': "complex-2x2",
+
+                   }, input=INPUT, output=OUTPUT,
+                   label="cubical",
+                   shared_memory="24gb",
+                   time_out=1800)
+
+
         recipe.add("cab/ragavi_vis", "ragavi_vis_test",
                    {
                        'ms': MS,

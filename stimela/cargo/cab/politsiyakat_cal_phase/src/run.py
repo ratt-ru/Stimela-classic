@@ -30,7 +30,7 @@ for param in cab['parameters']:
 
 kwargs = "'{}'".format(json.dumps(args))
 
-ARGS = ["flag_autocorr_drifts",
+ARGS = ["flag_phase_drifts",
         "-s antenna_mod",
         kwargs]
 

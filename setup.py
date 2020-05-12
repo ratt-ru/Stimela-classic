@@ -9,11 +9,10 @@ import glob
 requirements = ["pyyaml",
                 "nose>=1.3.7",
                 "future-fstrings",
-                "udocker",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.5.0"
+__version__ = "1.5.1"
 
 setup(name=PACKAGE_NAME,
       version=__version__,

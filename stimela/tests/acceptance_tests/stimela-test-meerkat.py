@@ -130,8 +130,8 @@ class mk_reduce(unittest.TestCase):
         recipe.add("cab/ddfacet", "ddfacet_test2",
                    {
                        "Data-MS": [MS],
-                       "Data-Column": [MS],
-                       "Output-Name": imname1,
+                       "Data-ColName": "CORRECTED_DATA",
+                       "Output-Name": imname2,
                        "Image-NPix": 2048,
                        "Image-Cell": 2.0,
                        "Cache-Reset": True,

@@ -34,7 +34,7 @@ ARGS = ["flag_autocorr_drifts",
         "-s antenna_mod",
         kwargs]
 
-    _runc = " ".join([cab['binary']] + ARGS)
+_runc = " ".join([cab['binary']] + ARGS)
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:

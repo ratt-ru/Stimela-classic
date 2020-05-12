@@ -25,6 +25,7 @@ setup(name=PACKAGE_NAME,
                 "stimela/cargo/base"],
       package_data={"stimela/cargo": [
           "base/*/Dockerfile",
+          "base/*.template",
           "cab/*/src/*.py",
           "cab/*/src/*.json",
           "base/*/xvfb.init.d",

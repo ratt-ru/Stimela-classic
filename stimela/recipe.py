@@ -1,6 +1,7 @@
 # -*- coding: future_fstrings -*-
 import os
 import sys
+import pwd, grp
 import time
 import stimela
 from stimela import docker, singularity, utils, cargo, podman, main
@@ -257,8 +258,8 @@ class StimelaJob(object):
                         f'{cab.MOUNT}/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), f"{cab.MOUNT}/code", "ro")
 
-        cont.add_volume("/etc/passwd", "/etc/passwd", "ro")
-        cont.add_volume("/etc/group", "/etc/group", "ro")
+        cont.add_volume(os.path.join(self.workdir, "passwd"), "/etc/passwd")
+        cont.add_volume(os.path.join(self.workdir, "group"), "/etc/group")
         cont.RUNSCRIPT = f"/{self.jtype}_run"
 
         if self.jtype == "singularity":
@@ -482,6 +483,18 @@ class Recipe(object):
             timestamp = str(time.time()).replace(".", "")
             self.workdir = os.path.join(CDIR, f".stimela_workdir-{timestamp}")
         os.mkdir(self.workdir)
+        # create passwd and group files to be mounted inside the container
+        template_dir = os.path.join(os.path.dirname(__file__), "cargo/base")
+        # get current user info
+        pw = pwd.getpwuid(os.getuid())
+        gr = grp.getgrgid(pw.pw_gid)
+        with open(os.path.join(self.workdir, "passwd"), "wt") as file:
+            file.write(open(os.path.join(template_dir, "passwd.template"), "rt").read())
+            file.write(f"{pw.pw_name}:x:{pw.pw_uid}:{pw.pw_gid}:{pw.pw_gecos}:/:/bin/bash")
+        with open(os.path.join(self.workdir, "group"), "wt") as file:
+            file.write(open(os.path.join(template_dir, "group.template"), "rt").read())
+            file.write(f"{gr.gr_name}:x:{gr.gr_gid}:")
+
 
     def add(self, image, name, config=None,
             input=None, output=None, msdir=None,

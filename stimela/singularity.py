@@ -105,9 +105,6 @@ class Container(object):
         Run a singularity container instance
         """
 
-        #emptylocal = os.path.join(self.execdir, ".local")
-        #os.makedirs(emptylocal, mode=511, exist_ok=True)
-        #self.add_volume(emptylocal, "${HOME}/.local", "ro")
         if self.volumes:
             volumes = " --bind " + " --bind ".join(self.volumes)
         else:
@@ -123,6 +120,7 @@ class Container(object):
             self.name, self.time_out))
         
         utils.xrun(f"cd {self.execdir} && singularity", ["run", "--workdir", self.execdir, "--containall"] \
+
                     + list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     env=self._env, logfile=self.logfile)

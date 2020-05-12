@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
 set -e
 set -u
-set
-which python
-xvfb-run -a /usr/bin/python $STIMELA_MOUNT/code/run.py 2>&1
+xvfb-run -a `which python` $STIMELA_MOUNT/code/run.py 2>&1

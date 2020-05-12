@@ -1,42 +1,39 @@
-import os
 import sys
-import shutil
-import shlex
+import os
+from MSUtils import flag_stats
+import inspect
 import glob
-import subprocess
+import shutil
 import yaml
-
+import codecs
+import json
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
-MSDIR = os.environ["MSDIR"]
 OUTPUT = os.environ["OUTPUT"]
+MSDIR = os.environ["MSDIR"]
+
 with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)
 
 junk = cab["junk"]
-
-args = []
-
+args = {}
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
-    if value is None:
-        continue
-    elif value is False:
-        continue
 
-    if isinstance(value, list):
-        val = map(str, value)
-        args += ['{0}{1} {2}'.format(cab['prefix'], name, " ".join(val))]
+    if name in ["fields", "antennas"] and value is not None:
+        try:
+            value = list(map(int, value))
+        except ValueError:
+            pass
+    if name == "outfile":
+        outfile = value
         continue
+    args[name] = value
 
-    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
-
-_runc = " ".join([cab['binary']] + args)
-print("Running", _runc)
 try:
-    subprocess.check_call(shlex.split(_runc))
+    stats = flag_stats.antenna_flags_field(**args)
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
@@ -47,3 +44,6 @@ finally:
                 elif os.path.isdir(f):
                     shutil.rmtree(f)
 
+with codecs.open(outfile, 'w', 'utf8') as stdw:
+    a = json.dumps(stats, ensure_ascii=False)
+    stdw.write(a)

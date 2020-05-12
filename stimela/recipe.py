@@ -1,6 +1,7 @@
 # -*- coding: future_fstrings -*-
 import os
 import sys
+import pwd, grp
 import time
 import stimela
 from stimela import docker, singularity, utils, cargo, podman, main
@@ -29,7 +30,9 @@ CONT_MOD = {
         }
 
 CONT_IO = cab.IODEST
-CDIR = os.environ["PWD"]
+CDIR = os.getcwd()
+
+PULLFOLDER = os.environ.get("STIMELA_PULLFOLDER", CDIR)
 
 # make dictionary of wrangler actions. First, add all logging levels
 _actions = {attr: value for attr, value in logging.__dict__.items() if attr.upper() == attr and type(value) is int}
@@ -222,9 +225,9 @@ class StimelaJob(object):
             simage = _cab.base.replace("/", "_")
             if singularity_image_dir is None:
                 singularity_image_dir = os.path.join(CDIR, "stimela_singularity_images")
-                singularity_image_dir = os.path.abspath(singularity_image_dir)
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
                     simage, _cab.tag, singularity.suffix)
+            cont.image = os.path.abspath(cont.image)
             if not os.path.exists(cont.image):
                 main.pull(f"-s -cb {cont.cabname} -pf {singularity_image_dir}".split())
         else:
@@ -255,6 +258,10 @@ class StimelaJob(object):
                         f'{cab.MOUNT}/configfile', perm='ro', noverify=True)
         cont.add_volume(os.path.join(cabpath, "src"), f"{cab.MOUNT}/code", "ro")
 
+        cont.add_volume(os.path.join(self.workdir, "passwd"), "/etc/passwd")
+        cont.add_volume(os.path.join(self.workdir, "group"), "/etc/group")
+        cont.RUNSCRIPT = f"/{self.jtype}_run"
+
         if self.jtype == "singularity":
             cont.RUNSCRIPT = f"/{self.jtype}"
             if _cab.base.startswith("stimela/casa") or _cab.base.startswith("stimela/simms"):
@@ -262,14 +269,6 @@ class StimelaJob(object):
                 cont.add_environ("LANG", "en_US.UTF-8")
                 cont.add_environ("LC_ALL", "en_US.UTF-8")
             cont.execdir = self.workdir
-            homedir = os.path.join(os.environ.get("TMPDIR", "/tmp"),
-                                   "stimela.{}".format(int(datetime.utcnow().timestamp())))
-            if not os.path.exists(homedir): os.mkdir(homedir)
-            cont.add_volume(homedir, os.environ["HOME"], "rw") # ensure clean home directory
-        elif self.jtype == "docker":
-            cont.add_volume("/etc/passwd", "/etc/passwd", "ro")
-            cont.add_volume("/etc/group", "/etc/group", "ro")
-            cont.RUNSCRIPT = f"/{self.jtype}_run"
         else:
             cont.RUNSCRIPT = f"/{self.jtype}_run"
         
@@ -449,11 +448,6 @@ class Recipe(object):
         # if it doesn't exist. These config
         # files can be resued to re-run the
         # task
-        self.parameter_file_dir = parameter_file_dir or "stimela_parameter_files"
-        if not os.path.exists(self.parameter_file_dir):
-            self.log.info(
-                'Config directory cannot be found. Will create ./{}'.format(self.parameter_file_dir))
-            os.mkdir(self.parameter_file_dir)
 
         self.jobs = []
         self.completed = []
@@ -461,7 +455,7 @@ class Recipe(object):
         self.remaining = []
 
         self.pid = os.getpid()
-        self.singularity_image_dir = singularity_image_dir
+        self.singularity_image_dir = singularity_image_dir or PULLFOLDER
         if self.singularity_image_dir and not self.JOB_TYPE:
             self.JOB_TYPE = "singularity"
 
@@ -475,6 +469,12 @@ class Recipe(object):
         self.workdir = None
         self.__make_workdir()
 
+        self.parameter_file_dir = parameter_file_dir or f'{self.workdir}/stimela_parameter_files'
+        if not os.path.exists(self.parameter_file_dir):
+            self.log.info(
+                f'Config directory cannot be found. Will create {self.parameter_file_dir}')
+            os.mkdir(self.parameter_file_dir)
+
     def __make_workdir(self):
         timestamp = str(time.time()).replace(".", "")
         self.workdir = os.path.join(CDIR, f".stimela_workdir-{timestamp}")
@@ -482,6 +482,18 @@ class Recipe(object):
             timestamp = str(time.time()).replace(".", "")
             self.workdir = os.path.join(CDIR, f".stimela_workdir-{timestamp}")
         os.mkdir(self.workdir)
+        # create passwd and group files to be mounted inside the container
+        template_dir = os.path.join(os.path.dirname(__file__), "cargo/base")
+        # get current user info
+        pw = pwd.getpwuid(os.getuid())
+        gr = grp.getgrgid(pw.pw_gid)
+        with open(os.path.join(self.workdir, "passwd"), "wt") as file:
+            file.write(open(os.path.join(template_dir, "passwd.template"), "rt").read())
+            file.write(f"{pw.pw_name}:x:{pw.pw_uid}:{pw.pw_gid}:{pw.pw_gecos}:/:/bin/bash")
+        with open(os.path.join(self.workdir, "group"), "wt") as file:
+            file.write(open(os.path.join(template_dir, "group.template"), "rt").read())
+            file.write(f"{gr.gr_name}:x:{gr.gr_gid}:")
+
 
     def add(self, image, name, config=None,
             input=None, output=None, msdir=None,

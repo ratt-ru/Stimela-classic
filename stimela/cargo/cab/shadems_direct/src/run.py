@@ -26,6 +26,7 @@ errors = []
 
 for args in args_list:
     _runc = " ".join([cab["binary"], ms, args])
+    print("Running", _runc)
     try:
         subprocess.check_call(shlex.split(_runc))
     except subprocess.CalledProcessError as exc:

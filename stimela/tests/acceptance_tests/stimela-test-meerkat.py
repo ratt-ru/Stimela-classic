@@ -94,42 +94,7 @@ class mk_reduce(unittest.TestCase):
             label='mask0:: Make mask',
             time_out=1800)
 
-        recipe.add("cab/ddfacet", "ddfacet_test2",
-                   {
-                       "Data-MS": [MS],
-                       "Output-Name": imname1,
-                       "Image-NPix": 2048,
-                       "Image-Cell": 2.0,
-                       "Cache-Reset": True,
-                       "Freq-NBand": 2,
-                       "Freq-NDegridBand": 4,
-                       "Mask-External": '%s:output' % (maskname0),
-                       "Weight-ColName": "WEIGHT",
-                       "Data-ChunkHours": 0.1,
-                       "Data-Sort": True,
-                       "Log-Boring": True,
-                       "Deconv-MaxMajorIter": 2,
-                       "Deconv-MaxMinorIter": 1500,
-                   },
-                   input=INPUT, output=OUTPUT, shared_memory="24gb",
-                   label="image2",
-                   time_out=1800)
-
-        recipe.add("cab/shadems", "shadems_test",
-                   {
-                       'ms': MS,
-                       'xaxis': 'DATA:imag',
-                       'yaxis': 'real',
-                       'col': 'DATA',
-                       'png': '%s_shadems_test_real_imag' % (PREFIX)
-                   },
-                   input=INPUT, output=OUTPUT,
-                   label="shadems_test",
-                   time_out=1800)
-
-        # # First selfcal round
-
-        recipe.add("cab/cubical_ddf", "cubical_cal",
+        recipe.add("cab/cubical", "cubical_cal1",
                    {
                        'data-ms': MS,
                        'data-column': "DATA",
@@ -158,7 +123,76 @@ class mk_reduce(unittest.TestCase):
                        'g-update-type': "complex-2x2",
 
                    }, input=INPUT, output=OUTPUT,
-                   label="cubical",
+                   label="cubical1",
+                   shared_memory="24gb",
+                   time_out=1800)
+
+        recipe.add("cab/ddfacet", "ddfacet_test2",
+                   {
+                       "Data-MS": [MS],
+                       "Data-Column": [MS],
+                       "Output-Name": imname1,
+                       "Image-NPix": 2048,
+                       "Image-Cell": 2.0,
+                       "Cache-Reset": True,
+                       "Freq-NBand": 2,
+                       "Freq-NDegridBand": 4,
+                       "Mask-External": '%s:output' % (maskname0),
+                       "Weight-ColName": "WEIGHT",
+                       "Data-ChunkHours": 0.1,
+                       "Data-Sort": True,
+                       "Log-Boring": True,
+                       "Deconv-MaxMajorIter": 2,
+                       "Deconv-MaxMinorIter": 1500,
+                   },
+                   input=INPUT, output=OUTPUT, shared_memory="24gb",
+                   label="image2",
+                   time_out=1800)
+
+        recipe.add("cab/shadems", "shadems_test",
+                   {
+                       'ms': MS,
+                       'xaxis': 'CORRECTED_DATA:imag',
+                       'yaxis': 'real',
+                       'col': 'CORRECTED_DATA',
+                       'png': '%s_shadems_test_real_imag' % (PREFIX)
+                   },
+                   input=INPUT, output=OUTPUT,
+                   label="shadems_test",
+                   time_out=1800)
+
+        # # First selfcal round
+
+        recipe.add("cab/cubical_ddf", "cubical_cal2",
+                   {
+                       'data-ms': MS,
+                       'data-column': "DATA",
+                       'dist-nworker': 4,
+                       'dist-nthread': 1,
+                       'dist-max-chunks': 20,
+                       'data-freq-chunk': 0,
+                       'data-time-chunk': 1,
+                       'model-list': spf("MODEL_DATA"),
+                       'weight-column': "WEIGHT",
+                       'flags-apply': "FLAG",
+                       'flags-auto-init': "legacy",
+                       'madmax-enable': False,
+                       'madmax-threshold': [0, 0, 10],
+                       'madmax-global-threshold': [0, 0],
+                       'sol-jones': 'g',
+                       'sol-stall-quorum': 0.95,
+                       'out-name': "cubicaltest",
+                       'out-column': "CORRECTED_DATA",
+                       'log-verbose': "solver=2",
+                       'g-type': "complex-2x2",
+                       'g-freq-int': 0,
+                       'g-time-int': 20,
+                       'g-max-iter': 10,
+                       'sol-term-iters': 10,
+                       'g-update-type': "complex-2x2",
+
+                   }, input=INPUT, output=OUTPUT,
+                   label="cubical2",
                    shared_memory="24gb",
                    time_out=1800)
 

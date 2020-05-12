@@ -6,6 +6,8 @@ import subprocess
 import glob
 import yaml
 
+print("memory")
+os.system("free -h")
 print("system limits:")
 os.system("ulimit -a")
 print("environment", sys.prefix)

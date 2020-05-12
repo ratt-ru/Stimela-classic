@@ -8,6 +8,8 @@ import yaml
 
 print("system limits:")
 os.system("ulimit -a")
+print("environment", sys.prefix)
+os.system("set")
 
 
 CONFIG = os.environ["CONFIG"]

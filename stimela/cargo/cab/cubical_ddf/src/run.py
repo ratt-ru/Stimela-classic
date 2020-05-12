@@ -6,6 +6,10 @@ import subprocess
 import glob
 import yaml
 
+print("system limits:")
+os.system("ulimit -a")
+
+
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 MSDIR = os.environ["MSDIR"]

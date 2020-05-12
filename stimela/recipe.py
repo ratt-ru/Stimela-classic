@@ -225,9 +225,9 @@ class StimelaJob(object):
             simage = _cab.base.replace("/", "_")
             if singularity_image_dir is None:
                 singularity_image_dir = os.path.join(CDIR, "stimela_singularity_images")
-                singularity_image_dir = os.path.abspath(singularity_image_dir)
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
                     simage, _cab.tag, singularity.suffix)
+            cont.image = os.path.abspath(cont.image)
             if not os.path.exists(cont.image):
                 main.pull(f"-s -cb {cont.cabname} -pf {singularity_image_dir}".split())
         else:

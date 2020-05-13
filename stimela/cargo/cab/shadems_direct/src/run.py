@@ -25,7 +25,7 @@ args_list = params['args']
 errors = []
 
 for args in args_list:
-    _runc = " ".join([cab["binary"], ms, args, "-dir", OUTPUT])
+    _runc = " ".join([cab["binary"], ms, args, "--dir", OUTPUT])
     print("Running", _runc)
     try:
         subprocess.check_call(shlex.split(_runc))

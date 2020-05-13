@@ -1,5 +1,5 @@
 {
-    "task": "shadems", 
+    "task": "shadems_direct", 
     "base": "stimela/shadems", 
     "tag": "1.4.2-4",
     "description": "Rapid Measurement Set plotting with xarray-ms and datashader.", 

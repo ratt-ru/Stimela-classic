@@ -27,7 +27,7 @@ for param in cab['parameters']:
     if name == "ms":
         ms = value
         continue
-    if name in ["debug", "iter-scan", "iter-field", "iter-corr", "iter-spw", "iter-antenna", "noconj", "noflags", "profile"]:
+    elif name in ["debug", "iter-scan", "iter-field", "iter-corr", "iter-spw", "iter-antenna", "noconj", "noflags", "profile"]:
         value = ""
 
     if isinstance(value, list):
@@ -37,7 +37,7 @@ for param in cab['parameters']:
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 
-_runc = " ".join([cab["binary"]] + args + [ms])
+_runc = " ".join([cab["binary"]] + args + ["--dir", OUTPUT]  + [ms])
 
 try:
     subprocess.check_call(shlex.split(_runc))

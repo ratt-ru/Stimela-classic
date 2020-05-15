@@ -9,6 +9,7 @@ import glob
 requirements = ["pyyaml",
                 "nose>=1.3.7",
                 "future-fstrings",
+                "scabha"
                 ],
 
 PACKAGE_NAME = "stimela"
@@ -17,9 +18,9 @@ __version__ = "1.5.2"
 setup(name=PACKAGE_NAME,
       version=__version__,
       description="Dockerized radio interferometry scripting framework",
-      author="Sphesihle Makhathini",
+      author="Sphesihle Makhathini & RATT",
       author_email="sphemakh@gmail.com",
-      url="https://github.com/sphemakh/Stimela",
+      url="https://github.com/ratt-ru/Stimela",
       packages=["stimela", "stimela/cargo",
                 "stimela/utils", "stimela/cargo/cab",
                 "stimela/cargo/base"],

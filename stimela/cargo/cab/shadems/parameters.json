@@ -247,12 +247,6 @@
             "name": "fontsize"
         },
         {
-            "info": "Send all plots to this output directory.", 
-            "dtype": "str", 
-            "default": null,
-            "name": "dir"
-        },
-        {
             "info": "Suffix to be included in filenames.", 
             "dtype": "str", 
             "default": null, 
@@ -262,8 +256,7 @@
             "info": "Output PNG name. Default is", 
             "dtype": "str", 
             "default": "plot-{ms}{_field}{_Spw}{_Scan}{_Ant}-{label}{_alphalabel}{_colorlabel}{_suffix}.png",
-            "name": "png",
-            "io": "output"
+            "name": "png"
         },
         {
             "info": "Template for plot titles. Default title includes ms name, field, spw, scan, antenna, plot title, alpha title and colour title.", 

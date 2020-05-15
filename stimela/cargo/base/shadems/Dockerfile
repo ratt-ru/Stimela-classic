@@ -10,12 +10,7 @@ RUN pip install -I numpy
 
 # so we can use use e.g. docker build --build-arg SCABHA=git+https://github.com/ratt-ru/scabha.git@branch to
 # install from a dev version, instead of a release package
-#ARG SCABHA=scabha
-
-# for development
-ADD /home/oms/projects/scabha /scabha
-
-ARG SCABHA=/scabha
+ARG SCABHA=scabha
 RUN pip install $SCABHA
 
 RUN shadems -h

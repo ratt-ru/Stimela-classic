@@ -1,49 +1,22 @@
-import os
+# -*- coding: future_fstrings -*-
 import sys
-import shutil
-import shlex
-import glob
-import subprocess
-import yaml
 
+from scabha import config, parameters, prun
 
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-MSDIR = os.environ["MSDIR"]
-OUTPUT = os.environ["OUTPUT"]
-with open(CONFIG, "r") as _std:
-    cab = yaml.safe_load(_std)
+args = [config.binary]
 
-junk = cab["junk"]
-
-args = []
-
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
-    if value is None:
+# convert arguments to flat list of PrefixName Arguments
+for name, value in parameters.items():
+    if value in [None, "", " ", False]:
         continue
-    elif value is False:
-        continue
+    args.append(f'{config.prefix}{name}')
 
-    if isinstance(value, list):
-        val = map(str, value)
-        args += ['{0}{1} {2}'.format(cab['prefix'], name, " ".join(val))]
-        continue
+    if not isinstance(value, list):
+        value = [value]
 
-    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+    args += list(map(str, value))
 
-_runc = " ".join([cab['binary']] + args)
-print("Running", _runc)
-try:
-    subprocess.check_call(shlex.split(_runc))
-finally:
-    for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
-            items = glob.glob("{dest}/{item}".format(**locals()))
-            for f in items:
-                if os.path.isfile(f):
-                    os.remove(f)
-                elif os.path.isdir(f):
-                    shutil.rmtree(f)
+# run the command
+if prun(args) is not 0:
+    sys.exit(1)
 

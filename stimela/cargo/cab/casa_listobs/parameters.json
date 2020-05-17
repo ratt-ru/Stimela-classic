@@ -1,11 +1,11 @@
 {
     "task": "casa_listobs", 
     "base": "stimela/casa", 
-    "tag": "1.2.5", 
+    "tag": "1.6.0", 
     "description": "List the summary of a data set in the logger or in a file", 
     "prefix": "-", 
     "binary": "listobs", 
-    "junk":[],
+    "junk":["listobs.last"],
     "msdir": true,
     "wranglers_demo": {
         "PIPELINE CASA":        ["replace:MI CASA ES TU CASA", "ERROR"],

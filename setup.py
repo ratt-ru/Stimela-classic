@@ -9,11 +9,11 @@ import glob
 requirements = ["pyyaml",
                 "nose>=1.3.7",
                 "future-fstrings",
-                "scabha"
+#                "scabha"
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.5.3.1"
+__version__ = "1.6.0"
 
 setup(name=PACKAGE_NAME,
       version=__version__,

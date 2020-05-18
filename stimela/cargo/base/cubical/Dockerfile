@@ -9,5 +9,5 @@ RUN docker-apt-install casacore-dev \
     libcfitsio-dev
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
 RUN pip3 install --upgrade --force pip
-RUN pip install "cubical[lsm-support]@git+https://github.com/ratt-ru/CubiCal.git@v1.5.2"
+RUN pip install "cubical[lsm-support]@git+https://github.com/ratt-ru/CubiCal.git@v1.5.3"
 RUN gocubical --help

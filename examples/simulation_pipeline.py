@@ -25,8 +25,6 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           log_dir=os.path.join(OUTPUT, "logs"),
                           )
 
-pipeline.JOB_TYPE = "singularity"
-
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
              "simms_example",               # Container name

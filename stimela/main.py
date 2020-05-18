@@ -179,7 +179,7 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-jt", "--job-type", default="docker",
+    add("-jt", "--job-type", default="docker", choices = ["docker", "singularity", "podman"],
         help="Container technology to use when running jobs")
 
     add("-ll", "--log-level", default="INFO", choices=loglevels.upper().split() + loglevels.split(),
@@ -189,6 +189,7 @@ def run(argv):
 
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
+                    _STIMELA_JOB_TYPE=args.job_type.lower(),
                     _STIMELA_LOG_LEVEL=args.log_level.upper())
 
     nargs = len(args.globals)

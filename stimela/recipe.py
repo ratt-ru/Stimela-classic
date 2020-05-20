@@ -220,21 +220,20 @@ class StimelaJob(object):
         self.setup_output_wranglers(_cab.wranglers)
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
-        if tag:
-            if not tag in _cab.tag:
-                tag = _cab.tag[-1]
-            elif force_tag:
-                self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{tag}'. We wish you best on your jornery.")
-            else:
-                raise StimelaBaseImageError(f"The requested base image '{_cab.base}:{tag}' has not been verified."\
-                                             " To use this image regardless, please add the '{force_base}' option to the {_cab.task}") 
+        if tag: 
+            if tag not in _cab.tag:
+                if force_base:
+                    self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{tag}'. We wish you best on your jornery.")
+                else:
+                    self.log.error(f"The requested base image '{_cab.base}:{tag}' has not been verified. Verified tags for this image are {_cab.tag}."\
+                                             f" To use this image regardless, please add the 'force_base' option to the {_cab.task}")
+                    raise StimelaBaseImageError
         else:
             tag = _cab.tag[-1]
+        self.tag = tag
                 
         if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
-            if singularity_image_dir is None:
-                singularity_image_dir = os.path.join(CDIR, "stimela_singularity_images")
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
                     simage, tag, singularity.suffix)
             cont.image = os.path.abspath(cont.image)
@@ -361,7 +360,7 @@ class StimelaJob(object):
 
         if hasattr(self.job, '_cab'):
             self.job._cab.update(self.job.config,
-                                 self.job.parameter_file_name)
+                                 self.job.parameter_file_name, tag=self.tag)
 
         if self.jtype == "singularity":
             self.created = True
@@ -448,10 +447,8 @@ class Recipe(object):
                 fh.setFormatter(stimela.log_formatter)
                 self.log.addHandler(fh)
 
-
         self.resume_file = '.last_{}.json'.format(self.name_)
         # set to default if not set
-
         # create a folder to store config files
         # if it doesn't exist. These config
         # files can be resued to re-run the
@@ -463,16 +460,16 @@ class Recipe(object):
         self.remaining = []
 
         self.pid = os.getpid()
-        self.singularity_image_dir = singularity_image_dir or PULLFOLDER
+
+        cmd_line_pf = script_context.get('_STIMELA_PULLFOLDER', None)
+        self.singularity_image_dir = cmd_line_pf or singularity_image_dir or PULLFOLDER
         if self.singularity_image_dir and not self.JOB_TYPE:
             self.JOB_TYPE = "singularity"
 
         self.log.info('---------------------------------')
         self.log.info('Stimela version {0}'.format(stimela.__version__))
-        self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
-
         
         self.workdir = None
         self.__make_workdir()

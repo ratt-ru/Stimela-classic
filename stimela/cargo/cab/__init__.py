@@ -282,13 +282,14 @@ class CabDefinition(object):
                 })
         return conf
 
-    def update(self, options, saveconf):
+    def update(self, options, saveconf, tag=None):
         required = filter(lambda a: a.required, self.parameters)
+        tag = tag or self.tag
         for param0 in required:
             if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
-        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{self.tag})")
+        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{tag})")
 
         for name, value in options.items():
             found = False

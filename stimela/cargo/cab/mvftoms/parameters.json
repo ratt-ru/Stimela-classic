@@ -1,7 +1,7 @@
 {
     "task": "mvftoms", 
     "base": "stimela/katdal", 
-    "tag": "1.2.5", 
+    "tag": "1.6.0", 
     "version" : "0.15",
     "description": "Convert HDF5 file(s) to MeasurementSet", 
     "prefix": "--", 

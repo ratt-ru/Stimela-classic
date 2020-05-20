@@ -303,7 +303,11 @@ def pull(argv):
         for cab_ in CAB:
             cabdir = "{:s}/{:s}".format(stimela.CAB_PATH, cab_)
             _cab = info(cabdir, display=False)
-            base.append(f"{_cab.base}:{_cab.tag}")
+            tags = _cab.tag
+            if not isinstance(tags, list):
+                tags = [tags]
+            for tag in tags:
+                base.append(f"{_cab.base}:{tag}")
         base = set(base)
 
         for image in base:

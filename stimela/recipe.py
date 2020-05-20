@@ -154,7 +154,7 @@ class StimelaJob(object):
     def setup_job(self, image, config,
                    indir=None, outdir=None, msdir=None, 
                    singularity_image_dir=None,
-                   **kw):
+                   tag=None, force_base=False):
         """
             Setup job
 
@@ -220,18 +220,28 @@ class StimelaJob(object):
         self.setup_output_wranglers(_cab.wranglers)
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
-
+        if tag:
+            if not tag in _cab.tag:
+                tag = _cab.tag[-1]
+            elif force_tag:
+                self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{tag}'. We wish you best on your jornery.")
+            else:
+                raise StimelaBaseImageError(f"The requested base image '{_cab.base}:{tag}' has not been verified."\
+                                             " To use this image regardless, please add the '{force_base}' option to the {_cab.task}") 
+        else:
+            tag = _cab.tag[-1]
+                
         if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
             if singularity_image_dir is None:
                 singularity_image_dir = os.path.join(CDIR, "stimela_singularity_images")
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
-                    simage, _cab.tag, singularity.suffix)
+                    simage, tag, singularity.suffix)
             cont.image = os.path.abspath(cont.image)
             if not os.path.exists(cont.image):
                 main.pull(f"-s -cb {cont.cabname} -pf {singularity_image_dir}".split())
         else:
-            cont.image = ":".join([_cab.base, _cab.tag])
+            cont.image = ":".join([_cab.base, tag])
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -367,7 +377,7 @@ class StimelaJob(object):
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
-                 tag=None, build_label=None,
+                 build_label=None,
                  singularity_image_dir=None, JOB_TYPE='docker',
                  cabpath=None,
                  logger=None,
@@ -378,7 +388,6 @@ class Recipe(object):
 
         name    :   Name of stimela recipe
         msdir   :   Path of MSs to be used during the execution of the recipe
-        tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
 
         logger:   if set to a logger object, uses the specified logger.
@@ -443,7 +452,6 @@ class Recipe(object):
         self.resume_file = '.last_{}.json'.format(self.name_)
         # set to default if not set
 
-        self.tag = tag
         # create a folder to store config files
         # if it doesn't exist. These config
         # files can be resued to re-run the
@@ -503,7 +511,13 @@ class Recipe(object):
             time_out=-1,
             logger=None,
             logfile=None,
-            cabpath=None):
+            cabpath=None,
+            force_base=False):
+
+        if len(image.split(":")) == 2:
+            image, tag = image.split(":")
+        else:
+            tag = None
 
         if logfile is None:
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
@@ -528,7 +542,7 @@ class Recipe(object):
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
              singularity_image_dir=self.singularity_image_dir,
-             time_out=time_out)
+             tag=tag, force_base=force_base)
 
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
             job.image, name))

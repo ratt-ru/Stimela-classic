@@ -5,6 +5,10 @@ class StimelaCabParameterError(Exception):
 class StimelaRecipeExecutionError(Exception):
     pass
 
+class StimelaBaseImageError(Exception):
+    pass
+
+
 class PipelineException(Exception):
     """ 
     Encapsulates information about state of pipeline when an

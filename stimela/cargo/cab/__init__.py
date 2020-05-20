@@ -131,24 +131,32 @@ class CabDefinition(object):
                  base=None,
                  binary=None,
                  description=None,
-                 tag=None,
+                 tag=[],
                  prefix=None,
                  parameters=[],
-                 version=None, 
+                 version=[], 
                  junk=[]):
 
         self.indir = indir
         self.outdir = outdir
 
+
         if parameter_file:
             cab = utils.readJson(parameter_file)
+            if not isinstance(cab["tag"], list):
+                tag = [cab["tag"]]
+                version = [cab.get("version", "x.x.x")]
+            else:
+                tag = cab["tag"]
+                version = cab["version"]
+
             self.task = cab["task"]
             self.base = cab["base"]
             self.binary = cab["binary"]
-            self.tag = cab["tag"]
+            self.tag = tag
             self.junk = cab.get("junk", [])
             self.wranglers = cab.get("wranglers", [])
-            self.version = cab.get("version", "x.x.x")
+            self.version = version
             if cab["msdir"]:
                 self.msdir = msdir
             else:

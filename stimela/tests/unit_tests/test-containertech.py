@@ -30,7 +30,7 @@ class basicrecipe_test(unittest.TestCase):
         SINGULARITY = False
         PODMAN = False
         if singularity.version and singularity.version >= "2.6.0":
-            main.pull(["-s", "--force", "-im", f"stimela/base:{cab.tag}"])
+            main.pull(["-s", "--force", "-cb", "casa_listobs"])
             SINGULARITY = True
 
     @classmethod

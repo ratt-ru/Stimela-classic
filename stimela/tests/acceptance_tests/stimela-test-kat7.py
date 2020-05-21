@@ -107,7 +107,7 @@ class kat7_reduce(unittest.TestCase):
         recipe = stimela.Recipe('Test reduction script',
                                 ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
 
-        recipe.add('cab/casa_listobs', 'listobs', {
+        recipe.add('cab/casa_listobs:0.3.0-1', 'listobs', {
             "vis": MS
         },
             input=INPUT,
@@ -233,7 +233,7 @@ class kat7_reduce(unittest.TestCase):
             time_out=1200)
 
         # Gain calibration - amplitude and phase - first for BPCAL.
-        recipe.add('cab/casa_gaincal', 'gaincal_bp', {
+        recipe.add('cab/casa_gaincal:0.3.0-1', 'gaincal_bp', {
             "vis": MS,
             "caltable": GAINCAL_TABLE,
             "field": "{0:s},{1:s}".format(BPCAL, GCAL),

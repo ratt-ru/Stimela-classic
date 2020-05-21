@@ -44,9 +44,9 @@ def pull(image, name, docker=True, directory=".", force=False):
     if os.path.exists(image_path) and not force:
         log.info(f"Singularity image already exists at '{image_path}'. To replace it, please re-run with the 'force' option")
     else:
-        utils.xrun("singularity", ["build", 
-        	"--force" if force else "", 
-         	image_path, fp])
+        utils.xrun(f"cd {directory} && singularity", ["pull", 
+        	"--force" if force else "", "--name", 
+         	name, fp])
 
     return 0
 

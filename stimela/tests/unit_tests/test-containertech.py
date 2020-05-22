@@ -29,9 +29,7 @@ class basicrecipe_test(unittest.TestCase):
         global SINGULARITY, PODMAN
         SINGULARITY = False
         PODMAN = False
-        if singularity.version and singularity.version >= "2.6.0":
-            main.pull(["-s", "--force", "-cb", "casa_listobs"])
-            SINGULARITY = True
+        SINGULARITY = singularity.version and singularity.version >= "2.6.0"
 
     @classmethod
     def tearDownClass(cls):
@@ -70,7 +68,7 @@ class basicrecipe_test(unittest.TestCase):
                              ms_dir=MSDIR,
                              JOB_TYPE="singularity",
                              cabpath="cab/",
-                             singularity_image_dir=os.environ["SINGULARITY_PULLFOLDER"],
+                             singularity_image_dir=os.environ["STIMELA_PULLFOLDER"],
                              log_dir="logs")
         rrr.add("cab/custom", "test1", {
             "bla1": "a", # only accepts a, b or c

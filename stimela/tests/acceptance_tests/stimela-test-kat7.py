@@ -107,13 +107,13 @@ class kat7_reduce(unittest.TestCase):
         recipe = stimela.Recipe('Test reduction script',
                                 ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")
 
-        recipe.add('cab/casa_listobs:0.3.0-1', 'listobs', {
+        recipe.add('cab/casa_listobs', 'listobs', {
             "vis": MS
         },
             input=INPUT,
             output=OUTPUT,
             label='listobs:: some stats',
-            time_out=300)
+            time_out=300, tag="0.3.0-1")
 
         # It is common for the array to require a small amount of time to settle down at the start of a scan. Consequently, it has
         # become standard practice to flag the initial samples from the start
@@ -127,7 +127,7 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label='quack_flagging:: Quack flagging',
-            time_out=300)
+            time_out=300, version="4.7.2")
 
         # Flag the autocorrelations
         recipe.add("cab/politsiyakat_autocorr_amp", "flag_autopower", {

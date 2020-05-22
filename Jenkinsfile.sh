@@ -28,8 +28,8 @@ cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 docker -v
 podman -v
 singularity -v
-export SINGULARITY_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
-mkdir $SINGULARITY_PULLFOLDER
+export STIMELA_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
+mkdir $STIMELA_PULLFOLDER
 
 #########################################################################
 # PYTHON 3 TEST

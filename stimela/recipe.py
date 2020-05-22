@@ -53,6 +53,9 @@ class StimelaJob(object):
                  logfile=None,
                  cabpath=None,
                  workdir=None,
+                 tag=None,
+                 version=None,
+                 force_tag=False,
                  shared_memory=None):
         """
 
@@ -61,6 +64,9 @@ class StimelaJob(object):
 
         logfile:  name of logfile, False to disable recipe-level logfiles, or None to form a default name
         """
+        self.tag = tag
+        self.version = version
+        self.force_tag = force_tag
         self.name = name
         self.recipe = recipe
         self.label = label or '{0}({1})'.format(name, id(name))
@@ -153,8 +159,7 @@ class StimelaJob(object):
 
     def setup_job(self, image, config,
                    indir=None, outdir=None, msdir=None, 
-                   singularity_image_dir=None,
-                   tag=None, force_base=False):
+                   singularity_image_dir=None):
         """
             Setup job
 
@@ -220,17 +225,29 @@ class StimelaJob(object):
         self.setup_output_wranglers(_cab.wranglers)
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
-        if tag: 
-            if tag not in _cab.tag:
-                if force_base:
-                    self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{tag}'. We wish you best on your jornery.")
-                else:
-                    self.log.error(f"The requested base image '{_cab.base}:{tag}' has not been verified. Verified tags for this image are {_cab.tag}."\
-                                             f" To use this image regardless, please add the 'force_base' option to the {_cab.task}")
-                    raise StimelaBaseImageError
+        # Pick tag/version to use. The tag gets priority because it is more precise. 
+        if self.tag:
+            try:
+                tvi = _cab.tag.index(self.tag)
+            except ValueError:
+                pass
+        elif self.version:
+            try:
+                tvi = _cab.tag.index(self.tag)
+            except ValueError:
+                self.log.error("The version you have selected is unknown")
+                raise SystemExit
         else:
-            tag = _cab.tag[-1]
-        self.tag = tag
+            tvi = None
+        if tvi:
+            self.tag = _cab.tag[tvi]
+            self.version = _cab.version[tvi]
+        elif self.force_tag is None:
+            raise StimelaBaseImageError(f"The base image '{_cab.base}' with tag '{self.tag}' has not been verified. If you wish to continue with it, please add the 'force_tag' when adding it to your recipe")
+        elif self.tag and self.force_tag:
+            self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{tag}'. We wish you best on your jornery.")
+        else:
+            self.tag = _cab.tag[-1]
                 
         if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
@@ -238,9 +255,10 @@ class StimelaJob(object):
                     simage, tag, singularity.suffix)
             cont.image = os.path.abspath(cont.image)
             if not os.path.exists(cont.image):
-                main.pull(f"-s -cb {cont.cabname} -pf {singularity_image_dir}".split())
+                singularity.pull(":".join([_cab.base, self.tag]), 
+                        os.path.basename(cont.image), directory=singularity_image_dir)
         else:
-            cont.image = ":".join([_cab.base, tag])
+            cont.image = ":".join([_cab.base, self.tag])
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -381,6 +399,7 @@ class Recipe(object):
                  cabpath=None,
                  logger=None,
                  log_dir=None, logfile=None, logfile_task=None,
+                 cabspecs=None,
                  loglevel="INFO"):
         """
         Deifine and manage a stimela recipe instance.        
@@ -414,6 +433,7 @@ class Recipe(object):
         self.JOB_TYPE = script_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 
         self.cabpath = cabpath
+        self.cabspecs = cabspecs
 
         # set default name for task-level logfiles
         self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_) \
@@ -509,12 +529,9 @@ class Recipe(object):
             logger=None,
             logfile=None,
             cabpath=None,
-            force_base=False):
-
-        if len(image.split(":")) == 2:
-            image, tag = image.split(":")
-        else:
-            tag = None
+            tag=None,
+            version=None,
+            force_tag=False):
 
         if logfile is None:
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
@@ -526,7 +543,7 @@ class Recipe(object):
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath,
-                         workdir=self.workdir)
+                         workdir=self.workdir, tag=tag, version=version, force_tag=force_tag)
 
         if callable(image):
             job.jtype = 'python'
@@ -538,8 +555,7 @@ class Recipe(object):
 
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
-             singularity_image_dir=self.singularity_image_dir,
-             tag=tag, force_base=force_base)
+             singularity_image_dir=self.singularity_image_dir)
 
         self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
             job.image, name))

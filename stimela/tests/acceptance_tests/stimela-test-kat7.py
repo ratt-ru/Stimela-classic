@@ -233,7 +233,7 @@ class kat7_reduce(unittest.TestCase):
             time_out=1200)
 
         # Gain calibration - amplitude and phase - first for BPCAL.
-        recipe.add('cab/casa_gaincal:0.3.0-1', 'gaincal_bp', {
+        recipe.add('cab/casa_gaincal', 'gaincal_bp', {
             "vis": MS,
             "caltable": GAINCAL_TABLE,
             "field": "{0:s},{1:s}".format(BPCAL, GCAL),
@@ -249,7 +249,8 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label="gaincal:: Gain calibration",
-            time_out=300)
+            time_out=300, 
+            version="5.6.1-8")
 
         # Set fluxscale
         recipe.add('cab/casa_fluxscale', 'fluxscale', {

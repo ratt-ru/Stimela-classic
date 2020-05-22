@@ -225,34 +225,59 @@ class StimelaJob(object):
         self.setup_output_wranglers(_cab.wranglers)
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
-        # Pick tag/version to use. The tag gets priority because it is more precise. 
-        if self.tag:
-            try:
-                tvi = _cab.tag.index(self.tag)
-            except ValueError:
-                pass
-        elif self.version:
-            try:
-                tvi = _cab.tag.index(self.tag)
-            except ValueError:
-                self.log.error("The version you have selected is unknown")
-                raise SystemExit
-        else:
-            tvi = None
-        if tvi:
+
+#
+#Example
+#        ----------------
+# casa_listobs:
+#   tag: <tag>               ## optional
+#   version: <version>       ## optional. If version is a dict, then ignore tag and priority and use <tag>:<version> pairs in dict
+#   force: true              ## Continue even if tag is specified in the parameters.json file
+
+        cabspecs = self.recipe.cabspecs.get(cont.cabname, None)
+        if cabspecs:
+            _tag = cabspecs.get("tag", None)
+            _version = cabspecs.get("version", None)
+            _force_tag = cabspecs.get("force", False)
+            if isinstance(_version, dict):
+                if self.version in _version:
+                    self.tag = _version[self.version]
+            else:
+                self.tag = _tag
+                self.version = _version
+            if self.version not in _cab.version:
+                self.log.error(f"The version you have specified for cab '{_cab.base}' is unknown")
+                raise ValueError 
+
+            self.force_tag = _force_tag
+        elif self.tag or self.version:
+            tvi = None  
+            if self.tag:
+                try:
+                    tvi = _cab.tag.index(self.tag)
+                except ValueError:
+                    pass
+            elif self.version:
+                try:
+                    tvi = _cab.version.index(self.version)
+                except ValueError:
+                    self.log.error("The version you have selected is unknown")
+                    raise ValueError 
+            
             self.tag = _cab.tag[tvi]
             self.version = _cab.version[tvi]
-        elif self.force_tag is None:
-            raise StimelaBaseImageError(f"The base image '{_cab.base}' with tag '{self.tag}' has not been verified. If you wish to continue with it, please add the 'force_tag' when adding it to your recipe")
-        elif self.tag and self.force_tag:
-            self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{tag}'. We wish you best on your jornery.")
         else:
             self.tag = _cab.tag[-1]
+        if self.tag not in _cab.tag:
+            if self.force_tag:
+                self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{self.tag}'. We wish you best on your jornery.")
+            else:
+                raise StimelaBaseImageError(f"The base image '{_cab.base}' with tag '{self.tag}' has not been verified. If you wish to continue with it, please add the 'force_tag' when adding it to your recipe")
                 
         if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
-                    simage, tag, singularity.suffix)
+                    simage, self.tag, singularity.suffix)
             cont.image = os.path.abspath(cont.image)
             if not os.path.exists(cont.image):
                 singularity.pull(":".join([_cab.base, self.tag]), 
@@ -433,7 +458,7 @@ class Recipe(object):
         self.JOB_TYPE = script_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 
         self.cabpath = cabpath
-        self.cabspecs = cabspecs
+        self.cabspecs = cabspecs or {}
 
         # set default name for task-level logfiles
         self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_) \

@@ -131,24 +131,32 @@ class CabDefinition(object):
                  base=None,
                  binary=None,
                  description=None,
-                 tag=None,
+                 tag=[],
                  prefix=None,
                  parameters=[],
-                 version=None, 
+                 version=[], 
                  junk=[]):
 
         self.indir = indir
         self.outdir = outdir
 
+
         if parameter_file:
             cab = utils.readJson(parameter_file)
+            if not isinstance(cab["tag"], list):
+                tag = [cab["tag"]]
+                version = [cab.get("version", "x.x.x")]
+            else:
+                tag = cab["tag"]
+                version = cab["version"]
+
             self.task = cab["task"]
             self.base = cab["base"]
             self.binary = cab["binary"]
-            self.tag = cab["tag"]
+            self.tag = tag
             self.junk = cab.get("junk", [])
             self.wranglers = cab.get("wranglers", [])
-            self.version = cab.get("version", "x.x.x")
+            self.version = version
             if cab["msdir"]:
                 self.msdir = msdir
             else:
@@ -274,13 +282,14 @@ class CabDefinition(object):
                 })
         return conf
 
-    def update(self, options, saveconf):
+    def update(self, options, saveconf, tag=None):
         required = filter(lambda a: a.required, self.parameters)
+        tag = tag or self.tag
         for param0 in required:
             if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
-        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{self.tag})")
+        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{tag})")
 
         for name, value in options.items():
             found = False

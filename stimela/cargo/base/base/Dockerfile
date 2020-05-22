@@ -1,4 +1,4 @@
-FROM kernsuite/base:dev
+FROM kernsuite/base:5
 RUN docker-apt-install \
     python3-setuptools \
     libboost-python-dev \

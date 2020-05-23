@@ -278,10 +278,10 @@ class StimelaJob(object):
 
         if self.tag not in _cab.tag:
             if self.force_tag:
-                self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{self.tag}'. We wish you best on your jornery.")
+                self.log.warn(f"You have chosen to use an unverified base image '{_cab.base}:{self.tag}'. May the force be with you.")
             else:
                 raise StimelaBaseImageError(f"The base image '{_cab.base}' with tag '{self.tag}' has not been verified. If you wish to continue with it, please add the 'force_tag' when adding it to your recipe")
-                
+
         if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
@@ -590,8 +590,7 @@ class Recipe(object):
              indir=indir, outdir=outdir, msdir=msdir,
              singularity_image_dir=self.singularity_image_dir)
 
-        self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
-            job.image, name))
+        self.log.info(f'Adding cab \'{job.image}\' ({job.version}) to recipe, container name \'{name}\'')
         self.jobs.append(job)
 
         return 0

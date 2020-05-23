@@ -234,24 +234,9 @@ class StimelaJob(object):
 #   version: <version>       ## optional. If version is a dict, then ignore tag and priority and use <tag>:<version> pairs in dict
 #   force: true              ## Continue even if tag is specified in the parameters.json file
 
-        cabspecs = self.recipe.cabspecs.get(cont.cabname, None)
-        if cabspecs:
-            _tag = cabspecs.get("tag", None)
-            _version = cabspecs.get("version", None)
-            _force_tag = cabspecs.get("force", False)
-            if isinstance(_version, dict):
-                if self.version in _version:
-                    self.tag = _version[self.version]
-            else:
-                self.tag = _tag
-                self.version = _version
-            if self.version not in _cab.version:
-                self.log.error(f"The version you have specified for cab '{_cab.base}' is unknown")
-                raise ValueError 
-
-            self.force_tag = _force_tag
-        elif self.tag or self.version:
-            tvi = None  
+        no_tag_version = False
+        if self.tag or self.version:
+            tvi = None
             if self.tag:
                 try:
                     tvi = _cab.tag.index(self.tag)
@@ -261,13 +246,36 @@ class StimelaJob(object):
                 try:
                     tvi = _cab.version.index(self.version)
                 except ValueError:
-                    self.log.error("The version you have selected is unknown")
+                    self.log.error(f"The version you have specified for cab '{_cab.task}' is unknown")
                     raise ValueError 
             
             self.tag = _cab.tag[tvi]
             self.version = _cab.version[tvi]
         else:
             self.tag = _cab.tag[-1]
+            self.version = _cab.version[-1]
+        self.log.error(f'{self.version}, {self.tag}')
+
+        cabspecs = self.recipe.cabspecs.get(cont.cabname, None)
+        if cabspecs:
+            _tag = cabspecs.get("tag", None)
+            _version = cabspecs.get("version", None)
+            _force_tag = cabspecs.get("force", False)
+            if isinstance(_version, dict):
+                if self.version in _version:
+                    self.tag = _version[self.version]
+            elif _version:
+                self.version = _version
+            else:
+                self.tag = _tag
+            if self.version and self.version not in _cab.version:
+                self.log.error(f"The version, {self.version} ,specified for cab '{_cab.task}' is unknown. Available versions are {_cab.version}")
+                raise ValueError
+            if not _tag:
+                idx = _cab.version.index(self.version)
+                self.tag = _cab.tag[idx]
+            self.force_tag = _force_tag
+
         if self.tag not in _cab.tag:
             if self.force_tag:
                 self.log.warn(f"You have chosen to use an unverfied base image '{_cab.base}:{self.tag}'. We wish you best on your jornery.")

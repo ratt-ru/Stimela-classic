@@ -246,15 +246,15 @@ class StimelaJob(object):
                 try:
                     tvi = _cab.version.index(self.version)
                 except ValueError:
-                    self.log.error(f"The version you have specified for cab '{_cab.task}' is unknown")
+                    self.log.error(f"The version, {self.version}, specified for cab '{_cab.task}' is unknown. Available versions are {_cab.version}")
                     raise ValueError 
-            
+            if tvi is None:
+                tvi = -1
             self.tag = _cab.tag[tvi]
             self.version = _cab.version[tvi]
         else:
             self.tag = _cab.tag[-1]
             self.version = _cab.version[-1]
-        self.log.error(f'{self.version}, {self.tag}')
 
         cabspecs = self.recipe.cabspecs.get(cont.cabname, None)
         if cabspecs:
@@ -269,7 +269,7 @@ class StimelaJob(object):
             else:
                 self.tag = _tag
             if self.version and self.version not in _cab.version:
-                self.log.error(f"The version, {self.version} ,specified for cab '{_cab.task}' is unknown. Available versions are {_cab.version}")
+                self.log.error(f"The version, {self.version}, specified for cab '{_cab.task}' is unknown. Available versions are {_cab.version}")
                 raise ValueError
             if not _tag:
                 idx = _cab.version.index(self.version)

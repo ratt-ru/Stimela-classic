@@ -427,7 +427,7 @@ class kat7_reduce(unittest.TestCase):
                    },
                    input=INPUT, output=OUTPUT, shared_memory="8gb",
                    label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
-                   time_out=120)
+                   time_out=520)
 
         lsm1 = PREFIX + '-LSM0'
         # Source finding for initial model

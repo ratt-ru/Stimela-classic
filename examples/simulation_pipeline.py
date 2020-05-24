@@ -99,4 +99,4 @@ pipeline.add("cab/casa_rmtables", "delete_ms", {
     label="Remove MS")
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added
-pipeline.run([2])
+pipeline.run()

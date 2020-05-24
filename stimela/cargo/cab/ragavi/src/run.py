@@ -1,20 +1,9 @@
 # -*- coding: future_fstrings -*-
 import sys
 
-from scabha import config, parameters, prun
+from scabha import config, parse_parameters, prun
 
-args = [config.binary]
-
-# convert arguments to flat list of PrefixName Arguments
-for name, value in parameters.items():
-    if value in [None, "", " ", False]:
-        continue
-    args.append(f'{config.prefix}{name}')
-
-    if not isinstance(value, list):
-        value = [value]
-
-    args += list(map(str, value))
+args = [config.binary] + parse_parameters(repeat=" ")
 
 # run the command
 if prun(args) is not 0:

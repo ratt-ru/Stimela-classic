@@ -1,2 +1,2 @@
-FROM stimela/casa:1.2.0
+FROM stimela/casa:1.3.0
 RUN pip install simms

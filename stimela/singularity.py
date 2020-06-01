@@ -14,6 +14,8 @@ from shutil import which
 
 log = stimela.logger()
 
+log = stimela.logger()
+
 binary = which("singularity")
 if binary:
     __version_string = subprocess.check_output([binary, "--version"]).decode("utf8")
@@ -43,12 +45,11 @@ def pull(image, name, docker=True, directory=".", force=False):
     if os.path.exists(image_path) and not force:
         log.info(f"Singularity image already exists at '{image_path}'. To replace it, please re-run with the 'force' option")
     else:
-        utils.xrun("singularity", ["build", 
-        	"--force" if force else "", 
-         	image_path, fp])
+        utils.xrun(f"cd {directory} && singularity", ["pull", 
+        	"--force" if force else "", "--name", 
+         	name, fp])
 
     return 0
-
 
 class Container(object):
     def __init__(self, image, name,

@@ -170,8 +170,8 @@ def run(argv):
     add("-ms", "--msdir",
         help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
 
-    add("-j", "--ncores", type=int,
-        help="Number of cores to when stimela parallesization (stimea.utils.pper function) ")
+    add("-pf", "--pull-folder",
+        help="Folder to store singularity images.")
 
     add("script",
         help="Run script")
@@ -179,7 +179,7 @@ def run(argv):
     add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
         help="Global variables to pass to script. The type is assumed to string unless specified")
 
-    add("-jt", "--job-type", default="docker",
+    add("-jt", "--job-type", default="docker", choices = ["docker", "singularity", "podman"],
         help="Container technology to use when running jobs")
 
     add("-ll", "--log-level", default="INFO", choices=loglevels.upper().split() + loglevels.split(),
@@ -189,7 +189,9 @@ def run(argv):
 
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
-                    _STIMELA_LOG_LEVEL=args.log_level.upper())
+                    _STIMELA_JOB_TYPE=args.job_type.lower(),
+                    _STIMELA_LOG_LEVEL=args.log_level.upper(),
+                    _STIMELA_PULLFOLDER=args.pull_folder)
 
     nargs = len(args.globals)
 
@@ -207,8 +209,7 @@ def run(argv):
 
                 GLOBALS[key] = eval("{:s}('{:s}')".format(_type, value))
 
-    if args.ncores:
-        utils.CPUS = args.ncores
+    utils.CPUS = 1
 
     with open(args.script, 'r') as stdr:
         exec(stdr.read(), _globals)
@@ -274,7 +275,11 @@ def pull(argv):
         if cab in CAB:
             filename = "/".join([stimela.CAB_PATH, cab, "parameters.json"])
             param = utils.readJson(filename)
-            images_.append(":".join([param["base"], param["tag"]]))
+            tags = param["tag"]
+            if not isinstance(tags, list):
+                tags = [tags]
+            for tag in tags:
+                images_.append(":".join([param["base"], tag]))
 
     args.image = images_ or args.image
     if args.image:
@@ -298,7 +303,11 @@ def pull(argv):
         for cab_ in CAB:
             cabdir = "{:s}/{:s}".format(stimela.CAB_PATH, cab_)
             _cab = info(cabdir, display=False)
-            base.append(f"{_cab.base}:{_cab.tag}")
+            tags = _cab.tag
+            if not isinstance(tags, list):
+                tags = [tags]
+            for tag in tags:
+                base.append(f"{_cab.base}:{tag}")
         base = set(base)
 
         for image in base:

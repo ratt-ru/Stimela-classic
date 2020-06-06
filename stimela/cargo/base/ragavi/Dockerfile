@@ -11,10 +11,7 @@ RUN pip3 install -U pip setuptools \
     selenium \
     webdriverdownloader
 RUN pip3 install -I numpy
-# so we can use use e.g. docker build --build-arg SCABHA=git+https://github.com/ratt-ru/scabha.git@branch to
-# install from a dev version, instead of a release package
-ARG SCABHA=scabha
-RUN pip install $SCABHA
+RUN pip install scabha
 RUN webdriverdownloader firefox
 RUN ragavi-gains -h
 RUN ragavi-vis -h

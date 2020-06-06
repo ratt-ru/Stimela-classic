@@ -113,7 +113,7 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label='listobs:: some stats',
-            time_out=300, tag="0.3.0-1")
+            time_out=300)
 
         # It is common for the array to require a small amount of time to settle down at the start of a scan. Consequently, it has
         # become standard practice to flag the initial samples from the start
@@ -127,7 +127,7 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label='quack_flagging:: Quack flagging',
-            time_out=300, version="4.7.2")
+            time_out=300)
 
         # Flag the autocorrelations
         recipe.add("cab/politsiyakat_autocorr_amp", "flag_autopower", {

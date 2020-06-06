@@ -515,7 +515,7 @@ class Recipe(object):
 
         self.pid = os.getpid()
 
-        cmd_line_pf = script_context.get('_STIMELA_PULLFOLDER', None)
+        cmd_line_pf = self.stimela_context.get('_STIMELA_PULLFOLDER', None)
         self.singularity_image_dir = cmd_line_pf or singularity_image_dir or PULLFOLDER
         if self.singularity_image_dir and not self.JOB_TYPE:
             self.JOB_TYPE = "singularity"

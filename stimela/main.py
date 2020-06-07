@@ -232,7 +232,7 @@ def pull(argv):
 
     add("-s", "--singularity", action="store_true",
         help="Pull base images using singularity."
-        "Images will be pulled into the directory specified by the enviroment varaible, SINGULARITY_PULLFOLDER. $PWD by default")
+        "Images will be pulled into the directory specified by the enviroment varaible, STIMELA_PULLFOLDER. $PWD by default")
 
     add("-d", "--docker", action="store_true",
         help="Pull base images using docker.")
@@ -244,7 +244,7 @@ def pull(argv):
         help="Pull base image for specified cab")
 
     add("-pf", "--pull-folder",
-        help="Images will be placed in this folder. Else, if the environmnental variable 'SINGULARITY_PULLFOLDER' is set, then images will be placed there. "
+        help="Images will be placed in this folder. Else, if the environmnental variable 'STIMELA_PULLFOLDER' is set, then images will be placed there. "
         "Else, images will be placed in the current directory")
 
     args = parser.parse_args(argv)
@@ -253,7 +253,7 @@ def pull(argv):
         pull_folder = args.pull_folder
     else:
         try:
-            pull_folder = os.environ["SINGULARITY_PULLFOLDER"]
+            pull_folder = os.environ["STIMELA_PULLFOLDER"]
         except KeyError:
             pull_folder = "."
 

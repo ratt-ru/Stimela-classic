@@ -462,7 +462,7 @@ class Recipe(object):
         # Update I/O with values specified on command line
         self.indir = indir
         self.outdir = outdir
-        self.msdir = msdir or ms_dir
+        self.msdir = self.ms_dir = msdir or ms_dir
         self.loglevel = self.stimela_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
         self.JOB_TYPE = self.stimela_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 

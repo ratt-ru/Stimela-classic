@@ -431,6 +431,9 @@ class Recipe(object):
                  singularity_image_dir=None, JOB_TYPE='docker',
                  cabpath=None,
                  logger=None,
+                 msdir=None,
+                 indir=None,
+                 outdir=None,
                  log_dir=None, logfile=None, logfile_task=None,
                  cabspecs=None,
                  loglevel="INFO"):
@@ -453,17 +456,15 @@ class Recipe(object):
         """
         self.name = name
         self.name_ = re.sub(r'\W', '_', name)  # pausterized name
-        self.ms_dir = ms_dir
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
         self.stimela_path = os.path.dirname(docker.__file__)
         # Update I/O with values specified on command line
-        script_context = self.stimela_context
-        self.indir = script_context.get('_STIMELA_INPUT', None)
-        self.outdir = script_context.get('_STIMELA_OUTPUT', None)
-        self.msdir = script_context.get('_STIMELA_MSDIR', None)
-        self.loglevel = script_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
-        self.JOB_TYPE = script_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
+        self.indir = indir
+        self.outdir = outdir
+        self.msdir = self.ms_dir = msdir or ms_dir
+        self.loglevel = self.stimela_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
+        self.JOB_TYPE = self.stimela_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 
         self.cabpath = cabpath
         self.cabspecs = cabspecs or {}
@@ -514,7 +515,7 @@ class Recipe(object):
 
         self.pid = os.getpid()
 
-        cmd_line_pf = script_context.get('_STIMELA_PULLFOLDER', None)
+        cmd_line_pf = self.stimela_context.get('_STIMELA_PULLFOLDER', None)
         self.singularity_image_dir = cmd_line_pf or singularity_image_dir or PULLFOLDER
         if self.singularity_image_dir and not self.JOB_TYPE:
             self.JOB_TYPE = "singularity"
@@ -581,10 +582,13 @@ class Recipe(object):
         if callable(image):
             job.jtype = 'python'
         
+        _indir = self.stimela_context.get('_STIMELA_INPUT', input)
+        _outdir = self.stimela_context.get('_STIMELA_OUTPUT', output)
+        _msdir = self.stimela_context.get('_STIMELA_MSDIR', msdir)
         # The hirechy is command line, Recipe.add, and then Recipe
-        indir = self.indir or input
-        outdir = self.outdir or output
-        msdir = self.msdir or msdir or self.ms_dir
+        indir = _indir or self.indir
+        outdir = _outdir or self.outdir
+        msdir = _msdir or self.msdir
 
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,

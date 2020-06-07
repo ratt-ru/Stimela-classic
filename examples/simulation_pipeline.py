@@ -21,9 +21,13 @@ LSM = "nvss1deg.lsm.html"
 # Start stimela Recipe instance
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           ms_dir=MSDIR,
+                          indir=INPUT,
+                          outdir=OUTPUT,
                           singularity_image_dir=SINGULARTITY_IMAGE_DIR,
                           log_dir=os.path.join(OUTPUT, "logs"),
                           )
+
+pipeline.JOB_TYPE = "docker"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
@@ -38,12 +42,17 @@ pipeline.add("cab/simms",                   # Executor image to start container 
                 "dfreq":   "1MHz",                 # Channel width
                 "nchan":   1                       # Number of channels
              },
-             input=INPUT,                               # Input folder
-             output=OUTPUT,                             # Output folder
              label="Creating MS",                       # Process label
              cpus=2.5,
              memory_limit="2gb")
 
+pipeline.add("cab/casa_listobs", "obsinfo",
+        {
+            "vis" : MS,
+            "listfile" : MS + "-obsinfo.txt",
+            "overwrite": True,
+            }, 
+        label="obsinfo:: Observation information")
 
 # 2: Simulate visibilities into it
 pipeline.add("cab/simulator",
@@ -59,7 +68,6 @@ pipeline.add("cab/simulator",
                  "tile-size": 64,
                  "threads": 4,
              },
-             input=INPUT, output=OUTPUT,
              label="Simulating visibilities")
 
 
@@ -81,8 +89,6 @@ for i, robust in enumerate(briggs_robust):
                      # Perform 1000 iterarions of clean (Deconvolution)
                      "clean_iterations":   1000,
                  },
-                 input=INPUT,
-                 output=OUTPUT,
                  label="Imaging MS, robust={:d}".format(robust),
                  cpus=2,
                  memory_limit="2gb")
@@ -90,8 +96,6 @@ for i, robust in enumerate(briggs_robust):
 pipeline.add("cab/casa_rmtables", "delete_ms", {
     "tablenames": MS + ":msfile",
 },
-    input=INPUT,
-    output=OUTPUT,
     label="Remove MS")
 # Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
 # executed in the sequence that they were added

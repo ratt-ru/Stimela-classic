@@ -6,5 +6,5 @@ RUN docker-apt-install python3-casacore \
     wcslib-dev
 RUN pip install git+https://github.com/ratt-ru/shadeMS.git@auto-bounds
 RUN pip install git+https://github.com/o-smirnov/datashader
-RUN pip install -I numpy
+RUN pip install -I numpy scabha
 RUN shadems -h

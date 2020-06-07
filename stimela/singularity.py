@@ -12,6 +12,7 @@ import tempfile
 import hashlib
 from shutil import which
 
+log = stimela.logger()
 
 log = stimela.logger()
 

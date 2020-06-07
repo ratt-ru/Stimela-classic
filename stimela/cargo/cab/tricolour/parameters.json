@@ -1,7 +1,7 @@
 {
     "task": "tricolour", 
     "base": "stimela/tricolour", 
-    "tag": "1.4.5",
+    "tag": "1.5.0",
     "version" : "0.1.7",
     "description": "A variant of the Science Data Processing flagging code, wrapped in dask, operating on Measurement Sets", 
     "prefix": "--", 

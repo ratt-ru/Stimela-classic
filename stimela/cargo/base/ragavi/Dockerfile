@@ -11,6 +11,7 @@ RUN pip3 install -U pip setuptools \
     selenium \
     webdriverdownloader
 RUN pip3 install -I numpy
+RUN pip install scabha
 RUN webdriverdownloader firefox
 RUN ragavi-gains -h
 RUN ragavi-vis -h

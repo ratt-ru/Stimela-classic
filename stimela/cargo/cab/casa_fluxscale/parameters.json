@@ -2,13 +2,12 @@
   "task": "casa_fluxscale",
   "base": "stimela/casa",
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
+    "1.7.0-1"
   ],
   "description": "Bootstrap the flux density scale from standard calibrators",
   "prefix": "-",
   "binary": "fluxscale",
-  "junk": [],
+  "junk": ["fluxscale.last"],
   "msdir": true,
   "parameters": [
     {
@@ -81,10 +80,15 @@
       "name": "overwrite",
       "default": true,
       "dtype": "bool"
+    },
+    {
+        "info": "Output pickle file to save task result",
+        "name": "save_result",
+        "dtype": "file",
+        "io": "output"
     }
   ],
   "version": [
-    "4.7.2",
     "5.6.1-8"
   ]
 }

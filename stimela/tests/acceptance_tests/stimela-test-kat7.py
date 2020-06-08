@@ -259,6 +259,7 @@ class kat7_reduce(unittest.TestCase):
             "fluxtable": FLUXSCALE_TABLE,
             "reference": [BPCAL],
             "transfer": [GCAL],
+            "save_result" : "fluxinfo.pickle",
             "incremental": False,
         },
             input=INPUT,

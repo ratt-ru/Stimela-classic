@@ -7,7 +7,7 @@ from scabha import config, parse_parameters, prun
 # Other arguments not allowed to be lists.
 args = [config.binary] + parse_parameters(repeat=None,
                                           positional=["ms"], mandatory=["ms"],
-                                          repeat_dict={'iter-fields':True})
+                                          repeat_dict={'field-names':','})
 
 # run the command
 if prun(args) is not 0:

@@ -61,6 +61,9 @@ from .utils.logger import SelectiveFormatter, ColorizingFormatter, ConsoleColors
 
 log_console_handler = log_formatter = log_boring_formatter = log_colourful_formatter = None
 
+def is_logger_initialized():
+    return _logger is not None
+
 def logger(name="STIMELA", propagate=False, console=True, boring=False,
            fmt="{asctime} {name} {levelname}: {message}",
            col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),

@@ -33,7 +33,8 @@
             "dtype": "file", 
             "default": null, 
             "name": "listfile", 
-            "io": "output"
+            "io": "output",
+            "check_io": false,
         }, 
         {
             "info": "If True, tacitly overwrite listfile if it exists.", 

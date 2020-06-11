@@ -28,7 +28,8 @@
             "io": "output",
             "dtype": "file",
             "default": "lst-elev.png",
-            "name": "output-name"
+            "name": "output-name",
+            "check_io": false
         },
         {
             "info": "Display plot on screen",

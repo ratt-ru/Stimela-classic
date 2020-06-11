@@ -183,6 +183,12 @@
       "default": null,
       "name": "spwmap",
       "delimeter": ","
+    },
+    {
+        "name" : "save_result",
+        "dtype": "file",
+        "info" : "Save task output into a python pickle",
+        "io" : "output"
     }
   ]
 }

@@ -582,9 +582,9 @@ class Recipe(object):
         if callable(image):
             job.jtype = 'python'
         
-        _indir = self.stimela_context.get('_STIMELA_INPUT', input)
-        _outdir = self.stimela_context.get('_STIMELA_OUTPUT', output)
-        _msdir = self.stimela_context.get('_STIMELA_MSDIR', msdir)
+        _indir = self.stimela_context.get('_STIMELA_INPUT', None) or input
+        _outdir = self.stimela_context.get('_STIMELA_OUTPUT', None) or  output
+        _msdir = self.stimela_context.get('_STIMELA_MSDIR', None) or msdir
         # The hirechy is command line, Recipe.add, and then Recipe
         indir = _indir or self.indir
         outdir = _outdir or self.outdir

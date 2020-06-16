@@ -175,7 +175,7 @@
     }, 
     {
       "info": "Point source Stokes parameters for source model.", 
-      "dtype": "list:str", 
+      "dtype": ["list:str", "list:float"], 
       "default": null, 
       "name": "smodel"
     }, 

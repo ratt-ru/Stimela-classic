@@ -3,7 +3,7 @@
   "base": "stimela/casa", 
   "tag": [
     "0.3.0-2", 
-    "1.7.0-2"
+    "1.6.3"
   ], 
   "description": "Phase offsets, groups delays and delay rates are calculated with respect to a specified referance antenna by a two-dimensional FFT and subsequent least-squares optimisation.", 
   "prefix": "-", 

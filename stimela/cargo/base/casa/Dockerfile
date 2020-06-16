@@ -1,9 +1,11 @@
 FROM stimela/base:1.6.0
 ENV DIRCASA /casa
 RUN mkdir $DIRCASA
-ENV CASA_VERSION casa-release-5.6.0-60.el7
+#ENV CASA_VERSION casa-release-5.6.0-60.el7
+ENV CASA_VERSION casa-pipeline-release-5.6.1-8.el7
 ENV SUCASA ${DIRCASA}/${CASA_VERSION}
-ENV CASAURL https://casa.nrao.edu/download/distro/casa/release/el7/${CASA_VERSION}.tar.gz
+ENV CASAURL https://casa.nrao.edu/download/distro/casa-pipeline/release/el7/casa-pipeline-release-5.6.1-8.el7.tar.gz
+#ENV CASAURL https://casa.nrao.edu/download/distro/casa/release/el7/${CASA_VERSION}.tar.gz
 RUN curl -L -o ${SUCASA}.tar.gz $CASAURL
 RUN tar xzvf ${SUCASA}.tar.gz -C $DIRCASA
 RUN rm ${SUCASA}.tar.gz

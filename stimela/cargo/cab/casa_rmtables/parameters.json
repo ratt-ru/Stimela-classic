@@ -3,7 +3,7 @@
   "base": "stimela/casa", 
   "tag": [
     "0.3.0-2", 
-    "1.7.0-2"
+    "1.6.3"
   ], 
   "description": "This task removes tables if they are not being currently accessed via the casapy process. Note: if you have multiple sessions running bad things could happen if you remove a table being accessed by another process.", 
   "prefix": "-", 

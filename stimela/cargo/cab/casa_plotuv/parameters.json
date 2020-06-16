@@ -3,7 +3,7 @@
   "base": "stimela/casa", 
   "tag": [
     "0.3.0-2", 
-    "1.7.0-2"
+    "1.6.3"
   ], 
   "description": "Plot the uv distribution", 
   "prefix": "", 

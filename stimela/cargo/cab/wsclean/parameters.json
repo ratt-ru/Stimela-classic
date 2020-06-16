@@ -1,7 +1,7 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": ["1.6.0-1", "1.2.3", "1.6.0"],
+    "tag": ["1.6.0-1", "1.2.3", "1.6.3"],
     "description": "WSClean imaging software", 
     "version" : ["2.6", "2.8", "2.9"],
     "prefix": "-", 
@@ -297,7 +297,7 @@
         {
             "info": "Default: 'I'. Possible values: XX, XY, YX, YY, I, Q, U, V, RR, RL, LR or LL (case insensitive). Multiple values can be separated with commas, e.g.: 'xx,xy,yx,yy'. Two or four polarizations can be joinedly cleaned (see '-joinpolarizations'), but this is not the default. I, Q, U and V polarizations will be directly calculated from the visibilities, which is not appropriate for telescopes with non-orthogonal feeds, such as MWA and LOFAR. The 'xy' polarization will output both a real and an imaginary image, which allows calculating true Stokes polarizations for those telescopes.", 
             "dtype": [
-                "list:str", 
+                "str", 
                 "str"
             ], 
             "default": "I", 

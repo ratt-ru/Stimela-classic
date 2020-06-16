@@ -2,18 +2,13 @@ import numpy
 import os
 import sys
 from pyrap.tables import table
-import shlex
 import yaml
 import math
-import subprocess
-import glob
-import shutil
+import Cattery
+from scabha import config, parameters_dict, prun
 
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
 CODE = os.path.join(os.environ["STIMELA_MOUNT"], "code")
+CONFIG = os.environ["CONFIG"]
 
 def compute_vis_noise(msname, sefd, spw_id=0):
     """Computes nominal per-visibility noise"""
@@ -41,14 +36,11 @@ def compute_vis_noise(msname, sefd, spw_id=0):
 with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)
 
-_params = cab['parameters']
-junk = cab["junk"]
+_params = parameters_dict
 
 params = {}
 options = {}
-for param in _params:
-    value = param['value']
-    name = param['name']
+for name, value in _params.items():
 
     if value is None:
         continue
@@ -161,26 +153,17 @@ if field_center and skymodel:
 
 prefix = ['-s {}'.format(saveconf) if saveconf else ''] + \
     ["--mt {0} -c {1} [{2}]".format(threads, tdlconf, section)]
-suffix = ["%s/Siamese/turbo-sim.py =_simulate_MS" %
-          os.environ["MEQTREES_CATTERY_PATH"]]
+CATTERY_PATH = os.path.dirname(Cattery.__file__)
+suffix = ["%s/Siamese/turbo-sim.py =_simulate_MS" % CATTERY_PATH]
 
 args = []
-for key, value in options.iteritems():
+for key, value in options.items():
     if isinstance(value, str) and value.find(' ') > 0:
         value = '"{:s}"'.format(value)
     args.append('{0}={1}'.format(key, value))
 
-_runc = " ".join([cab['binary']] + prefix + args + suffix)
+_runc = " ".join([config.binary] + prefix + args + suffix)
+if prun(_runc) != 0:
+    sys.exit(0)
 
-try:
-    subprocess.check_call(shlex.split(_runc))
-finally:
-    for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
-            items = glob.glob("{dest}/{item}".format(**locals()))
-            for f in items:
-                if os.path.isfile(f):
-                    os.remove(f)
-                elif os.path.isdir(f):
-                    shutil.rmtree(f)
-                # Leave other types
+

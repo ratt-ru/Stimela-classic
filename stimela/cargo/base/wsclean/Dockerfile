@@ -33,4 +33,5 @@ RUN cd wsclean-2.9/build && \
     make -j 10 && \
     make install
 RUN ulimit -p 9000
+RUN pip install scabha
 RUN wsclean

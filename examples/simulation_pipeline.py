@@ -61,14 +61,25 @@ pipeline.add("cab/simulator",
                  "msname":   MS,
                  "skymodel":   LSM,                    # Sky model to simulate into MS
                  "addnoise":   True,                   # Add thermal noise to visibilities
-                 "column":   "CORRECTED_DATA",       # Simulated data will be saved in this column
+                 "column":   "DATA",
+                 "Gjones": True, # Simulated data will be saved in this column
                  "sefd":   831,                    # Compute noise from this SEFD
                  # Recentre sky model to phase tracking centre of MS
-                 "recenter":   True,
                  "tile-size": 64,
                  "threads": 4,
              },
              label="Simulating visibilities")
+
+pipeline.add("cab/calibrator",
+             "cal_example",
+             {
+                 "msname":   MS,
+                 "skymodel":   LSM,
+                 "tile-size": 64,
+                 "threads": 4,
+             },
+             label="Calibrating visibilities")
+
 
 
 # 3: Image
@@ -85,9 +96,10 @@ for i, robust in enumerate(briggs_robust):
                      "weight":   "briggs {:d}".format(robust),
                      "prefix":   "{:s}_robust-{:d}".format(PREFIX, robust),
                      "npix":   2048,                   # Image size in pixels
-                     "cellsize":   2,                      # Size of each square pixel
+                     "scale":   2,                      # Size of each square pixel
                      # Perform 1000 iterarions of clean (Deconvolution)
-                     "clean_iterations":   1000,
+                     "niter":   1000,
+                     "pol" : "I",
                  },
                  label="Imaging MS, robust={:d}".format(robust),
                  cpus=2,

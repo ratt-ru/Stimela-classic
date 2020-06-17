@@ -1,31 +1,33 @@
 {
-  "task": "casa_script",
-  "base": "stimela/casa",
+  "task": "casa_script", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Runs a user defined script within CASA",
-  "prefix": "",
-  "binary": "casa",
-  "junk": [],
-  "msdir": true,
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Runs a user defined script within CASA", 
+  "prefix": "", 
+  "binary": "casa", 
+  "junk": [
+    "casa.last"
+  ], 
+  "msdir": true, 
   "parameters": [
     {
-      "info": "MS to process",
-      "dtype": "file",
-      "name": "vis",
+      "info": "MS to process", 
+      "dtype": "file", 
+      "name": "vis", 
       "io": "msfile"
-    },
+    }, 
     {
-      "info": "Custom script (string) to run within CASA",
-      "default": "print(\"Hello CASA!\")",
-      "name": "script",
+      "info": "Custom script (string) to run within CASA", 
+      "default": "print(\"Hello CASA!\")", 
+      "name": "script", 
       "dtype": "str"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

@@ -1,71 +1,73 @@
 {
-  "task": "casa_makemask",
-  "base": "stimela/casa",
+  "task": "casa_makemask", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Makes and manipulates image masks",
-  "prefix": "-",
-  "junk": [],
-  "binary": "makemask",
-  "msdir": false,
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Makes and manipulates image masks", 
+  "prefix": "-", 
+  "junk": [
+    "makemask.last"
+  ], 
+  "binary": "makemask", 
+  "msdir": false, 
   "parameters": [
     {
-      "info": "Mask method",
-      "name": "mode",
-      "default": "copy",
-      "dtype": "str",
-      "required": true,
+      "info": "Mask method", 
+      "name": "mode", 
+      "default": "copy", 
+      "dtype": "str", 
+      "required": true, 
       "choices": [
-        "list",
-        "copy",
-        "expand",
-        "delete",
+        "list", 
+        "copy", 
+        "expand", 
+        "delete", 
         "setdefaultmask"
       ]
-    },
+    }, 
     {
-      "info": "Name of input image",
-      "name": "inpimage",
-      "io": "input",
-      "default": null,
-      "dtype": "file",
+      "info": "Name of input image", 
+      "name": "inpimage", 
+      "io": "input", 
+      "default": null, 
+      "dtype": "file", 
       "required": true
-    },
+    }, 
     {
-      "info": "Mask(s) to be processed: image masks,T/F internal masks(Need to include parent image",
-      "name": "inpmask",
-      "io": "input",
-      "default": null,
-      "dtype": "file",
+      "info": "Mask(s) to be processed: image masks,T/F internal masks(Need to include parent image", 
+      "name": "inpmask", 
+      "io": "input", 
+      "default": null, 
+      "dtype": "file", 
       "required": false
-    },
+    }, 
     {
-      "info": "Name of output mask (imagename or imagename:internal_maskname)",
-      "name": "output",
-      "io": "output",
-      "default": null,
-      "dtype": "str",
+      "info": "Name of output mask (imagename or imagename:internal_maskname)", 
+      "name": "output", 
+      "io": "output", 
+      "default": null, 
+      "dtype": "str", 
       "required": true
-    },
+    }, 
     {
-      "info": "overwrite output if exists",
-      "default": false,
-      "required": true,
-      "name": "overwrite",
+      "info": "overwrite output if exists", 
+      "default": false, 
+      "required": true, 
+      "name": "overwrite", 
       "dtype": "bool"
-    },
+    }, 
     {
-      "info": "Cut-off threshold to mask sources",
-      "dtype": "float",
-      "default": null,
-      "required": false,
+      "info": "Cut-off threshold to mask sources", 
+      "dtype": "float", 
+      "default": null, 
+      "required": false, 
       "name": "threshold"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

@@ -1,24 +1,22 @@
 {
-    "task": "casa_listobs", 
-    "base": "stimela/casa", 
-    "tag": [
-      "1.7.0"
-   ],
-    "version": [
-      "5.6.1-8"
-      ],
-    "description": "List the summary of a data set in the logger or in a file", 
-    "prefix": "-", 
-    "binary": "listobs", 
-    "junk":["listobs.last"],
-    "msdir": true,
-    "wranglers_demo": {
-        "PIPELINE CASA":        ["replace:MI CASA ES TU CASA", "ERROR"],
-       "[tT]elemetry":         "SUPPRESS",
-        "(Begin|End) Task:":    ["replace:Sisyphus, \\1 your task", "WARN"],
-        "End Task:":            ["DECLARE_FAILURE"]
-    },
-    "parameters": [
+  "task": "casa_listobs", 
+  "base": "stimela/casa", 
+  "tag": [
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "version": [
+    "4.7.2", 
+    "5.6.1-8"
+  ], 
+  "description": "List the summary of a data set in the logger or in a file", 
+  "prefix": "-", 
+  "binary": "listobs", 
+  "junk": [
+    "listobs.last"
+  ], 
+  "msdir": true, 
+  "parameters": [
         {
             "info": "Name of input visibility file", 
             "name": "msname", 
@@ -34,7 +32,7 @@
             "default": null, 
             "name": "listfile", 
             "io": "output",
-            "check_io": false,
+            "check_io": false
         }, 
         {
             "info": "If True, tacitly overwrite listfile if it exists.", 
@@ -134,4 +132,3 @@
         }
     ]
 }
-

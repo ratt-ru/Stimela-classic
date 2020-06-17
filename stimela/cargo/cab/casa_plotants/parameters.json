@@ -1,36 +1,36 @@
 {
-  "task": "casa_plotants",
-  "base": "stimela/casa",
+  "task": "casa_plotants", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Plot the antenna distribution in the local reference frame",
-  "prefix": "",
-  "binary": "plotants",
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Plot the antenna distribution in the local reference frame", 
+  "prefix": "", 
+  "binary": "plotants", 
   "junk": [
-    ".last"
-  ],
-  "msdir": true,
+    "plotants.last"
+  ], 
+  "msdir": true, 
   "parameters": [
     {
-      "info": "Name of measurement set",
-      "name": "msname",
-      "io": "msfile",
-      "default": null,
-      "dtype": "file",
+      "info": "Name of measurement set", 
+      "name": "msname", 
+      "io": "msfile", 
+      "default": null, 
+      "dtype": "file", 
       "mapping": "vis"
-    },
+    }, 
     {
-      "info": "Save the plotted figure to this file",
-      "default": null,
-      "name": "figfile",
-      "io": "output",
+      "info": "Save the plotted figure to this file", 
+      "default": null, 
+      "name": "figfile", 
+      "io": "output", 
       "dtype": "file"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

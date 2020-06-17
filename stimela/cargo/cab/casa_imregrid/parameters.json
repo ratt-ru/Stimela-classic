@@ -1,79 +1,81 @@
 {
-  "task": "casa_imregrid",
-  "base": "stimela/casa",
+  "task": "casa_imregrid", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.",
-  "prefix": " ",
-  "binary": "imregrid",
-  "junk": [],
-  "msdir": false,
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "All-purpose flagging task based on data-selections and flagging modes/algorithms.", 
+  "prefix": " ", 
+  "binary": "imregrid", 
+  "junk": [
+    "imregrid.last"
+  ], 
+  "msdir": false, 
   "parameters": [
     {
-      "info": "Name of the source image",
-      "dtype": "file",
-      "required": true,
-      "name": "imagename",
+      "info": "Name of the source image", 
+      "dtype": "file", 
+      "required": true, 
+      "name": "imagename", 
       "io": "input"
-    },
+    }, 
     {
-      "info": "A dictionary, refcode, or name of an image that provides the output shape and coordinate system",
-      "dtype": "file",
-      "required": true,
-      "name": "template",
+      "info": "A dictionary, refcode, or name of an image that provides the output shape and coordinate system", 
+      "dtype": "file", 
+      "required": true, 
+      "name": "template", 
       "io": "input"
-    },
+    }, 
     {
-      "info": "Name for the regridded image",
-      "dtype": "file",
-      "name": "output",
+      "info": "Name for the regridded image", 
+      "dtype": "file", 
+      "name": "output", 
       "io": "output"
-    },
+    }, 
     {
-      "info": "Regrid spectral axis in velocity space rather than frequency space?",
-      "dtype": "bool",
-      "default": true,
+      "info": "Regrid spectral axis in velocity space rather than frequency space?", 
+      "dtype": "bool", 
+      "default": true, 
       "name": "asvelocity"
-    },
+    }, 
     {
-      "info": "The pixel axes to regrid",
-      "dtype": "list:int",
+      "info": "The pixel axes to regrid", 
+      "dtype": "list:int", 
       "default": [
         -1
-      ],
+      ], 
       "name": "axes"
-    },
+    }, 
     {
-      "info": "The interpolation method",
-      "dtype": "str",
-      "default": "linear",
-      "name": "interpolation",
+      "info": "The interpolation method", 
+      "dtype": "str", 
+      "default": "linear", 
+      "name": "interpolation", 
       "choices": [
-        "nearest",
-        "linear",
+        "nearest", 
+        "linear", 
         "cubic"
       ]
-    },
+    }, 
     {
-      "info": "Decimation factor for coordinate grid computation",
-      "dtype": "int",
+      "info": "Decimation factor for coordinate grid computation", 
+      "dtype": "int", 
       "name": "decimate"
-    },
+    }, 
     {
-      "info": "Replicate image rather than regrid",
-      "dtype": "bool",
+      "info": "Replicate image rather than regrid", 
+      "dtype": "bool", 
       "name": "replicate"
-    },
+    }, 
     {
-      "info": "verwrite (unprompted) pre-existing output file",
-      "dtype": "bool",
+      "info": "verwrite (unprompted) pre-existing output file", 
+      "dtype": "bool", 
       "name": "overwrite"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

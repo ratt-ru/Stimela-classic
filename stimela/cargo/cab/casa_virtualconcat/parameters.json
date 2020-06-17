@@ -1,74 +1,74 @@
 {
-  "task": "casa_virtualconcat",
-  "base": "stimela/casa",
+  "task": "casa_virtualconcat", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Concatenate several visibility data sets",
-  "prefix": "",
-  "binary": "virtualconcat",
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Concatenate several visibility data sets", 
+  "prefix": "", 
+  "binary": "virtualconcat", 
   "junk": [
-    ".last"
-  ],
-  "msdir": true,
+    "virtualconcat.last"
+  ], 
+  "msdir": true, 
   "parameters": [
     {
-      "info": "Name of input visibility files",
-      "name": "msname",
-      "io": "msfile",
-      "dtype": "list:file",
-      "required": true,
+      "info": "Name of input visibility files", 
+      "name": "msname", 
+      "io": "msfile", 
+      "dtype": "list:file", 
+      "required": true, 
       "mapping": "vis"
-    },
+    }, 
     {
-      "info": "Name of output measurement set",
-      "check_io": false,
-      "name": "output-msname",
-      "io": "msfile",
-      "default": null,
-      "dtype": "file",
+      "info": "Name of output measurement set", 
+      "check_io": false, 
+      "name": "output-msname", 
+      "io": "msfile", 
+      "default": null, 
+      "dtype": "file", 
       "mapping": "concatvis"
-    },
+    }, 
     {
-      "info": "Frequency shift tolerance for considering data as the same spwid",
-      "default": null,
-      "name": "freqtol",
+      "info": "Frequency shift tolerance for considering data as the same spwid", 
+      "default": null, 
+      "name": "freqtol", 
       "dtype": "str"
-    },
+    }, 
     {
-      "info": "Direction shift tolerance for considering data as the same field",
-      "dtype": "str",
-      "default": null,
+      "info": "Direction shift tolerance for considering data as the same field", 
+      "dtype": "str", 
+      "default": null, 
       "name": "dirtol"
-    },
+    }, 
     {
-      "info": "If true, fields with a different name are not merged even if their direction agrees",
-      "dtype": "bool",
-      "default": false,
+      "info": "If true, fields with a different name are not merged even if their direction agrees", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "respectname"
-    },
+    }, 
     {
-      "info": "Copy all rows of the POINTING table",
-      "default": true,
-      "name": "copypointing",
+      "info": "Copy all rows of the POINTING table", 
+      "default": true, 
+      "name": "copypointing", 
       "dtype": "bool"
-    },
+    }, 
     {
-      "info": "List of the weight scaling factors to be applied to the individual MSs",
-      "default": null,
-      "name": "visweightscale",
+      "info": "List of the weight scaling factors to be applied to the individual MSs", 
+      "default": null, 
+      "name": "visweightscale", 
       "dtype": "list:float"
-    },
+    }, 
     {
-      "info": "If true, a copy of the input MSs is kept in their original place",
-      "default": null,
-      "name": "keepcopy",
+      "info": "If true, a copy of the input MSs is kept in their original place", 
+      "default": null, 
+      "name": "keepcopy", 
       "dtype": "bool"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

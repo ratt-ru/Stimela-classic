@@ -1,28 +1,8 @@
-import os
-import sys
-import logging
+# -*- coding: future_fstrings -*-
 import Crasa.Crasa as crasa
+from scabha import config, parameters_dict, prun
 
-sys.path.append("/scratch/stimela")
+print(f"Running CASA task '{config.binary}'")
 
-utils = __import__('utils')
-
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
-
-cab = utils.readJson(CONFIG)
-
-args = {}
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
-
-    if value is None:
-        continue
-
-    args[name] = value
-
-task = crasa.CasaTask(cab["binary"], **args)
+task = crasa.CasaTask(config.binary, **parameters_dict)
 task.run()

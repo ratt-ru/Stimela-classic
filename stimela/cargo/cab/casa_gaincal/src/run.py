@@ -1,50 +1,20 @@
-import os
-import sys
-import logging
+# -*- coding: future_fstrings -*-
 import Crasa.Crasa as crasa
-from casacore.tables import table
+from scabha import config, parameters_dict, prun
+from pyrap.tables import table
+import os
 import numpy
-import glob
-import yaml
-import shutil
 
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
+print(f"Running CASA task '{config.binary}'")
 
-with open(CONFIG, "r") as _std:
-    cab = yaml.safe_load(_std)
+save_result = parameters_dict.pop("save_result", None)
 
-junk = cab["junk"]
+task = crasa.CasaTask(config.binary, save_result=save_result, **parameters_dict)
+task.run()
 
-args = {}
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
-
-    if value is None:
-        continue
-
-    args[name] = value
-
-task = crasa.CasaTask(cab["binary"], **args)
-try:
-    task.run()
-finally:
-    for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
-            items = glob.glob("{dest}/{item}".format(**locals()))
-            for f in items:
-                if os.path.isfile(f):
-                    os.remove(f)
-                elif os.path.isdir(f):
-                    shutil.rmtree(f)
-                # Leave other types
-
-gtab = args["caltable"]
+gtab = parameters_dict["caltable"]
 if not os.path.exists(gtab):
-    raise RuntimeError("The gaintable was not created. Please refer to CASA {0:s} logfile for further details".format(cab["binary"]))
+    raise RuntimeError(f"The gaintable was not created. Please refer to CASA {config.binary} logfile for further details")
 
 tab = table(gtab)
 field_ids = numpy.unique(tab.getcol("FIELD_ID"))
@@ -54,12 +24,12 @@ tab = table(gtab+"::FIELD")
 field_names = tab.getcol("NAME")
 tab.close()
 
-field_in = args["field"].split(",")
+field_in = parameters_dict["field"].split(",")
 
 try:
-    ids = map(int, field_in)
+    ids = list(map(int, field_in))
 except ValueError:
-    ids = map(lambda a: field_names.index(a), field_in)
+    ids = list(map(lambda a: field_names.index(a), field_in))
 
 if not set(ids).issubset(field_ids):
-    raise RuntimeError("Some field(s) do not have solutions after the calibration. Please refer to CASA {0:s} logfile for further details".format(cab["binary"]))
+    raise RuntimeError(f"Some field(s) do not have solutions after the calibration. Please refer to CASA {config.binary} logfile for further details")

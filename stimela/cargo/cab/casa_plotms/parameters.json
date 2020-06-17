@@ -1,530 +1,530 @@
 {
-  "task": "casa_plotms",
-  "base": "stimela/casa",
+  "task": "casa_plotms", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "CASA plotms task",
-  "prefix": " ",
-  "binary": "plotms",
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "CASA plotms task", 
+  "prefix": " ", 
+  "binary": "plotms", 
   "junk": [
-    "*.last"
-  ],
-  "msdir": true,
+    "plotms.last"
+  ], 
+  "msdir": true, 
   "parameters": [
     {
-      "info": "MS name",
-      "name": "msname",
-      "io": "msfile",
-      "default": null,
-      "dtype": "file",
-      "required": true,
+      "info": "MS name", 
+      "name": "msname", 
+      "io": "msfile", 
+      "default": null, 
+      "dtype": "file", 
+      "required": true, 
       "mapping": "vis"
-    },
+    }, 
     {
-      "info": "Number of subplot rows (default 1).",
-      "dtype": "int",
-      "default": 1,
+      "info": "Number of subplot rows (default 1).", 
+      "dtype": "int", 
+      "default": 1, 
       "name": "gridrows"
-    },
+    }, 
     {
-      "info": "Number of subplot columns",
-      "dtype": "int",
-      "default": 1,
+      "info": "Number of subplot columns", 
+      "dtype": "int", 
+      "default": 1, 
       "name": "gridcols"
-    },
+    }, 
     {
-      "info": "Row location of the plot",
-      "dtype": "int",
-      "default": 0,
+      "info": "Row location of the plot", 
+      "dtype": "int", 
+      "default": 0, 
       "name": "rowindex"
-    },
+    }, 
     {
-      "info": "Column location of the plot",
-      "dtype": "int",
-      "default": 0,
+      "info": "Column location of the plot", 
+      "dtype": "int", 
+      "default": 0, 
       "name": "colindex"
-    },
+    }, 
     {
-      "info": "Index to address a subplot",
-      "dtype": "int",
-      "default": 0,
+      "info": "Index to address a subplot", 
+      "dtype": "int", 
+      "default": 0, 
       "name": "plotindex"
-    },
+    }, 
     {
-      "info": " plot x-axis (blank for default/current)",
-      "dtype": "str",
-      "default": null,
+      "info": " plot x-axis (blank for default/current)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "xaxis"
-    },
+    }, 
     {
-      "info": "Plot y-axis (blank for default/current)",
-      "dtype": "str",
-      "default": null,
+      "info": "Plot y-axis (blank for default/current)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "yaxis"
-    },
+    }, 
     {
-      "info": "which data column to use for Visibility values",
-      "dtype": "str",
-      "default": null,
+      "info": "which data column to use for Visibility values", 
+      "dtype": "str", 
+      "default": null, 
       "name": "xdatacolumn"
-    },
+    }, 
     {
-      "info": "which data column to use for Visibility values",
-      "dtype": "str",
-      "default": null,
+      "info": "which data column to use for Visibility values", 
+      "dtype": "str", 
+      "default": null, 
       "name": "ydatacolumn"
-    },
+    }, 
     {
-      "info": "Field names or field index numbers",
-      "dtype": "str",
-      "default": null,
+      "info": "Field names or field index numbers", 
+      "dtype": "str", 
+      "default": null, 
       "name": "field"
-    },
+    }, 
     {
-      "info": "Spectral windows:channels",
-      "dtype": "str",
-      "default": null,
+      "info": "Spectral windows:channels", 
+      "dtype": "str", 
+      "default": null, 
       "name": "spw"
-    },
+    }, 
     {
-      "info": "Time range (blank for all)",
-      "dtype": "str",
-      "default": null,
+      "info": "Time range (blank for all)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "timerange"
-    },
+    }, 
     {
-      "info": "Uv range (blank for all)",
-      "dtype": "str",
-      "default": null,
+      "info": "Uv range (blank for all)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "uvrange"
-    },
+    }, 
     {
-      "info": "Antenna/baselines (blank for all)",
-      "dtype": "str",
-      "default": null,
+      "info": "Antenna/baselines (blank for all)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "antenna"
-    },
+    }, 
     {
-      "info": "Scan numbers (blank for all)",
-      "dtype": "str",
-      "default": null,
+      "info": "Scan numbers (blank for all)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "scan"
-    },
+    }, 
     {
-      "info": "Correlations (blank for all)",
-      "dtype": "str",
-      "default": null,
+      "info": "Correlations (blank for all)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "correlation"
-    },
+    }, 
     {
-      "info": "(sub)array numbers (blank for all)",
-      "dtype": "str",
-      "default": null,
+      "info": "(sub)array numbers (blank for all)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "array"
-    },
+    }, 
     {
-      "info": "Select data",
-      "dtype": "bool",
-      "default": null,
+      "info": "Select data", 
+      "dtype": "bool", 
+      "default": null, 
       "name": "selectdata"
-    },
+    }, 
     {
-      "info": "Select by observation ID(s)",
-      "dtype": "str",
-      "default": null,
+      "info": "Select by observation ID(s)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "observation"
-    },
+    }, 
     {
-      "info": "MS selection (blank for all)",
-      "dtype": "str",
-      "default": null,
+      "info": "MS selection (blank for all)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "msselect"
-    },
+    }, 
     {
-      "info": "Average data",
-      "dtype": "bool",
-      "default": null,
+      "info": "Average data", 
+      "dtype": "bool", 
+      "default": null, 
       "name": "averagedata"
-    },
+    }, 
     {
-      "info": "Average over channel?  (blank = False, otherwise value in channels)",
-      "dtype": "str",
-      "default": null,
+      "info": "Average over channel?  (blank = False, otherwise value in channels)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "avgchannel"
-    },
+    }, 
     {
-      "info": "Average over time? (blank = False, otherwise value in seconds)",
-      "dtype": "str",
-      "default": null,
+      "info": "Average over time? (blank = False, otherwise value in seconds)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "avgtime"
-    },
+    }, 
     {
-      "info": "Only valid if time averaging is turned on.  average over scans?",
-      "dtype": "bool",
-      "default": false,
+      "info": "Only valid if time averaging is turned on.  average over scans?", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "avgscan"
-    },
+    }, 
     {
-      "info": "Only valid if time averaging is turned on.  average over fields?",
-      "dtype": "bool",
-      "default": false,
+      "info": "Only valid if time averaging is turned on.  average over fields?", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "avgfield"
-    },
+    }, 
     {
-      "info": "Average over all baselines?  (mutually exclusive with avgantenna)",
-      "dtype": "bool",
-      "default": false,
+      "info": "Average over all baselines?  (mutually exclusive with avgantenna)", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "avgbaseline"
-    },
+    }, 
     {
-      "info": "Average by per-antenna?  (mutually  exclusive with avgbaseline)",
-      "dtype": "bool",
-      "default": false,
+      "info": "Average by per-antenna?  (mutually  exclusive with avgbaseline)", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "avgantenna"
-    },
+    }, 
     {
-      "info": "Average over all spectral windows?",
-      "dtype": "bool",
-      "default": false,
+      "info": "Average over all spectral windows?", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "avgspw"
-    },
+    }, 
     {
-      "info": "Do scalar averaging?",
-      "dtype": "bool",
-      "default": false,
+      "info": "Do scalar averaging?", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "scalar"
-    },
+    }, 
     {
-      "info": "The frame in which to render frequency and velocity axes",
-      "dtype": "str",
-      "default": null,
+      "info": "The frame in which to render frequency and velocity axes", 
+      "dtype": "str", 
+      "default": null, 
       "name": "freqframe"
-    },
+    }, 
     {
-      "info": "Rest frequency to use for velocity  conversions",
-      "dtype": "str",
-      "default": null,
+      "info": "Rest frequency to use for velocity  conversions", 
+      "dtype": "str", 
+      "default": null, 
       "name": "restfreq"
-    },
+    }, 
     {
-      "info": "The definition in which to render velocity",
-      "dtype": "str",
-      "default": "RADIO",
+      "info": "The definition in which to render velocity", 
+      "dtype": "str", 
+      "default": "RADIO", 
       "name": "veldef"
-    },
+    }, 
     {
-      "info": "Adjust phases by this phase center shift [dx,dy] (arcsec)",
-      "dtype": "list:float",
+      "info": "Adjust phases by this phase center shift [dx,dy] (arcsec)", 
+      "dtype": "list:float", 
       "default": [
-        0.0,
+        0.0, 
         0.0
-      ],
+      ], 
       "name": "shift"
-    },
+    }, 
     {
-      "info": "Extend flags based on correlation?",
-      "dtype": "bool",
-      "default": false,
+      "info": "Extend flags based on correlation?", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "extcorr"
-    },
+    }, 
     {
-      "info": "Extend flags based on channel?",
-      "dtype": "bool",
-      "default": false,
+      "info": "Extend flags based on channel?", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "extchannel"
-    },
+    }, 
     {
-      "info": "the axis over which to iterate",
-      "dtype": "str",
-      "default": null,
-      "name": "iteraxis",
+      "info": "the axis over which to iterate", 
+      "dtype": "str", 
+      "default": null, 
+      "name": "iteraxis", 
       "choices": [
-        "scan",
-        "field",
-        "spw",
-        "baseline",
-        "antenna",
-        "time",
-        "corr",
+        "scan", 
+        "field", 
+        "spw", 
+        "baseline", 
+        "antenna", 
+        "time", 
+        "corr", 
         ""
       ]
-    },
+    }, 
     {
-      "info": "If true, iterated plots should share a common x-axis label per column.",
-      "dtype": "bool",
-      "default": false,
+      "info": "If true, iterated plots should share a common x-axis label per column.", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "xselfscale"
-    },
+    }, 
     {
-      "info": "If true, iterated plots should share a common y-axis label per row.",
-      "dtype": "bool",
-      "default": false,
+      "info": "If true, iterated plots should share a common y-axis label per row.", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "yselfscale"
-    },
+    }, 
     {
-      "info": "Plots should share a common x-axis.",
-      "dtype": "bool",
-      "default": false,
+      "info": "Plots should share a common x-axis.", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "xsharedaxis"
-    },
+    }, 
     {
-      "info": "Plots should share a common y-axis.",
-      "dtype": "bool",
-      "default": false,
+      "info": "Plots should share a common y-axis.", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "ysharedaxis"
-    },
+    }, 
     {
-      "info": "set a custom symbol(s) for unflagged points",
-      "dtype": "bool",
-      "default": false,
+      "info": "set a custom symbol(s) for unflagged points", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "customsymbol"
-    },
+    }, 
     {
-      "info": "shape of plotted unflagged symbols",
-      "dtype": "str",
-      "default": "autoscaling",
-      "name": "symbolshape",
+      "info": "shape of plotted unflagged symbols", 
+      "dtype": "str", 
+      "default": "autoscaling", 
+      "name": "symbolshape", 
       "choices": [
-        "autoscaling",
-        "circle",
-        "square",
-        "diamond",
-        "pixel",
+        "autoscaling", 
+        "circle", 
+        "square", 
+        "diamond", 
+        "pixel", 
         "nosymbol"
       ]
-    },
+    }, 
     {
-      "info": "size of plotted unflagged symbols",
-      "dtype": "int",
-      "default": 2,
+      "info": "size of plotted unflagged symbols", 
+      "dtype": "int", 
+      "default": 2, 
       "name": "symbolsize"
-    },
+    }, 
     {
-      "info": "color of plotted unflagged symbols",
-      "dtype": "str",
-      "default": "0000ff",
+      "info": "color of plotted unflagged symbols", 
+      "dtype": "str", 
+      "default": "0000ff", 
       "name": "symbolcolor"
-    },
+    }, 
     {
-      "info": "fill type of plotted unflagged symbols",
-      "dtype": "str",
-      "default": "fill",
-      "name": "symbolfill",
+      "info": "fill type of plotted unflagged symbols", 
+      "dtype": "str", 
+      "default": "fill", 
+      "name": "symbolfill", 
       "choices": [
-        "fill",
-        "mesh1",
-        "mesh2",
-        "mesh3",
+        "fill", 
+        "mesh1", 
+        "mesh2", 
+        "mesh3", 
         "nofill"
       ]
-    },
+    }, 
     {
-      "info": "selects outlining plotted unflagged points",
-      "dtype": "bool",
-      "default": false,
+      "info": "selects outlining plotted unflagged points", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "symboloutline"
-    },
+    }, 
     {
-      "info": "selects which data to use for colorizing",
-      "dtype": "str",
-      "default": null,
+      "info": "selects which data to use for colorizing", 
+      "dtype": "str", 
+      "default": null, 
       "name": "coloraxis"
-    },
+    }, 
     {
-      "info": "set a custom plot symbol for flagged points",
-      "dtype": "bool",
-      "default": false,
+      "info": "set a custom plot symbol for flagged points", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "customflaggedsymbol"
-    },
+    }, 
     {
-      "info": "shape of plotted flagged symbols",
-      "dtype": "str",
-      "default": "nosymbol",
-      "name": "flaggedsymbolshape",
+      "info": "shape of plotted flagged symbols", 
+      "dtype": "str", 
+      "default": "nosymbol", 
+      "name": "flaggedsymbolshape", 
       "choices": [
-        "autoscaling",
-        "circle",
-        "square",
-        "diamond",
-        "pixel",
+        "autoscaling", 
+        "circle", 
+        "square", 
+        "diamond", 
+        "pixel", 
         "nosymbol"
       ]
-    },
+    }, 
     {
-      "info": "size of plotted flagged symbols",
-      "dtype": "int",
-      "default": 2,
+      "info": "size of plotted flagged symbols", 
+      "dtype": "int", 
+      "default": 2, 
       "name": "flaggedsymbolsize"
-    },
+    }, 
     {
-      "info": "color of plotted flagged symbols",
-      "dtype": "str",
-      "default": "ff0000",
+      "info": "color of plotted flagged symbols", 
+      "dtype": "str", 
+      "default": "ff0000", 
       "name": "flaggedsymbolcolor"
-    },
+    }, 
     {
-      "info": "fill type of plotted flagged symbols",
-      "dtype": "str",
-      "default": "fill",
-      "name": "flaggedsymbolfill",
+      "info": "fill type of plotted flagged symbols", 
+      "dtype": "str", 
+      "default": "fill", 
+      "name": "flaggedsymbolfill", 
       "choices": [
-        "fill",
-        "mesh1",
-        "mesh2",
-        "mesh3",
+        "fill", 
+        "mesh1", 
+        "mesh2", 
+        "mesh3", 
         "nofill"
       ]
-    },
+    }, 
     {
-      "info": "selects outlining plotted flagged points",
-      "dtype": "bool",
-      "default": false,
+      "info": "selects outlining plotted flagged points", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "flaggedsymboloutline"
-    },
+    }, 
     {
-      "info": "plot axes ranges: [xmin,xmax,ymin,ymax]",
-      "dtype": "list:float",
-      "delimiter": ",",
-      "name": "plotrange",
+      "info": "plot axes ranges: [xmin,xmax,ymin,ymax]", 
+      "dtype": "list:float", 
+      "delimiter": ",", 
+      "name": "plotrange", 
       "default": null
-    },
+    }, 
     {
-      "info": "Title written along top of plot",
-      "dtype": "str",
-      "default": null,
+      "info": "Title written along top of plot", 
+      "dtype": "str", 
+      "default": null, 
       "name": "title"
-    },
+    }, 
     {
-      "info": "Text for horizontal axis. Blank for default.",
-      "dtype": "str",
-      "default": null,
+      "info": "Text for horizontal axis. Blank for default.", 
+      "dtype": "str", 
+      "default": null, 
       "name": "xlabel"
-    },
+    }, 
     {
-      "info": "Text for vertical axis. Blank for default.",
-      "dtype": "str",
-      "default": null,
+      "info": "Text for vertical axis. Blank for default.", 
+      "dtype": "str", 
+      "default": null, 
       "name": "ylabel"
-    },
+    }, 
     {
-      "info": "Show major grid lines (horiz and vert.)",
-      "dtype": "bool",
-      "default": false,
+      "info": "Show major grid lines (horiz and vert.)", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "showmajorgrid"
-    },
+    }, 
     {
-      "info": "Line width in pixels of major grid lines",
-      "dtype": "int",
-      "default": 0,
+      "info": "Line width in pixels of major grid lines", 
+      "dtype": "int", 
+      "default": 0, 
       "name": "majorwidth"
-    },
+    }, 
     {
-      "info": "Major grid line style: solid dash dot none",
-      "dtype": "str",
-      "default": null,
-      "name": "majorstyle",
+      "info": "Major grid line style: solid dash dot none", 
+      "dtype": "str", 
+      "default": null, 
+      "name": "majorstyle", 
       "choices": [
-        "solid",
-        "dash",
-        "dot",
+        "solid", 
+        "dash", 
+        "dot", 
         "more"
       ]
-    },
+    }, 
     {
-      "info": "Color as name or hex code of major grid lines",
-      "dtype": "str",
-      "default": null,
+      "info": "Color as name or hex code of major grid lines", 
+      "dtype": "str", 
+      "default": null, 
       "name": "majorcolor"
-    },
+    }, 
     {
-      "info": "Show minor grid lines (horiz and vert.)",
-      "dtype": "bool",
-      "default": false,
+      "info": "Show minor grid lines (horiz and vert.)", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "showminorgrid"
-    },
+    }, 
     {
-      "info": "Show a legend on the plot.",
-      "dtype": "bool",
-      "default": false,
+      "info": "Show a legend on the plot.", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "showlegend"
-    },
+    }, 
     {
-      "info": "Line width in pixels of minor grid lines",
-      "dtype": "int",
-      "default": 0,
+      "info": "Line width in pixels of minor grid lines", 
+      "dtype": "int", 
+      "default": 0, 
       "name": "minorwidth"
-    },
+    }, 
     {
-      "info": "Line width in pixels of minor grid lines",
-      "dtype": "str",
-      "default": null,
-      "name": "minorstyle",
+      "info": "Line width in pixels of minor grid lines", 
+      "dtype": "str", 
+      "default": null, 
+      "name": "minorstyle", 
       "choices": [
-        "solid",
-        "dash",
-        "dot",
+        "solid", 
+        "dash", 
+        "dot", 
         "more"
       ]
-    },
+    }, 
     {
-      "info": "Color as name or hex code of minor grid lines",
-      "dtype": "str",
-      "default": null,
+      "info": "Color as name or hex code of minor grid lines", 
+      "dtype": "str", 
+      "default": null, 
       "name": "minorcolor"
-    },
+    }, 
     {
-      "info": "Name of plot file to save automatically.",
-      "dtype": "file",
-      "default": null,
-      "name": "plotfile",
+      "info": "Name of plot file to save automatically.", 
+      "dtype": "file", 
+      "default": null, 
+      "name": "plotfile", 
       "io": "output"
-    },
+    }, 
     {
-      "info": "Remove any existing plots so new ones can replace them.",
-      "dtype": "bool",
-      "default": true,
+      "info": "Remove any existing plots so new ones can replace them.", 
+      "dtype": "bool", 
+      "default": true, 
       "name": "clearplots"
-    },
+    }, 
     {
-      "info": "Export format type (jpg, png, ps, pdf, txt), if not provided, plotfile extension will be used",
-      "dtype": "str",
-      "default": "png",
-      "name": "expformat",
+      "info": "Export format type (jpg, png, ps, pdf, txt), if not provided, plotfile extension will be used", 
+      "dtype": "str", 
+      "default": "png", 
+      "name": "expformat", 
       "choices": [
-        "png",
-        "jpg",
-        "pdf",
-        "ps",
+        "png", 
+        "jpg", 
+        "pdf", 
+        "ps", 
         "txt"
       ]
-    },
+    }, 
     {
-      "info": "Export all iteration plots or only the current one",
-      "dtype": "str",
-      "default": null,
-      "name": "exprange",
+      "info": "Export all iteration plots or only the current one", 
+      "dtype": "str", 
+      "default": null, 
+      "name": "exprange", 
       "choices": [
-        "all",
+        "all", 
         "current"
       ]
-    },
+    }, 
     {
-      "info": "Overwrite exsting file",
-      "dtype": "bool",
-      "default": false,
+      "info": "Overwrite exsting file", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "overwrite"
-    },
+    }, 
     {
-      "info": "Show gui",
-      "dtype": "bool",
-      "default": false,
+      "info": "Show gui", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "showgui"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

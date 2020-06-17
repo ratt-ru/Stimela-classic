@@ -1,78 +1,80 @@
 {
-  "task": "casa_gencal",
-  "base": "stimela/casa",
+  "task": "casa_gencal", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Specify Calibration Values of Various Types",
-  "prefix": " ",
-  "binary": "gencal",
-  "junk": [],
-  "msdir": true,
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Specify Calibration Values of Various Types", 
+  "prefix": " ", 
+  "binary": "gencal", 
+  "junk": [
+    "gencal.last"
+  ], 
+  "msdir": true, 
   "parameters": [
     {
-      "info": "Name of input visibility file",
-      "name": "msname",
-      "io": "msfile",
-      "dtype": "file",
-      "required": true,
+      "info": "Name of input visibility file", 
+      "name": "msname", 
+      "io": "msfile", 
+      "dtype": "file", 
+      "required": true, 
       "mapping": "vis"
-    },
+    }, 
     {
-      "info": "The new/existing calibration table",
-      "dtype": "file",
-      "default": null,
-      "name": "caltable",
+      "info": "The new/existing calibration table", 
+      "dtype": "file", 
+      "default": null, 
+      "name": "caltable", 
       "io": "output"
-    },
+    }, 
     {
-      "info": "The calibration type: 'amp','ph', 'sbd','mbd','antpos','antposvla','tsys''evlagain','opac','gc','gceff','eff'",
-      "dtype": "str",
-      "default": null,
-      "name": "caltype",
+      "info": "The calibration type: 'amp','ph', 'sbd','mbd','antpos','antposvla','tsys''evlagain','opac','gc','gceff','eff'", 
+      "dtype": "str", 
+      "default": null, 
+      "name": "caltype", 
       "choices": [
-        "amp",
-        "ph",
-        "sbd",
-        "mbd",
-        "antpos",
-        "antposvla",
-        "tsys",
-        "evlagain",
-        "opac",
-        "gc",
-        "gceff",
+        "amp", 
+        "ph", 
+        "sbd", 
+        "mbd", 
+        "antpos", 
+        "antposvla", 
+        "tsys", 
+        "evlagain", 
+        "opac", 
+        "gc", 
+        "gceff", 
         "eff"
       ]
-    },
+    }, 
     {
-      "info": "Calibration spw(s) selection",
-      "dtype": "str",
-      "default": null,
+      "info": "Calibration spw(s) selection", 
+      "dtype": "str", 
+      "default": null, 
       "name": "spw"
-    },
+    }, 
     {
-      "info": "Calibration antenna(s) selection",
-      "dtype": "str",
-      "default": null,
+      "info": "Calibration antenna(s) selection", 
+      "dtype": "str", 
+      "default": null, 
       "name": "antenna"
-    },
+    }, 
     {
-      "info": "Calibration polarizations(s) selection",
-      "dtype": "str",
-      "default": null,
+      "info": "Calibration polarizations(s) selection", 
+      "dtype": "str", 
+      "default": null, 
       "name": "pol"
-    },
+    }, 
     {
-      "info": "The calibration values",
-      "dtype": "list:float",
-      "default": null,
+      "info": "The calibration values", 
+      "dtype": "list:float", 
+      "default": null, 
       "name": "parameter"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

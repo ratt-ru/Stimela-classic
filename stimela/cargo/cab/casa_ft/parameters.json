@@ -1,78 +1,80 @@
 {
-  "task": "casa_ft",
-  "base": "stimela/casa",
+  "task": "casa_ft", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Insert a source model  a visibility set",
-  "prefix": "",
-  "binary": "ft",
-  "junk": [],
-  "msdir": true,
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Insert a source model  a visibility set", 
+  "prefix": "", 
+  "binary": "ft", 
+  "junk": [
+    "ft.last"
+  ], 
+  "msdir": true, 
   "parameters": [
     {
-      "info": "Name of input MS.  Output goes to vis + '.contsub' (will be overwritten if already exists)",
-      "name": "msname",
-      "io": "msfile",
-      "default": null,
-      "dtype": "file",
-      "required": true,
+      "info": "Name of input MS.  Output goes to vis + '.contsub' (will be overwritten if already exists)", 
+      "name": "msname", 
+      "io": "msfile", 
+      "default": null, 
+      "dtype": "file", 
+      "required": true, 
       "mapping": "vis"
-    },
+    }, 
     {
-      "info": "Select field(s) using id(s) or name(s)",
-      "dtype": "str",
-      "default": null,
+      "info": "Select field(s) using id(s) or name(s)", 
+      "dtype": "str", 
+      "default": null, 
       "name": "field"
-    },
+    }, 
     {
-      "info": "Spw selection",
-      "dtype": "str",
-      "default": null,
+      "info": "Spw selection", 
+      "dtype": "str", 
+      "default": null, 
       "name": "spw"
-    },
+    }, 
     {
-      "info": "Name of input model image(s)",
-      "dtype": "list:file",
-      "default": null,
-      "name": "model",
+      "info": "Name of input model image(s)", 
+      "dtype": "list:file", 
+      "default": null, 
+      "name": "model", 
       "io": "input"
-    },
+    }, 
     {
-      "info": "Number of terms used to model the sky frequency dependence",
-      "dtype": "int",
-      "default": 1,
+      "info": "Number of terms used to model the sky frequency dependence", 
+      "dtype": "int", 
+      "default": 1, 
       "name": "nterms"
-    },
+    }, 
     {
-      "info": " Reference frequency (e.g. '1.5e+9' or '1.5GHz')",
-      "dtype": "str",
-      "default": null,
+      "info": " Reference frequency (e.g. '1.5e+9' or '1.5GHz')", 
+      "dtype": "str", 
+      "default": null, 
       "name": "reffreq"
-    },
+    }, 
     {
-      "info": "Name of component list",
-      "dtype": "file",
-      "default": null,
-      "name": "complist",
+      "info": "Name of component list", 
+      "dtype": "file", 
+      "default": null, 
+      "name": "complist", 
       "io": "input"
-    },
+    }, 
     {
-      "info": "Add to the existing model visibility",
-      "dtype": "bool",
-      "default": null,
+      "info": "Add to the existing model visibility", 
+      "dtype": "bool", 
+      "default": null, 
       "name": "incremental"
-    },
+    }, 
     {
-      "info": "If True predicted  visibility  is stored in MODEL_DATA column",
-      "dtype": "bool",
-      "default": false,
+      "info": "If True predicted  visibility  is stored in MODEL_DATA column", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "usescratch"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

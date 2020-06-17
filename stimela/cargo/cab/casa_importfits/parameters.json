@@ -1,71 +1,73 @@
 {
-  "task": "casa_importfits",
-  "base": "stimela/casa",
+  "task": "casa_importfits", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Convert aFITS image to a CASA file",
-  "prefix": " ",
-  "binary": "importfits",
-  "junk": [],
-  "msdir": false,
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Convert aFITS image to a CASA file", 
+  "prefix": " ", 
+  "binary": "importfits", 
+  "junk": [
+    "importfits.last"
+  ], 
+  "msdir": false, 
   "parameters": [
     {
-      "info": "Name of input image FITS file",
-      "dtype": "file",
-      "required": true,
-      "name": "fitsimage",
+      "info": "Name of input image FITS file", 
+      "dtype": "file", 
+      "required": true, 
+      "name": "fitsimage", 
       "io": "input"
-    },
+    }, 
     {
-      "info": "Name of output CASA image",
-      "dtype": "file",
-      "required": true,
-      "name": "imagename",
+      "info": "Name of output CASA image", 
+      "dtype": "file", 
+      "required": true, 
+      "name": "imagename", 
       "io": "output"
-    },
+    }, 
     {
-      "info": "If fits image has multiple coordinate reps, choose one",
-      "dtype": "int",
+      "info": "If fits image has multiple coordinate reps, choose one", 
+      "dtype": "int", 
       "name": "whichrep"
-    },
+    }, 
     {
-      "info": "If its file contains multiple images, choose one (0 = first HDU, -1 = first valid image).",
-      "dtype": "int",
+      "info": "If its file contains multiple images, choose one (0 = first HDU, -1 = first valid image).", 
+      "dtype": "int", 
       "name": "whichhdu"
-    },
+    }, 
     {
-      "info": "Set blanked pixels to zero (not NaN)",
-      "dtype": "bool",
+      "info": "Set blanked pixels to zero (not NaN)", 
+      "dtype": "bool", 
       "name": "zeroblanks"
-    },
+    }, 
     {
-      "info": "Overwrite pre-existing imagename",
-      "dtype": "bool",
+      "info": "Overwrite pre-existing imagename", 
+      "dtype": "bool", 
       "name": "overwrite"
-    },
+    }, 
     {
-      "info": "List of values to assign to added degenerate axes defaultaxes==True (ra,dec,freq,stokes)",
+      "info": "List of values to assign to added degenerate axes defaultaxes==True (ra,dec,freq,stokes)", 
       "dtype": [
-        "list:str",
-        "list:float",
+        "list:str", 
+        "list:float", 
         "list:int"
-      ],
+      ], 
       "name": "defaultaxesvalues"
-    },
+    }, 
     {
-      "info": "List of values to be used to define the synthesized beam [BMAJ,BMIN,BPA] (as in the FITS keywords)",
+      "info": "List of values to be used to define the synthesized beam [BMAJ,BMIN,BPA] (as in the FITS keywords)", 
       "dtype": [
-        "list:str",
-        "list:float",
+        "list:str", 
+        "list:float", 
         "list:int"
-      ],
+      ], 
       "name": "beam"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

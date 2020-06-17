@@ -1,32 +1,14 @@
+# -*- coding: future_fstrings -*-
+import Crasa.Crasa as crasa
+from scabha import config, parameters_dict, prun
+from pyrap.tables import table
 import os
 import sys
-import logging
-import Crasa.Crasa as crasa
-import astropy.io.fits as pyfits
-import glob
-import yaml
-import shutil
+import numpy
 
+args = parameters_dict
 
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
-
-with open(CONFIG, "r") as _std:
-    cab = yaml.safe_load(_std)
-
-junk = cab["junk"]
-
-args = {}
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
-
-    if value is None:
-        continue
-
-    args[name] = value
+print(f"Running CASA task '{config.binary}'")
 
 noise_image = args.pop('noise_image', False)
 if noise_image:
@@ -39,24 +21,12 @@ if noise_image:
 else:
     args.pop('noise_sigma')
 
-
 prefix = args['imagename']
 port2fits = args.pop('port2fits', True)
 keep_casa_images = args.pop("keep_casa_images", False)
 
-task = crasa.CasaTask(cab["binary"], **args)
-try:
-    task.run()
-finally:
-    for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
-            items = glob.glob("{dest}/{item}".format(**locals()))
-            for f in items:
-                if os.path.isfile(f):
-                    os.remove(f)
-                elif os.path.isdir(f):
-                    shutil.rmtree(f)
-                # Leave other types
+task = crasa.CasaTask(config.binary, **args)
+task.run()
 
 nterms = args.get("nterms", 1)
 images = ["flux", "model", "residual", "psf", "image"]
@@ -92,18 +62,7 @@ for _image in convert:
     elif os.path.exists(_image):
         task = crasa.CasaTask(
             "exportfits", **dict(imagename=_image, fitsimage=_image+".fits", overwrite=True))
-        try:
-            task.run()
-        finally:
-            for item in junk:
-                for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
-                    items = glob.glob("{dest}/{item}".format(**locals()))
-                    for f in items:
-                        if os.path.isfile(f):
-                            os.remove(f)
-                        elif os.path.isdir(f):
-                            shutil.rmtree(f)
-                        # Leave other types
+        task.run()
 
 if not keep_casa_images:
     for _image in convert:

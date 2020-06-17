@@ -1,54 +1,54 @@
 {
-  "task": "casa_clearcal",
-  "base": "stimela/casa",
+  "task": "casa_clearcal", 
+  "base": "stimela/casa", 
   "tag": [
-    "0.3.0-1",
-    "1.2.6"
-  ],
-  "description": "Clears out calibrated data and resets previous predicted model",
-  "prefix": "-",
-  "binary": "clearcal",
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Clears out calibrated data and resets previous predicted model", 
+  "prefix": "-", 
+  "binary": "clearcal", 
   "junk": [
-    ".last"
-  ],
-  "msdir": true,
+    "clearcal.last"
+  ], 
+  "msdir": true, 
   "parameters": [
     {
-      "info": "Name of input visibility file",
-      "name": "msname",
-      "io": "msfile",
-      "default": null,
-      "dtype": "file",
-      "required": true,
+      "info": "Name of input visibility file", 
+      "name": "msname", 
+      "io": "msfile", 
+      "default": null, 
+      "dtype": "file", 
+      "required": true, 
       "mapping": "vis"
-    },
+    }, 
     {
-      "info": "Field names or field index numbers. ''==>all, field='0~2,3C286'",
-      "dtype": "str",
-      "default": null,
+      "info": "Field names or field index numbers. ''==>all, field='0~2,3C286'", 
+      "dtype": "str", 
+      "default": null, 
       "name": "field"
-    },
+    }, 
     {
-      "info": "spectral-window/frequency/channel",
-      "dtype": "str",
-      "default": null,
+      "info": "spectral-window/frequency/channel", 
+      "dtype": "str", 
+      "default": null, 
       "name": "spw"
-    },
+    }, 
     {
-      "info": "Select based on observing intent",
-      "dtype": "str",
-      "default": null,
+      "info": "Select based on observing intent", 
+      "dtype": "str", 
+      "default": null, 
       "name": "intent"
-    },
+    }, 
     {
-      "info": "Add MODEL_DATA scratch column",
-      "dtype": "bool",
-      "default": false,
+      "info": "Add MODEL_DATA scratch column", 
+      "dtype": "bool", 
+      "default": false, 
       "name": "addmodel"
     }
-  ],
+  ], 
   "version": [
-    "4.7.2",
+    "4.7.2", 
     "5.6.1-8"
   ]
 }

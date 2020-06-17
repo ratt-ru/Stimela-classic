@@ -3,29 +3,16 @@ import os
 import sys
 from pyrap.tables import table
 import subprocess
-import shlex
-import yaml
-import glob
-import shutil
+import Cattery
+from scabha import config, parameters_dict, prun, OUTPUT, log
 
-
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
 CODE = os.path.join(os.environ["STIMELA_MOUNT"], "code")
+CONFIG = os.environ["CONFIG"]
 
-with open(CONFIG, "r") as _std:
-    cab = yaml.safe_load(_std)
-
-binary = cab['binary']
-parameters = cab['parameters']
-junk = cab["junk"]
+binary = config.binary
 
 jdict = {}
-for param in parameters:
-    name = param['name']
-    value = param['value']
+for name, value in parameters_dict.items():
     if value is None:
         continue
     if value is False:
@@ -212,8 +199,8 @@ ifrjones_plotprefix = prefix+"-ifrjones_plots"
 def run_meqtrees(msname):
 
     prefix = ["--mt %d -c %s [%s]" % (THREADS, TDL, SECTION)]
-    suffix = ["%s/Calico/calico-stefcal.py =stefcal" %
-              os.environ["MEQTREES_CATTERY_PATH"]]
+    CATTERY_PATH = os.path.dirname(Cattery.__file__)
+    suffix = ["%s/Calico/calico-stefcal.py =stefcal" % CATTERY_PATH]
     options = {}
     options.update(params)
     if jdict.pop("add-vis-model", 0):
@@ -225,27 +212,28 @@ def run_meqtrees(msname):
         options["ms_sel.ms_taql_str"] = taql
 
     args = []
-    for key, value in options.iteritems():
+    for key, value in options.items():
         if isinstance(value, str) and value.find(' ') > 0:
             value = '"{:s}"'.format(value)
         args.append('{0}={1}'.format(key, value))
 
     args = prefix + args + suffix
 
-    _runc = " ".join([cab['binary']] + args + \
+    _runc = " ".join([binary] + args + \
             ['-s {}'.format(saveconf) if saveconf else ''])
-    subprocess.check_call(shlex.split(_runc))
+    if prun(_runc) !=0:
+        sys.exit(1)
 
-    print("MeqTrees Done!")
+    log.info("MeqTrees Done!")
     # now plot the gains
     if makeplots:
-        print("Preparing to make gain plots")
+        log.info("Preparing to make gain plots")
         import Owlcat.Gainplots as plotgains
         feed_tab = table(msname+"/FEED")
-        print("Extracting feed type from MS")
+        log.info("Extracting feed type from MS")
         feed_type = set(feed_tab.getcol("POLARIZATION_TYPE")['array'])
         feed_type = "".join(feed_type)
-        print("Feed type is [%s]" % feed_type)
+        log.info("Feed type is [%s]" % feed_type)
 
         if feed_type.upper() in ["XY", "YX"]:
             feed_type = "XY"
@@ -253,35 +241,23 @@ def run_meqtrees(msname):
             feed_type = "RL"
 
         if gjones:
-            print("Making Gain plots (G)...")
+            log.info("Making Gain plots (G)...")
             plotgains.make_gain_plots(
                 gjones_gains, prefix=gjones_plotprefix, feed_type=feed_type)
 
         if bjones:
-            print("Making Gain plots (B)...")
+            log.info("Making Gain plots (B)...")
             plotgains.make_gain_plots(
                 bjones_gains, gain_label='B', prefix=bjones_plotprefix, feed_type=feed_type)
 
         if ddjones:
-            print("Making differential gain plots...")
+            log.info("Making differential gain plots...")
             plotgains.make_diffgain_plots(
                 ddjones_gains, prefix=ddjones_plotprefix, feed_type=feed_type)
 
         if ifrjones:
-            print("Making IFR gain plots...")
+            log.info("Making IFR gain plots...")
             plotgains.make_ifrgain_plots(
                 ifrjones_gains, prefix=ifrjones_plotprefix, feed_type=feed_type)
 
-try:
-    run_meqtrees(msname)
-finally:
-    for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
-            items = glob.glob("{dest}/{item}".format(**locals()))
-            for f in items:
-                if os.path.isfile(f):
-                    os.remove(f)
-                elif os.path.isdir(f):
-                    shutil.rmtree(f)
-                # Leave other types
-
+run_meqtrees(msname)

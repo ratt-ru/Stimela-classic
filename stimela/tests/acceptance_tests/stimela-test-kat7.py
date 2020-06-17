@@ -250,7 +250,7 @@ class kat7_reduce(unittest.TestCase):
             output=OUTPUT,
             label="gaincal:: Gain calibration",
             time_out=300, 
-            version="5.6.1-8")
+            version=None)
 
         # Set fluxscale
         recipe.add('cab/casa_fluxscale', 'fluxscale', {

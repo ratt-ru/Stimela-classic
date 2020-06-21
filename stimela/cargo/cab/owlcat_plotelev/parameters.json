@@ -1,7 +1,7 @@
 {
     "task": "owlcat_plotelev",
     "base": "stimela/owlcat",
-    "tag": "1.2.6",
+    "tag": "1.6.4",
     "version" : "1.6.3",
     "description": "Plots elevation tracks from an measurement set",
     "prefix": "--",

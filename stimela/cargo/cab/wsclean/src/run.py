@@ -1,9 +1,27 @@
-# -*- coding: future_fstrings -*-
-import sys 
-from scabha import config, parameters_dict, prun
+import os
+import sys
+import re
+import yaml
+import subprocess
+import shlex
+import glob
 
+CONFIG = os.environ['CONFIG']
+INPUT = os.environ['INPUT']
+OUTPUT = os.environ['OUTPUT']
+MSDIR = os.environ['MSDIR']
+
+with open(CONFIG, "r") as _std:
+    cab = yaml.safe_load(_std)
+
+params = cab['parameters']
+junk = cab["junk"]
 args = []
-for name, value in parameters_dict.items():
+
+for param in params:
+    name = param['name']
+    value = param['value']
+
     if name == 'msname':
         if isinstance(value, str):
             mslist = value
@@ -21,28 +39,35 @@ for name, value in parameters_dict.items():
             value = '{0}asec'.format(value)
 
     elif name in 'size trim nwlayers-for-size beam-shape channel-range interval'.split():
-        if isinstance(value, (int, float)):
-            value = [value]*2
-        elif isinstance(value, list):
+        if isinstance(value, int):
+            value = '{0} {0}'.format(value)
+        elif hasattr(value, '__iter__'):
             if len(value) == 1:
-                value = value*2
+                value.append(value[0])
+            value = ' '.join(map(str, value))
+
+    elif name in 'spws multiscale-scales pol'.split():
+        if hasattr(value, '__iter__'):
+            value = ','.join(map(str, value))
 
     if value is True:
-        arg = [f'{config.prefix}{name}']
+        arg = '{0}{1}'.format(cab['prefix'], name)
     else:
-        if isinstance(value, list):
-            value = list(map(str, value))
-        elif isinstance(value, str):
-            value = value.split()
-        elif not isinstance(value, str):
-            value = [str(value)]
-        else:
-            value = [value]
-        arg = [f'{config.prefix}{name}' ] + value
+        arg = '{0}{1} {2}'.format(cab['prefix'], name, value)
 
-    args += arg
+    args.append(arg)
 
-args = [config.binary] + args + [mslist]
+_runc = " ".join([cab["binary"]] + args + [mslist])
 
-if prun(args) is not 0:
-    sys.exit(1)
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+                # Leave other types

@@ -27,7 +27,7 @@ pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           log_dir=os.path.join(OUTPUT, "logs"),
                           )
 
-pipeline.JOB_TYPE = "docker"
+#pipeline.JOB_TYPE = "docker"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
@@ -100,6 +100,8 @@ for i, robust in enumerate(briggs_robust):
                      # Perform 1000 iterarions of clean (Deconvolution)
                      "niter":   1000,
                      "pol" : "I",
+                     "multiscale": True,
+                     "multiscale-scales" : [0,2],
                  },
                  label="Imaging MS, robust={:d}".format(robust),
                  cpus=2,

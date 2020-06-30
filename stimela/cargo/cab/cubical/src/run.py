@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import glob
 import yaml
+import configparser
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
@@ -37,9 +38,21 @@ for param in cab['parameters']:
 
     args[name] = value
 
+
 # available jones terms
 joneses = "g b dd".split()
-soljones = args.pop("sol-jones")
+
+try:
+    soljones = args.pop("sol-jones")
+except:
+    config = configparser.SafeConfigParser(inline_comment_prefixes="#")
+    config.read(parset[0])
+    if 'jones' in config.options('sol'):
+        soljones = eval(config.get('sol', 'jones'), {}, {})
+    else:
+        soljones = 'g'
+    if type(soljones) is list:
+        soljones = " ".join(soljones)
 
 for jones in joneses:
     if jones.lower() not in soljones.lower():

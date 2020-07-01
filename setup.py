@@ -13,7 +13,7 @@ requirements = ["pyyaml",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.6.5"
+__version__ = "1.6.6"
 
 setup(name=PACKAGE_NAME,
       version=__version__,

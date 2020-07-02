@@ -48,9 +48,10 @@ except:
     config = configparser.SafeConfigParser(inline_comment_prefixes="#")
     config.read(parset[0])
     if 'jones' in config.options('sol'):
-        soljones = eval(config.get('sol', 'jones'), {}, {})
+        soljones = config.get('sol', 'jones')
+        soljones = soljones.strip("[]").replace(",", " ")
     else:
-        soljones = 'g'
+        soljones = 'g de'
     if type(soljones) is list:
         soljones = " ".join(soljones)
 

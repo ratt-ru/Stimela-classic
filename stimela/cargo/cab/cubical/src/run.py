@@ -1,29 +1,14 @@
+# -*- coding: future_fstrings -*-
 import os
 import sys
 import shlex
-import shutil
-import subprocess
-import glob
-import yaml
 import configparser
-
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-MSDIR = os.environ["MSDIR"]
-OUTPUT = os.environ["OUTPUT"]
-
-with open(CONFIG, "r") as _std:
-    cab = yaml.safe_load(_std)
-
-junk = cab["junk"]
+from scabha import config, parameters_dict, prun
 
 args = {}
 parset = []
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
-
+for name, value in parameters_dict.items():
     if value is None:
         continue
     elif value is False:
@@ -38,19 +23,19 @@ for param in cab['parameters']:
 
     args[name] = value
 
-
 # available jones terms
 joneses = "g b dd".split()
 
 try:
     soljones = args.pop("sol-jones")
 except KeyError:
-    config = configparser.SafeConfigParser(inline_comment_prefixes="#")
-    config.read(parset[0])
-    if 'jones' in config.options('sol'):
-        soljones = config.get('sol', 'jones')
+    conf = configparser.SafeConfigParser(inline_comment_prefixes="#")
+    conf.read(parset[0])
+    if 'jones' in conf.options('sol'):
+        soljones = conf.get('sol', 'jones')
+        soljones = soljones.strip("[]").replace(",", " ")
     else:
-        soljones = 'g'
+        soljones = 'g de'
     if type(soljones) is list:
         soljones = " ".join(soljones)
 
@@ -61,19 +46,14 @@ for jones in joneses:
         for item in list(jopts):
             del args[item]
 
-opts = ["{0:s}sol-jones {1:s}".format(cab["prefix"], soljones)] + \
-    ['{0}{1} {2}'.format(cab['prefix'], name, value)
+opts = ["{0:s}sol-jones {1:s}".format(config.prefix, soljones)] + \
+    ['{0}{1} {2}'.format(config.prefix, name, value)
      for name, value in args.items()]
 
-_runc = " ".join([cab["binary"]] + parset + opts)
-try:
-    subprocess.check_call(shlex.split(_runc))
-finally:
-    for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
-            items = glob.glob("{dest}/{item}".format(**locals()))
-            for f in items:
-                if os.path.isfile(f):
-                    os.remove(f)
-                elif os.path.isdir(f):
-                    shutil.rmtree(f)
+_runc = " ".join([config.binary] + parset + opts)
+
+argslist = shlex.split(_runc)
+
+# run the command
+if prun(argslist) is not 0:
+    sys.exit(1)

@@ -162,7 +162,7 @@ class mk_reduce(unittest.TestCase):
                    shared_memory="24gb",
                    time_out=1800)
 
-        recipe.add("cab/cubical", "cubical_cal",
+        recipe.add("cab/cubical", "cubical_cal2",
                    {
                        'data-ms': MS,
                        'data-column': "DATA",
@@ -188,6 +188,7 @@ class mk_reduce(unittest.TestCase):
                        'g-time-int': 20,
                        'g-max-iter': 10,
                        'sol-term-iters': 10,
+                       'out-overwrite' : True,
                        'g-update-type': "complex-2x2",
 
                    }, input=INPUT, output=OUTPUT,

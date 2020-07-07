@@ -3,6 +3,7 @@ import os
 import sys
 import shlex
 import configparser
+import ast
 from scabha import config, parameters_dict, prun
 
 args = {}
@@ -33,11 +34,14 @@ except KeyError:
     conf.read(parset[0])
     if 'jones' in conf.options('sol'):
         soljones = conf.get('sol', 'jones')
-        soljones = soljones.strip("[]").replace(",", " ")
+        if "[" in soljones:
+            soljones = ast.literal_eval(soljones)
+        else:
+            soljones = soljones.split(",")
     else:
-        soljones = 'g de'
+        soljones = ['g', 'de']
     if type(soljones) is list:
-        soljones = " ".join(soljones)
+        soljones = ",".join(soljones)
 
 for jones in joneses:
     if jones.lower() not in soljones.lower():

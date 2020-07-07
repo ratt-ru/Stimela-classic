@@ -34,7 +34,10 @@ except KeyError:
     conf.read(parset[0])
     if 'jones' in conf.options('sol'):
         soljones = conf.get('sol', 'jones')
-        soljones = ast.literal_eval(soljones)
+        if "[" in soljones:
+            soljones = ast.literal_eval(soljones)
+        else:
+            soljones = soljones.split(",")
     else:
         soljones = ['g', 'de']
     if type(soljones) is list:

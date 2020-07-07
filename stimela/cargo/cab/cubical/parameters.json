@@ -1,19 +1,27 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "1.5.4", 
+    "tag": "1.6.6", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--",
-    "version":"1.5.3",
+    "version":"1.5.4",
     "binary": "gocubical",
     "junk":["cubical.last", "montblanc.log"],
     "msdir": true, 
     "parameters": [
         {
+            "info": "Name of parset file", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "parset", 
+            "io": "input"
+        }, 
+        {
             "info": "Name of measurement set (MS)", 
             "dtype": "file", 
             "default": null, 
-            "name": "data-ms", 
+            "name": "data-ms",
+            "required" : true,
             "io": "msfile"
         }, 
         {
@@ -90,7 +98,6 @@
                 "str", 
                 "bool"
             ], 
-            "default": "auto", 
             "name": "model-ddes"
         }, 
         {
@@ -318,7 +325,6 @@
                 "list:int", 
                 "list:str"
             ], 
-            "default": [50], 
             "name": "sol-term-iters"
         }, 
         {
@@ -361,7 +367,6 @@
         {
             "info": "Compute suggested BBCs at end of run,\nand save them to the given database. It can be useful to have this always\nenabled, since the BBCs provide useful diagnostics of the solution quality\n(and are not actually applied without a load-from setting).", 
             "dtype": "file", 
-            "default": "{out[name]}-BBC-field_{sel[field]}-ddid_{sel[ddid]}.parmdb", 
             "name": "bbc-save-to", 
             "io": "output"
         }, 
@@ -428,7 +433,6 @@
         {
             "info": "Allow overwriting of existing output files. If this is set, and the output parset file exists, will raise an exception", 
             "dtype": "bool", 
-            "default": true, 
             "name": "out-overwrite"
         }, 
         {
@@ -482,19 +486,16 @@
         {
             "info": "Export gaintables to CASA caltable format. Tables are exported to same directory as set for cubical databases", 
             "dtype": "bool", 
-            "default": false, 
             "name": "out-casa-gaintables"
         }, 
         {
             "info": "Generate summary plots.", 
             "dtype": "bool", 
-            "default": true, 
             "name": "out-plots"
         }, 
         {
             "info": "Number of processes", 
             "dtype": "int", 
-            "default": 0, 
             "name": "dist-nworker"
         }, 
         {
@@ -2050,50 +2051,42 @@
         {
             "info": "Oversampling factor.",
             "dtype": "int",
-            "name": "degridding-OverS",
-            "default": 11
+            "name": "degridding-OverS"
         },
         {
             "info": "CF support size.",
             "dtype": "int",
-            "name": "degridding-Support",
-            "default": 7
+            "name": "degridding-Support"
         },
         {
             "info": "Number of w-planes.",
             "dtype": "int",
-            "name": "degridding-Nw",
-            "default": 100
+            "name": "degridding-Nw"
         },
         {
             "info": "Maximum w coordinate (meters). Visibilities with larger w will not be gridded. If 0, no maximum is imposed.",
             "dtype": "float",
-            "name": "degridding-wmax",
-            "default": 0
+            "name": "degridding-wmax"
         },
         {
             "info": "Facet padding factor.",
             "dtype": "float",
-            "name": "degridding-Padding",
-            "default": 1.7
+            "name": "degridding-Padding"
         },
         {
             "info": "Number of image bands for degridding. 0 means degrid each channel.",
             "dtype": "int",
-            "name": "degridding-NDegridBand",
-            "default": 16
+            "name": "degridding-NDegridBand"
         },
         {
             "info": "Maximum facet size in degrees",
             "dtype": "float",
-            "name": "degridding-MaxFacetSize",
-            "default": 0.25
+            "name": "degridding-MaxFacetSize"
         },
         {
             "info": "Minimum number of facets per direction",
             "dtype": "int",
-            "name": "degridding-MinNFacetPerAxis",
-            "default": 1
+            "name": "degridding-MinNFacetPerAxis"
         }
     ]
 }

@@ -1,7 +1,7 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.7.0",
+    "tag": "1.7.2",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-gains",
@@ -54,6 +54,12 @@
             "name": "ddid"
         },
         {
+            "info": "Enabling debugging messages",
+            "dtype": "bool",
+            "required": false,
+            "name": "debug"
+        },
+        {
             "info": "Plot amplitude & phase (ap) or real and imaginary (ri). Defaults to ap.",
             "name": "doplot",
             "dtype": "str",
@@ -61,7 +67,8 @@
             "default": "ap",
             "choices": [
                 "ap",
-                "ri"
+                "ri",
+                "all"
             ]
         },
         {
@@ -71,6 +78,12 @@
             ],
             "required": false,
             "name": "field"
+        },
+        {
+            "info": "File in which to store logs. Default is ragavi.log",
+            "dtype": "str",
+            "required": false,
+            "name": "logfile"
         },
         {
             "info": "Output HTML file name (with or without .html suffix)",

@@ -119,8 +119,18 @@
             "dtype": "str", 
             "default": null, 
             "name": "model-beam-m-axis"
-        }, 
-        {
+        },
+        {    
+            "info": "Apply parallactic angle rotation to model visibilities. Enable this for alt-azmounts, unless your model visibilities are already rotated.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "model-pa-rotate"
+        },                                                                              {
+            "info": "Apply a feed angle rotation to the model visibilities. Use 'auto' to read angles from FEED subtable, or give an explicit value in degrees.", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "model-feed-rotate"
+        },                                                                              {
             "info": "Use CPU or GPU for simulation.", 
             "dtype": "str", 
             "default": null, 
@@ -149,6 +159,18 @@
             "dtype": "str", 
             "default": null, 
             "name": "montblanc-verbosity"
+        }, 
+        {
+            "info": "Number of OMP threads to run. Note that --dist-pin-io overrides this, if set.If 0, uses default setting. ", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "montblanc-threads"
+        }, 
+        {
+            "info": "If not None, then overrides --model-pa-rotate setting to explicitly enable or disable parallactic angle rotation when computing Montblanc model visibilities. Ninja option.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "montblanc-pa-rotate"
         }, 
         {
             "info": "Column to read weights from. Weights are applied by default. Specify an\nempty string to disable.", 
@@ -492,6 +514,10 @@
             "info": "Generate summary plots.", 
             "dtype": "bool", 
             "name": "out-plots"
+        },                                                                              {
+            "info": " If direction-dependent gains are in use and correction is being done, selects direction to correct in. If -1, corrects only for the last direction-independent term. Set to 0 to avoid. ", 
+            "dtype": "int", 
+            "name": "out-correct-dir"
         }, 
         {
             "info": "Number of processes", 

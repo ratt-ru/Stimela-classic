@@ -214,6 +214,12 @@
             "name": "nwlayers-for-size"
         }, 
         {
+            "info": "Increase the number of w-layers by this factor.", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "nwlayers-factor"
+        }, 
+        {
             "info": "Perform inversion at the Nyquist resolution and upscale the image to the requested image size afterwards. This speeds up inversion considerably, but makes aliasing slightly worse. This effect is in most cases <1%", 
             "dtype": "bool", 
             "name": "nosmallinversion", 

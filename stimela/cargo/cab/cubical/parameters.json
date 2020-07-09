@@ -128,7 +128,7 @@
         },                                                                              {
             "info": "Apply a feed angle rotation to the model visibilities. Use 'auto' to read angles from FEED subtable, or give an explicit value in degrees.", 
             "dtype": "str", 
-            "default": null, 
+            "default": false, 
             "name": "model-feed-rotate"
         },                                                                              {
             "info": "Use CPU or GPU for simulation.", 

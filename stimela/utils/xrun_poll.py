@@ -24,7 +24,7 @@ def global_logger():
             log = logging.getLogger()
     return log
 
-class Poller(object):
+class SelectPoller(object):
     """Poller class. Poor man's select.poll(). Damn you OS/X and your select.poll will-you-won'y-you bollocks"""
     def __init__ (self, log):
         self.fdlabels = {}
@@ -66,6 +66,41 @@ class Poller(object):
     def unregister_file(self, fobj):
         if fobj.fileno() in self.fdlabels:
             del self.fdlabels[fobj.fileno()]
+
+    def __contains__(self, fobj):
+        return fobj.fileno() in self.fdlabels
+
+class Poller(object):
+    """Poller class. Wraps select.poll()."""
+    def __init__ (self, log):
+        self.fdlabels = {}
+        self.log = log
+        self.poll = select.poll()
+
+    def register_file(self, fobj, label):
+        self.fdlabels[fobj.fileno()] = label, fobj
+        self.poll.register(fobj.fileno(), select.POLLIN)
+
+    def register_process(self, po, label_stdout='stdout', label_stderr='stderr'):
+        self.fdlabels[po.stdout.fileno()] = label_stdout, po.stdout
+        self.fdlabels[po.stderr.fileno()] = label_stderr, po.stderr
+        self.poll.register(po.stdout.fileno(), select.POLLIN)
+        self.poll.register(po.stderr.fileno(), select.POLLIN)
+
+    def poll(self, timeout=5, verbose=False):
+        try:
+            to_read = [fd for (fd, _) in self.poll.poll(timeout)]
+            if verbose:
+                self.log.debug("poll(): ready to read: {}".format(to_read))
+            return [self.fdlabels[fd] for fd in to_read]
+        except Exception:
+            if verbose:
+                self.log.debug("poll() exception: {}".format(traceback.format_exc()))
+            raise
+
+    def unregister_file(self, fobj):
+        if fobj.fileno() in self.fdlabels:
+            self.poll.unregister(fobj.fileno())
 
     def __contains__(self, fobj):
         return fobj.fileno() in self.fdlabels

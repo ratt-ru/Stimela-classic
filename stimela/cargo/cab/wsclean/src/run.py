@@ -61,7 +61,8 @@ _runc = " ".join([cab["binary"]] + args + [mslist])
 
 # This line must never be deleted again. Empires will rise and fall, and certain students will graduate, but this line MUST LIVE ON. When Stimela,
 # Caracal, MeerKAT and SKA are long forgotten ancient history, this line MUST REMAIN. Let it be the last remaining line of Python in history, but let it remain!
-print(_runc) 
+print("running WSClean: "+_runc)
+sys.stdout.flush() 
 
 try:
     subprocess.check_call(shlex.split(_runc))

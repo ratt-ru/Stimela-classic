@@ -1,7 +1,7 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.7.2",
+    "tag": "dev",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-vis",
@@ -26,9 +26,13 @@
                 "antenna1", 
                 "antenna2", 
                 "amplitude",
+                "amp",
                 "channel",
+                "chan",
                 "frequency",
+                "freq",
                 "imaginary",
+                "imag",
                 "phase",
                 "real",
                 "scan", 
@@ -44,8 +48,10 @@
             "name": "yaxis",
             "default": null,
             "choices": [
-                "amplitude", 
-                "imaginary", 
+                "amplitude",
+                "amp",
+                "imaginary",
+                "imag",
                 "phase",
                 "real"
                 ]

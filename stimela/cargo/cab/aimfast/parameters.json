@@ -1,88 +1,106 @@
 {
     "task": "aimfast",
     "base": "stimela/aimfast",
-    "tag": "dev",
-    "description": "An Astronomical Image Fidelity Assessment Tool", 
-    "prefix": "--", 
-    "binary": "aimfast", 
+    "tag": "1.6.7",
+    "description": "An Astronomical Image Fidelity Assessment Tool",
+    "prefix": "--",
+    "binary": "aimfast",
     "junk":[],
-    "msdir": false, 
+    "msdir": false,
     "parameters": [
         {
-            "info": "Residual image to extract the four (4) statistical moments of distribution", 
-            "name": "residual-image", 
-            "io": "input", 
-            "default": null, 
-            "dtype": "file", 
+            "info": "Residual image to extract the statistical distribution of residual flux",
+            "name": "residual-image",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
             "required": false
-        }, 
+        },
         {
-            "info": "Model lsm.html/text file to extract peak source flux", 
-            "name": "tigger-model", 
-            "io": "input", 
-            "default": null, 
-            "dtype": "file", 
+            "info": "Model caltalog (lsm.html/text) file to extract peak source flux",
+            "name": "tigger-model",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
             "required": false
-        }, 
+        },
         {
-            "info": "Restored image to extract the dynamic range", 
-            "name": "restored-image", 
-            "io": "input", 
-            "default": null, 
-            "dtype": "file", 
+            "info": "Restored image to extract the dynamic range",
+            "name": "restored-image",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
             "required": false
-        }, 
+        },
         {
-            "info": "Source area multiplying factor i.e tot_area = psf-size*af", 
-            "default": 6, 
-            "required": false, 
-            "name": "area-factor", 
+            "info": "Factor to multiply the psf size to get peak source area (tot_area = psf-size*af)",
+            "default": 6,
+            "required": false,
+            "name": "area-factor",
             "dtype": "int"
-        }, 
+        },
         {
-            "info": "Name of the point spread function file or psf size in arcsec", 
-            "name": "psf", 
-            "io": "input", 
-            "default": null, 
+            "info": "Name of the point spread function file or psf size in arcsec",
+            "name": "psf",
+            "io": "input",
+            "default": null,
             "dtype": [
-                "float", 
+                "float",
                 "file"
-            ], 
-            "required": false, 
+            ],
+            "required": false,
             "mapping": "psf-file"
-        }, 
+        },
         {
-            "info": "Name of model to use for normality testing.", 
-            "name": "normality-test", 
-            "default": null, 
-            "dtype": "str", 
-            "required": false, 
+            "info": "Name of model to use for normality testing.",
+            "name": "normality-test",
+            "default": null,
+            "dtype": "str",
+            "required": false,
             "choices": [
-                "normaltest", 
+                "normaltest",
                 "shapiro"
             ]
-        }, 
+        },
         {
-            "info": "Label", 
-            "dtype": "str", 
+            "info": "Label",
+            "dtype": "str",
             "name": "label"
-        }, 
+        },
         {
-            "info": "Data range to perform normality testing", 
-            "default": null, 
-            "required": false, 
-            "name": "data-range", 
+            "info": "Data range to perform normality testing",
+            "default": null,
+            "required": false,
+            "name": "data-range",
             "dtype": "int"
-        }, 
+        },
         {
-            "info": "Tigger model (text/lsm.html) files to compare",
+            "info": "Source catalog (text/lsm.html) files to compare",
             "delimiter": " ",
             "name": "compare-models",
             "io": "output",
             "default": null,
             "dtype": "list:file",
             "required": false
-        }, 
+        },
+        {
+            "info": "List of restored image (fits) files to compare. Note that this will initially run a source finder.",
+            "delimiter": " ",
+            "name": "compare-images",
+            "io": "output",
+            "default": null,
+            "dtype": "list:file",
+            "required": false
+        },
+        {
+            "info": "List of catalog models files to compare with online catalog",
+            "delimiter": " ",
+            "name": "compare-online",
+            "io": "output",
+            "default": null,
+            "dtype": "list:file",
+            "required": false
+        },
         {
             "info": "Residual (fits) files to compare. e.g: ['res1.fits', 'res2.fits']",
             "delimiter": " ",
@@ -91,19 +109,12 @@
             "default": null,
             "dtype": "list:file",
             "required": false
-        }, 
+        },
         {
-            "info": "Phase tracking centre of the catalog. e.g: J2000.0,0.0deg,-30.0", 
-            "default": null, 
-            "required": false, 
-            "name": "phase-centre", 
-            "dtype": "str"
-        }, 
-        {
-            "info": "Data points to randomly sample the residual/noise image", 
-            "default": null, 
-            "required": false, 
-            "name": "data-points", 
+            "info": "Data points to randomly sample the residual/noise image",
+            "default": null,
+            "required": false,
+            "name": "data-points",
             "dtype": "int"
         },
         {
@@ -112,6 +123,25 @@
             "required": false,
             "name": "tolerance",
             "dtype": "float"
+        },
+        {
+            "info": "Number of decimal places to round off results",
+            "default": null,
+            "required": false,
+            "name": "decimals",
+            "dtype": "strt"
+        },
+        {
+            "info": "Type of plot for flux comparison of the two catalogs",
+            "default": null,
+            "required": false,
+            "name": "flux-plot",
+            "dtype": "strt",
+            "choices": [
+                "log",
+                "snr",
+                "inout"
+            ]
         },
         {
             "info": "Get stats of channels with pixel flux above thresh in Jy/Beam",
@@ -128,33 +158,11 @@
             "dtype": "str"
         },
         {
-            "info": "Window size to compute rms",
+            "info": "Name of the mask image fits file",
             "default": null,
             "required": false,
-            "name": "window-size",
-            "dtype": "int"
-        },
-        {
-            "info": "Step size of sliding window",
-            "default": null,
-            "required": false,
-            "name": "step-size",
-            "dtype": "int"
-        },
-        {
-            "info": "Name of the mask image fits file", 
-            "default": null, 
-            "required": false, 
-            "name": "mask-image", 
+            "name": "mask-image",
             "io": "input",
-            "dtype": "file"
-        },
-        {
-            "info": "Name of the mask image fits file", 
-            "default": null, 
-            "required": false, 
-            "name": "outfile", 
-            "io": "output",
             "dtype": "file"
         },
         {
@@ -165,6 +173,24 @@
             "dtype": "str"
         },
         {
+            "info": "Prefix of output catalog file name",
+            "default": null,
+            "required": false,
+            "name": "online-catalog-name",
+            "dtype": "str"
+        },
+        {
+            "info": "Online catalog to compare local image/model.",
+            "default": "nvss",
+            "required": false,
+            "name": "online-catalog",
+            "dtype": "str",
+            "choices": [
+                "nvss",
+                "sumss"
+            ]
+        },
+        {
             "info": "Factor to multiply the field of view for random points. i.e. 0.0-1.0'",
             "default": null,
             "required": false,
@@ -172,10 +198,59 @@
             "dtype": "float"
         },
         {
-            "info": "aimfast fidelity results file (JSON format)",
+            "info": "Use the closest source only when cross matching sources",
+            "default": null,
+            "required": false,
+            "name": "closest",
+            "dtype": "bool"
+        },
+        {
+            "info": "Compare all sources irrespective of shape, otherwise only point-like sources are compared",
+            "default": null,
+            "required": false,
+            "name": "all-sources",
+            "dtype": "bool"
+        },
+        {
+            "info": "Source finder to run if comparing restored images",
+            "default": null,
+            "required": false,
+            "name": "source-finder",
+            "dtype": "strt",
+            "choices": [
+                "aegean",
+                "pybdsf"
+            ]
+        },
+        {
+            "info": "Source finder parameter file",
+            "default": null,
+            "required": false,
+            "name": "config",
+            "io": "input",
+            "dtype": "file"
+        },
+        {
+            "info": "Source finder parameter file",
+            "default": null,
+            "required": false,
+            "name": "config",
+            "io": "input",
+            "dtype": "file"
+        },
+        {
+            "info": "Input aimfast fidelity results file (JSON format) to get plots",
             "default": null,
             "required": false,
             "name": "fidelity-results",
+            "io": "input",
+            "dtype": "file"
+        },
+        {
+            "info": "Name of output file name",
+            "default": null,
+            "required": false,
+            "name": "outfile",
             "io": "output",
             "dtype": "file"
         }

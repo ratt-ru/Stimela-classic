@@ -26,15 +26,21 @@ for param in cab['parameters']:
     elif value is False:
         continue
 
-    if 'compare' in name:
+    if name in ['compare-images', 'compare-residuals', 'compare-models']:
         compare = []
         for i, val in enumerate(value):
             compare.append(val)
             # Compare models/images in pairs
             if i%2:
                 args += ['{0}{1} {2}'.format(cab['prefix'],
-                                            name, " ".join(compare))]
+                                             name, " ".join(compare))]
                 compare = []
+    elif name in ['compare-online']:
+        compare = []
+        for i, val in enumerate(value):
+            compare.append(val)
+        args += ['{0}{1} {2}'.format(cab['prefix'],
+                                     name, " ".join(compare))]
     else:
         args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 

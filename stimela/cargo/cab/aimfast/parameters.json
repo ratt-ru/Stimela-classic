@@ -1,7 +1,7 @@
 {
     "task": "aimfast",
     "base": "stimela/aimfast",
-    "tag": "1.6.7",
+    "tag": "1.6.6",
     "description": "An Astronomical Image Fidelity Assessment Tool",
     "prefix": "--",
     "binary": "aimfast",
@@ -34,7 +34,7 @@
         },
         {
             "info": "Factor to multiply the psf size to get peak source area (tot_area = psf-size*af)",
-            "default": 6,
+            "default": null,
             "required": false,
             "name": "area-factor",
             "dtype": "int"
@@ -129,14 +129,14 @@
             "default": null,
             "required": false,
             "name": "decimals",
-            "dtype": "strt"
+            "dtype": "int"
         },
         {
             "info": "Type of plot for flux comparison of the two catalogs",
             "default": null,
             "required": false,
             "name": "flux-plot",
-            "dtype": "strt",
+            "dtype": "str",
             "choices": [
                 "log",
                 "snr",
@@ -181,7 +181,7 @@
         },
         {
             "info": "Online catalog to compare local image/model.",
-            "default": "nvss",
+            "default": null,
             "required": false,
             "name": "online-catalog",
             "dtype": "str",
@@ -216,7 +216,7 @@
             "default": null,
             "required": false,
             "name": "source-finder",
-            "dtype": "strt",
+            "dtype": "str",
             "choices": [
                 "aegean",
                 "pybdsf"

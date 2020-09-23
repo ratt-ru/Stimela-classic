@@ -58,7 +58,7 @@ with open(edited_file, "w") as f:
 
 _runc = "run_sharpener -c %s" % edited_file
 try:
-    subprocess.check_call(shelx.split(_runc))
+    subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

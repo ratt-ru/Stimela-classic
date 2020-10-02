@@ -71,6 +71,7 @@ class StimelaJob(object):
         self.recipe = recipe
         self.label = label or '{0}({1})'.format(name, id(name))
         self.log = recipe.log
+        self._log_fh = None
         self.active = False
         self.jtype = jtype  # ['docker', 'python', singularity']
         self.job = None
@@ -106,9 +107,9 @@ class StimelaJob(object):
                 log_dir = os.path.dirname(self.logfile) or "."
                 if not os.path.exists(log_dir):
                     os.mkdir(log_dir)
-                fh = logging.FileHandler(self.logfile, 'w', delay=True)
-                fh.setLevel(getattr(logging, loglevel))
-                self.log.addHandler(fh)
+                self._log_fh = logging.FileHandler(self.logfile, 'w', delay=True)
+                self._log_fh.setLevel(getattr(logging, loglevel))
+                self.log.addHandler(self._log_fh)
 
             self.log.propagate = True            # propagate also to main stimela logger
 
@@ -423,6 +424,14 @@ class StimelaJob(object):
             self.job.start(output_wrangler=self.apply_output_wranglers)
         return 0
 
+    def close(self):
+        """Call this to explicitly clean up after the job"""
+        if self._log_fh is not None:
+            self._log_fh.close()
+
+    def __del__(self):
+        self.close()
+
 
 class Recipe(object):
     def __init__(self, name, data=None,
@@ -473,6 +482,8 @@ class Recipe(object):
         self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_) \
             if logfile_task is None else logfile_task
 
+        self._log_fh = None
+
         if logger is not None:
             self.log = logger
         else:
@@ -496,10 +507,10 @@ class Recipe(object):
                     self.log.info('creating log directory {0:s}'.format(log_dir))
                     os.makedirs(log_dir)
 
-                fh = logging.FileHandler(logfile, 'w', delay=True)
-                fh.setLevel(getattr(logging, self.loglevel))
-                fh.setFormatter(stimela.log_formatter)
-                self.log.addHandler(fh)
+                self._log_fh = logging.FileHandler(logfile, 'w', delay=True)
+                self._log_fh.setLevel(getattr(logging, self.loglevel))
+                self._log_fh.setFormatter(stimela.log_formatter)
+                self.log.addHandler(self._log_fh)
 
         self.resume_file = '.last_{}.json'.format(self.name_)
         # set to default if not set
@@ -750,7 +761,15 @@ class Recipe(object):
 
         return 0
 
-    def __del__(self):
-        """Failsafe"""
+    def close(self):
+        """Call this to explicitly close the recipe and clean up. Don't call run() after close()!"""
+        for job in self.jobs:
+            job.close()
         if os.path.exists(self.workdir):
             shutil.rmtree(self.workdir)
+        if self._log_fh is not None:
+            self._log_fh.close()
+
+    def __del__(self):
+        """Failsafe"""
+        self.close()

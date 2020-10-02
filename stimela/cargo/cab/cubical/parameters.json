@@ -1,19 +1,27 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": "1.5.4", 
+    "tag": "1.6.7", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--",
-    "version":"1.5.3",
+    "version":"1.5.5",
     "binary": "gocubical",
     "junk":["cubical.last", "montblanc.log"],
     "msdir": true, 
     "parameters": [
         {
+            "info": "Name of parset file", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "parset", 
+            "io": "input"
+        }, 
+        {
             "info": "Name of measurement set (MS)", 
             "dtype": "file", 
             "default": null, 
-            "name": "data-ms", 
+            "name": "data-ms",
+            "required" : true,
             "io": "msfile"
         }, 
         {
@@ -90,7 +98,6 @@
                 "str", 
                 "bool"
             ], 
-            "default": "auto", 
             "name": "model-ddes"
         }, 
         {
@@ -112,8 +119,18 @@
             "dtype": "str", 
             "default": null, 
             "name": "model-beam-m-axis"
-        }, 
-        {
+        },
+        {    
+            "info": "Apply parallactic angle rotation to model visibilities. Enable this for alt-azmounts, unless your model visibilities are already rotated.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "model-pa-rotate"
+        },                                                                              {
+            "info": "Apply a feed angle rotation to the model visibilities. Use 'auto' to read angles from FEED subtable, or give an explicit value in degrees.", 
+            "dtype": "str", 
+            "default": false, 
+            "name": "model-feed-rotate"
+        },                                                                              {
             "info": "Use CPU or GPU for simulation.", 
             "dtype": "str", 
             "default": null, 
@@ -142,6 +159,18 @@
             "dtype": "str", 
             "default": null, 
             "name": "montblanc-verbosity"
+        }, 
+        {
+            "info": "Number of OMP threads to run. Note that --dist-pin-io overrides this, if set.If 0, uses default setting. ", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "montblanc-threads"
+        }, 
+        {
+            "info": "If not None, then overrides --model-pa-rotate setting to explicitly enable or disable parallactic angle rotation when computing Montblanc model visibilities. Ninja option.", 
+            "dtype": "bool", 
+            "default": null, 
+            "name": "montblanc-pa-rotate"
         }, 
         {
             "info": "Column to read weights from. Weights are applied by default. Specify an\nempty string to disable.", 
@@ -318,7 +347,6 @@
                 "list:int", 
                 "list:str"
             ], 
-            "default": [50], 
             "name": "sol-term-iters"
         }, 
         {
@@ -361,7 +389,6 @@
         {
             "info": "Compute suggested BBCs at end of run,\nand save them to the given database. It can be useful to have this always\nenabled, since the BBCs provide useful diagnostics of the solution quality\n(and are not actually applied without a load-from setting).", 
             "dtype": "file", 
-            "default": "{out[name]}-BBC-field_{sel[field]}-ddid_{sel[ddid]}.parmdb", 
             "name": "bbc-save-to", 
             "io": "output"
         }, 
@@ -428,7 +455,6 @@
         {
             "info": "Allow overwriting of existing output files. If this is set, and the output parset file exists, will raise an exception", 
             "dtype": "bool", 
-            "default": true, 
             "name": "out-overwrite"
         }, 
         {
@@ -482,19 +508,20 @@
         {
             "info": "Export gaintables to CASA caltable format. Tables are exported to same directory as set for cubical databases", 
             "dtype": "bool", 
-            "default": false, 
             "name": "out-casa-gaintables"
         }, 
         {
             "info": "Generate summary plots.", 
             "dtype": "bool", 
-            "default": true, 
             "name": "out-plots"
+        },                                                                              {
+            "info": " If direction-dependent gains are in use and correction is being done, selects direction to correct in. If -1, corrects only for the last direction-independent term. Set to 0 to avoid. ", 
+            "dtype": "int", 
+            "name": "out-correct-dir"
         }, 
         {
             "info": "Number of processes", 
             "dtype": "int", 
-            "default": 0, 
             "name": "dist-nworker"
         }, 
         {
@@ -2050,50 +2077,42 @@
         {
             "info": "Oversampling factor.",
             "dtype": "int",
-            "name": "degridding-OverS",
-            "default": 11
+            "name": "degridding-OverS"
         },
         {
             "info": "CF support size.",
             "dtype": "int",
-            "name": "degridding-Support",
-            "default": 7
+            "name": "degridding-Support"
         },
         {
             "info": "Number of w-planes.",
             "dtype": "int",
-            "name": "degridding-Nw",
-            "default": 100
+            "name": "degridding-Nw"
         },
         {
             "info": "Maximum w coordinate (meters). Visibilities with larger w will not be gridded. If 0, no maximum is imposed.",
             "dtype": "float",
-            "name": "degridding-wmax",
-            "default": 0
+            "name": "degridding-wmax"
         },
         {
             "info": "Facet padding factor.",
             "dtype": "float",
-            "name": "degridding-Padding",
-            "default": 1.7
+            "name": "degridding-Padding"
         },
         {
             "info": "Number of image bands for degridding. 0 means degrid each channel.",
             "dtype": "int",
-            "name": "degridding-NDegridBand",
-            "default": 16
+            "name": "degridding-NDegridBand"
         },
         {
             "info": "Maximum facet size in degrees",
             "dtype": "float",
-            "name": "degridding-MaxFacetSize",
-            "default": 0.25
+            "name": "degridding-MaxFacetSize"
         },
         {
             "info": "Minimum number of facets per direction",
             "dtype": "int",
-            "name": "degridding-MinNFacetPerAxis",
-            "default": 1
+            "name": "degridding-MinNFacetPerAxis"
         }
     ]
 }

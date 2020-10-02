@@ -7,7 +7,7 @@ RUN pip3 install -U pip setuptools \
     python-casacore
 RUN pip install numba==0.48
 RUN pip install scabha
-RUN pip install -I git+https://github.com/ratt-ru/ragavi.git@dev
+RUN pip install -I ragavi
 RUN ragavi-gains -h
 RUN ragavi-vis -h
 RUN ragavi-vis -v

@@ -344,6 +344,12 @@
       "name": "correlation"
     }, 
     {
+      "info": "Number of OMP threads to use (currently maximum limited by number of polarizations)", 
+      "dtype": "int", 
+      "default": null, 
+      "name": "nthreads"
+    }, 
+    {
       "info": "If practical, keep *completely flagged rows* instead of dropping them.", 
       "dtype": "bool", 
       "default": true, 

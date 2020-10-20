@@ -36,11 +36,8 @@ for param in cab['parameters']:
                                              name, " ".join(compare))]
                 compare = []
     elif name in ['compare-online']:
-        compare = []
-        for i, val in enumerate(value):
-            compare.append(val)
         args += ['{0}{1} {2}'.format(cab['prefix'],
-                                     name, " ".join(compare))]
+                                     name, " ".join(value))]
     else:
         args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 

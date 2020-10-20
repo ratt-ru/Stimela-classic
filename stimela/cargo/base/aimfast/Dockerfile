@@ -11,4 +11,4 @@ RUN docker-apt-install python3-pip \
                        pybdsf
 
 
-RUN pip3 install bdsf git+https://github.com/Athanaseus/aimfast.git@release_100
+RUN pip3 install bdsf aimfast

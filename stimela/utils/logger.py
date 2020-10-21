@@ -12,17 +12,15 @@ import logging
 
 class StimelaLogger(object):
     def __init__(self, lfile, jtype="docker"):
-
+        changed = False
         self.lfile = lfile
-        # Create file if it does not exist
-        if not os.path.exists(self.lfile):
-            with open(lfile, 'w') as wstd:
-                wstd.write('{}')
+        self.info = {}
 
-        self.info = self.read(lfile)
+        if os.path.exists(self.lfile):
+            self.info = self.read(lfile) or {}
+
         # First make sure that all fields are
         # initialised. Initialise if not so
-        changed = False
         for item in ['images', 'containers', 'processes']:
             if self.info.get(item, None) is None:
                 self.info[item] = {}

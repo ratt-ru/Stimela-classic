@@ -48,7 +48,8 @@ class Parameter(object):
                  choices=None,
                  io=None,
                  mapping=None,
-                 check_io=True):
+                 check_io=True,
+                 deprecated=False):
 
         self.name = name
         self.io = io
@@ -66,6 +67,7 @@ class Parameter(object):
         self.choices = choices or []
         self.mapping = mapping
         self.check_io = check_io
+        self.deprecated = deprecated
 
         self.value = None
 
@@ -177,7 +179,8 @@ class CabDefinition(object):
                                   mapping=param.get("mapping", None),
                                   required=param.get("required", False),
                                   choices=param.get("choices", False),
-                                  check_io=param.get("check_io", True))
+                                  check_io=param.get("check_io", True),
+                                  deprecated=param.get("deprecated", False))
                 self.parameters.append(addme)
 
         else:
@@ -296,6 +299,8 @@ class CabDefinition(object):
             for param in self.parameters:
                 if name in [param.name, param.mapping]:
                     found = True
+                    if param.deprecated:
+                        self.log.warning(f"Parameter {name} for cab {self.task} is deprecated, and will be removed in a future release")
                     if param.io:
                         if value is None:
                             continue

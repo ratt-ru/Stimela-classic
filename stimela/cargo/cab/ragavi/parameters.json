@@ -61,6 +61,12 @@
             "name": "field"
         },
         {
+            "info": "Type of gain table(s) to be plotted. Table type is auto-detected and will soon be deprecated.",
+            "dtype": "list:str",
+            "required": false,
+            "name": "gaintype"
+        },
+        {
             "info": "File in which to store logs. Default is ragavi.log",
             "dtype": "str",
             "required": false,
@@ -74,10 +80,16 @@
             "io": "output"
         },
         {
-            "info": "Choose an x-axis for the plots, otherwise an appropriate one will be chosen automatically.",
+            "info": "Choose an x-axis for the plots, otherwise an appropriate one will be chosen automatically. (Same as k-xaxis)",
             "dtype": "str",
             "required": false,
             "name": "xaxis",
+        },
+        {
+            "info": "Choose an x-axis for the plots, otherwise an appropriate one will be chosen automatically.(Same as x-axis)",
+            "dtype": "str",
+            "required": false,
+            "name": "k-xaxis",
         },
         {
             "info": "Static output file name (with suffix). The suffixes can be '.png' or '.svg' and will determine the output type.",

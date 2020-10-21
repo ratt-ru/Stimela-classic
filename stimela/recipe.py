@@ -11,7 +11,6 @@ import inspect
 import re
 from stimela.exceptions import *
 from stimela.dismissable import dismissable
-from stimela.main import get_cabs
 from stimela.cargo.cab import StimelaCabParameterError
 from datetime import datetime
 import traceback

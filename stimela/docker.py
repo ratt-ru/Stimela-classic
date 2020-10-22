@@ -87,8 +87,6 @@ class Container(object):
         self.PID = os.getpid()
         self.uptime = "00:00:00"
         self.time_out = time_out
-        self.cont_logger = utils.logger.StimelaLogger(
-            log_container or stimela.LOG_FILE, jtype="docker")
 
     def add_volume(self, host, container, perm="rw", noverify=False):
 
@@ -160,8 +158,6 @@ class Container(object):
         tstart = time.time()
         self.status = "running"
 
-        self.cont_logger.log_container(self.name)
-        self.cont_logger.write()
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
         utils.xrun("docker", ["start", "-a", self.name],
@@ -219,9 +215,6 @@ class Container(object):
         else:
             raise DockerError(
                 "Container [{}] has not been stopped, cannot remove".format(self.name))
-
-        self.cont_logger.remove('containers', self.name)
-        self.cont_logger.write()
 
     def _print(self, message):
         if self.logger:

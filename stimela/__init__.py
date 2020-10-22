@@ -24,12 +24,6 @@ root = os.path.dirname(__file__)
 CAB_PATH = os.path.join(root, "cargo/cab")
 BASE_PATH = os.path.join(root, "cargo/base")
 
-# Set up logging infrastructure
-LOG_HOME = os.path.expanduser("~/.stimela")
-# make sure directory exists
-Path(LOG_HOME).mkdir(exist_ok=True)
-# This is is the default log file. It logs stimela images, containers and processes
-LOG_FILE = "{0:s}/stimela_logfile.json".format(LOG_HOME)
 
 GLOBALS = {'foo': 'bar'}
 del GLOBALS['foo']

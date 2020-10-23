@@ -5,9 +5,9 @@ RUN apt-get update
 RUN pip3 install -U pip setuptools \
     pyyaml \
     python-casacore
-RUN pip install ragavi
 RUN pip install numba==0.48
 RUN pip install scabha
+RUN pip install -I ragavi
 RUN ragavi-gains -h
 RUN ragavi-vis -h
 RUN ragavi-vis -v

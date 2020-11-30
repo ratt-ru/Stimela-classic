@@ -1,7 +1,7 @@
 {
     "task": "rmsynth1d", 
-    "base": "stimela/casa", 
-    "tag": "1.6.9",
+    "base": "stimela/rm-tools", 
+    "tag": "1.6.9-1",
     "version": "1.0.7",
     "description": "Run RM-synthesis on Stokes I, Q and U spectra (1D) stored in an ASCII file. The Stokes I spectrum is first fit with a polynomial and the resulting model used to create fractional q = Q/I and u = U/I spectra. The ASCII file should the following columns, in a space separated format: \n [freq_Hz, I, Q, U, I_err, Q_err, U_err] \n OR \n [freq_Hz, Q, U, Q_err, U_err] \n To get outputs, one or more of the following flags must be set: -S, -p, -v.",
     "prefix": "-",

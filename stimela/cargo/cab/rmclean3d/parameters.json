@@ -1,7 +1,7 @@
 {
     "task": "rmclean3d", 
     "base": "stimela/rm-tools", 
-    "tag": "1.6.9",
+    "tag": "1.6.9-1",
     "version": "1.0.7",
     "description": "Run RM-CLEAN on a cube of Faraday dispersion functions (FDFs), applying \n a cube of rotation measure spread functions created by the script \n 'do_RMsynth_3D.py'. Saves cubes of deconvolved FDFs & clean-component\n spectra, and a pixel map showing the number of iterations performed.\n Set any of the multiprocessing options to enable parallelization\n (otherwise, pixels will be processed serially).\n  Expects that the input is in the form of the Stokes-separated\n (single extension) FITS cubes produced by do_RMsynth_3D.",
     "prefix": "-",

@@ -204,6 +204,9 @@ def pull(argv):
 
     add = parser.add_argument
 
+    add("-r", "--repository", default="quay.io",
+        help="Repository from which to pull docker images. The default repository is quay.io")
+        
     add("-im", "--image", nargs="+", metavar="IMAGE[:TAG]",
         help="Pull base image along with its tag (or version). Can be called multiple times")
 
@@ -246,8 +249,6 @@ def pull(argv):
     else:
         jtype = "docker"
 
-
-
     images_ = []
     for cab in args.cab_base or []:
         if cab in CAB:
@@ -262,17 +263,15 @@ def pull(argv):
     args.image = images_ or args.image
     if args.image:
         for image in args.image:
-            simage = image.replace("/", "_")
-            simage = simage.replace(":", "_") + singularity.suffix
             if args.singularity:
+                simage = image.replace("/", "_")
+                simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
-            elif args.docker:
-                docker.pull(image)
             elif args.podman:
                 podman.pull(image)
             else:
-                docker.pull(image)
+                docker.pull("/".join([args.repository, image]), force=args.force)
     else:
         base = []
         for cab_ in CAB:
@@ -291,194 +290,10 @@ def pull(argv):
                 simage = simage.replace(":", "_") + singularity.suffix
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
-            elif args.docker:
-                docker.pull(image, force=args.force)
             elif args.podman:
                 podman.pull(image, force=args.force)
             else:
-                docker.pull(image, force=args.force)
-
-
-# def images(argv):
-#     for i, arg in enumerate(argv):
-#         if (arg[0] == '-') and arg[1].isdigit():
-#             argv[i] = ' ' + arg
-
-#     parser = ArgumentParser(description='List all stimela related images.')
-
-#     add = parser.add_argument
-
-#     add("-c", "--clear", action="store_true",
-#         help="Clear the logfile that keeps track of stimela images. This does not do anythig to the images.")
-
-#     args = parser.parse_args(argv)
-
-#     log = logger.StimelaLogger(LOG_FILE)
-#     log.display('images')
-
-#     if args.clear:
-#         log.clear('images')
-#         log.write()
-
-
-# def containers(argv):
-#     for i, arg in enumerate(argv):
-#         if (arg[0] == '-') and arg[1].isdigit():
-#             argv[i] = ' ' + arg
-
-#     parser = ArgumentParser(description='List all active stimela containers.')
-
-#     add = parser.add_argument
-
-#     add("-c", "--clear", action="store_true",
-#         help="Clear the log file that keeps track of stimela containers. This doesn't do anything to the containers.")
-
-#     args = parser.parse_args(argv)
-
-#     log = logger.StimelaLogger(LOG_FILE)
-#     log.display('containers')
-#     if args.clear:
-#         log.clear('containers')
-#         log.write()
-
-
-# def ps(argv):
-#     for i, arg in enumerate(argv):
-#         if (arg[0] == '-') and arg[1].isdigit():
-#             argv[i] = ' ' + arg
-
-#     parser = ArgumentParser(description='List all running stimela processes')
-
-#     add = parser.add_argument
-
-#     add("-c", "--clear", action="store_true",
-#         help="Clear logfile that keeps track of stimela processes. This doesn't do anything ot the processes themselves.")
-
-#     args = parser.parse_args(argv)
-
-#     log = logger.StimelaLogger(LOG_FILE)
-#     log.display('processes')
-#     if args.clear:
-#         log.clear('processes')
-#         log.write()
-
-
-# def kill(argv):
-#     for i, arg in enumerate(argv):
-#         if (arg[0] == '-') and arg[1].isdigit():
-#             argv[i] = ' ' + arg
-
-#     parser = ArgumentParser(description='Gracefully kill stimela process(s).')
-
-#     add = parser.add_argument
-
-#     add("pid", nargs="*",
-#         help="Process ID")
-
-#     args = parser.parse_args(argv)
-
-#     log = logger.StimelaLogger(LOG_FILE)
-
-#     for pid in args.pid:
-
-#         found = pid in log.info['processes'].keys()
-
-#         if not found:
-#             print("Could not find process {0}".format(pid))
-#             continue
-
-#         try:
-#             os.kill(int(pid), signal.SIGINT)
-#         except OSError:
-#             raise OSError(
-#                 'Process with PID {} could not be killed'.format(pid))
-
-#         log.remove('processes', pid)
-#     log.write()
-
-
-# def clean(argv):
-#     for i, arg in enumerate(argv):
-#         if (arg[0] == '-') and arg[1].isdigit():
-#             argv[i] = ' ' + arg
-
-#     parser = ArgumentParser(
-#         description='Convience tools for cleaning up after stimela')
-#     add = parser.add_argument
-
-#     add("-ai", "--all-images", action="store_true",
-#         help="Remove all images pulled/built by stimela. This include CAB images")
-
-#     add("-ab", "--all-base", action="store_true",
-#         help="Remove all base images")
-
-#     add("-ac", "--all-cabs", action="store_true",
-#         help="Remove all CAB images")
-
-#     add("-aC", "--all-containers", action="store_true",
-#         help="Stop and/or Remove all stimela containers")
-
-#     add("-bl", "--build-label", default=CAB_USERNAME,
-#         help="Label for cab images. All cab images will be named <CAB_LABEL>_<cab name>. The default is $USER")
-
-#     args = parser.parse_args(argv)
-
-#     log = logger.StimelaLogger(LOG_FILE)
-#     log_cabs = logger.StimelaLogger('{0:s}/{1:s}_stimela_logfile.json'.format(LOG_HOME,
-#                                                                               args.build_label))
-
-#     if args.all_images:
-#         images = log.info['images'].keys()
-#         images = log_cabs.info['images'].keys()
-#         for image in images:
-#             utils.xrun('docker', ['rmi', image])
-#             log.remove('images', image)
-#             log.write()
-
-#         images = log_cabs.info['images'].keys()
-#         for image in images:
-#             if log_cabs.info['images'][image]['CAB']:
-#                 utils.xrun('docker', ['rmi', image])
-#                 log_cabs.remove('images', image)
-#                 log_cabs.write()
-
-#     if args.all_base:
-#         images = list(log.info['images'].keys())
-#         for image in images:
-#             if log.info['images'][image]['CAB'] is False:
-#                 utils.xrun('docker', ['rmi', image])
-#                 log.remove('images', image)
-#                 log.write()
-
-#     if args.all_cabs:
-#         images = list(log_cabs.info['images'].keys())
-#         for image in images:
-#             if log_cabs.info['images'][image]['CAB']:
-#                 utils.xrun('docker', ['rmi', image])
-#                 log_cabs.remove('images', image)
-#                 log_cabs.write()
-
-#     if args.all_containers:
-#         containers = list(log.info['containers'].keys())
-#         for container in containers:
-#             cont = docker.Container(
-#                 log.info['containers'][container]['IMAGE'], container)
-#             try:
-#                 status = cont.info()['State']['Status'].lower()
-#             except:
-#                 print('Could not inspect container {}. It probably doesn\'t exist, will remove it from log'.format(
-#                     container))
-#                 status = "no there"
-
-#             if status == 'running':
-#                 # Kill the container instead of stopping it, so that effect can be felt py parent process
-#                 utils.xrun('docker', ['kill', container])
-#                 cont.remove()
-#             elif status in ['exited', 'dead']:
-#                 cont.remove()
-
-#             log.remove('containers', container)
-#             log.write()
+                docker.pull("/".join([args.repository, image]), force=args.force)
 
 
 def main(argv):

@@ -21,7 +21,7 @@
         {
             "info": "FITS cube containing the RMSF and FWHM image. (Can be any of the RMSF output cubes from do_RMsynth_3D.py)",
             "check_io": true,
-            "name": "rmsf-fhwm",
+            "name": "rmsf-fwhm",
             "default": null,
             "dtype": "file",
             "required": true,

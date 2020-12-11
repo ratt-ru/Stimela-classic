@@ -81,6 +81,11 @@ filename = os.path.basename(image)
 
 outfile = write_opts.pop('outfile')
 
+for key, value in sorted(img_opts.items()):
+    sys.stderr.write("{:20}: {}\n".format(key, value))
+sys.stderr.flush()
+
+
 try:
     img = bdsm.process_image(image, **img_opts)
 

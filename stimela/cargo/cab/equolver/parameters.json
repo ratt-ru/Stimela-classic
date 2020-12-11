@@ -1,7 +1,7 @@
 {
     "task": "equolver",
     "base": "quay.io/stimela/equolver",
-    "tag": "1.6.8",
+    "tag": "0.0.8",
     "description": "Convolve fits images and data cubes to the same resolution",
     "prefix": "--",
     "binary": "equolver",

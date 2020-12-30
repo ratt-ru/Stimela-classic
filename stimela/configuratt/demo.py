@@ -118,13 +118,9 @@ if __name__ == "__main__":
     # munch converts nested dicts into something more nicer
     conf = munch.Munch.fromDict(root_map)
 
-    # without much, this would have been conf['simela']['base']['casa']['images']. Endless brackets and quotes must fall!
+    # Munch allows syntax like this:
     print(conf.stimela.base.casa.images.keys())
+    # ...and still supports the traditionally horrible old way of
+    print(conf['stimela']['base']['casa']['images'].keys())
 
 
-
-# %%
-import ruamel.yaml
-yaml = ruamel.yaml.YAML()
-print(yaml.load("1.2.3: xx"))
-# %%

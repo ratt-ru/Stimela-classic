@@ -81,22 +81,16 @@ if __name__ == "__main__":
 
     stimela_dir = os.path.dirname(stimela.__file__)
 
-    stimela_schema = OmegaConf.structured(StimelaConfig)
+    # start with empty config. Schema is imposed automatically
+    conf = OmegaConf.structured(StimelaConfig)
 
-    base_schema = OmegaConf.structured(StimelaImage)
-    # load all base/*/*yml files into hierachy under stimela: base
-    base_configs = {}    
+    # merge base/*/*yaml files into the config one by one, under base[imagename]
     for path in glob.glob(f"{stimela_dir}/cargo/base/*/*.yaml"):
-        conf = OmegaConf.load(path)
-        conf = OmegaConf.merge(base_schema, conf)
-        base_configs[conf.name] = conf
-    # 
-    baseconf = OmegaConf.create(dict(base=base_configs))
-    conf = OmegaConf.merge(stimela_schema, baseconf)
+        baseconf = OmegaConf.load(path)
+        baseconf1 = OmegaConf.create(dict(base={baseconf.name: baseconf}))
+        conf = OmegaConf.merge(conf, baseconf1)
 
-    # load all cab/*/*yml files into hierachy under stimela: cab
-    cab_schema = OmegaConf.structured(CabDefinition)
-    cab_configs = {}
+    # merge all cab/*/*yml files into the config one by one, under cab[taskname]
     for path in glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml"):
         cabconf = OmegaConf.load(path)
         cabconf1 = OmegaConf.create(dict(cab={cabconf.task: cabconf}))

@@ -11,6 +11,7 @@ requirements = ["pyyaml",
                 "future-fstrings",
                 "scabha",
                 "ruamel.yaml",
+                "munch",
                 "omegaconf"
                 ],
 
@@ -23,7 +24,7 @@ setup(name=PACKAGE_NAME,
       author="Sphesihle Makhathini & RATT",
       author_email="sphemakh@gmail.com",
       url="https://github.com/ratt-ru/Stimela",
-      packages=["stimela", "stimela/cargo", "stimela/rype",
+      packages=["stimela", "stimela/cargo", "stimela/configuratt",
                 "stimela/utils", "stimela/cargo/cab",
                 "stimela/cargo/base"],
       package_data={"stimela/cargo": [

@@ -12,8 +12,8 @@ inputs:
   # It would be nice to be able to say "<<: ${base.casa.lib.mssel_inputs}" here, but omegaconf falls over on this. 
   # I raised an issue: https://github.com/omry/omegaconf/issues/469
   # As a workaround, it works inside lists, so the below at least pulls in the desired mapping:
-  _includes:
-    - ${base.casa.lib.mssel_inputs}
+  _merge:
+    - base.casa.lib.mssel_inputs
 
   docallib:
     info: "Use callib or traditional cal apply parameters"
@@ -37,9 +37,13 @@ outputs:
 
 # same here: would be nice to just refer to ${base.casa.management.common}, then add stuff to it, but omegaconf is not happy
 management:
-  _includes:
-    - ${base.casa.management.common}
-  commmon:
-    - cleanup:
-        applycal.last: [DELETE]
+  environment:  
+    _merge: base.casa.management.environment
+
+  cleanup:         
+    _merge: base.casa.management.cleanup
+    applycal.last: [DELETE]
+
+  wranglers:
+    _merge: base.casa.management.wranglers
 

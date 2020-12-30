@@ -44,15 +44,17 @@ BASE = os.listdir(BASE_PATH)
 CAB = list()
 
 for item in os.listdir(CAB_PATH):
-    try:
-        # These files must exist for a cab image to be valid
-        ls_cabdir = os.listdir('{0}/{1}'.format(CAB_PATH, item))
-        paramfile = 'parameters.json' in ls_cabdir
-        srcdir = 'src' in ls_cabdir
-    except OSError:
-        continue
-    if paramfile and srcdir:
-        CAB.append(item)
+    itempath = os.path.join(CAB_PATH, item)
+    if os.path.isdir(itempath):
+        try:
+            # These files must exist for a cab image to be valid
+            ls_cabdir = os.listdir(itempath)
+            paramfile = 'parameters.json' in ls_cabdir
+            srcdir = 'src' in ls_cabdir
+        except OSError:
+            continue
+        if paramfile and srcdir:
+            CAB.append(item)
 
 
 _logger = None

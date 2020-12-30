@@ -1,0 +1,45 @@
+task: casa_applycal
+info: "Apply calibrations solutions(s) to data"
+
+image: casa
+# versions: x, y, z     ## only needed if only a subset of the defined base image versions is supported by this cab: default is all versions
+
+msdir: true
+prefix: "-"
+binary: applycal
+
+inputs:
+  # It would be nice to be able to say "<<: ${base.casa.lib.mssel_inputs}" here, but omegaconf falls over on this. 
+  # I raised an issue: https://github.com/omry/omegaconf/issues/469
+  # As a workaround, it works inside lists, so the below at least pulls in the desired mapping:
+  _includes:
+    - ${base.casa.lib.mssel_inputs}
+
+  docallib:
+    info: "Use callib or traditional cal apply parameters"
+    type: bool
+    default: false 
+
+  applymode:
+    info: "Calibration mode: '' = 'calflag','calflagstrict','trial','flagonly','flagonlystrict', or 'calonly'"
+    type: str
+    default: ""
+    choices: 
+      - calflag 
+      - calflagstrict 
+      - trial 
+      - flagonly 
+      - flagonlystrict 
+      - calonly
+
+outputs:
+
+
+# same here: would be nice to just refer to ${base.casa.management.common}, then add stuff to it, but omegaconf is not happy
+management:
+  _includes:
+    - ${base.casa.management.common}
+  commmon:
+    - cleanup:
+        applycal.last: [DELETE]
+

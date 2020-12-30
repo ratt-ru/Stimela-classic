@@ -1,0 +1,85 @@
+name: casa
+
+images:   # image versions (tags) to be built
+  5.6.1:  # key is version/tag
+    info: "CASA"  
+    # dockerfile: Dockerfile      ## if not default 
+    # package_version: 5.6.1-8    ## only if different from image version
+
+
+management:
+  common:
+    environment:  # dict of environment variables which will be set and passed into the image
+      VAR1: 'value1'
+
+    cleanup:         # map of files created by this image that need to be be cleaned up afterwards. Key is pattern, value is action i.e. DELETE, DECLARE_FAILURE
+      junkfile.txt: DELETE
+      junkdir:      DELETE
+      core:         DECLARE_FAILURE
+
+    wranglers:      # map of output wranglers
+      PIPELINE CASA:        ["replace:MI CASA ES TU CASA", ERROR]
+      "[tT]elemetry":         SUPPRESS
+      "(Begin|End) Task:":  ["replace:Sisyphus, \\1 your task", WARN]
+      "End Task:":          DECLARE_FAILURE
+
+
+## below is just a "library" of standard sections that cabs derived from this base image can grab. Names are freeform
+lib:
+  mssel_inputs:  # a standard section for CASA tasks that have a vis argument, and a standard set of data selection options
+    msname:
+      info: "Name of input visibility file"
+      type: dir
+      io:   msfile
+      required: true
+      internal_name: vis
+
+    field:
+      info: "Select field using field id(s) or field name(s)"
+      type: str
+      default: null
+
+    spw:
+      info: "Select spectral window/channels"
+      type: str
+      default: null
+    
+    intent:
+      info: Select observing intent
+      type: str
+      default: null
+
+    selectdata:
+      info: "Enable remaining data selection parameters"
+      type: bool
+      default: true
+
+    timerange:
+      info: "Select data based on time range"
+      type: str
+      default: null
+
+    uvrange:
+      info: "Select data based on uvrange (default units meters)"
+      type: str
+      default: null
+
+    antenna:
+      info: "Select data based on antenna/baseline"
+      type: str
+      default: null
+
+    scan:    
+      info: "Select data based on scan number(s)"
+      type: str
+      default: null
+
+    observation:
+      info: "Select data based on observation ID(s)"
+      type: str
+      default: null
+
+    msselect:
+      info: "Optional complex data selection (ignore for now)"
+      type: str
+      default:  null

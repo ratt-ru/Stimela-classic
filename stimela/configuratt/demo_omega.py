@@ -92,7 +92,7 @@ if __name__ == "__main__":
         base_configs[conf.name] = conf
     # 
     baseconf = OmegaConf.create(dict(base=base_configs))
-    conf = OmegaConf.merge(StimelaConfig, baseconf)
+    conf = OmegaConf.merge(stimela_schema, baseconf)
 
     # load all cab/*/*yml files into hierachy under stimela: cab
     cab_schema = OmegaConf.structured(CabDefinition)

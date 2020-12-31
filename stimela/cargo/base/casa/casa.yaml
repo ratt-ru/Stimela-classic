@@ -2,27 +2,33 @@ name: casa
 
 images:   # image versions (tags) to be built
   5.6.1:  # key is version/tag
-    info: "CASA"  
+    info: "CASA v5.6.1"  
     # dockerfile: Dockerfile      ## if not default 
-    # package_version: 5.6.1-8    ## only if different from image version
+  5.6.0:  # key is version/tag
+    info: "CASA v5.6.0"  
+    dockerfile: Dockerfile-v560     
 
+
+## "library" of standard management behaviours. Names are freeform
 management:
-  environment:  # dict of environment variables which will be set and passed into the image
-    VAR1: value1
+  common:
+    environment:  # dict of environment variables which will be set and passed into the image
+      VAR1: value1
 
-  cleanup:         # map of files created by this image that need to be be cleaned up afterwards. Key is pattern, value is action i.e. DELETE, DECLARE_FAILURE
-    junkfile.txt: DELETE
-    junkdir:      DELETE
-    core:         DECLARE_FAILURE
+    cleanup:         # map of files created by this image that need to be be cleaned up afterwards. Key is pattern, value is action i.e. DELETE, DECLARE_FAILURE
+      junkfile.txt: DELETE
+      junkdir:      DELETE
+      core:         DECLARE_FAILURE
 
-  wranglers:      # map of output wranglers
-    PIPELINE CASA:        ["replace:MI CASA ES TU CASA", ERROR]
-    "[tT]elemetry":         SUPPRESS
-    "(Begin|End) Task:":  ["replace:Sisyphus, \\1 your task", WARN]
-    "End Task:":          DECLARE_FAILURE
+    wranglers:      # map of output wranglers
+      PIPELINE CASA:        ["replace:MI CASA ES TU CASA", ERROR]
+      "[tT]elemetry":         SUPPRESS
+      "(Begin|End) Task:":  ["replace:Sisyphus, \\1 your task", WARN]
+      "End Task:":          DECLARE_FAILURE
 
-## below is just a "library" of standard sections that cabs derived from this base image can grab. Names are freeform
-lib:
+
+## "library" of standard parameter sets that cabs derived from this base image can grab. Names are freeform
+params:
   mssel_inputs:  # a standard section for CASA tasks that have a vis argument, and a standard set of data selection options
     msname:
       info: "Name of input visibility file"

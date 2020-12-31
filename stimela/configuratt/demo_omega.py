@@ -14,27 +14,50 @@ from omegaconf.omegaconf import MISSING, OmegaConf
 from omegaconf.dictconfig import DictConfig
 from omegaconf.listconfig import ListConfig
 from typing import Any, List, Dict, Optional, Union
+from enum import Enum
 from dataclasses import dataclass, field
 
-
-## this is essentially a schema for a base image definition file
-
-ListOrString = List[str] # Union[str, List[str]]
+## almost supported by omegaconf, see https://github.com/omry/omegaconf/issues/144, for now just use Any
+# ListOrString = Union[str, List[str]]
+ListOrString = Any
 
 def EmptyDictDefault():
     return field(default_factory=lambda:{})
 
+
+## schema for cab parameters
+
+class IOType(Enum):
+    input  = 1
+    output = 2
+    mixed  = 3
+    msfile = 4
+
+
+@dataclass
+class CabParameter:
+    info: str = "parameter description"
+    type: str = MISSING
+    default:  Optional[Any] = MISSING
+    required: Optional[bool] = False
+    io:       Optional[IOType] = IOType.input
+    choices:  Optional[List[Any]] = ()
+    internal_name: Optional[str] = ""
+
+CabParameterSet = Dict[str, CabParameter]
+
+## schema for a stimela image
+
 @dataclass
 class ImageBuildInfo:
-    info: str
+    info: Optional[str] = ""
     dockerfile: Optional[str] = "Dockerfile"
-    package_info: Optional[str] = ""
 
 @dataclass 
 class CabManagement:        # defines common cab management behaviours
     environment: Optional[Dict[str, str]] = EmptyDictDefault()
-    cleanup: Optional[Dict[str, str]]     = EmptyDictDefault()   # should really be ListOrString here, but omegaconf doesn't support it yet (PR open)
-    wranglers: Optional[Dict[str, Any]]   = EmptyDictDefault()   
+    cleanup: Optional[Dict[str, ListOrString]]     = EmptyDictDefault()   
+    wranglers: Optional[Dict[str, ListOrString]]   = EmptyDictDefault()   
 
 
 @dataclass
@@ -43,21 +66,14 @@ class StimelaImage:
     info: str = "image description"
     images: Dict[str, ImageBuildInfo] = MISSING
 
-    # optional library of "random" settings
-    lib: Dict[str, Any] = EmptyDictDefault()
+    # optional library of common parameter sets
+    params: Dict[str, Any] = EmptyDictDefault()
 
-    # list of management setups that can be inherited by cabs
-    management: CabManagement = CabManagement()
+    # optional library of common management settings
+    management: Dict[str, CabManagement] = EmptyDictDefault()
 
 
-## this is essentially a schema for a cab definition file
-
-@dataclass
-class CabParameter:
-    info: str = "parameter description"
-    type: str = MISSING
-    default: Any = MISSING
-    choices: Optional[List[Any]] = ()
+## schema for a cab definition file
 
 @dataclass 
 class CabDefinition:
@@ -67,12 +83,9 @@ class CabDefinition:
     msdir: Optional[bool] = False
     prefix: Optional[str] = "-"
     binary: Optional[str] = ""
-#    management: CabManagement = CabManagement()
-#    inputs: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
-#    outputs: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
     management: CabManagement = CabManagement()
-    inputs: Optional[Dict[str, Any]] = EmptyDictDefault()
-    outputs: Optional[Dict[str, Any]] = EmptyDictDefault()
+    inputs: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
+    outputs: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
 
 @dataclass 
 class StimelaConfig:
@@ -100,21 +113,20 @@ def lookup_name(name, *sources):
 
 def resolve_merges(conf, name, *sources):
     if isinstance(conf, DictConfig):
-        merge_sections = conf.pop("_merge", None)
+        merge_sections = conf.pop("_use", None)
         if merge_sections:
             if type(merge_sections) is str:
                 merge_sections = [merge_sections]
             elif not isinstance(merge_sections, Sequence):
-                raise TypeError(f"invalid {name}._merge field of type {type(merge_sections)}")
-            if not len(merge_sections):
-                raise TypeError(f"invalid {name}._merge field of length 0")
-            # convert to actual sections
-            merge_sections = [lookup_name(name, *sources) for name in merge_sections]
-            # merge them all
-            base = merge_sections[0].copy()
-            base.merge_with(*merge_sections[1:])
-            base.merge_with(conf)
-            conf = base
+                raise TypeError(f"invalid {name}._use field of type {type(merge_sections)}")
+            if len(merge_sections):
+                # convert to actual sections
+                merge_sections = [lookup_name(name, *sources) for name in merge_sections]
+                # merge them all
+                base = merge_sections[0].copy()
+                base.merge_with(*merge_sections[1:])
+                base.merge_with(conf)
+                conf = base
         # recurse into content
         for key, value in conf.items_ex(resolve=False):
             conf[key] = resolve_merges(value, f"{name}.{key}", *sources)

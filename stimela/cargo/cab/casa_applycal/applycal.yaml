@@ -9,11 +9,11 @@ prefix: "-"
 binary: applycal
 
 inputs:
-  # It would be nice to be able to say "<<: ${base.casa.lib.mssel_inputs}" here, but omegaconf falls over on this. 
-  # I raised an issue: https://github.com/omry/omegaconf/issues/469
-  # As a workaround, it works inside lists, so the below at least pulls in the desired mapping:
-  _merge:
-    - base.casa.lib.mssel_inputs
+  # "_usr" is a magic word which means include section(s). This pulls some standard parameter definitions from casa.yaml,
+  # _into the section in which the _use directive appears_. So it's like an include. 
+  _use:
+    - base.casa.params.mssel_inputs
+  #...to which we can add more
 
   docallib:
     info: "Use callib or traditional cal apply parameters"
@@ -35,15 +35,15 @@ inputs:
 outputs:
 
 
-# same here: would be nice to just refer to ${base.casa.management.common}, then add stuff to it, but omegaconf is not happy
+# same here, using _use to include standard behaviours, but we also add an extra one for the cleanup section
 management:
   environment:  
-    _merge: base.casa.management.environment
+    _use: base.casa.management.common.environment
 
   cleanup:         
-    _merge: base.casa.management.cleanup
+    _use: base.casa.management.common.cleanup
     applycal.last: [DELETE]
 
   wranglers:
-    _merge: base.casa.management.wranglers
+    _use: base.casa.management.common.wranglers
 

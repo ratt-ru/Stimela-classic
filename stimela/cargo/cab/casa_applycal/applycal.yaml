@@ -35,15 +35,13 @@ inputs:
 outputs:
 
 
-# same here, using _use to include standard behaviours, but we also add an extra one for the cleanup section
+# same here, using _use to include common behaviours, but we also add an extra one for the cleanup section
 management:
-  environment:  
-    _use: base.casa.management.common.environment
+  _use: base.casa.management.common
 
   cleanup:         
-    _use: base.casa.management.common.cleanup
     applycal.last: [DELETE]
-
-  wranglers:
-    _use: base.casa.management.common.wranglers
-
+  
+  # an interesting point here is that _use implements a "deep merge". I.e. the contents of 'cleanup' here do not
+  # replace 'casa.management.common.cleanup', but are rather added to it. This is probably what we want for most 
+  # cases. If needed, we can code up a _use_shallow which implements the replace behaviour.

@@ -167,7 +167,8 @@ if __name__ == "__main__":
 
 # # %%
 # from omegaconf import OmegaConf
-# cfg = OmegaConf.create({"foo": {"bar" : 10}})
-# cfg.foo.merge_with({"x":  20, "bar": 20})
+# cfg = OmegaConf.create({"foo": {"bar" : 10, "y": 11}})
+# print(cfg)
+# cfg.merge_with({"x":  20, "foo": {"bar": 20}})
 # print(cfg)
 # # %%

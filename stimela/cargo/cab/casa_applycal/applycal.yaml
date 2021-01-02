@@ -5,8 +5,8 @@ image: casa
 # versions: x, y, z     ## only needed if only a subset of the defined base image versions is supported by this cab: default is all versions
 
 msdir: true
-prefix: "-"
-binary: applycal
+prefix: 
+#binary: applycal
 
 inputs:
   # "_usr" is a magic word which means include section(s). This pulls some standard parameter definitions from casa.yaml,

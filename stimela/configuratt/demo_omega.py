@@ -161,8 +161,8 @@ if __name__ == "__main__":
  #   rootconf = OmegaConf.merge(baseconf, cabconf)
 
     print(conf.cab.casa_applycal.inputs)
-
     print(OmegaConf.to_yaml(conf, resolve=True))
+    print(f"prefix: {conf.cab.casa_applycal.prefix} type {type(conf.cab.casa_applycal.prefix)}")
 
 
 # # %%

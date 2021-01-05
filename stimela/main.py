@@ -266,12 +266,15 @@ def pull(argv):
             if args.singularity:
                 simage = image.replace("/", "_")
                 simage = simage.replace(":", "_") + singularity.suffix
+                image = "/".join([args.repository, image])
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
-            elif args.podman:
-                podman.pull(image)
             else:
-                docker.pull("/".join([args.repository, image]), force=args.force)
+                image = "/".join([args.repository, image])
+                if args.podman:
+                    podman.pull(image, force=args.force)
+                else:
+                    docker.pull("/".join([args.repository, image]), force=args.force)
     else:
         base = []
         for cab_ in CAB:
@@ -288,12 +291,15 @@ def pull(argv):
             if args.singularity:
                 simage = image.replace("/", "_")
                 simage = simage.replace(":", "_") + singularity.suffix
+                image = "/".join([args.repository, image])
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
-            elif args.podman:
-                podman.pull(image, force=args.force)
             else:
-                docker.pull("/".join([args.repository, image]), force=args.force)
+                image = "/".join([args.repository, image])
+                if args.podman:
+                    podman.pull(image, force=args.force)
+                else:
+                    docker.pull(image, force=args.force)
 
 
 def main(argv):

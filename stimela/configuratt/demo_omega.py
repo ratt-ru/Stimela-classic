@@ -1,6 +1,7 @@
 import glob
 import re
 import os.path
+from stimela.docker import build
 import munch
 import sys
 from collections.abc import Sequence
@@ -20,6 +21,9 @@ from dataclasses import dataclass, field
 ## almost supported by omegaconf, see https://github.com/omry/omegaconf/issues/144, for now just use Any
 # ListOrString = Union[str, List[str]]
 ListOrString = Any
+
+
+from stimela.configuratt import build_nested_config
 
 def EmptyDictDefault():
     return field(default_factory=lambda:{})
@@ -93,48 +97,6 @@ class StimelaConfig:
     cab: Dict[str, CabDefinition] = MISSING
 
 
-def lookup_nameseq(name_seq, source_dict):
-    source = source_dict
-    names = list(name_seq)
-    while names:
-        source = source.get(names.pop(0), None)
-        if source is None:
-            return None
-    return source        
-
-def lookup_name(name, *sources):
-    name_seq = name.split(".")
-    for source in sources:
-        result = lookup_nameseq(name_seq, source)
-        if result is not None:
-            return result
-    raise NameError(f"unknown key {name}")
-
-
-def resolve_merges(conf, name, *sources):
-    if isinstance(conf, DictConfig):
-        merge_sections = conf.pop("_use", None)
-        if merge_sections:
-            if type(merge_sections) is str:
-                merge_sections = [merge_sections]
-            elif not isinstance(merge_sections, Sequence):
-                raise TypeError(f"invalid {name}._use field of type {type(merge_sections)}")
-            if len(merge_sections):
-                # convert to actual sections
-                merge_sections = [lookup_name(name, *sources) for name in merge_sections]
-                # merge them all
-                base = merge_sections[0].copy()
-                base.merge_with(*merge_sections[1:])
-                base.merge_with(conf)
-                conf = base
-        # recurse into content
-        for key, value in conf.items_ex(resolve=False):
-            conf[key] = resolve_merges(value, f"{name}.{key}", *sources)
-    elif isinstance(conf, ListConfig):
-        # recurse in
-        for i, value in enumerate(conf._iter_ex(resolve=False)):
-            conf[i] = resolve_merges(value, f"{name}[{i}]", *sources)
-    return conf
 
 if __name__ == "__main__":
 
@@ -143,22 +105,13 @@ if __name__ == "__main__":
     # start with empty config. Schema is imposed automatically
     conf = OmegaConf.structured(StimelaConfig)
 
-    # merge base/*/*yaml files into the config one by one, under base[imagename]
-    for path in glob.glob(f"{stimela_dir}/cargo/base/*/*.yaml"):
-        baseconf = OmegaConf.load(path)
-        baseconf1 = OmegaConf.create(dict(base={baseconf.name: baseconf}))
-        conf = OmegaConf.merge(conf, baseconf1)
+    # merge base/*/*yaml files into the config, under base.imagename
+    base_configs = glob.glob(f"{stimela_dir}/cargo/base/*/*.yaml")
+    conf = build_nested_config(conf, base_configs, section_name='base', nameattr='name')
 
-    # merge all cab/*/*yml files into the config one by one, under cab[taskname]
-    for path in glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml"):
-        cabconf = OmegaConf.load(path)
-        cabconf = resolve_merges(cabconf, "", conf, cabconf)
-        cabconf1 = OmegaConf.create(dict(cab={cabconf.task: cabconf}))
-        conf = OmegaConf.merge(conf, cabconf1)
-
-#    cabconf = OmegaConf.create(dict(cab=cab_configs))
-
- #   rootconf = OmegaConf.merge(baseconf, cabconf)
+    # merge all cab/*/*yml files into the config, under cab.taskname
+    cab_configs = glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml")
+    conf = build_nested_config(conf, cab_configs, section_name='cab', nameattr='task')
 
     print(conf.cab.casa_applycal.inputs)
     print(OmegaConf.to_yaml(conf, resolve=True))

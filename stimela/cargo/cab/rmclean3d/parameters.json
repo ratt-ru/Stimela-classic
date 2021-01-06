@@ -1,0 +1,94 @@
+{
+    "task": "rmclean3d", 
+    "base": "stimela/rm-tools", 
+    "tag": "1.6.9-1",
+    "version": "1.0.7",
+    "description": "Run RM-CLEAN on a cube of Faraday dispersion functions (FDFs), applying \n a cube of rotation measure spread functions created by the script \n 'do_RMsynth_3D.py'. Saves cubes of deconvolved FDFs & clean-component\n spectra, and a pixel map showing the number of iterations performed.\n Set any of the multiprocessing options to enable parallelization\n (otherwise, pixels will be processed serially).\n  Expects that the input is in the form of the Stokes-separated\n (single extension) FITS cubes produced by do_RMsynth_3D.",
+    "prefix": "-",
+    "binary": "rmclean3d", 
+    "msdir": true,
+    "junk" : [],
+    "parameters": [
+        {
+            "info": "FITS cube containing the dirty FDF. (Can be any of the FDF output cubes from do_RMsynth_3D.py)",
+            "check_io": true,
+            "name": "dirty-pdf",
+            "default": null,
+            "dtype": "file",
+            "required": true,
+            "io": "input"
+        },
+        {
+            "info": "FITS cube containing the RMSF and FWHM image. (Can be any of the RMSF output cubes from do_RMsynth_3D.py)",
+            "check_io": true,
+            "name": "rmsf-fwhm",
+            "default": null,
+            "dtype": "file",
+            "required": true,
+            "io": "input"
+        },
+        {
+            "info": "CLEAN cutoff in flux units", 
+            "name": "cutoff",
+            "dtype": "float",
+            "mapping": "c"
+        }, 
+        {
+            "info": "Maximum number of CLEAN iterations per pixel [1000].", 
+            "dtype": "str",
+            "default": 1000,
+            "name": "maxiter",
+            "mapping": "n"
+        }, 
+        {
+            "info": "Clean loop gain", 
+            "dtype": "float", 
+            "name": "gain",
+            "default": 0.1,
+            "mapping": "g"
+        }, 
+        {
+            "info": "prefix to prepend to output files",
+            "dtype": "str",
+            "name": "prefixout",
+            "mapping": "o"
+        }, 
+        {
+            "info": "Store different Stokes as FITS extensions [False, store as separate files]", 
+            "dtype": "bool",
+            "default": false,
+            "name": "f"
+        }, 
+        {
+            "info": "Verbose output", 
+            "dtype": "bool",
+            "default": false, 
+            "name": "v"
+        }, 
+        {
+            "info": "Number of processes (uses multiprocessing)",
+            "dtype": "int", 
+            "name": "ncores",
+            "prefix": "--"
+        }, 
+        {
+            "info": "Chunk size (uses multiprocessing -- not available in MPI!)",
+            "dtype": "int", 
+            "name": "chunk",
+            "prefix": "--"
+        }, 
+        {
+            "info": "Show the plots", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "p"
+        }, 
+        {
+            "info": "Run with MPI", 
+            "dtype": "bool",
+            "default": false, 
+            "name": "mpi",
+            "prefix": "--"
+        }
+    ]
+}

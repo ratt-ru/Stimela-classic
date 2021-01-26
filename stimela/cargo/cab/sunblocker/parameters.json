@@ -1,8 +1,8 @@
 {
     "task": "sunblocker", 
     "base": "stimela/sunblocker", 
-    "tag": "1.2.0", 
-    "version" : "1.0.0",
+    "tag": "1.0.2", 
+    "version" : "1.0.1",
     "description": "Tools for manipulating measurement sets (MSs)", 
     "prefix": " ", 
     "binary": "msutils",
@@ -32,7 +32,7 @@
             "dtype": "file", 
             "required": false, 
             "name": "outset", 
-            "io": "msfile"
+            "io": "output"
         }, 
         {
             "info": "Column name", 
@@ -83,7 +83,7 @@
             "name": "pol"
         }, 
         {
-            "info": "Method to determine sigma, 'fit': fit Gaussian at the max to determine sigma, standard deviation otherwise", 
+            "info": "Method to determine sigma, 'fit': fit Gaussian at the max to determine sigma, 'mad': use median and standard deviation as derived using MAD statistics, standard deviation otherwise", 
             "dtype": "str", 
             "default": null, 
             "name": "threshmode"
@@ -107,10 +107,16 @@
             "name": "angle"
         }, 
         {
-            "info": "Apply phazer only on daytime data as selected using vampirisms", 
+            "info": "Analyse data in phazer only using daytime data as selected using vampirisms", 
             "dtype": "bool", 
             "default": false, 
             "name": "vampirisms"
+        }, 
+        {
+            "info": "Flag only daytime data as identified by using vampirisms", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "flagonlyday"
         }, 
         {
             "info": "Show histogram and cutoff line in a viewgraph", 

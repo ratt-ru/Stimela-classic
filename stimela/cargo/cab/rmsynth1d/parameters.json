@@ -1,0 +1,105 @@
+{
+    "task": "rmsynth1d", 
+    "base": "stimela/rm-tools", 
+    "tag": "1.6.9-1",
+    "version": "1.0.7",
+    "description": "Run RM-synthesis on Stokes I, Q and U spectra (1D) stored in an ASCII file. The Stokes I spectrum is first fit with a polynomial and the resulting model used to create fractional q = Q/I and u = U/I spectra. The ASCII file should the following columns, in a space separated format: \n [freq_Hz, I, Q, U, I_err, Q_err, U_err] \n OR \n [freq_Hz, Q, U, Q_err, U_err] \n To get outputs, one or more of the following flags must be set: -S, -p, -v.",
+    "prefix": "-",
+    "binary": "rmsynth1d", 
+    "msdir": true,
+    "junk" : [],
+    "parameters": [
+        {
+            "info": "ASCII file containing Stokes spectra & errors.", 
+            "check_io": true, 
+            "name": "dataFile", 
+            "default": null,
+            "dtype": "file", 
+            "required": true, 
+            "io": "input"
+        }, 
+        {
+            "info": "fit a Gaussian to the RMSF", 
+            "name": "t",
+            "default": false,
+            "dtype": "bool",
+            "required": true
+        }, 
+        {
+            "info": "absolute max Faraday depth sampled", 
+            "dtype": "str", 
+            "default": "Auto", 
+            "name": "f"
+        }, 
+        {
+            "info": "Width of Faraday depth channel. (overrides -s NSAMPLES flag)", 
+            "dtype": "str", 
+            "default": "Auto" , 
+            "name": "l"
+        }, 
+        {
+            "info": "number of samples across the RMSF lobe", 
+            "dtype": "int", 
+            "default": 10, 
+            "name": "s"
+        }, 
+        {
+            "info": "weighting [inverse 'variance'] or 'uniform' (all 1s).", 
+            "dtype": "str", 
+            "default": null, 
+            "name": "w",
+            "choices": [
+            "variance",
+            "uniform"
+            ]
+        }, 
+        {
+            "info": "Polynomial order to fit to I spectrum", 
+            "dtype": "int", 
+            "default": 2, 
+            "name": "o"
+        }, 
+        {
+            "info": "Ignore the Stokes I spectrum", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "i"
+        }, 
+        {
+            "info": "Use 64-bit floating point precision [False (uses 32-bit)]",
+            "dtype": "bool", 
+            "default": false, 
+            "name": "b"
+        }, 
+        {
+            "info": "Show the plots", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "p"
+        }, 
+        {
+            "info": "Verbose output", 
+            "dtype": "bool",
+            "default": false, 
+            "name": "v"
+        }, 
+        {
+            "info": "Save the arrays and plots", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "S"
+        }, 
+        {
+            "info": "Turn on debugging messages & plots", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "D"
+        }, 
+        {
+            "info": "Intensity units of the data.", 
+            "dtype": "str", 
+            "default": "Jy/beam", 
+            "name": "U"
+        }
+    ]
+}

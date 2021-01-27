@@ -57,7 +57,7 @@ img_opts.pop('freq0', None)
 if freq0 is None:
     with pyfits.open(img_opts['filename']) as hdu:
         hdr = hdu[0].header
-        for i in xrange(1, hdr['NAXIS']+1):
+        for i in range(1, hdr['NAXIS']+1):
             if hdr['CTYPE{0:d}'.format(i)].startswith('FREQ'):
                 freq0 = hdr['CRVAL{0:d}'.format(i)]
 

@@ -45,7 +45,7 @@ pipeline.add("cab/simms",                   # Executor image to start container 
              label="Creating MS",                       # Process label
              cpus=2.5,
              memory_limit="2gb")
-
+# 2
 pipeline.add("cab/casa_listobs", "obsinfo",
         {
             "vis" : MS,
@@ -54,7 +54,7 @@ pipeline.add("cab/casa_listobs", "obsinfo",
             }, 
         label="obsinfo:: Observation information")
 
-# 2: Simulate visibilities into it
+# 3: Simulate visibilities into it
 pipeline.add("cab/simulator",
              "simulator_example",
              {
@@ -69,7 +69,7 @@ pipeline.add("cab/simulator",
                  "threads": 4,
              },
              label="Simulating visibilities")
-
+# 4
 pipeline.add("cab/calibrator",
              "cal_example",
              {
@@ -83,10 +83,10 @@ pipeline.add("cab/calibrator",
 
 
 
-# 3: Image
+# 5,6,7 : Image
 # Make things a bit interesting by imaging with different weights
 # Briggs robust values to use for each image
-briggs_robust = [0] #2, 0, -2
+briggs_robust = [2, 0, -2]
 
 for i, robust in enumerate(briggs_robust):
 
@@ -110,9 +110,10 @@ for i, robust in enumerate(briggs_robust):
                  label="Imaging MS, robust={:d}".format(robust),
                  cpus=2,
                  memory_limit="2gb")
-
+# 8
 pipeline.add("cab/casa_rmtables", "delete_ms", {
     "tablenames": MS + ":msfile",
 },
     label="Remove MS")
+
 pipeline.run()

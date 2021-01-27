@@ -36,11 +36,11 @@ pipeline.add("cab/simms",                   # Executor image to start container 
                 "msname":   MS,
                 "telescope":   "meerkat",              # Telescope name
                 "direction":   "J2000,0deg,-30deg",    # Phase tracking centre of observation
-                "synthesis":   0.128,                  # Synthesis time of observation
-                "dtime":   10,                      # Integration time in seconds
+                "synthesis":   2,                  # Synthesis time of observation
+                "dtime":   30,                      # Integration time in seconds
                 "freq0":   "750MHz",               # Start frequency of observation
                 "dfreq":   "1MHz",                 # Channel width
-                "nchan":   1                       # Number of channels
+                "nchan":   16                       # Number of channels
              },
              label="Creating MS",                       # Process label
              cpus=2.5,
@@ -77,6 +77,7 @@ pipeline.add("cab/calibrator",
                  "skymodel":   LSM,
                  "tile-size": 64,
                  "threads": 4,
+                 "output-data" : 'CORR_DATA',
              },
              label="Calibrating visibilities")
 
@@ -85,23 +86,26 @@ pipeline.add("cab/calibrator",
 # 3: Image
 # Make things a bit interesting by imaging with different weights
 # Briggs robust values to use for each image
-briggs_robust = 2, 0, -2
+briggs_robust = [0] #2, 0, -2
 
 for i, robust in enumerate(briggs_robust):
 
-    pipeline.add("cab/wsclean",
+    pipeline.add("cab/casa_clean",
                  "imager_example_robust_{:d}".format(i),
                  {
                      "msname":   MS,
-                     "weight":   "briggs {:d}".format(robust),
-                     "prefix":   "{:s}_robust-{:d}".format(PREFIX, robust),
-                     "npix":   2048,                   # Image size in pixels
-                     "scale":   2,                      # Size of each square pixel
+                     "weighting":   "briggs",
+                     "robust" : 0,
+                     "wprojplanes" : 128,
+                     "prefix":   "casa-{:s}_robust-{:d}".format(PREFIX, robust),
+                     "npix":   4096,                   # Image size in pixels
+                     "cellsize":   2,                      # Size of each square pixel
                      # Perform 1000 iterarions of clean (Deconvolution)
-                     "niter":   1000,
-                     "pol" : "I",
-                     "multiscale": True,
-                     "multiscale-scales" : [0,2],
+                     "niter":   5000,
+#                     "mgain" : 0.85,
+                     #"pol" : "I",
+                     #"multiscale": True,
+                     #"multiscale-scales" : [0,2],
                  },
                  label="Imaging MS, robust={:d}".format(robust),
                  cpus=2,
@@ -111,6 +115,4 @@ pipeline.add("cab/casa_rmtables", "delete_ms", {
     "tablenames": MS + ":msfile",
 },
     label="Remove MS")
-# Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
-# executed in the sequence that they were added
 pipeline.run()

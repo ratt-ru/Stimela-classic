@@ -140,6 +140,9 @@ def run(argv):
 
     add = parser.add_argument
 
+    add("-r", "--repository", default="quay.io",
+        help="Repository from which to pull docker images. The default repository is quay.io")
+
     add("-in", "--input",
         help="Input folder")
 
@@ -169,6 +172,7 @@ def run(argv):
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
                     _STIMELA_JOB_TYPE=args.job_type,
+                    _STIMELA_REP=args.repository,
                     _STIMELA_LOG_LEVEL=args.log_level.upper(),
                     _STIMELA_PULLFOLDER=args.pull_folder)
 

@@ -57,7 +57,7 @@ img_opts.pop('freq0', None)
 if freq0 is None:
     with pyfits.open(img_opts['filename']) as hdu:
         hdr = hdu[0].header
-        for i in xrange(1, hdr['NAXIS']+1):
+        for i in range(1, hdr['NAXIS']+1):
             if hdr['CTYPE{0:d}'.format(i)].startswith('FREQ'):
                 freq0 = hdr['CRVAL{0:d}'.format(i)]
 
@@ -80,6 +80,11 @@ image = img_opts.pop('filename')
 filename = os.path.basename(image)
 
 outfile = write_opts.pop('outfile')
+
+for key, value in sorted(img_opts.items()):
+    sys.stderr.write("{:20}: {}\n".format(key, value))
+sys.stderr.flush()
+
 
 try:
     img = bdsm.process_image(image, **img_opts)

@@ -11,7 +11,6 @@ import inspect
 import re
 from stimela.exceptions import *
 from stimela.dismissable import dismissable
-from stimela.main import get_cabs
 from stimela.cargo.cab import StimelaCabParameterError
 from datetime import datetime
 import traceback
@@ -160,7 +159,7 @@ class StimelaJob(object):
 
     def setup_job(self, image, config,
                    indir=None, outdir=None, msdir=None, 
-                   singularity_image_dir=None):
+                   singularity_image_dir=None, repository=None):
         """
             Setup job
 
@@ -292,7 +291,10 @@ class StimelaJob(object):
                 singularity.pull(":".join([_cab.base, self.tag]), 
                         os.path.basename(cont.image), directory=singularity_image_dir)
         else:
-            cont.image = ":".join([_cab.base, self.tag])
+            if repository:
+                cont.image = f"{repository}/{_cab.base}:{self.tag}"
+            else:
+                cont.image = f"{_cab.base}:{self.tag}"
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -445,6 +447,7 @@ class Recipe(object):
                  outdir=None,
                  log_dir=None, logfile=None, logfile_task=None,
                  cabspecs=None,
+                 repository="quay.io",
                  loglevel="INFO"):
         """
         Deifine and manage a stimela recipe instance.        
@@ -464,6 +467,7 @@ class Recipe(object):
                       logfile_task may contain a "{task}" entry which will be substituted for a task name.
         """
         self.name = name
+        self.repository = repository
         self.name_ = re.sub(r'\W', '_', name)  # pausterized name
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
@@ -603,7 +607,8 @@ class Recipe(object):
 
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
-             singularity_image_dir=self.singularity_image_dir)
+             singularity_image_dir=self.singularity_image_dir, 
+             repository=self.repository)
 
         self.log.info(f'Adding cab \'{job.image}\' ({job.version}) to recipe, container name \'{name}\'')
         self.jobs.append(job)

@@ -1,52 +1,151 @@
 # -*- coding: future_fstrings -*-
 import subprocess
 import os
-import sys
+import platform
+import getpass
 from io import StringIO
 from stimela import utils
 import json
 import stimela
 import time
 import datetime
-import tempfile
-
+import subprocess
+import yaml
+from typing import Any, List, Dict, Optional, Union
+from stimela.config import StimelaImage
 
 class DockerError(Exception):
     pass
 
+from stimela.backends import StimelaImageBuildInfo, StimelaImageInfo
 
-def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
-    """ build a docker image"""
+_available_images: Union[Dict[str,Dict[str, StimelaImageInfo]], None] = None
 
-    if tag:
-        image = ":".join([image, tag])
+def available_images():
+    from stimela.main import log
+    global _available_images
+    if _available_images is None:
+        proc = subprocess.run(["docker", "images",
+                            "--filter", "label=stimela.image.name", 
+                            "--format", "{{.ID}}"], stdout=subprocess.PIPE)
+        _available_images = {}
+        iids = proc.stdout.split()
 
-    bdir = tempfile.mkdtemp()
-    os.system('cp -r {0:s}/* {1:s}'.format(build_path, bdir))
-    if build_args:
-        stdw = tempfile.NamedTemporaryFile(dir=bdir, mode='w')
-        with open("{}/Dockerfile".format(bdir)) as std:
-            dfile = std.readlines()
-        for line in dfile:
-            if fromline and line.lower().startswith('from'):
-                stdw.write('FROM {:s}\n'.format(fromline))
-            elif line.lower().startswith("cmd") or line == dfile[-1]:
-                for arg in build_args:
-                    stdw.write(arg+"\n")
-                stdw.write(line)
-            else:
-                stdw.write(line)
-        stdw.flush()
-        utils.xrun("docker build", args+["--force-rm", "-f", stdw.name,
-                                         "-t", image,
-                                         bdir])
+        # inspect details
+        if iids:
+            proc = subprocess.run(["docker", "inspect"] + iids, 
+                                stdout=subprocess.PIPE)
+            # parse output
+            inspect_data = yaml.safe_load(proc.stdout)
+            for num, image_data in enumerate(inspect_data):
+                iid = image_data.get('Id')
+                repotags = image_data.get('RepoTags')
+                if iid is None:
+                    log.warning(f"failed to parse 'docker inspect' output element {num} {repotags}, skipping")
+                    continue
+                try:
+                    labels = image_data['ContainerConfig']['Labels']
+                    name = labels['stimela.image.name']
+                    version = labels['stimela.image.version']
+                    build = {}
+                    for key in 'stimela_version', 'user', 'host', 'date':
+                        build[key] = labels[f'stimela.build.{key}']
+                except KeyError as keyerr:
+                    log.warning(f"failed to parse 'docker inspect' output element {num} {repotags}: missing key {keyerr}, skipping")
+                    continue
 
-        stdw.close()
+                _available_images.setdefault(name, {})[version] = StimelaImageInfo(name=name, version=version, iid=iid, 
+                                                                                   full_name=repotags[0], build=StimelaImageBuildInfo(**build))
+        
+    return _available_images
+
+def _get_base_name():
+    from stimela.main import CONFIG
+    if CONFIG.opts.registry:
+        return f"{CONFIG.opts.registry}/{CONFIG.opts.basename}"
     else:
-        utils.xrun("docker build", args+["--force-rm", "-t", image,
-                                         bdir])
+        return CONFIG.opts.basename
 
-    os.system('rm -rf {:s}'.format(bdir))
+
+def _get_full_name(image: StimelaImage, version:str):
+    """Returns full image name (e.g. quay.io/stimela2/image:version)
+
+    Parameters
+    ----------
+    image : StimelaImage
+        image object
+    version : str
+        version
+    """
+    return f"{_get_base_name()}{image.name}:{version}"
+
+
+def build(image: StimelaImage, version: str):
+    from stimela.main import log
+
+    fullname = _get_full_name(image, version)
+
+    build_info = image.images[version]
+    cwd = os.path.dirname(image.path)
+    dockerfile = os.path.join(cwd, build_info.dockerfile)
+    log.info(f"building {fullname} using {dockerfile}")
+
+    subprocess.run(["docker", "build", "-t", fullname, "-f", dockerfile,
+                    "--label", f"stimela.image.name={image.name}", 
+                    "--label", f"stimela.image.version={version}", 
+                    "--label", f"stimela.build.stimela_version={stimela.__version__}", 
+                    "--label", f"stimela.build.user={getpass.getuser()}", 
+                    "--label", f"stimela.build.host={platform.node()}", 
+                    "--label", f"stimela.build.date={datetime.datetime.now().ctime()}", 
+                    cwd], check=True)
+
+    # reset this to force a rescan in available_images()
+    global _available_images
+    _available_images = None
+
+
+def push(image: StimelaImage, version: str):
+    from stimela.main import log
+
+    fullname = _get_full_name(image, version)
+    log.info(f"pushing {fullname}")
+
+    subprocess.run(["docker", "push", fullname], check=True)
+        
+
+
+# def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
+#     """ build a docker image"""
+
+#     if tag:
+#         image = ":".join([image, tag])
+
+#     bdir = tempfile.mkdtemp()
+#     os.system('cp -r {0:s}/* {1:s}'.format(build_path, bdir))
+#     if build_args:
+#         stdw = tempfile.NamedTemporaryFile(dir=bdir, mode='w')
+#         with open("{}/Dockerfile".format(bdir)) as std:
+#             dfile = std.readlines()
+#         for line in dfile:
+#             if fromline and line.lower().startswith('from'):
+#                 stdw.write('FROM {:s}\n'.format(fromline))
+#             elif line.lower().startswith("cmd") or line == dfile[-1]:
+#                 for arg in build_args:
+#                     stdw.write(arg+"\n")
+#                 stdw.write(line)
+#             else:
+#                 stdw.write(line)
+#         stdw.flush()
+#         utils.xrun("docker build", args+["--force-rm", "-f", stdw.name,
+#                                          "-t", image,
+#                                          bdir])
+
+#         stdw.close()
+#     else:
+#         utils.xrun("docker build", args+["--force-rm", "-t", image,
+#                                          bdir])
+
+#     os.system('rm -rf {:s}'.format(bdir))
 
 
 def pull(image, tag=None, force=False):

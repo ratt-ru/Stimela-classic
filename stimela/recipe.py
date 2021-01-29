@@ -4,8 +4,9 @@ import sys
 import pwd, grp
 import time
 import stimela
-from stimela import docker, singularity, utils, cargo, podman, main
+from stimela import utils, cargo, main
 from stimela.cargo import cab
+from stimela.backends import docker, singularity, podman
 import logging
 import inspect
 import re

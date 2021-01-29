@@ -16,7 +16,7 @@ requirements = ["pyyaml",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.6.7"
+__version__ = "2.0.pre1"
 
 setup(name=PACKAGE_NAME,
       version=__version__,
@@ -24,7 +24,7 @@ setup(name=PACKAGE_NAME,
       author="Sphesihle Makhathini & RATT",
       author_email="sphemakh@gmail.com",
       url="https://github.com/ratt-ru/Stimela",
-      packages=["stimela", "stimela/cargo", "stimela/configuratt",
+      packages=["stimela", "stimela/cargo", "stimela/configuratt", "stimela/commands",
                 "stimela/utils", "stimela/cargo/cab",
                 "stimela/cargo/base"],
       package_data={"stimela/cargo": [
@@ -36,7 +36,7 @@ setup(name=PACKAGE_NAME,
           "cab/*/parameters.json",
           "cab/*/src/tdlconf.profiles",
       ]},
-      python_requires='>=3.5',
+      python_requires='>=3.6',
       install_requires=requirements,
       scripts=["bin/" + i for i in os.listdir("bin")] + 
                 glob.glob("stimela/cargo/cab/stimela_runscript"),

@@ -106,7 +106,10 @@ def resolve_config_refs(conf, name: str, *sources):
     return conf
 
 
-def build_nested_config(conf, filelist: List[str], section_name: Optional[str] = None, nameattr: Union[Callable, str, None] = None):
+def build_nested_config(conf, filelist: List[str], 
+                        section_name: Optional[str] = None, 
+                        nameattr: Union[Callable, str, None] = None,
+                        include_path: Union[None, str] = None):
     """Builds nested configuration from a set of YAML files corresponding to sub-sections
 
     Parameters
@@ -122,6 +125,8 @@ def build_nested_config(conf, filelist: List[str], section_name: Optional[str] =
         if None, subsection_name will be taken from the basename of the file. If set to a string such as 'name', will set 
         subsection_name from that field in the subsection config. If callable, will be called with the subsection config object as a single 
         argument, and must return the subsection name
+    include_path : Union[None, str] 
+        if set, path to each config file will be included in the section as element 'include_path'
 
     Returns
     -------
@@ -136,6 +141,8 @@ def build_nested_config(conf, filelist: List[str], section_name: Optional[str] =
     section_content = {}
     for path in filelist:
         subconf = OmegaConf.load(path)
+        if include_path:
+            subconf[include_path] = path
         if nameattr is None:
             name = os.path.split(os.path.basename(subconf))[0]
         elif callable(nameattr):

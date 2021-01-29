@@ -1,0 +1,15 @@
+name: shadems
+
+images:   # image versions (tags) to be built
+  0.5.1:  # key is version/tag
+    dockerfile: Dockerfile      ## if not default 
+  0.4.0:  # key is version/tag
+    dockerfile: Dockerfile.v040     
+
+
+## "library" of standard management behaviours. Names are freeform
+management:
+  common:
+    cleanup:         # map of files created by this image that need to be be cleaned up afterwards. Key is pattern, value is action i.e. DELETE, DECLARE_FAILURE
+      log-shadems.txt: DELETE
+      core:         DECLARE_FAILURE

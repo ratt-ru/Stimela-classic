@@ -75,9 +75,9 @@ class StimelaImage:
 
 @dataclass 
 class CabDefinition:
-    task: str
-    info: str
-    image: str
+    task: str = MISSING
+    info: str = MISSING
+    image: str = MISSING
     msdir: Optional[bool] = False
     prefix: Optional[str] = "-"
     binary: Optional[str] = ""
@@ -91,15 +91,11 @@ import stimela.backends.docker
 import stimela.backends.singularity
 import stimela.backends.podman
 
-class Backend(Enum):
-    docker = stimela.backends.docker
-    singularity = stimela.backends.singularity
-    podman = stimela.backends.podman
-
+Backend = Enum("Stimela.Backend", "docker singularity podman")
 
 @dataclass
 class StimelaOptions:
-    backend: Backend = Backend.docker
+    backend: Backend = "docker"
     registry: str = "quay.io"
     basename: str = "stimela/v2-"
 

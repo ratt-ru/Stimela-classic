@@ -95,8 +95,8 @@ def main(argv):
 
     # set backend module
     global BACKEND 
-    CONFIG.opts.backend = getattr(config.Backend, args.backend)
-    BACKEND = CONFIG.opts.backend.value
+    CONFIG.opts.backend = args.backend
+    BACKEND = getattr(stimela.backends, CONFIG.opts.backend.name)
     # print(f"Backend is {BACKEND}")
 
     # no command? Print help and exit

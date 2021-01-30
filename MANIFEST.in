@@ -1,10 +1,12 @@
 include LICENSE
 include README.rst
 include CHANGES.md
+include Dockerfile
 
-recursive-include Dockerfile
-recursive-include src run.py run.py
-recursive-exclude cargo/base/* Dockerfile xvfb.init.d
-recursive-exclude cargo/cab/* Dockerfile xvfb.init.d
+recursive-include stimela/cargo/cab/* *.yml *.yaml *.json
+recursive-include stimela/cargo/base/* *.yaml *.yml Dockerfile Dockerfile.*
+recursive-include stimela/cargo/cab/simulator/src/ tdlconf.profiles
+recursive-include stimela/cargo/cab/calibrator/src/ tdlconf.profiles
+recursive-include stimela/cargo/base/base xvfb.init.d
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

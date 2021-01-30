@@ -2,7 +2,7 @@
 
 import os
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 import glob
 
 
@@ -16,7 +16,7 @@ requirements = ["pyyaml",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "2.0.pre1"
+__version__ = "2.0rc1"
 
 setup(name=PACKAGE_NAME,
       version=__version__,
@@ -24,9 +24,7 @@ setup(name=PACKAGE_NAME,
       author="Sphesihle Makhathini & RATT",
       author_email="sphemakh@gmail.com",
       url="https://github.com/ratt-ru/Stimela",
-      packages=["stimela", "stimela/cargo", "stimela/configuratt", "stimela/commands",
-                "stimela/utils", "stimela/cargo/cab",
-                "stimela/cargo/base"],
+      packages = find_packages(),
       package_data={"stimela/cargo": [
           "base/*/Dockerfile",
           "base/*.template",

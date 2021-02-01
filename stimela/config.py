@@ -49,6 +49,7 @@ CabParameterSet = Dict[str, CabParameter]
 class ImageBuildInfo:
     info: Optional[str] = ""
     dockerfile: Optional[str] = "Dockerfile"
+    production: Optional[bool] = True          # False can be used to mark test (non-production) images 
 
 @dataclass 
 class CabManagement:        # defines common cab management behaviours

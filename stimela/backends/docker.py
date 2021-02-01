@@ -22,16 +22,27 @@ from stimela.backends import StimelaImageBuildInfo, StimelaImageInfo
 _available_images: Union[Dict[str,Dict[str, StimelaImageInfo]], None] = None
 
 def available_images():
+    """Scans system for available stimela images and returns dicitonary of StimelaImageInfo objects.
+
+    Stimela docker images are identified by a stimela.image.name label.
+
+    Returns
+    -------
+    dict
+        dictionary: {image_name: {version: image_info}}  
+    """
     from stimela.main import log
     global _available_images
     if _available_images is None:
+
+        # get list of image IDs which have the right label
         proc = subprocess.run(["docker", "images",
                             "--filter", "label=stimela.image.name", 
                             "--format", "{{.ID}}"], stdout=subprocess.PIPE)
         _available_images = {}
         iids = proc.stdout.split()
 
-        # inspect details
+        # inspect details of matching IDs
         if iids:
             proc = subprocess.run(["docker", "inspect"] + iids, 
                                 stdout=subprocess.PIPE)
@@ -59,16 +70,9 @@ def available_images():
         
     return _available_images
 
-def _get_base_name():
-    from stimela.main import CONFIG
-    if CONFIG.opts.registry:
-        return f"{CONFIG.opts.registry}/{CONFIG.opts.basename}"
-    else:
-        return CONFIG.opts.basename
-
 
 def _get_full_name(image: StimelaImage, version:str):
-    """Returns full image name (e.g. quay.io/stimela2/image:version)
+    """Returns full image name (e.g. "quay.io/stimela/v2-NAME:VERSION")
 
     Parameters
     ----------
@@ -77,10 +81,24 @@ def _get_full_name(image: StimelaImage, version:str):
     version : str
         version
     """
-    return f"{_get_base_name()}{image.name}:{version}"
+    from stimela.main import CONFIG
+    if CONFIG.opts.registry:
+        basename = f"{CONFIG.opts.registry}/{CONFIG.opts.basename}"
+    else:
+        basename = CONFIG.opts.basename
+    return f"{basename}{image.name}:{version}"
 
 
 def build(image: StimelaImage, version: str):
+    """Builds given image + version
+
+    Parameters
+    ----------
+    image : StimelaImage
+        image object
+    version : str
+        version to be built, must be present in image.images
+    """
     from stimela.main import log
 
     fullname = _get_full_name(image, version)
@@ -105,6 +123,15 @@ def build(image: StimelaImage, version: str):
 
 
 def push(image: StimelaImage, version: str):
+    """Pushes given image + version to registry
+
+    Parameters
+    ----------
+    image : StimelaImage
+        image object
+    version : str
+        version to be pushed
+    """
     from stimela.main import log
 
     fullname = _get_full_name(image, version)

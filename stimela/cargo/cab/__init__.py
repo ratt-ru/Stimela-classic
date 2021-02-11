@@ -91,7 +91,7 @@ class Parameter(object):
                     return True
                 elif isinstance(value, list) and isinstance(value[0], tuple([t]+[int] if t is float else [t])):
                     return True
-            elif item is "file":
+            elif item == "file":
                 return True
             elif isinstance(value, tuple([item]+[int] if item is float else [item])):
                 return True

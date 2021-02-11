@@ -32,57 +32,57 @@ params:
   mssel_inputs:  # a standard section for CASA tasks that have a vis argument, and a standard set of data selection options
     msname:
       info: "Name of input visibility file"
-      type: dir
-      io:   msfile
+      dtype: dir
+      io:   mixed
       required: true
       internal_name: vis
 
     field:
       info: "Select field using field id(s) or field name(s)"
-      type: str
+      dtype: str
       default: null
 
     spw:
       info: "Select spectral window/channels"
-      type: str
+      dtype: str
       default: null
     
     intent:
       info: Select observing intent
-      type: str
+      dtype: str
       default: null
 
     selectdata:
       info: "Enable remaining data selection parameters"
-      type: bool
+      dtype: bool
       default: true
 
     timerange:
       info: "Select data based on time range"
-      type: str
+      dtype: str
       default: null
 
     uvrange:
       info: "Select data based on uvrange (default units meters)"
-      type: str
+      dtype: str
       default: null
 
     antenna:
       info: "Select data based on antenna/baseline"
-      type: str
+      dtype: str
       default: null
 
     scan:    
       info: "Select data based on scan number(s)"
-      type: str
+      dtype: str
       default: null
 
     observation:
       info: "Select data based on observation ID(s)"
-      type: str
+      dtype: str
       default: null
 
     msselect:
       info: "Optional complex data selection (ignore for now)"
-      type: str
+      dtype: str
       default:  null

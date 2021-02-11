@@ -12,19 +12,14 @@ def make_parser(subparsers):
 
     parser.add_argument("-r", "--rebuild", action="store_true", help="force rebuild of image(s)")
 
-    # parser.add_argument("-b", "--base", action="store_true",
-    #                     help="Build base images")
-
-    # parser.add_argument("-c", "--cab", metavar="CAB,CAB_DIR",
-    #                     help="Executor image (name) name, location of executor image files")
-
     # parser.add_argument("-uo", "--us-only",
     #                     help="Only build these cabs. Comma separated cab names")
 
     # parser.add_argument("-i", "--ignore-cabs", default="",
     #                     help="Comma separated cabs (executor images) to ignore.")
     
-    # parser.add_argument("-p", "--podman", action="store_true", help="Build images using podman.")
+    # parser.add_argument("-p", "--podman", action="store_true", 
+    #                     help="Build images using podman.")
 
     # parser.add_argument("-nc", "--no-cache", action="store_true",
     #                     help="Do not use cache when building the image")
@@ -76,33 +71,3 @@ def build(args, conf):
                     continue
 
             BACKEND.build(image, version)
-
-
-
-    # jtype = "podman" if args.podman else "docker"
-    # log = logger.StimelaLogger(LOG_FILE, jtype=jtype)
-
-    # no_cache = ["--no-cache"] if args.no_cache else []
-
-    # if args.cab:
-    #     raise SystemExit("DEPRECATION NOTICE: This feature has been deprecated. Please specify your \
-    #             custom cab via the 'cabpath' option of the Recipe.add() function.")
-
-    # if args.base:
-    #     # Build base and meqtrees images first
-    #     BASE.remove("base")
-    #     BASE.remove("meqtrees")
-    #     BASE.remove("casa")
-    #     BASE.remove("astropy")
-
-    #     for image in ["base", "meqtrees", "casa", "astropy"] + BASE:
-    #         dockerfile = "{:s}/{:s}".format(stimela.BASE_PATH, image)
-    #         image = "stimela/{0}:{1}".format(image, stimela.__version__)
-    #         __call__(jytpe).build(image,
-    #                      dockerfile, args=no_cache)
-
-    #     log.log_image(image, dockerfile, replace=True)
-    #     log.write()
-
-    #     return 0
-    # raise SystemExit("DEPRECATION NOTICE: The building of cab images has been deprecated")

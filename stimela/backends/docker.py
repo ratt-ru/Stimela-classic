@@ -114,40 +114,6 @@ def push(image: StimelaImage, version: str):
         
 
 
-# def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
-#     """ build a docker image"""
-
-#     if tag:
-#         image = ":".join([image, tag])
-
-#     bdir = tempfile.mkdtemp()
-#     os.system('cp -r {0:s}/* {1:s}'.format(build_path, bdir))
-#     if build_args:
-#         stdw = tempfile.NamedTemporaryFile(dir=bdir, mode='w')
-#         with open("{}/Dockerfile".format(bdir)) as std:
-#             dfile = std.readlines()
-#         for line in dfile:
-#             if fromline and line.lower().startswith('from'):
-#                 stdw.write('FROM {:s}\n'.format(fromline))
-#             elif line.lower().startswith("cmd") or line == dfile[-1]:
-#                 for arg in build_args:
-#                     stdw.write(arg+"\n")
-#                 stdw.write(line)
-#             else:
-#                 stdw.write(line)
-#         stdw.flush()
-#         utils.xrun("docker build", args+["--force-rm", "-f", stdw.name,
-#                                          "-t", image,
-#                                          bdir])
-
-#         stdw.close()
-#     else:
-#         utils.xrun("docker build", args+["--force-rm", "-t", image,
-#                                          bdir])
-
-#     os.system('rm -rf {:s}'.format(bdir))
-
-
 def pull(image, tag=None, force=False):
     """ pull a docker image """
     if tag:

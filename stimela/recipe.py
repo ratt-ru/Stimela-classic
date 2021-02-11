@@ -1,7 +1,8 @@
 # -*- coding: future_fstrings -*-
 import os
 import sys
-import pwd, grp
+import pwd
+import grp
 import time
 import stimela
 from stimela import utils, cargo, main
@@ -435,8 +436,7 @@ class StimelaJob(object):
 
 
 class Recipe(object):
-    def __init__(self, name, data=None,
-                 parameter_file_dir=None, ms_dir=None,
+    def __init__(self, name, parameter_file_dir=None, ms_dir=None,
                  build_label=None,
                  singularity_image_dir=None, JOB_TYPE='docker',
                  cabpath=None,
@@ -611,40 +611,7 @@ class Recipe(object):
 
         return 0
 
-    def log2recipe(self, job, recipe, num, status):
-
-        if job.jtype in ['docker', 'singularity', 'podman']:
-            cont = job.job
-            step = {
-                "name":   cont.name,
-                "number":   num,
-                "cab":   cont.image,
-                "volumes":   cont.volumes,
-                "environs":   getattr(cont, "environs", None),
-                "shared_memory":   getattr(cont, "shared_memory", None),
-                "input_content":   cont.input_content,
-                "msdir_content":   cont.msdir_content,
-                "label":   getattr(cont, "label", ""),
-                "logfile":   cont.logfile,
-                "status":   status,
-                "jtype":   job.jtype,
-            }
-        else:
-            step = {
-                "name":   job.name,
-                "number":   num,
-                "label":   job.label,
-                "status":   status,
-                "function":   job.job['function'].__name__,
-                "jtype":   'function',
-                "parameters":   job.job['parameters'],
-            }
-
-        recipe['steps'].append(step)
-
-        return 0
-
-    def run(self, steps=None, resume=False, redo=None):
+    def run(self, steps=None):
         """
         Run a Stimela recipe. 
 
@@ -658,15 +625,6 @@ class Recipe(object):
             "steps":   []
         }
         start_at = 0
-
-        if redo:
-            self.log.error("This feature has been depricated")
-            raise SystemExit
-
-        elif resume:
-            #TODO(sphe) Need to re-think how best to do this
-            self.log.error("This feature has been depricated")
-            raise SystemExit
 
         if getattr(steps, '__iter__', False):
             _steps = []
@@ -707,7 +665,6 @@ class Recipe(object):
                 if job.declare_status is False:
                     raise StimelaRecipeExecutionError("job declared as failed")
 
-                self.log2recipe(job, recipe, step, 'completed')
                 self.completed.append(job)
 
                 finished_time = datetime.now()
@@ -741,15 +698,12 @@ class Recipe(object):
                 self.log.info('Remaining jobs : {}'.format(
                     [c.name for c in self.remaining]))
 
-                self.log2recipe(job, recipe, step, 'failed')
                 for step, jb in jobs[i+1:]:
                     self.log.info(
                         'Logging remaining task: {}'.format(jb.label))
-                    self.log2recipe(jb, recipe, step, 'remaining')
 
                 self.log.info(
                     'Saving pipeline information in {}'.format(self.resume_file))
-                utils.writeJson(self.resume_file, recipe)
 
                 # raise pipeline exception. Original exception context is discarded by "from None" (since we've already
                 # logged it above, we don't need to include it with the new exception)
@@ -757,7 +711,6 @@ class Recipe(object):
 
         self.log.info(
             'Saving pipeline information in {}'.format(self.resume_file))
-        utils.writeJson(self.resume_file, recipe)
         self.log.info('Recipe executed successfully')
 
         return 0

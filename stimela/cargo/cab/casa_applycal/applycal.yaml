@@ -17,12 +17,12 @@ inputs:
 
   docallib:
     info: "Use callib or traditional cal apply parameters"
-    type: bool
+    dtype: bool
     default: false 
 
   applymode:
     info: "Calibration mode: '' = 'calflag','calflagstrict','trial','flagonly','flagonlystrict', or 'calonly'"
-    type: str
+    dtype: str
     default: ""
     choices: 
       - calflag 

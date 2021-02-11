@@ -73,9 +73,6 @@ def main(argv):
                             f'|n For support, refer to https://github.com/ratt-ru/Stimela',
                             formatter_class=MultilineFormatter)
 
-    # add("-h", "--help",  action="store_true",
-    #     help="Print help message and exit")
-
     parser.add_argument("-v", "--version", action='version', version='{:s} version {:s}'.format(parser.prog, stimela.__version__))
 
     parser.add_argument("-b", "--backend", choices=[x.name for x in config.Backend], help='backend to use: configured default is %(default)s')
@@ -83,9 +80,9 @@ def main(argv):
     parser.set_defaults(func=None, backend=CONFIG.opts.backend.name)
 
     # add per-command parser options
-    from stimela.commands import build, push, cabs, clean, containers, images, kill, ps, pull, run, save_config
+    from stimela.commands import build, push, cabs, clean, containers, images, kill, ps, pull, run, save_config, exxec
     subparsers = parser.add_subparsers()
-    for cmd in run, cabs, images, build, push, clean, containers, kill, ps, pull, save_config:
+    for cmd in run, cabs, images, build, push, clean, containers, kill, ps, pull, save_config, exxec:
         getattr(cmd, 'make_parser')(subparsers)
 
     args = parser.parse_args(argv)
@@ -95,9 +92,9 @@ def main(argv):
 
     # set backend module
     global BACKEND 
-    CONFIG.opts.backend = args.backend
+    if args.backend:
+        CONFIG.opts.backend = args.backend
     BACKEND = getattr(stimela.backends, CONFIG.opts.backend.name)
-    # print(f"Backend is {BACKEND}")
 
     # no command? Print help and exit
     if args.func is None:

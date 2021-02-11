@@ -28,18 +28,21 @@ class IOType(Enum):
     input  = 1
     output = 2
     mixed  = 3
-    msfile = 4
 
 
 @dataclass
 class CabParameter:
     info: str = "parameter description"
-    type: str = MISSING
-    default:  Optional[Any] = MISSING
+    dtype: str = MISSING
+    default:  Optional[Any] = None
     required: Optional[bool] = False
     io:       Optional[IOType] = IOType.input
     choices:  Optional[List[Any]] = ()
     internal_name: Optional[str] = ""
+    positional: Optional[bool] = False
+    repeat_policy: Optional[str] = MISSING
+    pattern: Optional[str] = MISSING
+    prefix: Optional[str] = MISSING
 
 CabParameterSet = Dict[str, CabParameter]
 
@@ -100,11 +103,36 @@ class StimelaOptions:
     basename: str = "stimela/v2-"
 
 
+
+@dataclass
+class StimelaStep:
+    cab: str = MISSING
+    indir:  Optional[str] = None
+    outdir: Optional[str] = None
+    msdir: Optional[str] = None
+    inputs: Dict[str, Any] = EmptyDictDefault()
+#    outputs: Optional[Dict[str, StepOutput]] = MISSING
+    info: Optional[str] = ""
+
+
+@dataclass
+class StimelaRecipe:
+    info: str = "my recipe"
+    job_type: str = "docker"
+    indir: Optional[str] = ""
+    outdir: Optional[str] = ""
+    msdir: Optional[str] = ""
+    sid: Optional[str] = ""
+    var: Optional[Dict[str, Any]] = EmptyDictDefault() 
+    steps: Dict[str, StimelaStep] = MISSING
+
+
 @dataclass 
 class StimelaConfig:
     base: Dict[str, StimelaImage] = EmptyDictDefault()
     cab: Dict[str, CabDefinition] = MISSING
     opts: StimelaOptions = StimelaOptions()
+    recipe: Optional[StimelaRecipe] = MISSING
 
 
 def load_config():
@@ -117,7 +145,7 @@ def load_config():
     base_configs = glob.glob(f"{stimela_dir}/cargo/base/*/*.yaml")
     conf = build_nested_config(conf, base_configs, section_name='base', nameattr='name', include_path='path')
 
-    # merge all cab/*/*yml files into the config, under cab.taskname
+    # merge all cab/*/*yaml files into the config, under cab.taskname
     cab_configs = glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml")
     conf = build_nested_config(conf, cab_configs, section_name='cab', nameattr='task')
 
@@ -141,3 +169,5 @@ def load_config():
 # cfg.merge_with({"x":  20, "foo": {"bar": 20}})
 # print(cfg)
 # # %%
+
+ 

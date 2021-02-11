@@ -47,7 +47,7 @@ def push(args, conf):
             log.error(f"version '{version}' is not defined for base image '{imagename}'")
             return 2
 
-        # now loop over build versions
+        # now loop over push versions
         for version in push_versions:
             # check if already exists
             if imagename not in available_images or version not in available_images[imagename] \

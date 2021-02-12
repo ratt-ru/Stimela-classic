@@ -13,13 +13,44 @@ def make_parser(subparsers):
 
     configs = config.load_config()
 
-    exec_parser = subparsers.add_parser('exec', help='Run a standalone stimela cab')
+    exec_parser = subparsers.add_parser('exec', help='Run a recipe (YAML) or a stand alone cab')
 
     parsers = exec_parser.add_subparsers()
 
-    for cabname in configs.cab:
-        cab = getattr(configs.cab, cabname)
-        parser = parsers.add_parser(cabname, formatter_class=argparse.ArgumentDefaultsHelpFormatter, help=cab.info)
+    iters = ["recipe"] + list(configs.cab)
+    for cabname in iters:
+        if cabname == "recipe":
+            parser = parsers.add_parser(cabname, formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="User specified recipe")
+
+            parser.add_argument("--recipe-config", "-rc",
+                            help="Recipe configuration file (YAML)")
+            parser.set_defaults(func=addtoconf)
+        else:
+
+
+            cab = getattr(configs.cab, cabname)
+            parser = parsers.add_parser(cabname, formatter_class=argparse.ArgumentDefaultsHelpFormatter, help=cab.info)
+
+
+            cabconf = {}
+            cabconf['name'] = cabname
+            cabconf['opts'] = []
+
+            for name, param in cab.inputs.items():
+                if param.dtype in ['file', 'File', 'Directory']:
+                    dtype = str
+                elif isinstance(param.dtype, list):
+                    dtype = str
+                
+                addopts =  dict(type=dtype, help=f"{param.info} (type: {param.dtype})")
+                if hasattr(param, 'default'):
+                    addopts['default'] = param['default']
+                
+                parser.add_argument(f"--{name}", **addopts)
+                cabconf['opts'].append(name)
+
+            cabconf = OmegaConf.create(cabconf)
+            parser.set_defaults(func=addtoconf, cabconf=cabconf)
 
         parser.add_argument("--indir", "-in", 
                         help="Input directory")
@@ -30,35 +61,12 @@ def make_parser(subparsers):
         parser.add_argument("--outdir", "-out", 
                         help="Output directory")
 
-        parser.add_argument("--recipe", "-r",
-                        help="Recipe configuration file (YAML)")
-
         parser.add_argument("--job-type", "-jt", dest="backend", choices=["docker", 
                             "singularity", "podman"],
                         help="Contairization tool to use")
 
         parser.add_argument("--singularity-image-dir", "-sid", dest="sid",
                         help="Singularity image directory")
-
-        cabconf = {}
-        cabconf['name'] = cabname
-        cabconf['opts'] = []
-
-        for name, param in cab.inputs.items():
-            if param.dtype in ['file', 'File', 'Directory']:
-                dtype = str
-            elif isinstance(param.dtype, list):
-                dtype = str
-            
-            addopts =  dict(type=dtype, help=f"{param.info} (type: {param.dtype})")
-            if hasattr(param, 'default'):
-                addopts['default'] = param['default']
-            
-            parser.add_argument(f"--{name}", **addopts)
-            cabconf['opts'].append(name)
-
-        cabconf = OmegaConf.create(cabconf)
-        parser.set_defaults(func=addtoconf, cabconf=cabconf)
 
 
 def addtoconf(args, conf):
@@ -68,13 +76,16 @@ def addtoconf(args, conf):
         conf
     """
 
-    if args.recipe is not None:
-        recipe = OmegaConf.load(args.recipe)
+    recipe_tmplt = OmegaConf.structured(config.StimelaRecipe)
+
+    if args.recipe_config is not None:
+        recipe = OmegaConf.load(args.recipe_config)
         for arg in "indir outdir sid job_type".split():
             if hasattr(args, arg):
-                setattr(recipe, getattr(args, arg))
-    else:
+                setattr(recipe, arg, getattr(args, arg))
+        recipe = OmegaConf.merge(recipe_tmplt, OmegaConf.load(args.recipe_config))
 
+    else:
         cabconf = copy.deepcopy(args.cabconf)
         del args.cabconf
         recipe = {
@@ -91,6 +102,6 @@ def addtoconf(args, conf):
 
         recipe['steps'] = {f"step_{cabconf.name}" : step}
 
-        recipe_tmplt = OmegaConf.structured(config.StimelaRecipe)
         recipe = OmegaConf.merge(recipe_tmplt, OmegaConf.create(recipe))
-        OmegaConf.update(conf, key='recipe', value=recipe)
+
+    OmegaConf.update(conf, key='recipe', value=recipe, merge=False)

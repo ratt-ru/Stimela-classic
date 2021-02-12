@@ -126,6 +126,7 @@ class StimelaRecipe:
     sid: Optional[str] = ""
     var: Optional[Dict[str, Any]] = EmptyDictDefault() 
     steps: Dict[str, StimelaStep] = MISSING
+    outputs: Optional[Dict[str, Any]] = MISSING  # could be a list or string
 
 
 @dataclass 

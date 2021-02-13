@@ -71,8 +71,8 @@ def resolve_config_refs(conf, name: str, *sources):
 
     Returns
     -------
-    OmegaConf object
-        configuration with resolved _use references
+    conf : OmegaConf object    
+        This may be a new object if a _use key was resolved, or it may be the existing object
 
     Raises
     ------
@@ -98,16 +98,23 @@ def resolve_config_refs(conf, name: str, *sources):
                 conf = base
         # recurse into content
         for key, value in conf.items_ex(resolve=False):
-            conf[key] = resolve_config_refs(value, f"{name}.{key}", *sources)
+            if isinstance(value, (DictConfig, ListConfig)):
+                value1 = resolve_config_refs(value, f"{name}.{key}", *sources)
+                # reassigning is expensive, so only do it if there was an actual change 
+                if value1 is not value:
+                    conf[key] = value1
     elif isinstance(conf, ListConfig):
         # recurse in
         for i, value in enumerate(conf._iter_ex(resolve=False)):
-            conf[i] = resolve_config_refs(value, f"{name}[{i}]", *sources)
+            if isinstance(value, (DictConfig, ListConfig)):
+                value1 = resolve_config_refs(value, f"{name}[{i}]", *sources)
+                if value1 is not value:
+                    conf[i] = value
     return conf
 
 
-def build_nested_config(conf, filelist: List[str], 
-                        section_name: Optional[str] = None, 
+def build_nested_config(conf, filelist: List[str], schema,
+                        section_name: Optional[str] = None,  
                         nameattr: Union[Callable, str, None] = None,
                         include_path: Union[None, str] = None):
     """Builds nested configuration from a set of YAML files corresponding to sub-sections
@@ -151,8 +158,7 @@ def build_nested_config(conf, filelist: List[str],
             name = subconf.get(nameattr)
         else:
             raise NameError(f"{path} does not contain a '{nameattr}' field")
-        section_content[name] = resolve_config_refs(subconf, f"{section_name}.{name}" if section_name else name, conf, subconf)
-    # nest into subsections if section_name is specified
-    conf1 = OmegaConf.create({section_name: section_content} if section_name else section_content) 
-    
-    return OmegaConf.merge(conf, conf1)
+        section_content[name] = OmegaConf.merge(schema, 
+            resolve_config_refs(subconf, f"{section_name}.{name}" if section_name else name, conf, subconf))
+
+    return section_content

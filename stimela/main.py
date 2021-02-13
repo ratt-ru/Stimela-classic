@@ -63,10 +63,15 @@ def get_cab_definition(cabdir, header=False, display=True):
 
 
 def main(argv):
+    global log
+    log = stimela.logger()
+    log.info("starting")        # remove this eventually, but it's handy for timing things right now
+
     # load config files
     global CONFIG
     CONFIG = config.load_config()
-
+    log.info("config loaded")   # remove this eventually, but it's handy for timing things right now
+    
     parser = ArgumentParser(description=f'Stimela: Dockerized Radio Interferometric Scripting Framework'
                             f'|n Version {stimela.__version__}, install path {os.path.dirname(__file__)} |n '
                             f'|n Config file {config.CONFIG_FILE}{"" if os.path.exists(config.CONFIG_FILE) else " not found, using default settings"}'
@@ -85,10 +90,9 @@ def main(argv):
     for cmd in run, cabs, images, build, push, clean, containers, kill, ps, pull, save_config, exxec:
         getattr(cmd, 'make_parser')(subparsers)
 
+    log.info("parsing arguments")
     args = parser.parse_args(argv)
 
-    global log
-    log = stimela.logger()
 
     # set backend module
     global BACKEND 

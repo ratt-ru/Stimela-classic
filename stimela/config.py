@@ -140,23 +140,29 @@ class StimelaConfig:
 def load_config():
     stimela_dir = os.path.dirname(stimela.__file__)
 
-    # start with empty config. Schema is imposed automatically
-    conf = OmegaConf.structured(StimelaConfig)
+    # start with empty structured config containing schema
+    base_schema = OmegaConf.structured(StimelaImage) 
+    cab_schema = OmegaConf.structured(CabDefinition)
+    opts_schema = OmegaConf.structured(StimelaOptions)
+
+    conf = {}
 
     # merge base/*/*yaml files into the config, under base.imagename
     base_configs = glob.glob(f"{stimela_dir}/cargo/base/*/*.yaml")
-    conf = build_nested_config(conf, base_configs, section_name='base', nameattr='name', include_path='path')
+    conf['base'] = build_nested_config(conf, base_configs, base_schema, nameattr='name', include_path='path', section_name='base')
 
     # merge all cab/*/*yaml files into the config, under cab.taskname
     cab_configs = glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml")
-    conf = build_nested_config(conf, cab_configs, section_name='cab', nameattr='task')
+    conf['cab'] = build_nested_config(conf, cab_configs, cab_schema, nameattr='task', section_name='cab')
 
     # merge global config into opts
     if os.path.exists(CONFIG_FILE):
-        opts = OmegaConf.create({'opts': OmegaConf.load(CONFIG_FILE)})
-        conf = OmegaConf.merge(conf, opts)
-
-    return conf
+        conf['opts'] = OmegaConf.merge(opts_schema, OmegaConf.load(CONFIG_FILE))
+    # otherwise assign defaults from schema
+    else:
+        conf['opts'] = opts_schema
+    
+    return OmegaConf.create(conf)
 
 
     # print(conf.cab.casa_applycal.inputs)

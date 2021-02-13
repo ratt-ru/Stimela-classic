@@ -92,7 +92,10 @@ if __name__ == "__main__":
     
 info: 'top level receipe definition'
 vars:
-    ms: var.ms
+    ms: demo.ms
+dirs:
+    input: input
+    output: output
 steps: 
     makems:
         cab: simms
@@ -140,10 +143,6 @@ steps:
                 # maps onto the output of the wsclean step
                 image:
                     maps: wsclean.outputs.image
-dirs:
-    input: input
-    output: output
-
 """
     ))
 

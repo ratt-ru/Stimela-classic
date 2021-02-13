@@ -6,18 +6,18 @@ from omegaconf.omegaconf import OmegaConf
 import copy
 
 
+
 def make_parser(subparsers):
     """
         subparsers
     """
-
-    configs = config.load_config()
+    from stimela.main import CONFIG
 
     exec_parser = subparsers.add_parser('exec', help='Run a recipe (YAML) or a stand alone cab')
 
     parsers = exec_parser.add_subparsers()
 
-    iters = ["recipe"] + list(configs.cab)
+    iters = ["recipe"] + list(CONFIG.cab)
     for cabname in iters:
         if cabname == "recipe":
             parser = parsers.add_parser(cabname, formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="User specified recipe")
@@ -28,7 +28,7 @@ def make_parser(subparsers):
         else:
 
 
-            cab = getattr(configs.cab, cabname)
+            cab = getattr(CONFIG.cab, cabname)
             parser = parsers.add_parser(cabname, formatter_class=argparse.ArgumentDefaultsHelpFormatter, help=cab.info)
 
 
@@ -41,8 +41,8 @@ def make_parser(subparsers):
                     dtype = str
                 elif isinstance(param.dtype, list):
                     dtype = str
-                
-                addopts =  dict(type=dtype, help=f"{param.info} (type: {param.dtype})")
+                ### OMS: temporarily forcing this to str because this looks like a bug
+                addopts =  dict(type=str, help=f"{param.info} (type: {param.dtype})")
                 if hasattr(param, 'default'):
                     addopts['default'] = param['default']
                 

@@ -19,7 +19,7 @@ def make_parser(subparsers):
 
     recipe_parser = parsers.add_parser("recipe", formatter_class=argparse.ArgumentDefaultsHelpFormatter, help="Run user-specified recipe")
 
-    recipe_parser.add_argument("recipe-config", help="Recipe configuration file (YAML)")
+    recipe_parser.add_argument("recipe_config", help="Recipe configuration file (YAML)")
     recipe_parser.set_defaults(func=exec_recipe)
 
     for cabname, cab in CONFIG.cab.items():
@@ -67,11 +67,14 @@ def exec_recipe(args, conf):
     log = stimela.logger()
     log.info("exec recipe")
 
+    recipe_tmplt = OmegaConf.structured(config.StimelaRecipe)
+
     recipe = OmegaConf.load(args.recipe_config)
     for arg in "indir outdir sid job_type".split():
         if hasattr(args, arg):
             setattr(recipe, arg, getattr(args, arg))
-    recipe = OmegaConf.merge(recipe_tmplt, OmegaConf.load(args.recipe_config))
+
+    recipe = OmegaConf.merge(recipe_tmplt, recipe)
 
 
 def exec_cab(args, conf):

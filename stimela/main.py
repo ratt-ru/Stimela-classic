@@ -71,7 +71,7 @@ def main(argv):
     global CONFIG
     CONFIG = config.load_config()
     log.info("config loaded")   # remove this eventually, but it's handy for timing things right now
-    
+
     parser = ArgumentParser(description=f'Stimela: Dockerized Radio Interferometric Scripting Framework'
                             f'|n Version {stimela.__version__}, install path {os.path.dirname(__file__)} |n '
                             f'|n Config file {config.CONFIG_FILE}{"" if os.path.exists(config.CONFIG_FILE) else " not found, using default settings"}'

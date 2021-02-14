@@ -108,6 +108,6 @@ def exec_cab(args, conf):
     recipe.info     = f"Running {cabname}"
     recipe.steps    = { f"step_{cabname}" : step}
 
-    OmegaConf.update(conf, key='recipe', value=recipe, merge=False)
+    conf.recipe = recipe
 
     print(OmegaConf.to_yaml(conf.recipe))

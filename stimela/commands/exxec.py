@@ -25,9 +25,11 @@ def make_parser(subparsers):
     for cabname, cab in CONFIG.cab.items():
         cab_parser = parsers.add_parser(cabname, formatter_class=argparse.ArgumentDefaultsHelpFormatter, help=cab.info)
 
-        cabconf = {}
-        cabconf['name'] = cabname
-        cabconf['opts'] = []
+        ## OMS: not really needed, we can pass the cab name via parser.set_defaults, while 'opts'
+        ## is surely just the keys of cab.inputs?
+        # cabconf = {}
+        # cabconf['name'] = cabname
+        # cabconf['opts'] = []
 
         for name, param in cab.inputs.items():
             if param.dtype in ['file', 'File', 'Directory']:
@@ -40,10 +42,8 @@ def make_parser(subparsers):
                 addopts['default'] = param['default']
             
             cab_parser.add_argument(f"--{name}", **addopts)
-            cabconf['opts'].append(name)
 
-        cabconf = OmegaConf.create(cabconf)
-        cab_parser.set_defaults(func=exec_cab, cabconf=cabconf)
+        cab_parser.set_defaults(func=exec_cab, cabname=cabname)
 
     # these arguments common to reciepes and cabs, so define them at top level
     exec_parser.add_argument("--indir", "-in", 
@@ -67,40 +67,47 @@ def exec_recipe(args, conf):
     log = stimela.logger()
     log.info("exec recipe")
 
-    recipe_tmplt = OmegaConf.structured(config.StimelaRecipe)
+    recipe = OmegaConf.structured(config.StimelaRecipe)
 
-    recipe = OmegaConf.load(args.recipe_config)
+    # load config file and apply schema
+    recipe = OmegaConf.merge(recipe, OmegaConf.load(args.recipe_config))
+
+    # override fields from command line
     for arg in "indir outdir sid job_type".split():
-        if hasattr(args, arg):
-            setattr(recipe, arg, getattr(args, arg))
+        value = getattr(args, arg, None)
+        if value is not None:
+            recipe[arg] = value
 
-    recipe = OmegaConf.merge(recipe_tmplt, recipe)
+    print(OmegaConf.to_yaml(conf.recipe))
 
 
 def exec_cab(args, conf):
+    from stimela.main import CONFIG
     log = stimela.logger()
-    log.info("exec cab")
 
-    recipe_tmplt = OmegaConf.structured(config.StimelaRecipe)
+    cabname = args.cabname
+    cabconf = CONFIG.cab[cabname]
 
-    ## OMS: I don't understand the point, why not use the original args.cabconf object?
+    log.info(f"exec cab {cabname}")
+
+    ## OMS: note that it's simpler to create a recipe object from the schema, then populate it directly as below
+    ## (rather than creating a dict, converting it, then merging it)
+    recipe = OmegaConf.structured(config.StimelaRecipe)
+
+    ## OMS: I don't understand the point, why not use the original args.cabconf object? Anyway removed rhe whole cabconf dict, no need for it, see above
     # cabconf = copy.deepcopy(args.cabconf)
     # del args.cabconf
 
-    recipe = {
-        "indir": args.indir,
-        "outdir": args.outdir,
-        "msdir": args.msdir,
-        "info":  f"Running {args.cabconf.name}",
-    }
+    step = OmegaConf.structured(config.StimelaStep)
+    step.cab = cabname
+    step.inputs = {arg: getattr(args, arg.replace("-", "_")) for arg in cabconf.inputs}
 
-    step = {
-        "cab": args.cabconf.name,
-        "inputs" : {arg : getattr(args, arg.replace("-", "_")) for arg in args.cabconf.opts}
-    }
-
-    recipe['steps'] = {f"step_{args.cabconf.name}" : step}
-
-    recipe = OmegaConf.merge(recipe_tmplt, OmegaConf.create(recipe))
+    recipe.indir    = args.indir
+    recipe.outdir   = args.outdir
+    recipe.msdir    = args.msdir
+    recipe.info     = f"Running {cabname}"
+    recipe.steps    = { f"step_{cabname}" : step}
 
     OmegaConf.update(conf, key='recipe', value=recipe, merge=False)
+
+    print(OmegaConf.to_yaml(conf.recipe))

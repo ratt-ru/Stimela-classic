@@ -1,28 +1,26 @@
-from stimela import LOG_FILE, BASE, utils
+import click
+from stimela.main import StimelaContext, cli, pass_stimela_context
 
 
-def make_parser(subparsers):
-    parser = subparsers.add_parser("images", help='List all stimela base images.')
+@cli.command(
+    help="""Lists all known stimela images. 
+         """,
+    short_help="list known stimela images")
+@click.option("-i", "--print-ids", is_flag=True, 
+                help="list in the more terse image+ID format.")
+@pass_stimela_context
+def images(context: StimelaContext, print_ids=False):
 
-    parser.add_argument("-i", "--print-ids", action="store_true",
-                        help="list in more terse image+ID format")
+    available = context.backend.available_images()
 
-    parser.set_defaults(func=images)
-
-
-def images(args, conf):
-    from stimela.main import BACKEND, log
-
-    available = BACKEND.available_images()
-
-    if not args.print_ids:
-        log.info("image list follows")
+    if not print_ids:
+        context.log.info("image list follows")
 
         header = f"{'IMAGE':19} {'VERSION':19} {'DESCRIPTION':19} BUILT BY"
         print(header)
         print("-"*len(header))
 
-    for _, baseinfo in conf.base.items():
+    for _, baseinfo in context.config.base.items():
         name0 = name = baseinfo.name
         for version, versinfo in baseinfo.images.items():
             if name0 in available and version in available[name0]:
@@ -31,7 +29,7 @@ def images(args, conf):
             else:
                 image = None
                 status = "not found: please pull or build" 
-            if args.print_ids:
+            if print_ids:
                 if image is None:
                     print(f"{name:19} ???")
                 else:
@@ -44,21 +42,3 @@ def images(args, conf):
             else:
                 print(f"{name:19} {version:19} {versinfo.info:19} {status}")
                 name = ''
-
-
-
-
-
-
-## old implementation
-
-# def images(args, conf):
-
-#     log = logger.StimelaLogger(LOG_FILE)
-#     log.display('images')
-
-#     if args.clear:
-#         log.clear('images')
-#         log.write()
-
-

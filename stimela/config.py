@@ -1,10 +1,10 @@
 import glob
-import os.path
+import os, os.path
 from typing import Any, List, Dict, Optional, Union
 from enum import Enum
 from dataclasses import dataclass, field
 from omegaconf.omegaconf import MISSING, OmegaConf
-
+from collections import OrderedDict
 import stimela
 
 
@@ -15,6 +15,7 @@ CONFIG_FILE = os.path.expanduser("~/.config/stimela.conf")
 # ListOrString = Union[str, List[str]]
 ListOrString = Any
 
+Conditional = Optional[str]
 
 from stimela.configuratt import build_nested_config
 
@@ -102,28 +103,38 @@ class StimelaOptions:
     backend: Backend = "docker"
     registry: str = "quay.io"
     basename: str = "stimela/v2-"
+    singularity_image_dir: str = "~/.singularity"
 
+def DefaultDirs():
+    return field(default_factory=lambda:dict(input='.', output='.'))
 
 
 @dataclass
 class StimelaStep:
-    cab: str = MISSING
-    indir:  Optional[str] = None
-    outdir: Optional[str] = None
-    msdir: Optional[str] = None
-    inputs: Dict[str, Any] = EmptyDictDefault()
-#    outputs: Optional[Dict[str, StepOutput]] = MISSING
-    info: Optional[str] = ""
+    cab: Optional[str] = None                      # if not None, this step is a cab and this is the cab name
+    recipe: Optional["StimelaRecipe"] = None       # if not None, this step is a nested recipe
+    dir: Dict[str, str] = DefaultDirs()            # overrides recipe dirs, if specified
+    input: Dict[str, Any] = EmptyDictDefault()     # assigns input parameters
+    output: Dict[str, Any] = EmptyDictDefault()    # assigns output parameters
+
+    _skip: Conditional = None                       # skip this step if conditional evaluates to true
+    _break_on: Conditional = None                   # break out (of parent receipe) if conditional evaluates to true
+
+#     cab: str = MISSING
+#     indir:  Optional[str] = None
+#     outdir: Optional[str] = None
+#     msdir: Optional[str] = None
+#     inputs: Dict[str, Any] = EmptyDictDefault()
+# #    outputs: Optional[Dict[str, StepOutput]] = MISSING
+#     info: Optional[str] = ""
 
 
 @dataclass
 class StimelaRecipe:
     info: str = "my recipe"
-    job_type: str = "docker"
-    indir: Optional[str] = ""
-    outdir: Optional[str] = ""
-    msdir: Optional[str] = ""
-    sid: Optional[str] = ""
+    # job_type: str = "docker"
+    # sid: Optional[str] = ""
+    dir: Dict[str, str] = DefaultDirs()
     var: Optional[Dict[str, Any]] = EmptyDictDefault() 
     steps: Dict[str, StimelaStep] = MISSING
     outputs: Optional[Dict[str, Any]] = MISSING  # could be a list or string
@@ -136,6 +147,17 @@ class StimelaConfig:
     opts: StimelaOptions = StimelaOptions()
     recipe: Optional[StimelaRecipe] = MISSING
 
+_CONFIG_BASENAME = "stimela.conf"
+
+# dict of config file locations to check, in order of preference
+CONFIG_LOCATIONS = OrderedDict(
+    local   = _CONFIG_BASENAME,
+    venv    = os.environ['VIRTUAL_ENV'] and os.path.join(os.environ['VIRTUAL_ENV'], _CONFIG_BASENAME),
+    user    = os.path.join(os.path.os.path.expanduser("~/.config"), _CONFIG_BASENAME)
+)
+
+# set to the config file that was actually found
+CONFIG_LOADED = None
 
 def load_config():
     stimela_dir = os.path.dirname(stimela.__file__)
@@ -155,12 +177,14 @@ def load_config():
     cab_configs = glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml")
     conf['cab'] = build_nested_config(conf, cab_configs, cab_schema, nameattr='task', section_name='cab')
 
+    conf['opts'] = opts_schema
     # merge global config into opts
-    if os.path.exists(CONFIG_FILE):
-        conf['opts'] = OmegaConf.merge(opts_schema, OmegaConf.load(CONFIG_FILE))
-    # otherwise assign defaults from schema
-    else:
-        conf['opts'] = opts_schema
+    for _, config_file in CONFIG_LOCATIONS.items():
+        if config_file and os.path.exists(config_file):
+            conf['opts'] = OmegaConf.merge(opts_schema, OmegaConf.load(config_file))
+            global CONFIG_LOADED
+            CONFIG_LOADED = config_file
+            break
     
     return OmegaConf.create(conf)
 

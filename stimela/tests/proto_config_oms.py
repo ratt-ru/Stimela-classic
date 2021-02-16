@@ -51,8 +51,8 @@ class Step:
     """Represents one processing step in a recipe"""
     cab: Optional[str] = None                       # if not None, this step is a cab and this is the cab name
     recipe: Optional["Recipe"] = None               # if not None, this step is a nested recipe
-    inputs: Dict[str, Any] = EmptyDictDefault()     # assigns input parameters
-    outputs: Dict[str, Any] = EmptyDictDefault()    # assigns output parameters
+    input: Dict[str, Any] = EmptyDictDefault()     # assigns input parameters
+    output: Dict[str, Any] = EmptyDictDefault()    # assigns output parameters
 
     _skip: Conditional = None                       # skip this step if conditional evaluates to true
     _break_on: Conditional = None                   # break out (of parent receipe) if conditional evaluates to true
@@ -105,9 +105,9 @@ steps:
             dtime: 1
             synthesis: 0.128
     selfcal:
-        inputs:
+        input:
             ms: "{recipe.vars.ms}"      # 'recipe' refers to parent recipe
-        outputs:
+        output:
             image: final-image.fits     # overrides output filename
         recipe:
             info: "this is a generic selfcal loop"

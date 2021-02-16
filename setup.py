@@ -37,7 +37,11 @@ setup(name=PACKAGE_NAME,
 #      ]},
       python_requires='>=3.6',
       install_requires=requirements,
-      scripts=["bin/" + i for i in os.listdir("bin")] + 
+      entry_points="""
+            [console_scripts]
+            stimela = stimela.main:cli
+      """,
+      scripts=# [ "bin/" + i for i in os.listdir("bin")] + 
                 glob.glob("stimela/cargo/cab/stimela_runscript"),
       classifiers=[],
       )

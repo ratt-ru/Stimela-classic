@@ -62,6 +62,7 @@ def get_cab_definition(cabdir, header=False, display=True):
     return cab_definition
 
 
+## this class is passed to subcommands (instead of having them rely on importing globals)
 @dataclass 
 class StimelaContext(object):
     config  : object
@@ -69,6 +70,7 @@ class StimelaContext(object):
     backend : object
 
 pass_stimela_context = click.make_pass_decorator(StimelaContext)
+
 
 
 @click.group()
@@ -102,54 +104,6 @@ def cli(ctx, backend):
 # import commands
 from stimela.commands import exxec, images, build, push, save_config
 
-## the ones not listed above haven't been converted to R2 yet
+## the ones not listed above haven't been converted to click yet
 ## cabs, clean, containers, kill, ps, pull, run
 
-
-def main0(argv):
-    global log
-    log = stimela.logger()
-    log.info("starting")        # remove this eventually, but it's handy for timing things right now
-
-    # load config files
-    global CONFIG
-    CONFIG = config.load_config()
-    if config.CONFIG_LOADED:
-        log.info(f"loaded config from {config.CONFIG_LOADED}") 
-
-    parser = ArgumentParser(description=f'Stimela: Dockerized Radio Interferometric Scripting Framework'
-                            f'|n Version {stimela.__version__}, install path {os.path.dirname(__file__)} |n '
-                            f'|n Config file {config.CONFIG_FILE}{"" if os.path.exists(config.CONFIG_FILE) else " not found, using default settings"}'
-                            f'|n For support, refer to https://github.com/ratt-ru/Stimela',
-                            formatter_class=MultilineFormatter)
-
-    parser.add_argument("-v", "--version", action='version', version='{:s} version {:s}'.format(parser.prog, stimela.__version__))
-
-    parser.add_argument("-b", "--backend", choices=[x.name for x in config.Backend], help='backend to use: configured default is %(default)s')
-
-    parser.set_defaults(func=None, backend=CONFIG.opts.backend.name)
-
-    # add per-command parser options
-    from stimela.commands import build, push, cabs, clean, containers, images, kill, ps, pull, run, save_config, exxec
-    subparsers = parser.add_subparsers()
-    for cmd in run, cabs, images, build, push, clean, containers, kill, ps, pull, save_config, exxec:
-        getattr(cmd, 'make_parser')(subparsers)
-
-    log.info("parsing arguments")
-    args = parser.parse_args(argv)
-
-
-    # set backend module
-    global BACKEND 
-    if args.backend:
-        CONFIG.opts.backend = args.backend
-    BACKEND = getattr(stimela.backends, CONFIG.opts.backend.name)
-
-    # no command? Print help and exit
-    if args.func is None:
-        parser.print_help()
-        return
-
-
-    # Invoke the command
-    return args.func(args, CONFIG)

@@ -104,6 +104,6 @@ def cli(ctx, backend):
 # import commands
 from stimela.commands import exxec, images, build, push, save_config
 
-## the ones not listed above haven't been converted to click yet
-## cabs, clean, containers, kill, ps, pull, run
+## the ones not listed above haven't been converted to click yet. They are:
+# cabs, clean, containers, kill, ps, pull, run
 

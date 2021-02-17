@@ -26,22 +26,12 @@ setup(name=PACKAGE_NAME,
       url="https://github.com/ratt-ru/Stimela",
       packages = find_packages(),
       include_package_data=True,
-#      package_data={"stimela/cargo": [
-#          "base/*/Dockerfile",
-#          "base/*.template",
-#          "cab/*/src/*.py",
-#          "cab/*/src/*.json",
-#          "base/*/xvfb.init.d",
-#          "cab/*/parameters.json",
-#          "cab/*/src/tdlconf.profiles",
-#      ]},
       python_requires='>=3.6',
       install_requires=requirements,
       entry_points="""
             [console_scripts]
             stimela = stimela.main:cli
       """,
-      scripts=# [ "bin/" + i for i in os.listdir("bin")] + 
-                glob.glob("stimela/cargo/cab/stimela_runscript"),
+      scripts=glob.glob("stimela/cargo/cab/stimela_runscript"),
       classifiers=[],
       )

@@ -12,7 +12,8 @@ requirements = ["pyyaml",
                 "scabha",
                 "ruamel.yaml",
                 "munch",
-                "omegaconf"
+                "omegaconf",
+                "click",
                 ],
 
 PACKAGE_NAME = "stimela"

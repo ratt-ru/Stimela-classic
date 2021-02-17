@@ -6,15 +6,15 @@ from stimela import config
 from stimela.main import StimelaContext, cli, pass_stimela_context
 
 
-@cli.command(
-    help="""Execute a single cab, or a YML recipe. Use KEY=VALUE to specify parameters and settings for the cab or recipe. 
-         """,
+@cli.command("exec",
+    help="Execute a single cab, or a YML recipe. Use KEY=VALUE to specify"\
+    " parameters and settings for the cab or recipe",
     short_help="execute a cab or a YML recipe",
     no_args_is_help=True)
 @click.argument("what", metavar="RECIPE.yml|CAB") 
 @click.argument("settings", nargs=-1, metavar="KEY=VALUE", required=False) 
 @pass_stimela_context
-def exec(context: StimelaContext, what: str, settings: List[str] = []):
+def exxec(context: StimelaContext, what: str, settings: List[str] = []):
 
     settings = OmegaConf.from_dotlist(settings)
     # context.log.info("command-line settings are")

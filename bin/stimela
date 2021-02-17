@@ -11,4 +11,4 @@ import stimela.main as main
 if not os.path.exists(stimela.LOG_HOME):
     os.mkdir(stimela.LOG_HOME)
 
-main.main([a for a in sys.argv[1:]])
+main.main()

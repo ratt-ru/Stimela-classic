@@ -106,35 +106,26 @@ class StimelaOptions:
     singularity_image_dir: str = "~/.singularity"
 
 def DefaultDirs():
-    return field(default_factory=lambda:dict(input='.', output='.'))
+    return field(default_factory=lambda:dict(indir='.', outdir='.'))
 
 
 @dataclass
 class StimelaStep:
+    info: Optional[str] = ""                        
     cab: Optional[str] = None                      # if not None, this step is a cab and this is the cab name
     recipe: Optional["StimelaRecipe"] = None       # if not None, this step is a nested recipe
-    dir: Dict[str, str] = DefaultDirs()            # overrides recipe dirs, if specified
-    input: Dict[str, Any] = EmptyDictDefault()     # assigns input parameters
-    output: Dict[str, Any] = EmptyDictDefault()    # assigns output parameters
+    dirs: Dict[str, str] = DefaultDirs()            # overrides recipe dirs, if specified
+    inputs: Dict[str, Any] = EmptyDictDefault()     # assigns input parameters
+    outputs: Dict[str, Any] = EmptyDictDefault()    # assigns output parameters
 
     _skip: Conditional = None                       # skip this step if conditional evaluates to true
     _break_on: Conditional = None                   # break out (of parent receipe) if conditional evaluates to true
-
-#     cab: str = MISSING
-#     indir:  Optional[str] = None
-#     outdir: Optional[str] = None
-#     msdir: Optional[str] = None
-#     inputs: Dict[str, Any] = EmptyDictDefault()
-# #    outputs: Optional[Dict[str, StepOutput]] = MISSING
-#     info: Optional[str] = ""
 
 
 @dataclass
 class StimelaRecipe:
     info: str = "my recipe"
-    # job_type: str = "docker"
-    # sid: Optional[str] = ""
-    dir: Dict[str, str] = DefaultDirs()
+    dirs: Dict[str, str] = DefaultDirs()
     var: Optional[Dict[str, Any]] = EmptyDictDefault() 
     steps: Dict[str, StimelaStep] = MISSING
     outputs: Optional[Dict[str, Any]] = MISSING  # could be a list or string

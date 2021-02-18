@@ -143,7 +143,7 @@ _CONFIG_BASENAME = "stimela.conf"
 # dict of config file locations to check, in order of preference
 CONFIG_LOCATIONS = OrderedDict(
     local   = _CONFIG_BASENAME,
-    venv    = os.environ['VIRTUAL_ENV'] and os.path.join(os.environ['VIRTUAL_ENV'], _CONFIG_BASENAME),
+    venv    = os.environ.get('VIRTUAL_ENV', None) and os.path.join(os.environ['VIRTUAL_ENV'], _CONFIG_BASENAME),
     user    = os.path.join(os.path.os.path.expanduser("~/.config"), _CONFIG_BASENAME)
 )
 

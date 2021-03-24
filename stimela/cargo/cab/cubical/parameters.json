@@ -89,9 +89,13 @@
             "default": null, 
             "check_io": false, 
             "name": "model-list", 
-            "dtype": "file",
-            "io": "output"
-        }, 
+            "dtype": "list:str",
+        },
+        {
+            "name": "model-expr",
+            "info": "Model expression",
+            "dtype": "list:str",
+        },
         {
             "info": "Enable direction-dependent models. If 'auto', this is determined\nby --sol-jones and --model-list, otherwise, enable/disable\nexplicitly.", 
             "dtype": [
@@ -1681,7 +1685,7 @@
         }, 
         {
             "info": "For DD terms, makes the listed directions non-solvable.", 
-            "dtype": "str", 
+            "dtype": ["str", "int"],
             "default": null, 
             "name": "dd-fix-dirs"
         }, 
@@ -1798,7 +1802,7 @@
         }, 
         {
             "info": "For DD terms, makes the listed directions non-solvable.", 
-            "dtype": "str", 
+            "dtype": ["str", "int"],
             "default": null, 
             "name": "dd1-fix-dirs"
         }, 
@@ -1915,7 +1919,7 @@
         }, 
         {
             "info": "For DD terms, makes the listed directions non-solvable.", 
-            "dtype": "str", 
+            "dtype": ["str", "int"],
             "default": null, 
             "name": "dd2-fix-dirs"
         }, 
@@ -2032,7 +2036,7 @@
         }, 
         {
             "info": "For DD terms, makes the listed directions non-solvable.", 
-            "dtype": "str", 
+            "dtype": ["str", "int"],
             "default": null, 
             "name": "dd3-fix-dirs"
         }, 

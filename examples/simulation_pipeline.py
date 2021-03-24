@@ -90,22 +90,21 @@ briggs_robust = [2, 0, -2]
 
 for i, robust in enumerate(briggs_robust):
 
-    pipeline.add("cab/casa_clean",
+    pipeline.add("cab/wsclean",
                  "imager_example_robust_{:d}".format(i),
                  {
                      "msname":   MS,
-                     "weighting":   "briggs",
-                     "robust" : 0,
-                     "wprojplanes" : 128,
-                     "prefix":   "casa-{:s}_robust-{:d}".format(PREFIX, robust),
-                     "npix":   4096,                   # Image size in pixels
-                     "cellsize":   2,                      # Size of each square pixel
+                     "weight":   "briggs {:d}".format(robust),
+                     "prefix":   "{:s}_robust-{:d}".format(PREFIX, robust),
+                     "npix":   2048,                   # Image size in pixels
+                     "scale":   2,                      # Size of each square pixel
                      # Perform 1000 iterarions of clean (Deconvolution)
-                     "niter":   5000,
-#                     "mgain" : 0.85,
-                     #"pol" : "I",
-                     #"multiscale": True,
-                     #"multiscale-scales" : [0,2],
+                     "niter":   1000,
+                     "pol" : "I",
+                     "multiscale": True,
+                     "multiscale-scales" : [0,1,2],
+                     "save-source-list": True,
+
                  },
                  label="Imaging MS, robust={:d}".format(robust),
                  cpus=2,

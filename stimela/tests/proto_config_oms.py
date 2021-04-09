@@ -48,6 +48,7 @@ class Step:
     cab: Optional[str] = None                       # if not None, this step is a cab and this is the cab name
     recipe: Optional["Recipe"] = None               # if not None, this step is a nested recipe
     params: Dict[str, Any] = EmptyDictDefault()     # assigns parameter values
+    info: Optional[str] = None                      # comment or info
 
     _skip: Conditional = None                       # skip this step if conditional evaluates to true
     _break_on: Conditional = None                   # break out (of parent receipe) if conditional evaluates to true
@@ -143,5 +144,11 @@ steps:
     ))
 
     conf = OmegaConf.merge(schema, conf)
+
+    conf.steps.mynewstep = Step(cab="xxx")
+    stepname = "newstep"
+
+    conf.steps[stepname] = Step(cab="yyy")
+
 
     print(OmegaConf.to_yaml(conf, resolve=True))

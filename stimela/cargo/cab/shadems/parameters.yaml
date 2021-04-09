@@ -4,13 +4,13 @@ binary: shadems
 info: Rapid Measurement Set plotting with xarray-ms and datashader.
 msdir: true
 prefix: --
-params:
+inputs:
   ms:
     info: Measurement set to plot
     default: null
     choices: null
     repeat_policy: null
-    io: mixed
+    writeable: true
     dtype: file
     positional: false
     internal_name: false
@@ -23,7 +23,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -33,7 +32,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -45,7 +43,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -65,7 +62,6 @@ params:
     - last
     - mode
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -76,7 +72,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -86,7 +81,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -96,7 +90,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -106,7 +99,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -116,7 +108,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: float
     positional: false
     internal_name: false
@@ -126,7 +117,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: float
     positional: false
     internal_name: false
@@ -136,7 +126,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: float
     positional: false
     internal_name: false
@@ -146,7 +135,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: float
     positional: false
     internal_name: false
@@ -156,7 +144,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: float
     positional: false
     internal_name: false
@@ -166,7 +153,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: float
     positional: false
     internal_name: false
@@ -176,7 +162,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: int
     positional: false
     internal_name: false
@@ -186,7 +171,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -196,7 +180,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -206,7 +189,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -216,7 +198,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -226,7 +207,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -236,7 +216,6 @@ params:
     default: all
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -247,7 +226,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -257,7 +235,6 @@ params:
     default: all
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -267,7 +244,6 @@ params:
     default: all
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -277,7 +253,6 @@ params:
     default: all
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -287,7 +262,6 @@ params:
     default: all
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -298,7 +272,6 @@ params:
     default: all
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -308,7 +281,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -318,7 +290,6 @@ params:
     default: 1280
     choices: null
     repeat_policy: null
-    io: null
     dtype: int
     positional: false
     internal_name: false
@@ -328,7 +299,6 @@ params:
     default: 900
     choices: null
     repeat_policy: null
-    io: null
     dtype: int
     positional: false
     internal_name: false
@@ -344,7 +314,6 @@ params:
     - log
     - linear
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -354,7 +323,6 @@ params:
     default: bkr
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -364,7 +332,6 @@ params:
     default: bkr
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -374,7 +341,6 @@ params:
     default: glasbey_dark
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -384,7 +350,6 @@ params:
     default: 0
     choices: null
     repeat_policy: null
-    io: null
     dtype: int
     positional: false
     internal_name: false
@@ -394,7 +359,6 @@ params:
     default: 0.5
     choices: null
     repeat_policy: null
-    io: null
     dtype: float
     positional: false
     internal_name: false
@@ -404,7 +368,6 @@ params:
     default: FFFFFF
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -414,7 +377,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: int
     positional: false
     internal_name: false
@@ -424,7 +386,6 @@ params:
     default: null
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -434,7 +395,6 @@ params:
     default: plot-{ms}{_field}{_Spw}{_Scan}{_Ant}-{label}{_alphalabel}{_colorlabel}{_suffix}.png
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -445,7 +405,6 @@ params:
     default: '{ms}{_field}{_Spw}{_Scan}{_Ant}{_title}{_Alphatitle}{_Colortitle}'
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -455,7 +414,6 @@ params:
     default: '{xname}{_xunit}'
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -465,7 +423,6 @@ params:
     default: '{yname}{_yunit}'
     choices: null
     repeat_policy: null
-    io: null
     dtype: str
     positional: false
     internal_name: false
@@ -475,7 +432,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false
@@ -486,7 +442,6 @@ params:
     default: 100000
     choices: null
     repeat_policy: null
-    io: null
     dtype: int
     positional: false
     internal_name: false
@@ -497,7 +452,6 @@ params:
     default: 1
     choices: null
     repeat_policy: null
-    io: null
     dtype: int
     positional: false
     internal_name: false
@@ -507,7 +461,6 @@ params:
     default: false
     choices: null
     repeat_policy: null
-    io: null
     dtype: bool
     positional: false
     internal_name: false

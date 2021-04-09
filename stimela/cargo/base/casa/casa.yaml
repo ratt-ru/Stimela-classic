@@ -33,7 +33,7 @@ params:
     msname:
       info: "Name of input visibility file"
       dtype: dir
-      io:   mixed
+      writeable: True
       required: true
       internal_name: vis
 

@@ -8,7 +8,7 @@ msdir: true
 prefix: 
 #binary: applycal
 
-params:
+inputs:
   # "_use" is a magic word which means include section(s). This pulls some standard parameter definitions from casa.yaml,
   # _into the section in which the _use directive appears_. So it's like an include. 
   _use:

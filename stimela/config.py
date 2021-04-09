@@ -22,30 +22,40 @@ from stimela.configuratt import build_nested_config
 def EmptyDictDefault():
     return field(default_factory=lambda:{})
 
-
-## schema for cab parameters
-
-class IOType(Enum):
-    input  = 1
-    output = 2
-    mixed  = 3
+def EmptyListDefault():
+    return field(default_factory=lambda:[])
 
 
 @dataclass
-class CabParameter:
-    info: str = "parameter description"
-    dtype: str = MISSING
-    default:  Optional[Any] = None
+class Parameter:
+    """Parameter (of cab or recipe)"""
+    info: str = ""
+    # for input parameters, this flag indicates a read-write (aka input-output aka mixed-mode) parameter e.g. an MS
+    writeable: bool = False
+    # data type
+    dtype: Enum("ParamType", "bool int float str file dir ms") = MISSING
+    # default value. Use MANDATORY if parameter has no default, and is mandatory
+    default: Optional[str] = None
+    # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
+    implicit: Optional[str] = None
+    # for parameters of recipes, specifies that this parameter maps onto a parameter of a constitutent step
+    maps: Optional[str] = None
+    # optonal list of arbitrary tags, used to group parameters
+    tags: List[str] = EmptyListDefault()
+
+    # not sure this is needed? See https://github.com/ratt-ru/Stimela/discussions/698. Leaving it in for now.
     required: Optional[bool] = False
-    io:       Optional[IOType] = IOType.input
+
+    # choices for an option-type parameter (should this be List[str]?)
     choices:  Optional[List[Any]] = ()
+
+    # inherited from Stimela 1 -- used to handle paremeters inside containers?
+    # might need a re-think, but we can leave them in for now  
     internal_name: Optional[str] = ""
     positional: Optional[bool] = False
     repeat_policy: Optional[str] = MISSING
     pattern: Optional[str] = MISSING
     prefix: Optional[str] = MISSING
-
-CabParameterSet = Dict[str, CabParameter]
 
 ## schema for a stimela image
 
@@ -91,15 +101,8 @@ class CabDefinition:
     # cab management and cleanup definitions
     management: CabManagement = CabManagement()
     # cab parameter definitions
-    params: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
-
-    def __post_init__(self):
-        if bool(self.image) != bool(self.command):
-            raise ValueError("CabDefinition must specify either an image or a command, but not both")
-        # set name from image or command, if unset
-        if self.name is None:
-            self.name = self.image or self.command.split(1)[0]
-        
+    inputs: Dict[str, Parameter] = EmptyDictDefault()
+    outputs: Dict[str, Parameter] = EmptyDictDefault()
 
 
 ## overall Stimela config schema

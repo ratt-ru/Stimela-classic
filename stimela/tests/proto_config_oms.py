@@ -30,7 +30,9 @@ def EmptyDictDefault():
 class Parameter:
     """Parameter (of cab or recipe)"""
     info: str = ""
-    io: Enum("IOMode", "input output both") = MISSING
+    # for input parameters, this flag indicates a read-write (aka input-output aka mixed-mode) parameter e.g. an MS
+    writeable: bool = False
+    # data type
     dtype: Enum("ParamType", "bool int float str file dir ms") = MISSING
     # default value. Use MANDATORY if parameter has no default, and is mandatory
     default: Optional[str] = None
@@ -41,17 +43,11 @@ class Parameter:
 
 
 @dataclass
-class Dirs:
-    """I/O directories"""
-    input: str = ""
-    output: str = ""
-
-@dataclass
 class Step:
     """Represents one processing step in a recipe"""
     cab: Optional[str] = None                       # if not None, this step is a cab and this is the cab name
     recipe: Optional["Recipe"] = None               # if not None, this step is a nested recipe
-    args: Dict[str, Any] = EmptyDictDefault()       # assigns parameters
+    params: Dict[str, Any] = EmptyDictDefault()     # assigns parameter values
 
     _skip: Conditional = None                       # skip this step if conditional evaluates to true
     _break_on: Conditional = None                   # break out (of parent receipe) if conditional evaluates to true
@@ -62,14 +58,15 @@ class Recipe:
     info: str = ""
     steps: Dict[str, Step] = MISSING                # sequence of named steps
 
-    dirs: Optional[Dirs] = None                     # I/O directories
+    dirs: Dict[str, Any] = EmptyDictDefault()       # I/O directory mappings
 
     vars: Dict[str, Any] = EmptyDictDefault()       # arbitrary collection of variables pertaining to this step (for use in substitutions)
 
     # Formally defines the recipe's inputs and outputs
     # See discussion in https://github.com/ratt-ru/Stimela/discussions/698#discussioncomment-362273
     # If None, these are inferred automatically from the steps' parameters
-    params: Optional[Dict[str, Parameter]] = None
+    inputs: Optional[Dict[str, Parameter]] = None
+    outputs: Optional[Dict[str, Parameter]] = None
 
     # loop over a set of variables
     _for: Optional[Dict[str, Any]] = None
@@ -98,13 +95,13 @@ dirs:
 steps: 
     makems:
         cab: simms
-        args:
+        params:
             msname: "{recipe.vars.ms}"
             telescope: kat-7
             dtime: 1
             synthesis: 0.128
     selfcal:
-        args:
+        params:
             ms: "{recipe.vars.ms}"      # 'recipe' refers to parent recipe
             image: final-image.fits     # overrides output filename
         recipe:
@@ -117,28 +114,29 @@ steps:
             steps:
                 calibrate: 
                     cab: cubical
-                    args:
+                    params:
                         ms: "{recipe.inputs.ms}"
                     _skip: "recipe.vars.selfcal_loop < 2"    # skip on first iteration, go straight to image
                 image:
                     cab: wsclean
-                    args:
+                    params:
                         msname: "{recipe.inputs.ms}"
                         name: "image-{recipe.vars.selfcal_loop}"
                         scale: "{recipe.vars.scale}"
                         size: "{recipe.vars.size}"
                 evaluate:
                     cab: aimfast
-                    args:
+                    params:
                         image: "{recipe.steps.wsclean.outputs.residual_image}"
                     _break_on: "step.outputs.dr_achieved"    # break out of recipe based on some output value
             # the below formally specifies the inputs and outputs of the selfcal recipe
-            params:
+            inputs:
                 ms: 
                     dtype: ms
-                    io: both
+                    writeable: true
                     default: null
                 # maps onto the output of the wsclean step
+            outputs:
                 image:
                     maps: wsclean.outputs.image
 """

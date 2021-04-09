@@ -1,0 +1,41 @@
+name: simms
+image: stimela/simms
+binary: simms
+info: Simms 
+prefix: -
+
+inputs:
+  msname:
+    info: Measurement set(s)
+    dtype: str
+  tel:
+    info: Antenna table/file
+    dtype: Union[File, Directory, str]
+    alias: antenna-file
+    required: true
+  synthesis:
+    info: Observation length in hours
+    dtype: float
+    default: 0.5
+  dtime:
+    info: Integration time
+    dtype: float
+    default: 1
+  dfreq:
+    info: Channel width
+    dtype: Union[str, float]
+    default: 1.42GHz
+  freq0: 
+    info: Centre of first channel
+    dtype: Union[str, float]
+    default: briggs 0.0
+  direction: 
+    info: Phase centre
+    default: "J2000,0deg,-30deg"
+
+outputs:
+  dirty:
+    info: Simulated MS
+    dtype: Directory
+    implicit: "{inputs.name}"
+

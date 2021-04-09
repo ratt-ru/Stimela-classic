@@ -1,4 +1,4 @@
-task: casa_applycal
+name: casa_applycal
 info: "Apply calibrations solutions(s) to data"
 
 image: casa
@@ -8,8 +8,8 @@ msdir: true
 prefix: 
 #binary: applycal
 
-inputs:
-  # "_usr" is a magic word which means include section(s). This pulls some standard parameter definitions from casa.yaml,
+params:
+  # "_use" is a magic word which means include section(s). This pulls some standard parameter definitions from casa.yaml,
   # _into the section in which the _use directive appears_. So it's like an include. 
   _use:
     - base.casa.params.mssel_inputs
@@ -31,8 +31,6 @@ inputs:
       - flagonly 
       - flagonlystrict 
       - calonly
-
-outputs:
 
 
 # same here, using _use to include common behaviours, but we also add an extra one for the cleanup section

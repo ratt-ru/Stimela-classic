@@ -1,10 +1,10 @@
+name: shadems
 image: stimela/shadems
 binary: shadems
 info: Rapid Measurement Set plotting with xarray-ms and datashader.
 msdir: true
 prefix: --
-task: shadems
-inputs:
+params:
   ms:
     info: Measurement set to plot
     default: null
@@ -512,4 +512,3 @@ inputs:
     positional: false
     internal_name: false
     prefix: null
-outputs: {}

@@ -80,15 +80,26 @@ class StimelaImage:
 
 @dataclass 
 class CabDefinition:
-    task: str = MISSING
-    info: str = MISSING
-    image: str = MISSING
+    name: Optional[str] = None                    # cab name. (If None, use image or command name)
+    info: Optional[str] = None                    # description
+    image: Optional[str] = None                   # container image to run 
+    command: Optional[str] = None                 # command to run. Either image or command needs to be specified
+    # not sure what these are
     msdir: Optional[bool] = False
     prefix: Optional[str] = "-"
     binary: Optional[str] = ""
+    # cab management and cleanup definitions
     management: CabManagement = CabManagement()
-    inputs: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
-    outputs: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
+    # cab parameter definitions
+    params: Optional[Dict[str, CabParameter]] = EmptyDictDefault()
+
+    def __post_init__(self):
+        if bool(self.image) != bool(self.command):
+            raise ValueError("CabDefinition must specify either an image or a command, but not both")
+        # set name from image or command, if unset
+        if self.name is None:
+            self.name = self.image or self.command.split(1)[0]
+        
 
 
 ## overall Stimela config schema
@@ -150,8 +161,11 @@ CONFIG_LOCATIONS = OrderedDict(
 # set to the config file that was actually found
 CONFIG_LOADED = None
 
-def load_config():
+def load_config(extra_configs=List[str]):
+    log = stimela.logger()
+
     stimela_dir = os.path.dirname(stimela.__file__)
+
 
     # start with empty structured config containing schema
     base_schema = OmegaConf.structured(StimelaImage) 
@@ -166,16 +180,33 @@ def load_config():
 
     # merge all cab/*/*yaml files into the config, under cab.taskname
     cab_configs = glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml")
-    conf['cab'] = build_nested_config(conf, cab_configs, cab_schema, nameattr='task', section_name='cab')
+    conf['cab'] = build_nested_config(conf, cab_configs, cab_schema, nameattr='name', section_name='cab')
 
     conf['opts'] = opts_schema
-    # merge global config into opts
-    for _, config_file in CONFIG_LOCATIONS.items():
-        if config_file and os.path.exists(config_file):
-            conf['opts'] = OmegaConf.merge(opts_schema, OmegaConf.load(config_file))
-            global CONFIG_LOADED
-            CONFIG_LOADED = config_file
-            break
+
+    global CONFIG_LOADED
+
+    # find standard config file to use
+    if not any(path.startswith("=") for path in extra_configs):
+        # merge global config into opts
+        for _, config_file in CONFIG_LOCATIONS.items():
+            if config_file and os.path.exists(config_file):
+                log.info("loading config from {config_file}")
+                conf = OmegaConf.merge(conf, OmegaConf.load(config_file))
+                CONFIG_LOADED = config_file
+                break
+
+    # add local configs
+    for path in extra_configs:
+        if path.startswith("="):
+            path = path[1:]
+        log.info("loading config from {path}")
+        conf = OmegaConf.merge(conf, OmegaConf.load(path))
+        if not CONFIG_LOADED:
+            CONFIG_LOADED = path
+
+    if not CONFIG_LOADED:
+        log.info("no configuration files, so using defaults")
     
     return OmegaConf.create(conf)
 

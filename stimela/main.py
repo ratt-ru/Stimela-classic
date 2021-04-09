@@ -1,5 +1,5 @@
 # -*- coding: future_fstrings -*-
-import os
+import os, logging
 import click
 import textwrap as _textwrap
 import stimela
@@ -62,16 +62,23 @@ pass_stimela_context = click.make_pass_decorator(StimelaContext)
 @click.group()
 @click.option('--backend', '-b', type=click.Choice(config.Backend._member_names_), 
                 help="Backend to use (for containerization).")
+@click.option('--config', '-c', 'config_files', metavar='FILE', multiple=True,
+                help="Extra config file(s) to load. Prefix with '=' to override standard config files.")
+@click.option('--verbose', '-v', is_flag=True, help='Be extra verbose in output.')
 @click.version_option(str(stimela.__version__))
 @click.pass_context
-def cli(ctx, backend):
+def cli(ctx, backend, config_files=[], verbose=False):
     global log
     log = stimela.logger()
     log.info(f"starting")        # remove this eventually, but it's handy for timing things right now
 
+    if verbose:
+        log.setLevel(logging.DEBUG)
+        log.info("verbose output enabled")
+
     # load config files
     global CONFIG
-    CONFIG = config.load_config()
+    CONFIG = config.load_config(extra_configs=config_files)
     if config.CONFIG_LOADED:
         log.info(f"loaded config from {config.CONFIG_LOADED}") 
 
@@ -82,6 +89,8 @@ def cli(ctx, backend):
     BACKEND = getattr(stimela.backends, CONFIG.opts.backend.name)
     log.info(f"backend is {CONFIG.opts.backend.name}")
 
+    CONFIG.opts
+    CONFIG['opts']
     # create context to be passed to commands
     ctx.obj = StimelaContext(CONFIG, log, BACKEND)
 

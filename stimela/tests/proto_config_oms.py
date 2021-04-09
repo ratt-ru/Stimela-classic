@@ -31,7 +31,7 @@ class Parameter:
     """Parameter (of cab or recipe)"""
     info: str = ""
     io: Enum("IOMode", "input output both") = MISSING
-    type: Enum("ParamType", "bool int float str file dir ms") = MISSING
+    dtype: Enum("ParamType", "bool int float str file dir ms") = MISSING
     # default value. Use MANDATORY if parameter has no default, and is mandatory
     default: Optional[str] = None
     # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
@@ -51,8 +51,7 @@ class Step:
     """Represents one processing step in a recipe"""
     cab: Optional[str] = None                       # if not None, this step is a cab and this is the cab name
     recipe: Optional["Recipe"] = None               # if not None, this step is a nested recipe
-    input: Dict[str, Any] = EmptyDictDefault()     # assigns input parameters
-    output: Dict[str, Any] = EmptyDictDefault()    # assigns output parameters
+    args: Dict[str, Any] = EmptyDictDefault()       # assigns parameters
 
     _skip: Conditional = None                       # skip this step if conditional evaluates to true
     _break_on: Conditional = None                   # break out (of parent receipe) if conditional evaluates to true
@@ -70,7 +69,7 @@ class Recipe:
     # Formally defines the recipe's inputs and outputs
     # See discussion in https://github.com/ratt-ru/Stimela/discussions/698#discussioncomment-362273
     # If None, these are inferred automatically from the steps' parameters
-    parameters: Optional[Dict[str, Parameter]] = None
+    params: Optional[Dict[str, Parameter]] = None
 
     # loop over a set of variables
     _for: Optional[Dict[str, Any]] = None
@@ -99,15 +98,14 @@ dirs:
 steps: 
     makems:
         cab: simms
-        inputs:
+        args:
             msname: "{recipe.vars.ms}"
             telescope: kat-7
             dtime: 1
             synthesis: 0.128
     selfcal:
-        input:
+        args:
             ms: "{recipe.vars.ms}"      # 'recipe' refers to parent recipe
-        output:
             image: final-image.fits     # overrides output filename
         recipe:
             info: "this is a generic selfcal loop"
@@ -119,25 +117,25 @@ steps:
             steps:
                 calibrate: 
                     cab: cubical
-                    inputs:
+                    args:
                         ms: "{recipe.inputs.ms}"
                     _skip: "recipe.vars.selfcal_loop < 2"    # skip on first iteration, go straight to image
                 image:
                     cab: wsclean
-                    inputs:
+                    args:
                         msname: "{recipe.inputs.ms}"
                         name: "image-{recipe.vars.selfcal_loop}"
                         scale: "{recipe.vars.scale}"
                         size: "{recipe.vars.size}"
                 evaluate:
                     cab: aimfast
-                    inputs:
+                    args:
                         image: "{recipe.steps.wsclean.outputs.residual_image}"
                     _break_on: "step.outputs.dr_achieved"    # break out of recipe based on some output value
             # the below formally specifies the inputs and outputs of the selfcal recipe
-            parameters:
+            params:
                 ms: 
-                    type: ms
+                    dtype: ms
                     io: both
                     default: null
                 # maps onto the output of the wsclean step

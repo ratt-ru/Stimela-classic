@@ -4,6 +4,7 @@ from collections.abc import Sequence
 from omegaconf.omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from omegaconf.listconfig import ListConfig
+from omegaconf.errors import OmegaConfBaseException
 from typing import Any, List, Dict, Optional, Union, Callable
 
 
@@ -158,7 +159,10 @@ def build_nested_config(conf, filelist: List[str], schema,
             name = subconf.get(nameattr)
         else:
             raise NameError(f"{path} does not contain a '{nameattr}' field")
-        section_content[name] = OmegaConf.merge(schema, 
-            resolve_config_refs(subconf, f"{section_name}.{name}" if section_name else name, conf, subconf))
+        try:
+            section_content[name] = OmegaConf.merge(schema, 
+                resolve_config_refs(subconf, f"{section_name}.{name}" if section_name else name, conf, subconf))
+        except OmegaConfBaseException as exc:
+            raise RuntimeError(f"config error in {path}:\n  {exc}")
 
     return section_content

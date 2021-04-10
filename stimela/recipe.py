@@ -61,11 +61,10 @@ class Cab(object):
     name: Optional[str] = None                    # cab name. (If None, use image or command name)
     info: Optional[str] = None                    # description
     image: Optional[str] = None                   # container image to run 
-    command: Optional[str] = None                 # command to run. Either image or command needs to be specified
+    command: str = MISSING                        # command to run (inside or outside the container)
     # not sure what these are
     msdir: Optional[bool] = False
     prefix: Optional[str] = "-"
-    binary: Optional[str] = ""
     # cab management and cleanup definitions
     management: CabManagement = CabManagement()
     # cab parameter definitions
@@ -129,6 +128,10 @@ class Step:
     def outputs(self):
         return self.cargo.outputs
 
+    @property
+    def inputs_outputs(self):
+        return self.cargo.inputs_outputs
+
     def validate(self, config):
         if bool(self.cab) == bool(self.recipe):
             raise StepValidationError("step must specify either a cab or a nested recipe, but not both")
@@ -186,9 +189,9 @@ class Recipe:
                 raise CabValidationError(f"cab {self.name}: parameter {name} is both an input and an output, this is not permitted")
         for io in self.inputs, self.outputs:
             for name, param in io.items():
-                if param.maps_to:
-                    if '.' not in param.maps_to:
-                        raise RecipeValidationError(f"parameter {name}.maps_to={param.maps_to} is missing a step name")
+                for maps in param.maps_to:
+                    if '.' not in maps:
+                        raise RecipeValidationError(f"parameter {name}.maps_to: '{maps}' is missing a step name")
         # instantiate steps if needed (when creating from an omegaconf)
         if type(self.steps) is not OrderedDict:
             steps = OrderedDict()
@@ -228,20 +231,20 @@ class Recipe:
         # _unless_ we already have an explicitly defined input or output that maps it anyway
         for name, param in self.inputs_outputs.items():
             is_input = name in self.inputs
-            if param.maps_to:
+            for maps in param.maps_to:
                 # verify mapped name
-                step_label, step_param_name = param.maps_to.split('.', 1)
+                step_label, step_param_name = maps.split('.', 1)
                 step = self.steps.get(step_label)
                 if step is None:
-                    raise RecipeValidationError(f"parameter {name}.maps_to={param.maps_to}: no such step")
+                    raise RecipeValidationError(f"parameter {name}.maps_to unknown step '{step_label}'")
                 if step_param_name not in (step.inputs if is_input else step.outputs):
-                    raise RecipeValidationError(f"parameter {name}.maps_to={param.maps_to}: no such mapped parameter")
+                    raise RecipeValidationError(f"parameter {name}.maps_to unknown parameter '{step_param_name}'")
                 # delete from auto dict, if in it
-                if param.maps_to in auto_params:
-                    del auto_params[param.maps_to]
+                if maps in auto_params:
+                    del auto_params[maps]
                 # else check that it is legit, and not already assigned to
                 elif step_param_name in step.params:
-                    raise RecipeValidationError(f"parameter {name}.maps_to={param.maps_to}, but this step's parameter is already set explicitly")
+                    raise RecipeValidationError(f"parameter {name}.maps_to '{maps}', but the mapped parameter is already set explicitly")
         
         # anything left becomes a recipe parameter
         for name, (param, is_input) in auto_params.items():
@@ -261,11 +264,13 @@ class Recipe:
 
     def update_parameter(self, name, value):
         param = self.inputs.get(name) or self.outputs.get(name)
-        if param.maps_to:
-            step_label, step_param_name = param.maps_to.split('.', 1)
+        for maps in param.maps_to:
+            step_label, step_param_name = maps.split('.', 1)
             step = self.steps.get(step_label)
             if step is None:
-                raise RecipeValidationError(f"parameter {name}.maps_to={param.maps_to} has an unknown step name")
+                raise RecipeValidationError(f"parameter {name}.maps_to unknown step '{step_label}'")
+            if step_param_name not in step.inputs_outputs:
+                raise RecipeValidationError(f"parameter {name}.maps_to unknown parameter '{maps}'")
             step.cargo.update_parameter(step_param_name, value)
         self.params[name] = value
 

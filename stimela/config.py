@@ -36,8 +36,8 @@ class Parameter:
     default: Optional[str] = None
     # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
     implicit: Optional[str] = None
-    # for parameters of recipes, specifies that this parameter maps onto a parameter of a constitutent step
-    maps_to: Optional[str] = None
+    # for parameters of recipes, specifies that this parameter maps onto parameter(s) of constitutent step(s)
+    maps_to: List[str] = EmptyListDefault()
     # optonal list of arbitrary tags, used to group parameters
     tags: List[str] = EmptyListDefault()
 

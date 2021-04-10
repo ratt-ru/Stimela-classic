@@ -1,6 +1,6 @@
 name: simms
 image: stimela/simms
-binary: simms
+command: simms
 info: Simms 
 prefix: '-'
 

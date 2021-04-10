@@ -13,7 +13,7 @@ inputs:
     writeable: true
     dtype: file
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   xaxis:
     info: 'Xaxis to plot. Can be any MS column name, also: CHAN, FREQ, CORR, ROW,
@@ -25,7 +25,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   yaxis:
     info: Y axis to plot. Must be given the same number of times as --xaxis.
@@ -34,7 +34,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   aaxis:
     info: Intensity axis. If none, plot intensity (a.k.a. alpha channel) is proportional
@@ -45,7 +45,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   ared:
     info: Alpha axis reduction function.
@@ -64,7 +64,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   colour-by:
     info: Colour axis. All columns and variations listed under --xaxis are available
@@ -74,7 +74,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   col:
     info: Name of visibility column. Default is DATA. Two-column arithmetic is recognized.
@@ -83,7 +83,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   noflags:
     info: Ignore flagged data. Default is true.
@@ -92,7 +92,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   noconj:
     info: Do not show conjugate points in u,v plots. Default is true.
@@ -101,7 +101,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   xmin:
     info: Minimum x-axis value. Default is data min.
@@ -110,7 +110,7 @@ inputs:
     repeat_policy: null
     dtype: float
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   xmax:
     info: Maximum x-axis value to plot. Default is data max.
@@ -119,7 +119,7 @@ inputs:
     repeat_policy: null
     dtype: float
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   ymin:
     info: Minimum y-axis value. Default is data min.
@@ -128,7 +128,7 @@ inputs:
     repeat_policy: null
     dtype: float
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   ymax:
     info: Maximum y-axis value to plot. Default is data max.
@@ -137,7 +137,7 @@ inputs:
     repeat_policy: null
     dtype: float
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   cmin:
     info: Minimum colouring value. Default is data-min.
@@ -146,7 +146,7 @@ inputs:
     repeat_policy: null
     dtype: float
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   cmax:
     info: Maximum colouring value.  Default is data-max.
@@ -155,7 +155,7 @@ inputs:
     repeat_policy: null
     dtype: float
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   cnum:
     info: Number of colours to use.
@@ -164,7 +164,7 @@ inputs:
     repeat_policy: null
     dtype: int
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   iter-field:
     info: Separate plots per field. Default is combine all.
@@ -173,7 +173,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   iter-antenna:
     info: Separate plots per antenna. Default is combine all.
@@ -182,7 +182,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   iter-spw:
     info: Separate plots per spw. Default is combine all.
@@ -191,7 +191,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   iter-scan:
     info: Separate plots per scan. Default is combine all.
@@ -200,7 +200,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   iter-corr:
     info: Separate plots per correlation / Stokes. Default is combine all.
@@ -209,7 +209,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   ant:
     info: Antennas to plot (comma-separated list of names). Default is all.
@@ -218,7 +218,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   ant-num:
     info: Antennas to plot (comma-separated list of numbers, or a [start]:[stop][:step]
@@ -228,7 +228,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   baseline:
     info: Baselines to plot, as 'ant1-ant2' (comma-separated list). Default is all.
@@ -237,7 +237,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   spw:
     info: Spectral windows (DDIDs) to plot (comma-separated list) Default is all.
@@ -246,7 +246,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   field:
     info: Field ID(s) to plot (comma-separated list). Default is all.
@@ -255,7 +255,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   scan:
     info: Scans to plot (comma-separated list). Default is all.
@@ -264,7 +264,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   corr:
     info: Correlations or Stokes to plot, use indices or labels (comma-separated list).
@@ -274,7 +274,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   chan:
     info: Channel slice, as [start]:[stop][:step].  Default is to plot all.
@@ -283,7 +283,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   xcanvas:
     info: Canvas x-size in pixels.
@@ -292,7 +292,7 @@ inputs:
     repeat_policy: null
     dtype: int
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   ycanvas:
     info: Canvas y-size in pixels.
@@ -301,7 +301,7 @@ inputs:
     repeat_policy: null
     dtype: int
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   norm:
     info: Pixel scale normalization. Default is 'log' when colouring, and 'eq_hist'
@@ -316,7 +316,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   cmap:
     info: Colorcet map used without --colour-by.
@@ -325,7 +325,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   bmap:
     info: Colorcet map used when colouring by a continuous axis.
@@ -334,7 +334,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   dmap:
     info: Colorcet map used when colouring by a discrete axis.
@@ -343,7 +343,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   spread-pix:
     info: Dynamically spread rendered pixels to this size.
@@ -352,7 +352,7 @@ inputs:
     repeat_policy: null
     dtype: int
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   spread-thr:
     info: Threshold parameter for spreading (0 to 1).
@@ -361,7 +361,7 @@ inputs:
     repeat_policy: null
     dtype: float
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   bgcol:
     info: RGB hex code for background colour. Default FFFFFF (white).
@@ -370,7 +370,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   fontsize:
     info: Font size for all text elements.
@@ -379,7 +379,7 @@ inputs:
     repeat_policy: null
     dtype: int
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   suffix:
     info: Suffix to be included in filenames.
@@ -388,7 +388,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   png:
     info: Output PNG name. Default is
@@ -397,7 +397,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   title:
     info: Template for plot titles. Default title includes ms name, field, spw, scan,
@@ -407,7 +407,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   xlabel:
     info: Template for X axis labels. Default is x-axis name and unit
@@ -416,7 +416,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   ylabel:
     info: Template for Y axis labels. Default is y-axis name and unit
@@ -425,7 +425,7 @@ inputs:
     repeat_policy: null
     dtype: str
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   debug:
     info: Enable debugging output.
@@ -434,7 +434,7 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   row-chunk-size:
     info: Row chunk size for dask-ms. Larger chunks may or may not be faster, but
@@ -444,7 +444,7 @@ inputs:
     repeat_policy: null
     dtype: int
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   num-parallel:
     info: Run up to N renderers in parallel. Default is serial. Use -j0 to auto-set
@@ -454,7 +454,7 @@ inputs:
     repeat_policy: null
     dtype: int
     positional: false
-    internal_name: false
+    alias: false
     prefix: null
   profile:
     info: Enable dask profiling output.
@@ -463,5 +463,5 @@ inputs:
     repeat_policy: null
     dtype: bool
     positional: false
-    internal_name: false
+    alias: false
     prefix: null

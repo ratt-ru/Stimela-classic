@@ -31,7 +31,7 @@ class Parameter:
     # for input parameters, this flag indicates a read-write (aka input-output aka mixed-mode) parameter e.g. an MS
     writeable: bool = False
     # data type
-    dtype: Enum("ParamType", "bool int float str file dir ms") = MISSING
+    dtype: Optional[str] = None
     # default value. Use MANDATORY if parameter has no default, and is mandatory
     default: Optional[str] = None
     # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
@@ -49,7 +49,7 @@ class Parameter:
 
     # inherited from Stimela 1 -- used to handle paremeters inside containers?
     # might need a re-think, but we can leave them in for now  
-    internal_name: Optional[str] = ""
+    alias: Optional[str] = ""
     positional: Optional[bool] = False
     repeat_policy: Optional[str] = MISSING
     pattern: Optional[str] = MISSING
@@ -143,7 +143,7 @@ def load_config(extra_configs=List[str]):
     conf.base = build_nested_config(conf, base_configs, base_schema, nameattr='name', include_path='path', section_name='base')
 
     # merge all cab/*/*yaml files into the config, under cab.taskname
-    cab_configs = glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml")
+    cab_configs = glob.glob(f"{stimela_dir}/cargo/cabs/*.yaml")
     conf.cabs = build_nested_config(conf, cab_configs, cab_schema, nameattr='name', section_name='cab')
 
     conf.opts = opts_schema

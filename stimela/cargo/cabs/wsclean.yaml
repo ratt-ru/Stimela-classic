@@ -3,7 +3,7 @@ image: stimela/wsclean
 binary: shadems
 info: Rapid Measurement Set plotting with xarray-ms and datashader.
 msdir: true
-prefix: -
+prefix: '-'
 
 inputs:
   ms:

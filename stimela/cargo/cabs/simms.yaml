@@ -2,7 +2,7 @@ name: simms
 image: stimela/simms
 binary: simms
 info: Simms 
-prefix: -
+prefix: '-'
 
 inputs:
   msname:

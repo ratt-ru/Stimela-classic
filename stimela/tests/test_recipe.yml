@@ -1,0 +1,97 @@
+cabs:
+  simms:
+    command: simms
+    inputs:
+      msname:
+        writeable: True
+        dtype: str
+        required: true
+      telescope:
+        dtype: str
+      dtime:
+        dtype: int
+      synthesis:
+        dtype: float
+        
+  cubical:
+    command: gocubical
+    inputs:
+      ms:
+        dtype: str
+        required: true
+
+  wsclean:
+    command: wsclean
+    inputs:
+      msname:
+        writeable: True
+        dtype: str
+        required: true
+      name:
+        dtype: str
+        required: true
+      size:
+        dtype: str
+        required: true
+
+  aimfast:
+    command: aimfast
+    inputs:
+      image:
+        dtype: str
+        required: true
+
+recipe:
+  name: "Oleg's bullshit recipe"
+  info: 'top level recipe definition'
+  vars:
+      ms: demo.ms
+  dirs:
+      input: input
+      output: output
+  steps: 
+      makems:
+          cab: simms
+          params:
+              msname: "{recipe.vars.ms}"
+              telescope: kat-7
+              dtime: 1
+              synthesis: 0.128
+      selfcal:
+          params:
+              ms: "{recipe.vars.ms}"      # 'recipe' refers to parent recipe
+              image: final-image.fits     # overrides output filename
+          recipe:
+              name: "bullshit selfcal"
+              info: "this is a generic selfcal loop"
+              vars:
+                  scale: 30asec
+                  size: 256 
+              _for:
+                  selfcal_loop: 1,2,3     # repeat three times
+              steps:
+                  calibrate: 
+                      cab: cubical
+                      params:
+                          ms: "{recipe.inputs.ms}"
+                      _skip: "recipe.vars.selfcal_loop < 2"    # skip on first iteration, go straight to image
+                  image:
+                      cab: wsclean
+                      params:
+                          msname: "{recipe.inputs.ms}"
+                          # scale: "{recipe.vars.scale}"
+                          # size: "{recipe.vars.size}"
+                  evaluate:
+                      cab: aimfast
+                      params:
+                          image: "{recipe.steps.wsclean.outputs.residual_image}"
+                      _break_on: "step.outputs.dr_achieved"    # break out of recipe based on some output value
+              # the below formally specifies the inputs and outputs of the selfcal recipe
+              inputs:
+                  ms: 
+                      dtype: ms
+                      writeable: true
+                      default: null
+                  # maps onto the "image"  step
+                  image:
+                      maps_to: image.name

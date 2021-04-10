@@ -26,21 +26,6 @@ def EmptyDictDefault():
     return field(default_factory=lambda:{})
 
 
-@dataclass
-class Parameter:
-    """Parameter (of cab or recipe)"""
-    info: str = ""
-    # for input parameters, this flag indicates a read-write (aka input-output aka mixed-mode) parameter e.g. an MS
-    writeable: bool = False
-    # data type
-    dtype: Enum("ParamType", "bool int float str file dir ms") = MISSING
-    # default value. Use MANDATORY if parameter has no default, and is mandatory
-    default: Optional[str] = None
-    # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
-    implicit: Optional[str] = None
-    # for parameters of recipes, specifies that this parameter maps onto a parameter of a constitutent step
-    maps: Optional[str] = None
-
 
 @dataclass
 class Step:

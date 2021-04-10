@@ -15,12 +15,10 @@ CONFIG_FILE = os.path.expanduser("~/.config/stimela.conf")
 # ListOrString = Union[str, List[str]]
 ListOrString = Any
 
-Conditional = Optional[str]
-
 from stimela.configuratt import build_nested_config
 
 def EmptyDictDefault():
-    return field(default_factory=lambda:{})
+    return field(default_factory=lambda:OrderedDict())
 
 def EmptyListDefault():
     return field(default_factory=lambda:[])
@@ -39,12 +37,12 @@ class Parameter:
     # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
     implicit: Optional[str] = None
     # for parameters of recipes, specifies that this parameter maps onto a parameter of a constitutent step
-    maps: Optional[str] = None
+    maps_to: Optional[str] = None
     # optonal list of arbitrary tags, used to group parameters
     tags: List[str] = EmptyListDefault()
 
     # not sure this is needed? See https://github.com/ratt-ru/Stimela/discussions/698. Leaving it in for now.
-    required: Optional[bool] = False
+    required: bool = False
 
     # choices for an option-type parameter (should this be List[str]?)
     choices:  Optional[List[Any]] = ()
@@ -88,21 +86,6 @@ class StimelaImage:
 
 ## schema for a cab definition file
 
-@dataclass 
-class CabDefinition:
-    name: Optional[str] = None                    # cab name. (If None, use image or command name)
-    info: Optional[str] = None                    # description
-    image: Optional[str] = None                   # container image to run 
-    command: Optional[str] = None                 # command to run. Either image or command needs to be specified
-    # not sure what these are
-    msdir: Optional[bool] = False
-    prefix: Optional[str] = "-"
-    binary: Optional[str] = ""
-    # cab management and cleanup definitions
-    management: CabManagement = CabManagement()
-    # cab parameter definitions
-    inputs: Dict[str, Parameter] = EmptyDictDefault()
-    outputs: Dict[str, Parameter] = EmptyDictDefault()
 
 
 ## overall Stimela config schema
@@ -122,36 +105,6 @@ class StimelaOptions:
 def DefaultDirs():
     return field(default_factory=lambda:dict(indir='.', outdir='.'))
 
-
-@dataclass
-class StimelaStep:
-    info: Optional[str] = ""                        
-    cab: Optional[str] = None                      # if not None, this step is a cab and this is the cab name
-    recipe: Optional["StimelaRecipe"] = None       # if not None, this step is a nested recipe
-    dirs: Dict[str, str] = DefaultDirs()            # overrides recipe dirs, if specified
-    inputs: Dict[str, Any] = EmptyDictDefault()     # assigns input parameters
-    outputs: Dict[str, Any] = EmptyDictDefault()    # assigns output parameters
-
-    _skip: Conditional = None                       # skip this step if conditional evaluates to true
-    _break_on: Conditional = None                   # break out (of parent receipe) if conditional evaluates to true
-
-
-@dataclass
-class StimelaRecipe:
-    info: str = "my recipe"
-    dirs: Dict[str, str] = DefaultDirs()
-    var: Optional[Dict[str, Any]] = EmptyDictDefault() 
-    steps: Dict[str, StimelaStep] = MISSING
-    outputs: Optional[Dict[str, Any]] = MISSING  # could be a list or string
-
-
-@dataclass 
-class StimelaConfig:
-    base: Dict[str, StimelaImage] = EmptyDictDefault()
-    cab: Dict[str, CabDefinition] = MISSING
-    opts: StimelaOptions = StimelaOptions()
-    recipe: Optional[StimelaRecipe] = MISSING
-
 _CONFIG_BASENAME = "stimela.conf"
 
 # dict of config file locations to check, in order of preference
@@ -168,24 +121,32 @@ def load_config(extra_configs=List[str]):
     log = stimela.logger()
 
     stimela_dir = os.path.dirname(stimela.__file__)
+    from stimela.recipe import Recipe, Step, Cab
+
+    @dataclass 
+    class StimelaConfig:
+        base: Dict[str, StimelaImage] = EmptyDictDefault()
+        cabs: Dict[str, Cab] = MISSING
+        opts: StimelaOptions = StimelaOptions()
+        recipe: Optional[Recipe] = MISSING
 
 
     # start with empty structured config containing schema
     base_schema = OmegaConf.structured(StimelaImage) 
-    cab_schema = OmegaConf.structured(CabDefinition)
+    cab_schema = OmegaConf.structured(Cab)
     opts_schema = OmegaConf.structured(StimelaOptions)
 
-    conf = {}
+    conf = OmegaConf.structured(StimelaConfig)
 
     # merge base/*/*yaml files into the config, under base.imagename
     base_configs = glob.glob(f"{stimela_dir}/cargo/base/*/*.yaml")
-    conf['base'] = build_nested_config(conf, base_configs, base_schema, nameattr='name', include_path='path', section_name='base')
+    conf.base = build_nested_config(conf, base_configs, base_schema, nameattr='name', include_path='path', section_name='base')
 
     # merge all cab/*/*yaml files into the config, under cab.taskname
     cab_configs = glob.glob(f"{stimela_dir}/cargo/cab/*/*.yaml")
-    conf['cab'] = build_nested_config(conf, cab_configs, cab_schema, nameattr='name', section_name='cab')
+    conf.cabs = build_nested_config(conf, cab_configs, cab_schema, nameattr='name', section_name='cab')
 
-    conf['opts'] = opts_schema
+    conf.opts = opts_schema
 
     global CONFIG_LOADED
 

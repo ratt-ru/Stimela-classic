@@ -69,12 +69,11 @@ pass_stimela_context = click.make_pass_decorator(StimelaContext)
 @click.pass_context
 def cli(ctx, backend, config_files=[], verbose=False):
     global log
-    log = stimela.logger()
+    log = stimela.logger(loglevel=logging.DEBUG if verbose else logging.INFO)
     log.info(f"starting")        # remove this eventually, but it's handy for timing things right now
 
     if verbose:
-        log.setLevel(logging.DEBUG)
-        log.info("verbose output enabled")
+        log.debug("verbose output enabled")
 
     # load config files
     global CONFIG

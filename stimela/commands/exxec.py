@@ -1,9 +1,12 @@
-from omegaconf.omegaconf import OmegaConf
+from omegaconf.omegaconf import OmegaConf, OmegaConfBaseException
 import click
 import os.path
 from typing import List
-from stimela import config
+from stimela import config, recipe
 from stimela.main import StimelaContext, cli, pass_stimela_context
+
+from stimela.recipe import Step, Recipe
+
 
 
 @cli.command("exec",
@@ -12,39 +15,59 @@ from stimela.main import StimelaContext, cli, pass_stimela_context
     short_help="execute a cab or a YML recipe",
     no_args_is_help=True)
 @click.argument("what", metavar="RECIPE.yml|CAB") 
-@click.argument("settings", nargs=-1, metavar="KEY=VALUE", required=False) 
+@click.argument("params", nargs=-1, metavar="KEY=VALUE", required=False) 
 @pass_stimela_context
-def exxec(context: StimelaContext, what: str, settings: List[str] = []):
+def exxec(context: StimelaContext, what: str, params: List[str] = []):
 
-    settings = OmegaConf.from_dotlist(settings)
+    params = OmegaConf.from_dotlist(params)
     # context.log.info("command-line settings are")
     # print(OmegaConf.to_yaml(settings))
 
     if os.path.isfile(what):
-        context.log.info(f"loading recipe {what}")
-        recipe = OmegaConf.structured(config.StimelaRecipe)
-        recipe = OmegaConf.merge(recipe, OmegaConf.load(what), settings)
+        context.log.info(f"loading recipe/config {what}")
+
+        # if file contains a recipe entry, treat it as a full config (that can include cabs etc.)
+        try:
+            conf = OmegaConf.load(what)
+            if 'recipe' in conf:
+                context.config = OmegaConf.merge(context.config, conf)
+            else:
+                recipeconf = OmegaConf.structured(Recipe)
+                recipeconf = OmegaConf.merge(recipeconf, conf)
+                context.config.recipe = recipeconf
+        except OmegaConfBaseException as exc:
+            context.log.error(f"Error loading {what}: {exc}")
+            raise RuntimeError(f"Error loading {what}: {exc}")
+
+        # create recipe object from the config
+        recipe = Recipe(**context.config.recipe)
+
+        # feed in parameters and validate completeness
+        recipe.validate(context.config, params)
     
-    elif what in context.config.cab:
+    elif what in context.config.cabs:
         cabname = what
         context.log.info(f"setting up cab {cabname}")
 
-        recipe = OmegaConf.structured(config.StimelaRecipe)
-        step = OmegaConf.structured(config.StimelaStep)
+        # create step config by merging in settings (var=value pairs from the command line) 
+        step = Step(cab=cabname, params=params)
 
-        step.cab = cabname
-        step = OmegaConf.merge(step, settings)
+        # create single-step recipe
+        recipe = Recipe(info=f"Running {cabname}")
+        recipe.add(step)
 
-        ## OMS: propose to replace these with recipe.dir.input, recipe.dir.output, etc.
-        # recipe.indir    = args.indir
-        # recipe.outdir   = args.outdir
-        # recipe.msdir    = args.msdir
-        recipe.info     = f"Running {cabname}"
-        recipe.steps    = {f"step_{cabname}" : step}
+        # validate completeness
+        recipe.validate(context.config)
+
+        # insert into config
+        context.config.recipe = OmegaConf.structured(recipe)
 
     else:
         context.log.error(f"'{what}' is neither a recipe file nor a known stimela cab")
         return 2 
 
-    context.config.recipe = recipe
     print(OmegaConf.to_yaml(context.config.recipe))
+
+    for line in recipe.summary:
+        context.log.info(line)
+

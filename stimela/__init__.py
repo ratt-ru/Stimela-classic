@@ -76,7 +76,9 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
     global _logger
     if _logger is None:
         _logger = logging.getLogger(name)
-        _logger.setLevel(getattr(logging, loglevel))
+        if type(loglevel) is str:
+            loglevel = getattr(logging, loglevel)
+        _logger.setLevel(loglevel)
         _logger.propagate = propagate
 
         global log_console_handler, log_formatter, log_boring_formatter, log_colourful_formatter
@@ -102,7 +104,7 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
             else:  
                 log_console_handler = MultiplexingHandler()
             log_console_handler.setFormatter(log_formatter)
-            log_console_handler.setLevel(getattr(logging, loglevel))
+            log_console_handler.setLevel(loglevel)
             _logger.addHandler(log_console_handler)
 
     return _logger

@@ -1,0 +1,59 @@
+## "library" of standard parameter sets that cabs derived from this base image can grab. Names are freeform
+params:
+  mssel_inputs:  # a standard section for CASA tasks that have a vis argument, and a standard set of data selection options
+    vis:
+      info: "Name of input visibility file"
+      dtype: dir
+      writeable: True
+      required: true
+      alias: msname
+
+    field:
+      info: "Select field using field id(s) or field name(s)"
+      dtype: str
+      default: null
+
+    spw:
+      info: "Select spectral window/channels"
+      dtype: str
+      default: null
+    
+    intent:
+      info: Select observing intent
+      dtype: str
+      default: null
+
+    selectdata:
+      info: "Enable remaining data selection parameters"
+      dtype: bool
+      default: true
+
+    timerange:
+      info: "Select data based on time range"
+      dtype: str
+      default: null
+
+    uvrange:
+      info: "Select data based on uvrange (default units meters)"
+      dtype: str
+      default: null
+
+    antenna:
+      info: "Select data based on antenna/baseline"
+      dtype: str
+      default: null
+
+    scan:    
+      info: "Select data based on scan number(s)"
+      dtype: str
+      default: null
+
+    observation:
+      info: "Select data based on observation ID(s)"
+      dtype: str
+      default: null
+
+    msselect:
+      info: "Optional complex data selection (ignore for now)"
+      dtype: str
+      default:  null

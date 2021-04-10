@@ -7,6 +7,7 @@ from omegaconf.omegaconf import MISSING, OmegaConf
 from collections import OrderedDict
 import stimela
 
+from stimela.exceptions import *
 
 CONFIG_FILE = os.path.expanduser("~/.config/stimela.conf")
 
@@ -31,7 +32,7 @@ class Parameter:
     # for input parameters, this flag indicates a read-write (aka input-output aka mixed-mode) parameter e.g. an MS
     writeable: bool = False
     # data type
-    dtype: Optional[str] = None
+    dtype: str = "str"
     # default value. Use MANDATORY if parameter has no default, and is mandatory
     default: Optional[str] = None
     # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)

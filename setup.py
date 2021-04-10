@@ -14,6 +14,7 @@ requirements = ["pyyaml",
                 "munch",
                 "omegaconf",
                 "click",
+                "pydantic"
                 ],
 
 PACKAGE_NAME = "stimela"

@@ -6,26 +6,13 @@ from dataclasses import dataclass, field
 from omegaconf.omegaconf import MISSING, OmegaConf, DictConfig
 from collections import OrderedDict
 from stimela.config import EmptyDictDefault, EmptyListDefault, Parameter, CabManagement
+from stimela.validate import validate_parameters
 from stimela import logger
 
+from stimela.exceptions import *
 
 Conditional = Optional[str]
 
-
-class StimelaBaseException(Exception):
-    pass
-
-class StepValidationError(StimelaBaseException):
-    pass
-
-class RecipeValidationError(StimelaBaseException):
-    pass
-
-class CabValidationError(StimelaBaseException):
-    pass
-
-class ParameterValidationError(StimelaBaseException):
-    pass
 
 
 def _collect_missing_parameters(params, inputs_outputs):
@@ -43,6 +30,7 @@ def _collect_missing_parameters(params, inputs_outputs):
             missing[name] = param
 
     return missing
+
 
 
 @dataclass 
@@ -84,7 +72,7 @@ class Cab(object):
         self.inputs_outputs = self.inputs.copy()
         self.inputs_outputs.update(**self.outputs)
         # collect missing required parameters
-        self.params = params
+        self.params = validate_parameters(params, self.inputs_outputs)
         self.missing_params = _collect_missing_parameters(params, self.inputs_outputs)
         logger().debug(f"cab {self.name} is missing {len(self.missing_params)} required parameters")
 
@@ -258,7 +246,7 @@ class Recipe:
         logger().debug(f"recipe parameters are: {' '.join(self.inputs_outputs.keys())}")
 
         # now validate our own inputs and outputs against supplied values
-        self.params = params or OrderedDict()
+        self.params = validate_parameters(params or OrderedDict(), self.inputs_outputs)
         self.missing_params = _collect_missing_parameters(self.params, self.inputs_outputs)
 
         # any parameters that map to step parameters now need to be propagated back to the step

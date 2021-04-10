@@ -64,7 +64,6 @@ recipe:
       makems:
           cab: simms
           params:
-              dtime: 1
               synthesis: 0.128
       selfcal:
           recipe:

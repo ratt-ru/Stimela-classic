@@ -1,15 +1,34 @@
 # -*- coding: future_fstrings -*-
-class StimelaCabParameterError(Exception):
+
+class StimelaBaseException(Exception):
     pass
 
-class StimelaRecipeExecutionError(Exception):
+class SchemaError(StimelaBaseException):
     pass
 
-class StimelaBaseImageError(Exception):
+class StepValidationError(StimelaBaseException):
+    pass
+
+class RecipeValidationError(StimelaBaseException):
+    pass
+
+class CabValidationError(StimelaBaseException):
+    pass
+
+class ParameterValidationError(StimelaBaseException):
+    pass
+
+class StimelaCabParameterError(StimelaBaseException):
+    pass
+
+class StimelaRecipeExecutionError(StimelaBaseException):
+    pass
+
+class StimelaBaseImageError(StimelaBaseException):
     pass
 
 
-class PipelineException(Exception):
+class PipelineException(StimelaBaseException):
     """ 
     Encapsulates information about state of pipeline when an
     exception occurs

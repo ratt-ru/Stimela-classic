@@ -94,3 +94,4 @@ recipe:
                       maps_to: [calibrate.ms, image.msname] 
                   image:
                       maps_to: [image.name, evaluate.image]
+                      required: true

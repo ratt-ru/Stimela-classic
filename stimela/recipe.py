@@ -237,8 +237,13 @@ class Recipe:
                 step = self.steps.get(step_label)
                 if step is None:
                     raise RecipeValidationError(f"parameter {name}.maps_to unknown step '{step_label}'")
-                if step_param_name not in (step.inputs if is_input else step.outputs):
-                    raise RecipeValidationError(f"parameter {name}.maps_to unknown parameter '{step_param_name}'")
+                step_param = (step.inputs if is_input else step.outputs).get(step_param_name)
+                if step_param is None:
+                    raise RecipeValidationError(f"parameter {name}.maps_to unknown parameter '{maps}'")
+                # if step's parameter is a required one, so should this one be
+                if step_param.required:
+                    param.required = True
+                ## TODO: check that types are consistent between this type and the step parameter type
                 # delete from auto dict, if in it
                 if maps in auto_params:
                     del auto_params[maps]

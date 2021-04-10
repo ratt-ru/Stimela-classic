@@ -13,10 +13,9 @@ inputs:
     dtype: Directory
     positional: true
   name:
-    info: Xaxis to plot. Can be any MS column name, also: CHAN, FREQ, CORR, ROW, WAVEL, U, V, W, UV, and, for complex columns, keywords such as: 'amp', 'phase',
-      'real', 'imag'. You can also specify correlations, e.g. 'DATA:phase:XX'. The order of specifiers does not matter.
+    info: Prefix of output products
     dtype: str
-    internal_name: false
+    alias: prefix
   channels-out:
     info: Channels out
     dtype: int
@@ -30,7 +29,7 @@ inputs:
     dtype: str
     default: I
   weight:
-    info: Weightmode can be: natural, uniform, briggs. Default: uniform. When using Briggs' weighting, add the robustness parameter, like: "-weight briggs 0.5".
+    info: "Weightmode can be: natural, uniform, briggs. Default: uniform. When using Briggs' weighting, add the robustness parameter, like: '-weight briggs 0.5'"
     dtype: str
     default: briggs 0.0
   size:

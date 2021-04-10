@@ -68,6 +68,7 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
 
     print(OmegaConf.to_yaml(context.config.recipe))
 
+    context.log.info("IGNORE SUBSTITUTIONS FOR NOW AS THEY ARE NOT YET IMPLEMENTED")
     for line in recipe.summary:
         context.log.info(line)
 

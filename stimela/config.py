@@ -96,11 +96,15 @@ import stimela.backends.podman
 Backend = Enum("Stimela.Backend", "docker singularity podman")
 
 @dataclass
-class StimelaOptions:
+class StimelaOptions(object):
     backend: Backend = "docker"
     registry: str = "quay.io"
     basename: str = "stimela/v2-"
     singularity_image_dir: str = "~/.singularity"
+
+@dataclass
+class StimelaLibrary(object):
+    params: Dict[str, Any] = EmptyDictDefault()
 
 def DefaultDirs():
     return field(default_factory=lambda:dict(indir='.', outdir='.'))
@@ -126,6 +130,7 @@ def load_config(extra_configs=List[str]):
     @dataclass 
     class StimelaConfig:
         base: Dict[str, StimelaImage] = EmptyDictDefault()
+        lib: StimelaLibrary = StimelaLibrary()
         cabs: Dict[str, Cab] = MISSING
         opts: StimelaOptions = StimelaOptions()
         recipe: Optional[Recipe] = MISSING
@@ -142,9 +147,14 @@ def load_config(extra_configs=List[str]):
     base_configs = glob.glob(f"{stimela_dir}/cargo/base/*/*.yaml")
     conf.base = build_nested_config(conf, base_configs, base_schema, nameattr='name', include_path='path', section_name='base')
 
+    # merge base/*/*yaml files into the config, under base.imagename
+    for path in glob.glob(f"{stimela_dir}/cargo/lib/params/*.yaml"):
+        name = os.path.splitext(os.path.basename(path))[0]
+        conf.lib.params[name] = OmegaConf.load(path)
+
     # merge all cab/*/*yaml files into the config, under cab.taskname
     cab_configs = glob.glob(f"{stimela_dir}/cargo/cabs/*.yaml")
-    conf.cabs = build_nested_config(conf, cab_configs, cab_schema, nameattr='name', section_name='cab')
+    conf.cabs = build_nested_config(conf, cab_configs, cab_schema, nameattr='name', section_name='cabs')
 
     conf.opts = opts_schema
 

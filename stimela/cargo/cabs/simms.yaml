@@ -34,8 +34,8 @@ inputs:
     default: "J2000,0deg,-30deg"
 
 outputs:
-  dirty:
+  ms:
     info: Simulated MS
     dtype: Directory
-    implicit: "{inputs.name}"
+    implicit: "{self.msname}"
 

@@ -3,7 +3,6 @@ cabs:
     command: simms
     inputs:
       msname:
-        writeable: True
         dtype: str
         required: true
       telescope:
@@ -12,30 +11,18 @@ cabs:
         dtype: int
       synthesis:
         dtype: float
+    outputs:
+      ms:
+        dtype: MS
+        implicit: "{self.msname}"
         
   cubical:
     command: gocubical
     inputs:
       ms:
-        dtype: str
+        dtype: MS
         required: true
-
-  wsclean:
-    command: wsclean
-    inputs:
-      msname:
         writeable: True
-        dtype: str
-        required: true
-      name:
-        dtype: str
-        required: true
-      size:
-        dtype: str
-        required: true
-      scale:
-        dtype: str
-        required: true
 
   aimfast:
     command: aimfast
@@ -43,54 +30,52 @@ cabs:
       image:
         dtype: str
         required: true
+      dirty:
+        dtype: str
+        required: true
 
 recipe:
   name: "Oleg's bullshit recipe"
   info: 'top level recipe definition'
-  vars:
-      ms: demo.ms
   dirs:
     input: input
     output: output
-  inputs:
-    msname:
-      dtype: str
-      required: true
-      maps_to: [makems.msname, selfcal.ms]
-    telescope:
-      maps_to: [makems.tel]
-      required: true
+  aliases:
+    msname: selfcal.ms
+    telescope: makems.tel
+  defaults:
+    telescope: kat-7
   steps: 
       makems:
           cab: simms
           params:
+              msname: "{recipe.msname}"
               synthesis: 0.128
       selfcal:
           recipe:
               name: "bullshit selfcal"
               info: "this is a generic selfcal loop"
-              vars:
-                  scale: 30asec
-                  size: 256 
-              _for:
-                  selfcal_loop: 1,2,3     # repeat three times
+              # _for:
+              #     selfcal_loop: 1,2,3     # repeat three times
               steps:
                   calibrate: 
                       cab: cubical
-                      _skip: "recipe.vars.selfcal_loop < 2"    # skip on first iteration, go straight to image
+                      # _skip: "recipe.vars.selfcal_loop < 2"    # skip on first iteration, go straight to image
                   image:
                       cab: wsclean
                       params:
-                          scale: "{recipe.vars.scale}"
+                          scale: "{recipe.scale}"
                   evaluate:
                       cab: aimfast
-                      _break_on: "step.outputs.dr_achieved"    # break out of recipe based on some output value
+                      params:
+                          image: "{previous.restored}"
+                          dirty: "{steps.image.dirty}"
+                      # _break_on: "self.dr_achieved"    # break out of recipe based on some output value
               # the below formally specifies the inputs and outputs of the selfcal recipe
+              # aliases map directly to step inputs/outputs, and use their schema
+              aliases:
+                  ms: [calibrate.ms, image.ms]
+                  image_name: image.name
               inputs:
-                  ms: 
-                      dtype: ms
-                      writeable: true
-                      maps_to: [calibrate.ms, image.msname] 
-                  image:
-                      maps_to: [image.name, evaluate.image]
-                      required: true
+                  scale: 
+                      default: 30asec

@@ -1,8 +1,9 @@
+from stimela.exceptions import RecipeValidationError
 from omegaconf.omegaconf import OmegaConf, OmegaConfBaseException
 import click
 import os.path
 from typing import List
-from stimela import config, recipe
+from stimela import config
 from stimela.main import StimelaContext, cli, pass_stimela_context
 
 from stimela.recipe import Step, Recipe
@@ -19,7 +20,11 @@ from stimela.recipe import Step, Recipe
 @pass_stimela_context
 def exxec(context: StimelaContext, what: str, params: List[str] = []):
 
-    params = OmegaConf.from_dotlist(params)
+    invalid = [p for p in params if "=" not in p]
+    if invalid:
+        raise RuntimeError("invalid parameters: {' '.join(invalid)}")
+    params = dict(p.split("=", 1) for p in params if "=" in p)
+
     # context.log.info("command-line settings are")
     # print(OmegaConf.to_yaml(settings))
 
@@ -30,7 +35,7 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
         try:
             conf = OmegaConf.load(what)
             if 'recipe' in conf:
-                context.config = OmegaConf.merge(context.config, conf)
+                context.config = config.merge_extra_config(context.config, conf)
             else:
                 recipeconf = OmegaConf.structured(Recipe)
                 recipeconf = OmegaConf.merge(recipeconf, conf)
@@ -42,9 +47,6 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
         # create recipe object from the config
         recipe = Recipe(**context.config.recipe)
 
-        # feed in parameters and validate completeness
-        recipe.validate(context.config, params)
-    
     elif what in context.config.cabs:
         cabname = what
         context.log.info(f"setting up cab {cabname}")
@@ -56,19 +58,23 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
         recipe = Recipe(info=f"Running {cabname}")
         recipe.add(step)
 
-        # validate completeness
-        recipe.validate(context.config)
-
-        # insert into config
-        context.config.recipe = OmegaConf.structured(recipe)
-
+        # when validating recipe below, don't use the parameters, since we gave them to the step already
+        params = None
     else:
         context.log.error(f"'{what}' is neither a recipe file nor a known stimela cab")
         return 2 
 
-    print(OmegaConf.to_yaml(context.config.recipe))
+    retcode = 0
+    # validate completeness
+    try:
+        recipe.validate(context.config, params)
+        context.config.recipe = OmegaConf.structured(recipe)
+    except RecipeValidationError as exc:
+        if not exc.logged:
+            context.log.error(f"recipe validation failed: {exc}")
+        retcode = 1
 
-    context.log.info("IGNORE SUBSTITUTIONS FOR NOW AS THEY ARE NOT YET IMPLEMENTED")
     for line in recipe.summary:
         context.log.info(line)
 
+    return retcode

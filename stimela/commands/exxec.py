@@ -22,7 +22,9 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
 
     invalid = [p for p in params if "=" not in p]
     if invalid:
-        raise RuntimeError("invalid parameters: {' '.join(invalid)}")
+        context.log.error(f"invalid parameters: {' '.join(invalid)}")
+        return 2
+    
     params = dict(p.split("=", 1) for p in params if "=" in p)
 
     # context.log.info("command-line settings are")

@@ -44,6 +44,7 @@ def validate_parameters(params: Dict[str, Any], schema: Dict[str, Any]) -> Dict[
     # create dataclass from parameter schema
     fields = []
     for name in params:
+        param = schema[name]
         parmdef = schema.get(name)
         if parmdef is None:
             raise ParameterValidationError(f"unknown parameter {name}")

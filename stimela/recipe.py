@@ -64,7 +64,7 @@ class Cab(object):
             self.name = self.image or self.command.split()[0]
         for param in self.inputs.keys():
             if param in self.outputs:
-                raise CabValidationError(f"cab {self.name}: parameter {name} is both an input and an output, this is not permitted")
+                raise CabValidationError(f"cab {self.name}: parameter {param} is both an input and an output, this is not permitted")
 
 
     def validate(self, config, params: Optional[Dict[str, Any]] = None):
@@ -187,14 +187,29 @@ class Recipe:
                 steps[label] = Step(**stepconfig)
             self.steps = steps
 
-    def add(self, step: Step, label: str=None):
+    def add_step(self, step: Step, label: str=None):
         """Adds a step to the recipe. Label is auto-generated if not supplied
 
         Args:
             step (Step): step object to add
             label (str, optional): step label, auto-generated if None
         """
-        self.steps[label or f"step_{len(self.steps)}"] = step
+        names = list(filter(lambda s: s.cab == cabname, self.steps))
+
+        self.steps[label or f"step_{len(names)}"] = step
+
+    def add(self, cabname: str, label: str=None, 
+            params: Optional[Dict[str, Any]] = None, info: str=None):
+        """Add a step to a recipe. This will create a Step instance and call add_step() 
+
+        Args:
+            cabname (str): name of cab to use for this step
+            label (str): Alphanumeric label (must start with a lette) for the step. If not given will be auto generated 'cabname_d' where d is the number of times a particular cab has been added to the recipe.
+            params (Dict): A parameter dictionary
+            info (str): Documentation of this step
+        """
+        step = Step(cab=cabname, params=params, info=info)
+        self.steps[label] = step
 
     
     def validate(self, config, params: Optional[Dict[str, Any]] = None):
@@ -277,8 +292,3 @@ class Recipe:
             lines.append(f"    {name}: {stepsum[0]}")
             lines += [f"    {x}" for x in stepsum[1:]]
         return lines
-
-
-
-
-

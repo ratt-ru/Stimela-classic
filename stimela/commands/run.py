@@ -1,42 +1,20 @@
-from stimela import logger, LOG_FILE, BASE, utils, GLOBALS
+import click
+from stimela import config, recipe
+from stimela.main import StimelaContext, cli, pass_stimela_context
 
 
-_loglevels = ["INFO", "DEBUG" ,"ERROR" ]
-
-def make_parser(subparsers):
-    parser = subparsers.add_parser("run", help='Run stimela script')
-
-    add = parser.add_argument
-
-    add("-in", "--input",
-        help="Input folder")
-
-    add("-out", "--output",
-        help="Output folder")
-
-    add("-ms", "--msdir",
-        help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
-
-    add("-pf", "--pull-folder",
-        help="Folder to store singularity images.")
-
-    add("script",
-        help="Run script")
-
-    add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
-        help="Global variables to pass to script. The type is assumed to string unless specified")
-
-    add("-jt", "--job-type", choices=["docker", "singularity", "podman"],
-        help="Container technology to use when running jobs")
-
-    add("-ll", "--log-level", default="INFO", choices=_loglevels,
-        help="Log level. Set to DEBUG for verbose logging")
-
-    parser.set_defaults(func=run)
-
-
-
-def run(args, conf):
+@cli.command("run", "Run stimela python recipe.", no_args_is_help=True)
+@click.argument("script",
+                help="Run script")
+@click.option("-out", "--outdir", 
+                help="Output direcrory")
+@click.option("-in", "--indir",
+                help="Input folder")
+@click.option("-msd", "--msdir",
+                help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
+@click.optoin("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
+                help="Global variables to pass to script. The type is assumed to string unless specified")
+def run(context: StimelaContext):
 
     _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
                     _STIMELA_MSDIR=args.msdir,
@@ -59,11 +37,5 @@ def run(args, conf):
                 except ValueError:
                     _type = "str"
 
-                GLOBALS[key] = eval("{:s}('{:s}')".format(_type, value))
-
-    utils.CPUS = 1
-
     with open(args.script, 'r') as stdr:
         exec(stdr.read(), _globals)
-
-

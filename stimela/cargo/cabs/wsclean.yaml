@@ -36,44 +36,51 @@ inputs:
     info: Image size in pixels
     repeat_policy: " "
     dtype: int
+  scale:
+    info: Pixel size
+    dtype: Union[int,str]
   niter:
     info: Number of minor clean iterations
     dtype: int
 
 outputs:
+  msout:
+    info: Output MS
+    dtype: Directory
+    implicit: "{inputs.ms}"
   dirty:
     info: Dirty images
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}*[0-9]-dity.fits"
   restored: 
     info: Restored images
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}*-[0-9]image.fits"
   residual:
     info: Residual images
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}*-[0-9]residual.fits"
   model:
     info: Model images
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}-*[0-9]-model.fits"
   restored_mfs:
     info: Restored MFS image
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}-*-MFS-image.fits"
   residual_mfs:
     info: Residual MFS image
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}-*-MFS-residual.fits"
   model_mfs:
     info: Model MFS image
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}-*-MFS-model.fits"
   dirty_mfs:
     info: Dirty MFS image
-    dtype: file
+    dtype: File
     implicit: "{inputs.name}-*-MFS-dirty.fits"
   source-list:
     info: Source list
-    dtype: file
+    dtype: File
     implicit: "{inputs.name-*.txt}"

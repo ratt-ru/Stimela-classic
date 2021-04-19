@@ -4,6 +4,7 @@ from typing import Any, List, Dict, Optional, Union
 from enum import Enum
 from dataclasses import dataclass, field
 from omegaconf.omegaconf import MISSING, OmegaConf
+from omegaconf.errors import OmegaConfBaseException
 from collections import OrderedDict
 import stimela
 
@@ -122,6 +123,16 @@ CONFIG_LOCATIONS = OrderedDict(
 # set to the config file that was actually found
 CONFIG_LOADED = None
 
+
+def merge_extra_config(conf, newconf):
+    from stimela import logger
+    if 'cabs' in newconf:
+        for cab in newconf.cabs:
+            if cab in conf.cabs:
+                logger().warning(f"changing definition of cab '{cab}'")
+    return OmegaConf.merge(conf, newconf)
+
+
 def load_config(extra_configs=List[str]):
     log = stimela.logger()
 
@@ -159,26 +170,31 @@ def load_config(extra_configs=List[str]):
 
     conf.opts = opts_schema
 
-    global CONFIG_LOADED
+    def _load(conf, config_file):
+        global CONFIG_LOADED
+        log.info(f"loading config from {config_file}")
+        try:
+            newconf = OmegaConf.load(config_file)
+            conf = merge_extra_config(conf, newconf)
+            if not CONFIG_LOADED:
+                CONFIG_LOADED = config_file
+        except OmegaConfBaseException as exc:
+            log.error(f"error reading {config_file}: {exc}")
+        return conf
 
     # find standard config file to use
     if not any(path.startswith("=") for path in extra_configs):
         # merge global config into opts
         for _, config_file in CONFIG_LOCATIONS.items():
             if config_file and os.path.exists(config_file):
-                log.info("loading config from {config_file}")
-                conf = OmegaConf.merge(conf, OmegaConf.load(config_file))
-                CONFIG_LOADED = config_file
-                break
+                conf = _load(conf, config_file)
 
     # add local configs
     for path in extra_configs:
         if path.startswith("="):
             path = path[1:]
         log.info("loading config from {path}")
-        conf = OmegaConf.merge(conf, OmegaConf.load(path))
-        if not CONFIG_LOADED:
-            CONFIG_LOADED = path
+        conf = _load(conf, config_file)
 
     if not CONFIG_LOADED:
         log.info("no configuration files, so using defaults")

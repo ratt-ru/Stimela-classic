@@ -1,9 +1,17 @@
 # -*- coding: future_fstrings -*-
 
 class StimelaBaseException(Exception):
-    pass
+    def __init__(self, message, log=False):
+        Exception.__init__(self, message)
+        self.logged = log
+        if log:
+            from stimela import logger
+            logger().error(message)
 
 class SchemaError(StimelaBaseException):
+    pass
+
+class DefinitionError(StimelaBaseException):
     pass
 
 class StepValidationError(StimelaBaseException):

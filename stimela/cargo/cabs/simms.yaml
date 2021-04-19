@@ -37,5 +37,5 @@ outputs:
   ms:
     info: Simulated MS
     dtype: Directory
-    implicit: "{inputs.name}"
+    implicit: "{self.msname}"
 

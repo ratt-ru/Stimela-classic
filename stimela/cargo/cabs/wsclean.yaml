@@ -10,12 +10,14 @@ inputs:
     info: Measurement set(s)
     default: null
     writeable: true
-    dtype: Directory
+    dtype: MS
     positional: true
+    required: true
   name:
     info: Prefix of output products
     dtype: str
     alias: prefix
+    required: true
   channels-out:
     info: Channels out
     dtype: int
@@ -36,9 +38,17 @@ inputs:
     info: Image size in pixels
     repeat_policy: " "
     dtype: int
+<<<<<<< HEAD
   scale:
     info: Pixel size
     dtype: Union[int,str]
+=======
+    required: true
+  scale:
+    info: Angular pixel size
+    dtype: Union[str, float]
+    required: true
+>>>>>>> 0fa53927755869c01734e05e74c1d6b609d7e1a7
   niter:
     info: Number of minor clean iterations
     dtype: int
@@ -55,11 +65,11 @@ outputs:
   restored: 
     info: Restored images
     dtype: File
-    implicit: "{inputs.name}*-[0-9]image.fits"
+    implicit: "{inputs.name}*-[0-9]-image.fits"
   residual:
     info: Residual images
     dtype: File
-    implicit: "{inputs.name}*-[0-9]residual.fits"
+    implicit: "{inputs.name}*-[0-9]-residual.fits"
   model:
     info: Model images
     dtype: File

@@ -38,17 +38,11 @@ inputs:
     info: Image size in pixels
     repeat_policy: " "
     dtype: int
-<<<<<<< HEAD
-  scale:
-    info: Pixel size
-    dtype: Union[int,str]
-=======
     required: true
   scale:
     info: Angular pixel size
     dtype: Union[str, float]
     required: true
->>>>>>> 0fa53927755869c01734e05e74c1d6b609d7e1a7
   niter:
     info: Number of minor clean iterations
     dtype: int
@@ -90,7 +84,7 @@ outputs:
     info: Dirty MFS image
     dtype: File
     implicit: "{inputs.name}-*-MFS-dirty.fits"
-  source-list:
+  source_list:
     info: Source list
     dtype: File
     implicit: "{inputs.name-*.txt}"

@@ -1,34 +1,32 @@
 import click
-from stimela import config, recipe
+from stimela import config, recipe, GLOBALS
 from stimela.main import StimelaContext, cli, pass_stimela_context
+from typing import Optional, List
 
 
-@cli.command("run", "Run stimela python recipe.", no_args_is_help=True)
-@click.argument("script",
-                help="Run script")
+@cli.command("run", help="Run stimela python recipe.", no_args_is_help=True)
+@click.argument("script")
 @click.option("-out", "--outdir", 
                 help="Output direcrory")
 @click.option("-in", "--indir",
                 help="Input folder")
 @click.option("-msd", "--msdir",
                 help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
-@click.optoin("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
+@click.option("-g", "--globals", "myglobals", metavar="KEY=VALUE[:TYPE]", multiple=True,
                 help="Global variables to pass to script. The type is assumed to string unless specified")
-def run(context: StimelaContext):
-
-    _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
-                    _STIMELA_MSDIR=args.msdir,
-                    _STIMELA_JOB_TYPE=args.job_type,
-                    _STIMELA_LOG_LEVEL=args.log_level.upper(),
-                    _STIMELA_PULLFOLDER=args.pull_folder)
-
-    args.job_type = args.job_type or "docker"
-    nargs = len(args.globals)
-
+@pass_stimela_context
+def run(context: StimelaContext, script: str, outdir: str=None, 
+        indir: str=None, msdir: str=None, myglobals: List[str]=[]):
+    
     global GLOBALS
+    _globals = dict(_STIMELA_INPUT=indir, _STIMELA_OUTPUT=outdir,
+                    _STIMELA_MSDIR=msdir)
+    
+    args.job_type = args.job_type or "docker"
+    nargs = len(myglobals)
 
     if nargs:
-        for arg in args.globals:
+        for arg in myglobals:
             if arg.find("=") > 1:
                 key, value = arg.split("=")
 
@@ -37,5 +35,5 @@ def run(context: StimelaContext):
                 except ValueError:
                     _type = "str"
 
-    with open(args.script, 'r') as stdr:
+    with open(script, 'r') as stdr:
         exec(stdr.read(), _globals)

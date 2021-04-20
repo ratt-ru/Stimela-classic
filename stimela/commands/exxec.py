@@ -56,7 +56,7 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
 
         # create single-step recipe
         recipe = Recipe(info=f"Running {cabname}")
-        recipe.add(step)
+        recipe.add_step(step)
 
         # when validating recipe below, don't use the parameters, since we gave them to the step already
         params = None

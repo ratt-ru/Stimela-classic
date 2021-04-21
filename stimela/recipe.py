@@ -238,9 +238,9 @@ class Recipe(Cargo):
         if self.finalized:
             raise DefinitionError("can't add a step to a recipe that's been finalized")
 
-        names = list(filter(lambda s: s.cab == cabname, self.steps))
+        names = [s for s in self.steps if s.cab == step.cabname]
 
-        self.steps[label or f"step_{len(names)}"] = step
+        self.steps[label or f"{step.cabname}_{len(names)+1}"] = step
 
 
     def add(self, cabname: str, label: str = None, 

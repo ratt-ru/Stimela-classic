@@ -1,56 +1,32 @@
-from stimela import logger, LOG_FILE, BASE, utils, GLOBALS
+import click
+from stimela import config, recipe, GLOBALS
+from stimela.main import StimelaContext, cli, pass_stimela_context
+from typing import Optional, List
 
 
-_loglevels = ["INFO", "DEBUG" ,"ERROR" ]
-
-def make_parser(subparsers):
-    parser = subparsers.add_parser("run", help='Run stimela script')
-
-    add = parser.add_argument
-
-    add("-in", "--input",
-        help="Input folder")
-
-    add("-out", "--output",
-        help="Output folder")
-
-    add("-ms", "--msdir",
-        help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
-
-    add("-pf", "--pull-folder",
-        help="Folder to store singularity images.")
-
-    add("script",
-        help="Run script")
-
-    add("-g", "--globals", metavar="KEY=VALUE[:TYPE]", action="append", default=[],
-        help="Global variables to pass to script. The type is assumed to string unless specified")
-
-    add("-jt", "--job-type", choices=["docker", "singularity", "podman"],
-        help="Container technology to use when running jobs")
-
-    add("-ll", "--log-level", default="INFO", choices=_loglevels,
-        help="Log level. Set to DEBUG for verbose logging")
-
-    parser.set_defaults(func=run)
-
-
-
-def run(args, conf):
-
-    _globals = dict(_STIMELA_INPUT=args.input, _STIMELA_OUTPUT=args.output,
-                    _STIMELA_MSDIR=args.msdir,
-                    _STIMELA_JOB_TYPE=args.job_type,
-                    _STIMELA_LOG_LEVEL=args.log_level.upper(),
-                    _STIMELA_PULLFOLDER=args.pull_folder)
-
-    args.job_type = args.job_type or "docker"
-    nargs = len(args.globals)
-
+@cli.command("run", help="Run stimela python recipe.", no_args_is_help=True)
+@click.argument("script")
+@click.option("-out", "--outdir", 
+                help="Output direcrory")
+@click.option("-in", "--indir",
+                help="Input folder")
+@click.option("-msd", "--msdir",
+                help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
+@click.option("-g", "--globals", "myglobals", metavar="KEY=VALUE[:TYPE]", multiple=True,
+                help="Global variables to pass to script. The type is assumed to string unless specified")
+@pass_stimela_context
+def run(context: StimelaContext, script: str, outdir: str=None, 
+        indir: str=None, msdir: str=None, myglobals: List[str]=[]):
+    
     global GLOBALS
+    _globals = dict(_STIMELA_INPUT=indir, _STIMELA_OUTPUT=outdir,
+                    _STIMELA_MSDIR=msdir)
+    
+    args.job_type = args.job_type or "docker"
+    nargs = len(myglobals)
 
     if nargs:
-        for arg in args.globals:
+        for arg in myglobals:
             if arg.find("=") > 1:
                 key, value = arg.split("=")
 
@@ -59,11 +35,5 @@ def run(args, conf):
                 except ValueError:
                     _type = "str"
 
-                GLOBALS[key] = eval("{:s}('{:s}')".format(_type, value))
-
-    utils.CPUS = 1
-
-    with open(args.script, 'r') as stdr:
+    with open(script, 'r') as stdr:
         exec(stdr.read(), _globals)
-
-

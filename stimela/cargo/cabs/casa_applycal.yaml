@@ -4,7 +4,6 @@ info: "Apply calibrations solutions(s) to data"
 image: casa
 # versions: x, y, z     ## only needed if only a subset of the defined base image versions is supported by this cab: default is all versions
 
-msdir: true
 prefix: 
 #binary: applycal
 
@@ -32,6 +31,10 @@ inputs:
       - flagonlystrict 
       - calonly
 
+outputs:
+  visout:
+    dtype: Directory
+    implicit: "{inputs.vis}"
 
 # same here, using _use to include common behaviours, but we also add an extra one for the cleanup section
 management:

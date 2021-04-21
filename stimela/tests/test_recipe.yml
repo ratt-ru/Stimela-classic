@@ -5,7 +5,7 @@ cabs:
       msname:
         dtype: str
         required: true
-      telescope:
+      tel:
         dtype: str
       dtime:
         dtype: int

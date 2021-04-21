@@ -228,22 +228,23 @@ class Recipe(Cargo):
         return self._alias_map is not None
 
 
-    def add_step(self, step: Step, label: str=None):
+    def add_step(self, step: Step, label: str = None):
         """Adds a step to the recipe. Label is auto-generated if not supplied
 
         Args:
             step (Step): step object to add
             label (str, optional): step label, auto-generated if None
         """
+        if self.finalized:
+            raise DefinitionError("can't add a step to a recipe that's been finalized")
+
         names = list(filter(lambda s: s.cab == cabname, self.steps))
 
         self.steps[label or f"step_{len(names)}"] = step
 
-        if self.finalized:
-            raise DefinitionError("can't add a step to a recipe that's been finalized")
 
-    def add(self, cabname: str, label: str=None, 
-            params: Optional[Dict[str, Any]] = None, info: str=None):
+    def add(self, cabname: str, label: str = None, 
+            params: Optional[Dict[str, Any]] = None, info: str = None):
         """Add a step to a recipe. This will create a Step instance and call add_step() 
 
         Args:
@@ -252,10 +253,8 @@ class Recipe(Cargo):
             params (Dict): A parameter dictionary
             info (str): Documentation of this step
         """
-        step = Step(cab=cabname, params=params, info=info)
-        self.steps[label] = step
+        return self.add_step(Step(cab=cabname, params=params, info=info), label=label)
 
-        self.steps[label or f"step_{len(self.steps)}"] = step
 
     def _add_alias(self, alias_name, step_label, step, step_param_name):
         is_input = schema = step.inputs.get(step_param_name)
@@ -360,7 +359,7 @@ class Recipe(Cargo):
             errors.append(RecipeValidationError(msg, log=True))
 
         if errors:
-            raise RecipeValidationError(f"there were {len(errors)} errors in validating the recipe", log=True)
+            raise RecipeValidationError(f"{len(errors)} error(s) validating the recipe '{self.name}'", log=True)
 
         return
 

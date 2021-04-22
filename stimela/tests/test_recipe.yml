@@ -45,6 +45,7 @@ recipe:
     telescope: makems.tel
   defaults:
     telescope: kat-7
+    selfcal_image_size: 1024
   steps: 
       makems:
           cab: simms
@@ -78,4 +79,6 @@ recipe:
                   image_name: image.name
               inputs:
                   scale: 
-                      default: 30asec
+                    dtype: Union[str, float]
+              defaults:
+                  scale: 30asec

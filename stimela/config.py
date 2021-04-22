@@ -34,8 +34,6 @@ class Parameter:
     writeable: bool = False
     # data type
     dtype: str = "str"
-    # default value. Use MANDATORY if parameter has no default, and is mandatory
-    default: Optional[str] = None
     # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
     implicit: Optional[str] = None
     # for parameters of recipes, specifies that this parameter maps onto parameter(s) of constitutent step(s)
@@ -43,7 +41,7 @@ class Parameter:
     # optonal list of arbitrary tags, used to group parameters
     tags: List[str] = EmptyListDefault()
 
-    # not sure this is needed? See https://github.com/ratt-ru/Stimela/discussions/698. Leaving it in for now.
+    # if True, parameter is required
     required: bool = False
 
     # choices for an option-type parameter (should this be List[str]?)
@@ -137,7 +135,7 @@ def load_config(extra_configs=List[str]):
     log = stimela.logger()
 
     stimela_dir = os.path.dirname(stimela.__file__)
-    from stimela.recipe import Recipe, Step, Cab
+    from stimela.kitchen.recipe import Recipe, Step, Cab
 
     @dataclass 
     class StimelaConfig:

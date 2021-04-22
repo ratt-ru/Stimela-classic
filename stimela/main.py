@@ -4,7 +4,6 @@ import click
 import textwrap as _textwrap
 import stimela
 from stimela.utils import logger
-from stimela.cargo import cab
 from stimela import config
 from dataclasses import dataclass
 

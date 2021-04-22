@@ -3,7 +3,6 @@ import subprocess
 import os
 import sys
 from stimela import utils
-from stimela.cargo import cab
 import json
 import stimela
 import time

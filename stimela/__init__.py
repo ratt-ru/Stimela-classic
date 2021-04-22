@@ -109,5 +109,5 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
 
     return _logger
 
-from stimela.recipe import Recipe
+from stimela.kitchen.recipe import Recipe
 

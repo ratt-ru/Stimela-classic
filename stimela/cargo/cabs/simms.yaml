@@ -4,10 +4,18 @@ command: simms
 info: Simms 
 prefix: '-'
 
+defaults:
+  synthesis: 0.5
+  dtime: 1
+  dfreq: 1MHz
+  freq0: 1.42GHz
+  direction: "J2000,0deg,-30deg"
+
 inputs:
   msname:
     info: Measurement set(s)
     dtype: str
+    required: true
   tel:
     info: Antenna table/file
     dtype: Union[File, Directory, str]
@@ -16,26 +24,21 @@ inputs:
   synthesis:
     info: Observation length in hours
     dtype: float
-    default: 0.5
   dtime:
     info: Integration time
     dtype: float
-    default: 1
   dfreq:
     info: Channel width
     dtype: Union[str, float]
-    default: 1.42GHz
   freq0: 
     info: Centre of first channel
     dtype: Union[str, float]
-    default: briggs 0.0
   direction: 
     info: Phase centre
-    default: "J2000,0deg,-30deg"
 
 outputs:
   ms:
     info: Simulated MS
-    dtype: Directory
+    dtype: MS
     implicit: "{self.msname}"
 

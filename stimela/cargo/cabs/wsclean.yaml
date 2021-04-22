@@ -5,10 +5,13 @@ info: Rapid Measurement Set plotting with xarray-ms and datashader.
 msdir: true
 prefix: '-'
 
+defaults:
+  weight: "briggs 0."
+  pol: I
+
 inputs:
   ms:
     info: Measurement set(s)
-    default: null
     writeable: true
     dtype: MS
     positional: true
@@ -29,11 +32,9 @@ inputs:
   pol:
     info: Polarizations
     dtype: str
-    default: I
   weight:
     info: "Weightmode can be: natural, uniform, briggs. Default: uniform. When using Briggs' weighting, add the robustness parameter, like: '-weight briggs 0.5'"
     dtype: str
-    default: briggs 0.0
   size:
     info: Image size in pixels
     repeat_policy: " "

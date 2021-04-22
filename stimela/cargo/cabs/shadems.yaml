@@ -4,11 +4,14 @@ command: shadems
 info: Rapid Measurement Set plotting with xarray-ms and datashader.
 msdir: true
 prefix: --
+
+defaults:
+  norm: auto
+
 inputs:
   ms:
     info: Measurement set to plot
-    default: null
-    choices: null
+    required: true
     repeat_policy: null
     writeable: true
     dtype: file
@@ -20,7 +23,6 @@ inputs:
       WAVEL, U, V, W, UV, and, for complex columns, keywords such as: ''amp'', ''phase'',
       ''real'', ''imag''. You can also specify correlations, e.g. ''DATA:phase:XX''.
       The order of specifiers does not matter.'
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -29,7 +31,6 @@ inputs:
     prefix: null
   yaxis:
     info: Y axis to plot. Must be given the same number of times as --xaxis.
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -40,7 +41,6 @@ inputs:
     info: Intensity axis. If none, plot intensity (a.k.a. alpha channel) is proportional
       to density of points.Otherwise, a reduction function (--ared) is applied to
       the given values, and the result is used to determine intensity.
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -49,7 +49,6 @@ inputs:
     prefix: null
   ared:
     info: Alpha axis reduction function.
-    default: null
     choices:
     - count
     - any
@@ -69,7 +68,6 @@ inputs:
   colour-by:
     info: Colour axis. All columns and variations listed under --xaxis are available
       for colouring by.
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -78,7 +76,6 @@ inputs:
     prefix: null
   col:
     info: Name of visibility column. Default is DATA. Two-column arithmetic is recognized.
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -86,8 +83,8 @@ inputs:
     alias: false
     prefix: null
   noflags:
-    info: Ignore flagged data. Default is true.
-    default: false
+    info: Ignore flags. Default is to honour
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool
@@ -96,7 +93,7 @@ inputs:
     prefix: null
   noconj:
     info: Do not show conjugate points in u,v plots. Default is true.
-    default: false
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool
@@ -105,7 +102,6 @@ inputs:
     prefix: null
   xmin:
     info: Minimum x-axis value. Default is data min.
-    default: null
     choices: null
     repeat_policy: null
     dtype: float
@@ -114,7 +110,6 @@ inputs:
     prefix: null
   xmax:
     info: Maximum x-axis value to plot. Default is data max.
-    default: null
     choices: null
     repeat_policy: null
     dtype: float
@@ -123,7 +118,6 @@ inputs:
     prefix: null
   ymin:
     info: Minimum y-axis value. Default is data min.
-    default: null
     choices: null
     repeat_policy: null
     dtype: float
@@ -132,7 +126,6 @@ inputs:
     prefix: null
   ymax:
     info: Maximum y-axis value to plot. Default is data max.
-    default: null
     choices: null
     repeat_policy: null
     dtype: float
@@ -141,7 +134,6 @@ inputs:
     prefix: null
   cmin:
     info: Minimum colouring value. Default is data-min.
-    default: null
     choices: null
     repeat_policy: null
     dtype: float
@@ -150,7 +142,6 @@ inputs:
     prefix: null
   cmax:
     info: Maximum colouring value.  Default is data-max.
-    default: null
     choices: null
     repeat_policy: null
     dtype: float
@@ -159,7 +150,6 @@ inputs:
     prefix: null
   cnum:
     info: Number of colours to use.
-    default: null
     choices: null
     repeat_policy: null
     dtype: int
@@ -168,7 +158,6 @@ inputs:
     prefix: null
   iter-field:
     info: Separate plots per field. Default is combine all.
-    default: null
     choices: null
     repeat_policy: null
     dtype: bool
@@ -177,7 +166,7 @@ inputs:
     prefix: null
   iter-antenna:
     info: Separate plots per antenna. Default is combine all.
-    default: false
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool
@@ -186,7 +175,7 @@ inputs:
     prefix: null
   iter-spw:
     info: Separate plots per spw. Default is combine all.
-    default: false
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool
@@ -195,7 +184,7 @@ inputs:
     prefix: null
   iter-scan:
     info: Separate plots per scan. Default is combine all.
-    default: false
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool
@@ -204,7 +193,7 @@ inputs:
     prefix: null
   iter-corr:
     info: Separate plots per correlation / Stokes. Default is combine all.
-    default: false
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool
@@ -213,7 +202,7 @@ inputs:
     prefix: null
   ant:
     info: Antennas to plot (comma-separated list of names). Default is all.
-    default: all
+#    default: all
     choices: null
     repeat_policy: null
     dtype: str
@@ -223,7 +212,6 @@ inputs:
   ant-num:
     info: Antennas to plot (comma-separated list of numbers, or a [start]:[stop][:step]
       slice, overrides --ant).
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -232,7 +220,7 @@ inputs:
     prefix: null
   baseline:
     info: Baselines to plot, as 'ant1-ant2' (comma-separated list). Default is all.
-    default: all
+#    default: all
     choices: null
     repeat_policy: null
     dtype: str
@@ -241,7 +229,7 @@ inputs:
     prefix: null
   spw:
     info: Spectral windows (DDIDs) to plot (comma-separated list) Default is all.
-    default: all
+#    default: all
     choices: null
     repeat_policy: null
     dtype: str
@@ -250,7 +238,7 @@ inputs:
     prefix: null
   field:
     info: Field ID(s) to plot (comma-separated list). Default is all.
-    default: all
+#    default: all
     choices: null
     repeat_policy: null
     dtype: str
@@ -259,7 +247,7 @@ inputs:
     prefix: null
   scan:
     info: Scans to plot (comma-separated list). Default is all.
-    default: all
+#    default: all
     choices: null
     repeat_policy: null
     dtype: str
@@ -269,7 +257,7 @@ inputs:
   corr:
     info: Correlations or Stokes to plot, use indices or labels (comma-separated list).
       Default is all.
-    default: all
+#    default: all
     choices: null
     repeat_policy: null
     dtype: str
@@ -278,7 +266,6 @@ inputs:
     prefix: null
   chan:
     info: Channel slice, as [start]:[stop][:step].  Default is to plot all.
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -287,7 +274,7 @@ inputs:
     prefix: null
   xcanvas:
     info: Canvas x-size in pixels.
-    default: 1280
+#    default: 1280
     choices: null
     repeat_policy: null
     dtype: int
@@ -296,7 +283,7 @@ inputs:
     prefix: null
   ycanvas:
     info: Canvas y-size in pixels.
-    default: 900
+#    default: 900
     choices: null
     repeat_policy: null
     dtype: int
@@ -306,7 +293,7 @@ inputs:
   norm:
     info: Pixel scale normalization. Default is 'log' when colouring, and 'eq_hist'
       when not.
-    default: auto
+#    default: auto
     choices:
     - auto
     - eq_hist
@@ -320,7 +307,7 @@ inputs:
     prefix: null
   cmap:
     info: Colorcet map used without --colour-by.
-    default: bkr
+#    default: bkr
     choices: null
     repeat_policy: null
     dtype: str
@@ -329,7 +316,7 @@ inputs:
     prefix: null
   bmap:
     info: Colorcet map used when colouring by a continuous axis.
-    default: bkr
+#    default: bkr
     choices: null
     repeat_policy: null
     dtype: str
@@ -338,7 +325,7 @@ inputs:
     prefix: null
   dmap:
     info: Colorcet map used when colouring by a discrete axis.
-    default: glasbey_dark
+#    default: glasbey_dark
     choices: null
     repeat_policy: null
     dtype: str
@@ -347,7 +334,7 @@ inputs:
     prefix: null
   spread-pix:
     info: Dynamically spread rendered pixels to this size.
-    default: 0
+#    default: 0
     choices: null
     repeat_policy: null
     dtype: int
@@ -356,7 +343,7 @@ inputs:
     prefix: null
   spread-thr:
     info: Threshold parameter for spreading (0 to 1).
-    default: 0.5
+#    default: 0.5
     choices: null
     repeat_policy: null
     dtype: float
@@ -365,7 +352,7 @@ inputs:
     prefix: null
   bgcol:
     info: RGB hex code for background colour. Default FFFFFF (white).
-    default: FFFFFF
+#    default: FFFFFF
     choices: null
     repeat_policy: null
     dtype: str
@@ -374,7 +361,6 @@ inputs:
     prefix: null
   fontsize:
     info: Font size for all text elements.
-    default: null
     choices: null
     repeat_policy: null
     dtype: int
@@ -383,7 +369,6 @@ inputs:
     prefix: null
   suffix:
     info: Suffix to be included in filenames.
-    default: null
     choices: null
     repeat_policy: null
     dtype: str
@@ -392,7 +377,7 @@ inputs:
     prefix: null
   png:
     info: Output PNG name. Default is
-    default: plot-{ms}{_field}{_Spw}{_Scan}{_Ant}-{label}{_alphalabel}{_colorlabel}{_suffix}.png
+#    default: plot-{ms}{_field}{_Spw}{_Scan}{_Ant}-{label}{_alphalabel}{_colorlabel}{_suffix}.png
     choices: null
     repeat_policy: null
     dtype: str
@@ -402,7 +387,7 @@ inputs:
   title:
     info: Template for plot titles. Default title includes ms name, field, spw, scan,
       antenna, plot title, alpha title and colour title.
-    default: '{ms}{_field}{_Spw}{_Scan}{_Ant}{_title}{_Alphatitle}{_Colortitle}'
+#    default: '{ms}{_field}{_Spw}{_Scan}{_Ant}{_title}{_Alphatitle}{_Colortitle}'
     choices: null
     repeat_policy: null
     dtype: str
@@ -411,7 +396,7 @@ inputs:
     prefix: null
   xlabel:
     info: Template for X axis labels. Default is x-axis name and unit
-    default: '{xname}{_xunit}'
+#    default: '{xname}{_xunit}'
     choices: null
     repeat_policy: null
     dtype: str
@@ -420,7 +405,7 @@ inputs:
     prefix: null
   ylabel:
     info: Template for Y axis labels. Default is y-axis name and unit
-    default: '{yname}{_yunit}'
+#    default: '{yname}{_yunit}'
     choices: null
     repeat_policy: null
     dtype: str
@@ -429,7 +414,7 @@ inputs:
     prefix: null
   debug:
     info: Enable debugging output.
-    default: false
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool
@@ -439,7 +424,7 @@ inputs:
   row-chunk-size:
     info: Row chunk size for dask-ms. Larger chunks may or may not be faster, but
       will certainly use more RAM.
-    default: 100000
+#    default: 100000
     choices: null
     repeat_policy: null
     dtype: int
@@ -449,7 +434,7 @@ inputs:
   num-parallel:
     info: Run up to N renderers in parallel. Default is serial. Use -j0 to auto-set
       this to half the available cores.
-    default: 1
+#    default: 1
     choices: null
     repeat_policy: null
     dtype: int
@@ -458,7 +443,7 @@ inputs:
     prefix: null
   profile:
     info: Enable dask profiling output.
-    default: false
+#    default: false
     choices: null
     repeat_policy: null
     dtype: bool

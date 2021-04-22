@@ -1,5 +1,6 @@
 import click
-from stimela import config, recipe, GLOBALS
+from stimela import config, GLOBALS
+from stimela.kitchen import recipe
 from stimela.main import StimelaContext, cli, pass_stimela_context
 from typing import Optional, List
 

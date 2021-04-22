@@ -6,7 +6,7 @@ from typing import List
 from stimela import config
 from stimela.main import StimelaContext, cli, pass_stimela_context
 
-from stimela.recipe import Step, Recipe
+from stimela.kitchen.recipe import Step, Recipe
 
 
 

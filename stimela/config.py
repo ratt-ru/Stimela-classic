@@ -12,48 +12,10 @@ from stimela.exceptions import *
 
 CONFIG_FILE = os.path.expanduser("~/.config/stimela.conf")
 
-
-## almost supported by omegaconf, see https://github.com/omry/omegaconf/issues/144, for now just use Any
-# ListOrString = Union[str, List[str]]
-ListOrString = Any
-
 from stimela.configuratt import build_nested_config
 
-def EmptyDictDefault():
-    return field(default_factory=lambda:OrderedDict())
+from scabha.cargo import ListOrString, EmptyDictDefault, EmptyListDefault, Parameter, Cab, CabManagement 
 
-def EmptyListDefault():
-    return field(default_factory=lambda:[])
-
-
-@dataclass
-class Parameter:
-    """Parameter (of cab or recipe)"""
-    info: str = ""
-    # for input parameters, this flag indicates a read-write (aka input-output aka mixed-mode) parameter e.g. an MS
-    writeable: bool = False
-    # data type
-    dtype: str = "str"
-    # for file-type parameters, specifies that the filename is implicitly set inside the step (i.e. not a free parameter)
-    implicit: Optional[str] = None
-    # for parameters of recipes, specifies that this parameter maps onto parameter(s) of constitutent step(s)
-    maps_to: List[str] = EmptyListDefault()
-    # optonal list of arbitrary tags, used to group parameters
-    tags: List[str] = EmptyListDefault()
-
-    # if True, parameter is required
-    required: bool = False
-
-    # choices for an option-type parameter (should this be List[str]?)
-    choices:  Optional[List[Any]] = ()
-
-    # inherited from Stimela 1 -- used to handle paremeters inside containers?
-    # might need a re-think, but we can leave them in for now  
-    alias: Optional[str] = ""
-    positional: Optional[bool] = False
-    repeat_policy: Optional[str] = MISSING
-    pattern: Optional[str] = MISSING
-    prefix: Optional[str] = MISSING
 
 ## schema for a stimela image
 
@@ -62,12 +24,6 @@ class ImageBuildInfo:
     info: Optional[str] = ""
     dockerfile: Optional[str] = "Dockerfile"
     production: Optional[bool] = True          # False can be used to mark test (non-production) images 
-
-@dataclass 
-class CabManagement:        # defines common cab management behaviours
-    environment: Optional[Dict[str, str]] = EmptyDictDefault()
-    cleanup: Optional[Dict[str, ListOrString]]     = EmptyDictDefault()   
-    wranglers: Optional[Dict[str, ListOrString]]   = EmptyDictDefault()   
 
 
 @dataclass
@@ -124,6 +80,7 @@ CONFIG_LOADED = None
 
 def merge_extra_config(conf, newconf):
     from stimela import logger
+
     if 'cabs' in newconf:
         for cab in newconf.cabs:
             if cab in conf.cabs:
@@ -135,7 +92,7 @@ def load_config(extra_configs=List[str]):
     log = stimela.logger()
 
     stimela_dir = os.path.dirname(stimela.__file__)
-    from stimela.kitchen.recipe import Recipe, Step, Cab
+    from stimela.kitchen.recipe import Recipe, Cab
 
     @dataclass 
     class StimelaConfig:

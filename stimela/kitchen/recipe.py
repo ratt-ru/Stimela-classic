@@ -1,5 +1,5 @@
 import glob
-import os, os.path
+import os, os.path, re, logging
 from typing import Any, List, Dict, Optional, Union
 from enum import Enum
 from dataclasses import dataclass, field
@@ -7,111 +7,22 @@ from omegaconf import omegaconf
 from omegaconf.omegaconf import MISSING, OmegaConf
 from collections import OrderedDict
 from stimela.config import EmptyDictDefault, EmptyListDefault, Parameter, CabManagement
+import stimela
 from stimela import logger
 
 from stimela.exceptions import *
 
-from stimela.kitchen import validate
-from stimela.kitchen.validate import validate_parameters
+from scabha import validate
+from scabha.validate import validate_parameters
 
 
 Conditional = Optional[str]
 
-
-
-@dataclass
-class Cargo(object):
-    name: Optional[str] = None                    # cab name. (If None, use image or command name)
-    info: Optional[str] = None                    # description
-    inputs: Dict[str, Parameter] = EmptyDictDefault()
-    outputs: Dict[str, Parameter] = EmptyDictDefault()
-    defaults: Dict[str, Any] = EmptyDictDefault()
-
-    def __post_init__(self):
-        for name in self.inputs.keys():
-            if name in self.outputs:
-                raise DefinitionError(f"{name} appears in both inputs and outputs")
-        self.params = {}
-        self._inputs_outputs = None
-
-    @property
-    def inputs_outputs(self):
-        if self._inputs_outputs is None:
-            self._inputs_outputs = self.inputs.copy()
-            self._inputs_outputs.update(**self.outputs)
-        return self._inputs_outputs
-    
-    @property
-    def invalid_params(self):
-        return [name for name, value in self.params.items() if type(value) is validate.Error]
-
-    @property
-    def missing_params(self):
-        return {name: schema for name, schema in self.inputs_outputs.items() if schema.required and name not in self.params}
-
-    def finalize(self, config):
-        pass
-
-    def validate(self, config, params: Optional[Dict[str, Any]] = None, subst: Optional[Dict[str, Any]] = None):
-        pass
-
-    def update_parameter(self, name, value):
-        self.params[name] = value
-
-    def make_substitition_namespace(self):
-        ns = {name: str(value) for name, value in self.params.items()}
-        ns.update(**{name: "MISSING" for name in self.missing_params})
-        return OmegaConf.create(ns)
-
-
-@dataclass 
-class Cab(Cargo):
-    """Represents a cab i.e. an atomic task in a recipe.
-    See dataclass fields below for documentation of fields.
-
-    Additional attributes available after validation with arguments:
-
-        self.input_output:      combined parameter dict (self.input + self.output), maps name to Parameter
-        self.missing_params:    dict (name to Parameter) of required parameters that have not been specified
-    
-    Raises:
-        CabValidationError: [description]
-    """
-    image: Optional[str] = None                   # container image to run 
-    command: str = MISSING                        # command to run (inside or outside the container)
-    # not sure what these are
-    msdir: Optional[bool] = False
-    prefix: Optional[str] = "-"
-    # cab management and cleanup definitions
-    management: CabManagement = CabManagement()
-
-    def __post_init__ (self):
-        Cargo.__post_init__(self)
-        if self.name is None:
-            self.name = self.image or self.command.split()[0]
-        for param in self.inputs.keys():
-            if param in self.outputs:
-                raise CabValidationError(f"cab {self.name}: parameter {param} is both an input and an output, this is not permitted")
-
-    def validate(self, config, params: Optional[Dict[str, Any]] = None, subst: Optional[Dict[str, Any]] = None):
-        self.params = validate_parameters(params, self.inputs_outputs, defaults=self.defaults, subst=subst)
-
-    @property
-    def summary(self):
-        lines = [f"cab {self.name}:"] 
-        for name, value in self.params.items():
-            # if type(value) is validate.Error:
-            #     lines.append(f"  {name} = ERR: {value}")
-            # else:
-            lines.append(f"  {name} = {value}")
-                
-        lines += [f"  {name} = ???" for name in self.missing_params.keys()]
-        return lines
-
+from scabha.cargo import Cargo, Cab
 
 @dataclass
 class Step:
-    """Represents one processing step in a recipe"""
+    """Represents one processing step of a recipe"""
     cab: Optional[str] = None                       # if not None, this step is a cab and this is the cab name
     recipe: Optional["Recipe"] = None               # if not None, this step is a nested recipe
     params: Dict[str, Any] = EmptyDictDefault()     # assigns parameter values
@@ -157,7 +68,8 @@ class Step:
         if self.cargo is not None and self._validated:
             self.cargo.update_parameter(name, value)
 
-    def finalize(self, config):
+    def finalize(self, config, full_name=None, log=None):
+        from .recipe import Recipe
         if self.cargo is None:
             if bool(self.cab) == bool(self.recipe):
                 raise StepValidationError("step must specify either a cab or a nested recipe, but not both")
@@ -171,7 +83,7 @@ class Step:
                 if self.cab not in config.cabs:
                     raise StepValidationError(f"unknown cab {self.cab}")
                 self.cargo = Cab(**config.cabs[self.cab])
-            self.cargo.finalize(config)
+            self.cargo.finalize(config, full_name=full_name, log=log)
 
     def validate(self, config, subst: Optional[Dict[str, Any]] = None):
         # validate cab or receipe
@@ -182,6 +94,7 @@ class Step:
         logger().debug(f"{self.cargo.name}: {len(self.missing_params)} missing and {len(self.invalid_params)} invalid parameters")
         if self.invalid_params:
             raise StepValidationError(f"{self.cargo.name} has the following invalid paramaters: {', '.join(self.invalid_params)}")
+
 
 
 @dataclass
@@ -196,7 +109,7 @@ class Recipe(Cargo):
     Raises:
         various classes of validation errors
     """
-    steps: Dict[str, Step] = EmptyDictDefault()                # sequence of named steps
+    steps: Dict[str, Step] = EmptyDictDefault()     # sequence of named steps
 
     dirs: Dict[str, Any] = EmptyDictDefault()       # I/O directory mappings
 
@@ -205,6 +118,11 @@ class Recipe(Cargo):
     aliases: Dict[str, Any] = EmptyDictDefault()
 
     defaults: Dict[str, Any] = EmptyDictDefault()
+
+    logfile: Optional[str] = "log-{name}.txt"       # recipe logfile. None uses default logger. {name} is substituted
+    loglevel: str = "INFO"                          # level at which we log
+    nest_logs: bool = True                          # if True, each step gets an individual logfile. 
+    
 
     # loop over a set of variables
     _for: Optional[Dict[str, Any]] = None
@@ -217,7 +135,7 @@ class Recipe(Cargo):
         Cargo.__post_init__(self)
         for name, alias_list in self.aliases.items():
             if name in self.inputs_outputs:
-                raise RecipeValidationError(f"alias {name} also appeards under inputs or outputs")
+                raise RecipeValidationError(f"alias {name} also appears under inputs or outputs")
             if type(alias_list) is str:
                 alias_list = self.aliases[name] = [alias_list]
             elif not isinstance(alias_list, (list, tuple)) and not all(type(x) is str for x in alias_list):
@@ -230,7 +148,9 @@ class Recipe(Cargo):
             self.steps = steps
         # map of aliases
         self._alias_map = None
+        self.log = logger()
 
+ 
     @property
     def finalized(self):
         return self._alias_map is not None
@@ -290,13 +210,50 @@ class Recipe(Cargo):
         self._alias_list.setdefault(alias_name, []).append((step, step_param_name))
 
 
-    def finalize(self, config):
+    def _make_file_logger(self, name):
+        log = logger().getChild(name)
+        log.propagate = True # propagate to main stimela logger
+
+        # finalize logfile name
+        name = re.sub(r'[^a-zA-Z0-9_.-]', '_', name)
+        logfile = self.logfile.format(name=name)
+
+        if "log" in self.dirs:
+            if "/" not in logfile:
+                logfile = os.path.join(self.dirs.log, logfile)
+
+        # ensure directory exists
+        log_dir = os.path.dirname(logfile) or "."
+        if not os.path.exists(log_dir):
+            log.info(f'creating log directory {log_dir}')
+            os.makedirs(log_dir)
+
+        log_fh = logging.FileHandler(logfile, 'w', delay=True)
+        log_fh.setLevel(getattr(logging, self.loglevel))
+        log_fh.setFormatter(stimela.log_formatter)
+        log.addHandler(log_fh)
+        return log
+
+
+    def finalize(self, config, full_name=None, log=None):
         if self.finalized:
             return 
 
+        full_name = full_name or self.name
+        # setup recipe-level logging
+        if log is None:
+            if not self.logfile:
+                log = logger()
+            else:
+                log = self._make_file_logger(full_name)
+        self.log = log
+
         # finalize step cargos
-        for step in self.steps.values():
-            step.finalize(config)
+        for label, step in self.steps.items():
+            step_full_name = f"{full_name}.{label}"
+            if self.nest_logs:
+                log = self._make_file_logger(step_full_name)
+            step.finalize(config, full_name=None, log=log)
 
         # collect aliases
         self._alias_map = OrderedDict()
@@ -325,12 +282,12 @@ class Recipe(Cargo):
 
     
     def validate(self, config, params: Optional[Dict[str, Any]] = None, subst: Optional[Dict[str, Any]] = None):
-        logger().debug("validating recipe")
+        self.log.debug("validating recipe")
         try:
             self.finalize(config)
         except StimelaBaseException as exc:
             msg = f"error in recipe definition: {exc}"
-            raise RecipeValidationError(msg, log=True)
+            raise RecipeValidationError(msg, log=self.log)
 
         errors = []
 
@@ -339,7 +296,7 @@ class Recipe(Cargo):
             params = validate_parameters(params, self.inputs_outputs, defaults=self.defaults, subst=subst)
         except StimelaBaseException as exc:
             msg = f"recipe parameters failed to validate: {exc}"
-            errors.append(RecipeValidationError(msg, log=True))
+            errors.append(RecipeValidationError(msg, log=self.log))
 
         # set values, this will also pass aliases up to substeps
 
@@ -348,9 +305,11 @@ class Recipe(Cargo):
 
         if self.missing_params:
             msg = f"recipe '{self.name}' is missing the following required parameters: {', '.join(self.missing_params)}"
-            errors.append(RecipeValidationError(msg, log=True))
+            errors.append(RecipeValidationError(msg, log=self.log))
 
         # validate step parameters 
+
+        # prepare substitution namespaces
         subst1 = subst.copy() if subst is not None else OmegaConf.create()
         subst1.recipe = self.make_substitition_namespace()
         subst1.steps  = OmegaConf.create()
@@ -360,13 +319,14 @@ class Recipe(Cargo):
                 step.validate(config, subst=subst1)
             except StimelaBaseException as exc:
                 msg = f"step '{label}' failed to validate: {exc}"
-                errors.append(RecipeValidationError(msg, log=True))
+                errors.append(RecipeValidationError(msg, log=self.log))
             subst1.steps[label] = subst1.previous = step.cargo.make_substitition_namespace()
 
 
         if errors:
-            raise RecipeValidationError(f"{len(errors)} error(s) validating the recipe '{self.name}'", log=True)
+            raise RecipeValidationError(f"{len(errors)} error(s) validating the recipe '{self.name}'", log=self.log)
 
+        self.log.info("recipe validated")
         return
 
     def update_parameter(self, name, value):
@@ -385,3 +345,17 @@ class Recipe(Cargo):
             lines.append(f"    {name}: {stepsum[0]}")
             lines += [f"    {x}" for x in stepsum[1:]]
         return lines
+
+
+    def run(self):
+        self.log.info(f"running recipe '{self.name}'")
+        for label, step in self.steps.items():
+            self.log.info(f"running step {label}")
+            try:
+                step.cargo.run()
+            except StimelaBaseException as exc:
+                self.log.error(f"error at step {label}: {exc}")
+                return exc
+        else:
+            self.log.info(f"recipe '{self.name}' executed successfully")
+

@@ -74,6 +74,10 @@ def cli(ctx, backend, config_files=[], verbose=False):
     if verbose:
         log.debug("verbose output enabled")
 
+    # use this logger for exceptions
+    import scabha.exceptions
+    scabha.exceptions.set_logger(log)
+
     # load config files
     global CONFIG
     CONFIG = config.load_config(extra_configs=config_files)

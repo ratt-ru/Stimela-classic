@@ -35,11 +35,12 @@ cabs:
         required: true
 
 recipe:
-  name: "Oleg's bullshit recipe"
+  name: "demo recipe"
   info: 'top level recipe definition'
   dirs:
     input: input
     output: output
+    log: logs
   aliases:
     msname: selfcal.ms
     telescope: makems.tel
@@ -54,7 +55,7 @@ recipe:
               synthesis: 0.128
       selfcal:
           recipe:
-              name: "bullshit selfcal"
+              name: "demo selfcal"
               info: "this is a generic selfcal loop"
               # _for:
               #     selfcal_loop: 1,2,3     # repeat three times

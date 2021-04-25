@@ -9,13 +9,18 @@ defaults:
   weight: "briggs 0."
   pol: I
 
+policies:
+  positional: false
+  prefix: "-"
+
 inputs:
   ms:
     info: Measurement set(s)
     writeable: true
     dtype: MS
-    positional: true
     required: true
+    policies:
+      positional: true
   name:
     info: Prefix of output products
     dtype: str
@@ -37,9 +42,11 @@ inputs:
     dtype: str
   size:
     info: Image size in pixels
-    repeat_policy: " "
     dtype: int
     required: true
+    policies:
+      repeat: " "
+      format_list: ["{size}", "{size}"]
   scale:
     info: Angular pixel size
     dtype: Union[str, float]

@@ -1,12 +1,10 @@
 # -*- coding: future_fstrings -*-
 
-class StimelaBaseException(Exception):
-    def __init__(self, message, log=False):
-        Exception.__init__(self, message)
-        self.logged = log
-        if log:
-            from stimela import logger
-            logger().error(message)
+
+from scabha.exceptions import ScabhaBaseException
+
+class StimelaBaseException(ScabhaBaseException):
+    pass
 
 class SchemaError(StimelaBaseException):
     pass

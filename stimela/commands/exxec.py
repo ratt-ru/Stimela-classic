@@ -6,7 +6,7 @@ from typing import List
 from stimela import config
 from stimela.main import StimelaContext, cli, pass_stimela_context
 
-from stimela.kitchen.recipe import Step, Recipe
+from stimela.kitchen.recipe import Recipe, Step
 
 
 
@@ -78,5 +78,9 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
 
     for line in recipe.summary:
         context.log.info(line)
+
+    if not retcode:
+        if recipe.run() is not None:
+            return 1
 
     return retcode

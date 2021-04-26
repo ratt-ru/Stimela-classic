@@ -26,7 +26,7 @@ cabs:
         required: true
         writeable: true
         alias: data-ms
-        
+
 
 
   wsclean:
@@ -85,7 +85,7 @@ recipe:
               # aliases map directly to step inputs/outputs, and use their schema
               aliases:
                   ms: [calibrate.ms, image.ms]
-                  image_name: image.name
+                  image_name: image.prefix
               inputs:
                   scale: 
                     dtype: Union[str, float]

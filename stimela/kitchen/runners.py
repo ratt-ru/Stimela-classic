@@ -16,9 +16,6 @@ def run_cab(cab: Cab, log=None):
 
 
 def run_cab_natively(cab: Cab, log):
-    import scabha
-    from scabha import proc_utils
-
     args, venv = cab.build_command_line()
 
     command_name = args[0]

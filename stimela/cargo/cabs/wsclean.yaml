@@ -1,13 +1,10 @@
 name: wsclean
 image: stimela/wsclean
-command: shadems
+command: wsclean
 info: Rapid Measurement Set plotting with xarray-ms and datashader.
-msdir: true
-prefix: '-'
 
 defaults:
   weight: "briggs 0."
-  pol: I
 
 policies:
   positional: false
@@ -21,10 +18,10 @@ inputs:
     required: true
     policies:
       positional: true
-  name:
+  prefix:
     info: Prefix of output products
     dtype: str
-    alias: prefix
+    alias: name
     required: true
   channels-out:
     info: Channels out
@@ -40,12 +37,15 @@ inputs:
   weight:
     info: "Weightmode can be: natural, uniform, briggs. Default: uniform. When using Briggs' weighting, add the robustness parameter, like: '-weight briggs 0.5'"
     dtype: str
+    policies:
+      split: " "
+      repeat: list
   size:
     info: Image size in pixels
     dtype: int
     required: true
     policies:
-      repeat: " "
+      repeat: list
       format_list: ["{size}", "{size}"]
   scale:
     info: Angular pixel size
@@ -63,36 +63,36 @@ outputs:
   dirty:
     info: Dirty images
     dtype: File
-    implicit: "{self.name}*[0-9]-dity.fits"
+    implicit: "{self.prefix}*[0-9]-dity.fits"
   restored: 
     info: Restored images
     dtype: File
-    implicit: "{self.name}*-[0-9]-image.fits"
+    implicit: "{self.prefix}*-[0-9]-image.fits"
   residual:
     info: Residual images
     dtype: File
-    implicit: "{self.name}*-[0-9]-residual.fits"
+    implicit: "{self.prefix}*-[0-9]-residual.fits"
   model:
     info: Model images
     dtype: File
-    implicit: "{self.name}-*[0-9]-model.fits"
+    implicit: "{self.prefix}-*[0-9]-model.fits"
   restored_mfs:
     info: Restored MFS image
     dtype: File
-    implicit: "{self.name}-*-MFS-image.fits"
+    implicit: "{self.prefix}-*-MFS-image.fits"
   residual_mfs:
     info: Residual MFS image
     dtype: File
-    implicit: "{self.name}-*-MFS-residual.fits"
+    implicit: "{self.prefix}-*-MFS-residual.fits"
   model_mfs:
     info: Model MFS image
     dtype: File
-    implicit: "{self.name}-*-MFS-model.fits"
+    implicit: "{self.prefix}-*-MFS-model.fits"
   dirty_mfs:
     info: Dirty MFS image
     dtype: File
-    implicit: "{self.name}-*-MFS-dirty.fits"
+    implicit: "{self.prefix}-*-MFS-dirty.fits"
   source_list:
     info: Source list
     dtype: File
-    implicit: "{self.name}-*.txt"
+    implicit: "{self.prefix}-*.txt"

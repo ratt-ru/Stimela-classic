@@ -15,6 +15,8 @@ from stimela.exceptions import *
 from scabha import validate
 from scabha.validate import validate_parameters
 
+from . import runners
+
 
 Conditional = Optional[str]
 
@@ -84,6 +86,7 @@ class Step:
                     raise StepValidationError(f"unknown cab {self.cab}")
                 self.cargo = Cab(**config.cabs[self.cab])
             self.cargo.finalize(config, full_name=full_name, log=log)
+            self.log = log
 
     def validate(self, config, subst: Optional[Dict[str, Any]] = None):
         # validate cab or receipe
@@ -91,9 +94,18 @@ class Step:
         self.cargo.validate(config, self.params, subst=subst)
         self._validated = True
         self.params = self.cargo.params
-        logger().debug(f"{self.cargo.name}: {len(self.missing_params)} missing and {len(self.invalid_params)} invalid parameters")
+        self.log.debug(f"{self.cargo.name}: {len(self.missing_params)} missing and {len(self.invalid_params)} invalid parameters")
         if self.invalid_params:
             raise StepValidationError(f"{self.cargo.name} has the following invalid paramaters: {', '.join(self.invalid_params)}")
+
+    def run(self):
+        """Runs the step"""
+        if type(self.cargo) is Recipe:
+            return self.cargo.run()
+        elif type(self.cargo) is Cab:
+            runners.run_cab(self.cargo, log=self.log)
+        else:
+            raise RuntimeError("Unknown cargo type")
 
 
 
@@ -135,11 +147,14 @@ class Recipe(Cargo):
         Cargo.__post_init__(self)
         for name, alias_list in self.aliases.items():
             if name in self.inputs_outputs:
-                raise RecipeValidationError(f"alias {name} also appears under inputs or outputs")
+                raise RecipeValidationError(f"alias '{name}'' also appears under inputs or outputs")
             if type(alias_list) is str:
                 alias_list = self.aliases[name] = [alias_list]
-            elif not isinstance(alias_list, (list, tuple)) and not all(type(x) is str for x in alias_list):
-                raise RecipeValidationError(f"alias {name}: name or list of names expected")
+            if not hasattr(alias_list, '__iter__') or not all(type(x) is str for x in alias_list):
+                raise RecipeValidationError(f"alias '{name}': name or list of names expected")
+            for x in alias_list:
+                if '.' not in x:
+                    raise RecipeValidationError(f"alias '{name}'': invalid target '{x}' (missing dot)")
         # instantiate steps if needed (when creating from an omegaconf)
         if type(self.steps) is not OrderedDict:
             steps = OrderedDict()
@@ -253,7 +268,7 @@ class Recipe(Cargo):
             step_full_name = f"{full_name}.{label}"
             if self.nest_logs:
                 log = self._make_file_logger(step_full_name)
-            step.finalize(config, full_name=None, log=log)
+            step.finalize(config, full_name=step_full_name, log=log)
 
         # collect aliases
         self._alias_map = OrderedDict()
@@ -352,10 +367,13 @@ class Recipe(Cargo):
         for label, step in self.steps.items():
             self.log.info(f"running step {label}")
             try:
-                step.cargo.run()
+                step.run()
             except StimelaBaseException as exc:
-                self.log.error(f"error at step {label}: {exc}")
+                if not exc.logged:
+                    self.log.error(f"error at step {label}: {exc}")
                 return exc
         else:
             self.log.info(f"recipe '{self.name}' executed successfully")
+
+        return 0
 

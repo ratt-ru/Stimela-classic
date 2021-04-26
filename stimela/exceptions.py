@@ -33,6 +33,12 @@ class StimelaRecipeExecutionError(StimelaBaseException):
 class StimelaBaseImageError(StimelaBaseException):
     pass
 
+class StimelaCabRuntimeError(StimelaBaseException):
+    pass
+
+class StimelaProcessRuntimeError(StimelaBaseException):
+    pass
+
 
 class PipelineException(StimelaBaseException):
     """ 

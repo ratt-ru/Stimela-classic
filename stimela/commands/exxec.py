@@ -1,4 +1,5 @@
-from stimela.exceptions import RecipeValidationError
+from stimela.exceptions import RecipeValidationError, StimelaBaseException
+from scabha.exceptions import ScabhaBaseException
 from omegaconf.omegaconf import OmegaConf, OmegaConfBaseException
 import click
 import os.path
@@ -80,7 +81,14 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
         context.log.info(line)
 
     if not retcode:
-        if recipe.run() is not None:
+        try:
+            retcode = recipe.run()
+        except ScabhaBaseException as exc:
+            if not exc.logged:
+                context.log.error(f"recipe run failed with exception {exc}")
             return 1
+        if retcode is not 0:
+            context.log.error(f"recipe run returns an error code of {retcode}")
+            return 1 if retcode is None else retcode
 
     return retcode

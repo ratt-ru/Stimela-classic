@@ -107,6 +107,9 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
             log_console_handler.setLevel(loglevel)
             _logger.addHandler(log_console_handler)
 
+        import scabha
+        scabha.set_logger(_logger)
+
     return _logger
 
 from stimela.kitchen.recipe import Recipe

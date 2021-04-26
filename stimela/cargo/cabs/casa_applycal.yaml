@@ -4,7 +4,7 @@ info: "Apply calibrations solutions(s) to data"
 image: casa
 # versions: x, y, z     ## only needed if only a subset of the defined base image versions is supported by this cab: default is all versions
 
-prefix: 
+#prefix: 
 #binary: applycal
 
 defaults:

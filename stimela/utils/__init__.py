@@ -10,11 +10,7 @@ import re
 import math
 import codecs
 
-class StimelaCabRuntimeError(RuntimeError):
-    pass
-
-class StimelaProcessRuntimeError(RuntimeError):
-    pass
+from stimela.exceptions import StimelaCabRuntimeError, StimelaProcessRuntimeError
 
 
 

@@ -2,7 +2,9 @@ name: simms
 image: stimela/simms
 command: simms
 info: Simms 
-prefix: '-'
+
+policies:
+  prefix: '-'
 
 defaults:
   synthesis: 0.5
@@ -17,10 +19,14 @@ inputs:
     dtype: str
     required: true
   tel:
+    dtype: str
+    policies:
+      prefix: "--"
+  antennas:
     info: Antenna table/file
-    dtype: Union[File, Directory, str]
-    alias: antenna-file
-    required: true
+    dtype: Union[File, Directory]
+    policies:
+      positional: true
   synthesis:
     info: Observation length in hours
     dtype: float

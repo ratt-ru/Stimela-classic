@@ -2,8 +2,6 @@ name: shadems
 image: stimela/shadems
 command: shadems
 info: Rapid Measurement Set plotting with xarray-ms and datashader.
-msdir: true
-prefix: --
 
 defaults:
   norm: auto

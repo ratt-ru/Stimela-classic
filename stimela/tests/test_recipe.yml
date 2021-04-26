@@ -1,5 +1,6 @@
 cabs:
   simms:
+    image: null
     command: simms
     inputs:
       msname:
@@ -18,14 +19,21 @@ cabs:
         
   cubical:
     command: gocubical
+    virtual_env: ~/.venv/cc
     inputs:
       ms:
         dtype: MS
         required: true
-        writeable: True
+        writeable: true
+        alias: data-ms
+        
+
+
+  wsclean:
+    image: null
 
   aimfast:
-    command: aimfast
+    command: /bin/true ## dummy command for now, since this is just a dummy example step
     inputs:
       image:
         dtype: str

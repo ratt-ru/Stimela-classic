@@ -1,0 +1,41 @@
+cabs:
+  cubical:
+    command: echo # just a dummy for now 
+#    command: gocubical
+    virtual_env: ~/.venv/cc
+    inputs:
+      ms:
+        dtype: MS
+        required: true
+        writeable: true
+        alias: data-ms
+      parset:
+        required: false
+        policies:
+          positional_head: true
+
+  wsclean:
+    image: null
+    command: echo # just a dummy for now 
+
+recipe:
+  name: "cubical-image"
+  info: 'does one step of cubical, followed by one step of imaging'
+  dirs:
+    log: logs
+  aliases:
+    ms: [calibrate.ms, image.ms]
+    image: image.prefix
+  defaults:
+    calibrate_parset: solve-x.parset
+    image: foo
+    image_size: 10000
+    image_scale: 0.8asec
+
+  steps: 
+    calibrate: 
+        cab: cubical
+    image:
+        cab: wsclean
+        params:
+          pol: I

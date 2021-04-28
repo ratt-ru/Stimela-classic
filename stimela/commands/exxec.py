@@ -50,6 +50,8 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
         # create recipe object from the config
         recipe = Recipe(**context.config.recipe)
 
+        step = Step(recipe=recipe, info=what, params=params)
+
     elif what in context.config.cabs:
         cabname = what
         context.log.info(f"setting up cab {cabname}")
@@ -57,38 +59,40 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
         # create step config by merging in settings (var=value pairs from the command line) 
         step = Step(cab=cabname, params=params)
 
-        # create single-step recipe
-        recipe = Recipe(info=f"Running {cabname}")
-        recipe.add_step(step)
-
-        # when validating recipe below, don't use the parameters, since we gave them to the step already
-        params = None
     else:
         context.log.error(f"'{what}' is neither a recipe file nor a known stimela cab")
         return 2 
 
     retcode = 0
-    # validate completeness
+    # finalize
     try:
-        recipe.validate(context.config, params)
-        context.config.recipe = OmegaConf.structured(recipe)
+        step.finalize(context.config)
+    except ScabhaBaseException  as exc:
+        if not exc.logged:
+            context.log.error(f"finalization failed: {exc}")
+        return 1
+
+    # pre-validate parameter completeness
+    try:
+        recipe.prevalidate(params)
     except RecipeValidationError as exc:
         if not exc.logged:
-            context.log.error(f"recipe validation failed: {exc}")
-        retcode = 1
+            context.log.error(f"pre-validation failed: {exc}")
+        return 1
 
-    for line in recipe.summary:
-        context.log.info(line)
+    context.log.debug("---------- prevalidated step follows ----------")
+    for line in step.summary:
+        context.log.debug(line)
 
-    if not retcode:
-        try:
-            retcode = recipe.run()
-        except ScabhaBaseException as exc:
-            if not exc.logged:
-                context.log.error(f"recipe run failed with exception {exc}")
-            return 1
-        if retcode is not 0:
-            context.log.error(f"recipe run returns an error code of {retcode}")
-            return 1 if retcode is None else retcode
+    try:
+        retcode = step.run()
+    except ScabhaBaseException as exc:
+        if not exc.logged:
+            context.log.error(f"run failed with exception: {exc}")
+        return 1
+
+    if retcode is not 0:
+        context.log.error(f"run failed with error code {retcode}")
+        return 1 if retcode is None else retcode
 
     return retcode

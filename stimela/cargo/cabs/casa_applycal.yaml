@@ -6,6 +6,7 @@ image: casa
 
 #prefix: 
 #binary: applycal
+command: casa
 
 defaults:
   _use:

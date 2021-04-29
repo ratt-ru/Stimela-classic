@@ -83,6 +83,7 @@ def cli(ctx, backend, config_files=[], verbose=False):
     CONFIG = config.load_config(extra_configs=config_files)
     if config.CONFIG_LOADED:
         log.info(f"loaded config from {config.CONFIG_LOADED}") 
+    stimela.CONFIG = CONFIG
 
     # set backend module
     global BACKEND 
@@ -91,8 +92,6 @@ def cli(ctx, backend, config_files=[], verbose=False):
     BACKEND = getattr(stimela.backends, CONFIG.opts.backend.name)
     log.info(f"backend is {CONFIG.opts.backend.name}")
 
-    CONFIG.opts
-    CONFIG['opts']
     # create context to be passed to commands
     ctx.obj = StimelaContext(CONFIG, log, BACKEND)
 

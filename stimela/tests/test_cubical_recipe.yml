@@ -13,6 +13,8 @@ cabs:
         required: false
         policies:
           positional_head: true
+      dummy:
+        choices: [a, b]
 
   wsclean:
     image: null
@@ -25,16 +27,19 @@ recipe:
     log: logs
   aliases:
     ms: [calibrate.ms, image.ms]
-    image: image.prefix
+    image_name: image.prefix
+    output_image: image.restored
   defaults:
     calibrate_parset: solve-x.parset
-    image: foo
+    image_name: foo
     image_size: 10000
     image_scale: 0.8asec
 
   steps: 
     calibrate: 
         cab: cubical
+        params:
+          dummy: b
     image:
         cab: wsclean
         params:

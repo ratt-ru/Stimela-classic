@@ -13,6 +13,8 @@ try:
 except pkg_resources.DistributionNotFound:
     __version__ = "dev"
 
+CONFIG = None
+
 # Get to know user
 USER = os.environ["USER"]
 UID = os.getuid()

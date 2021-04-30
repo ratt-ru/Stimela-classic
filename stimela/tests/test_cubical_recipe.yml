@@ -21,26 +21,37 @@ cabs:
     command: echo # just a dummy for now 
 
 recipe:
-  name: "cubical-image"
-  info: 'does one step of cubical, followed by one step of imaging'
-  dirs:
-    log: logs
-  aliases:
-    ms: [calibrate.ms, image.ms]
-    image_name: image.prefix
-    output_image: image.restored
-  defaults:
-    calibrate_parset: solve-x.parset
-    image_name: foo
-    image_size: 10000
-    image_scale: 0.8asec
+  name: "cubical-loop"
+  for_loop:
+    var: ms
+    over: ms_list
+  inputs:
+    ms_list:
+      dtype: List[MS]
+      required: true
+  steps:
+    cubical-image:
+      recipe:
+        name: "cubical-image"
+        info: 'does one step of cubical, followed by one step of imaging'
+        dirs:
+          log: logs
+        aliases:
+          ms: [calibrate.ms, image.ms]
+          image_name: image.prefix
+          output_image: image.restored
+        defaults:
+          calibrate_parset: solve-x.parset
+          image_name: foo
+          image_size: 10000
+          image_scale: 0.8asec
 
-  steps: 
-    calibrate: 
-        cab: cubical
-        params:
-          dummy: b
-    image:
-        cab: wsclean
-        params:
-          pol: I
+        steps: 
+          calibrate: 
+              cab: cubical
+              params:
+                dummy: b
+          image:
+              cab: wsclean
+              params:
+                pol: I

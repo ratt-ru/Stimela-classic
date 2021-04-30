@@ -3,7 +3,7 @@ import os, os.path, re, logging
 from typing import Any, List, Dict, Optional, Union
 from enum import Enum
 from dataclasses import dataclass
-from omegaconf import MISSING, OmegaConf, DictConfig  
+from omegaconf import MISSING, OmegaConf, DictConfig
 from collections import OrderedDict
 from stimela.config import EmptyDictDefault
 import stimela
@@ -12,7 +12,7 @@ from stimela import logger
 from stimela.exceptions import *
 
 from scabha import validate
-from scabha.validate import validate_parameters
+from scabha.validate import join_quote
 
 from . import runners
 
@@ -37,6 +37,9 @@ class Step:
             raise StepValidationError("step must specify either a cab or a nested recipe, but not both")
         self.cargo = self.config = self.log = None
         self._prevalidated = None
+        # convert params into stadard dict, else lousy stuff happens when we imnsetr non-standard objects
+        if isinstance(self.params, DictConfig):
+            self.params = OmegaConf.to_container(self.params)
 
     @property
     def summary(self):
@@ -109,7 +112,7 @@ class Step:
                             f"{len(self.invalid_params)} invalid and "
                             f"{len(self.unresolved_params)} unresolved parameters")
             if self.invalid_params:
-                raise StepValidationError(f"{self.cargo.name} has the following invalid paramaters: {', '.join(self.invalid_params)}")
+                raise StepValidationError(f"{self.cargo.name} has the following invalid parameters: {join_quote(self.invalid_params)}")
 
     def run(self, subst=None):
         """Runs the step"""
@@ -132,7 +135,7 @@ class Step:
         # bomb out if some inputs failed to validate or substitutions resolve
         if self.cargo.invalid_params or self.cargo.unresolved_params:
             invalid = self.cargo.invalid_params + self.cargo.unresolved_params
-            raise StepValidationError(f"invalid inputs: {' ,'.join(invalid)}", log=self.log)
+            raise StepValidationError(f"invalid inputs: {join_quote(invalid)}", log=self.log)
 
         self.log.info(f"running step")
         try:
@@ -164,10 +167,20 @@ class Step:
         # again, bomb put if something was invalid
         if self.cargo.invalid_params or self.cargo.unresolved_params:
             invalid = self.cargo.invalid_params + self.cargo.unresolved_params
-            raise StepValidationError(f"invalid inputs: {' ,'.join(invalid)}", log=self.log)
+            raise StepValidationError(f"invalid inputs: {join_quote(invalid)}", log=self.log)
 
 
         return {name: value for name, value in params.items() if name in self.outputs}
+
+@dataclass
+class ForLoopClause(object):
+    # name of list variable
+    var: str 
+    # This should be the name of an input that provides a list.
+    over: str
+    # If True, this is a for_loop not a loop -- things may be evaluated in parallel
+    for_loop: bool = False
+
 
 
 @dataclass
@@ -192,13 +205,15 @@ class Recipe(Cargo):
 
     defaults: Dict[str, Any] = EmptyDictDefault()
 
+    # make recipe a for_loop-gather (i.e. parallel for loop)
+    for_loop: Optional[ForLoopClause] = None
+
+    # logging control
     logfile: Optional[str] = "log-{name}.txt"       # recipe logfile. None uses default logger. {name} is substituted
     loglevel: str = "INFO"                          # level at which we log
     nest_logs: bool = True                          # if True, each step gets an individual logfile. 
     
 
-    # loop over a set of variables
-    _for: Optional[Dict[str, Any]] = None
     # if not None, do a while loop with the conditional
     _while: Conditional = None
     # if not None, do an until loop with the conditional
@@ -215,7 +230,7 @@ class Recipe(Cargo):
                 raise RecipeValidationError(f"alias '{name}': name or list of names expected")
             for x in alias_list:
                 if '.' not in x:
-                    raise RecipeValidationError(f"alias '{name}'': invalid target '{x}' (missing dot)")
+                    raise RecipeValidationError(f"alias '{name}': invalid target '{x}' (missing dot)")
         # instantiate steps if needed (when creating from an omegaconf)
         if type(self.steps) is not OrderedDict:
             steps = OrderedDict()
@@ -265,10 +280,10 @@ class Recipe(Cargo):
         if schema is None:
             schema = step.outputs.get(step_param_name)
             if schema is None:
-                raise RecipeValidationError(f"alias {alias_name} refers to unknown parameter '{step_param_name}'")
+                raise RecipeValidationError(f"alias '{alias_name}' refers to unknown parameter '{step_label}.{step_param_name}'")
         # check that it's not already set
         if step_param_name in step.params:
-            raise RecipeValidationError(f"alias {alias_name} refers to already defined parameter '{step_param_name}'")
+            raise RecipeValidationError(f"alias '{alias_name}' refers parameter '{step_label}.{step_param_name}' that is already set")
         # add to our mapping
         io = self.inputs if is_input else self.outputs
         existing_schema = io.get(alias_name)
@@ -277,7 +292,7 @@ class Recipe(Cargo):
         else:
             # check if definition conflicts
             if bool(is_input) != bool(io is self.inputs) or schema.dtype != existing_schema.dtype:
-                raise RecipeValidationError(f"alias {alias_name} has a conflicting list of definitions")
+                raise RecipeValidationError(f"alias '{alias_name}' has a conflicting list of definitions (dtype of '{step_label}.{step_param_name}' doesn't match previous dtype)")
             # alias becomes required if any parm it refers to was required, unless recipe has a default
             if schema.required:
                 existing_schema.required = True
@@ -342,7 +357,7 @@ class Recipe(Cargo):
                     step_label, step_param_name = alias.split('.', 1)
                     step = self.steps.get(step_label)
                     if step is None:
-                        raise RecipeValidationError(f"alias {name} refers to unknown step '{step_label}'")
+                        raise RecipeValidationError(f"alias {name} refers to unknown step '{step_label}'", log=log)
                     self._add_alias(name, step_label, step, step_param_name)
 
             # automatically make aliases for unset required parameters 
@@ -351,11 +366,20 @@ class Recipe(Cargo):
                     if (label, name) not in self._alias_map and name not in step.params and schema.required:
                         auto_name = f"{label}_{name}"
                         if auto_name in self.inputs or auto_name in self.outputs:
-                            raise RecipeValidationError(f"auto-generated paramneter name '{auto_name}' conflicts with another name. Please define an explicit alias for this.")
+                            raise RecipeValidationError(f"auto-generated parameter name '{auto_name}' conflicts with another name. Please define an explicit alias for this.", log=log)
                         self._add_alias(auto_name, label, step, name)
-            
+
             # these will be re-merged when needed again
             self._inputs_outputs = None
+
+            # check that for-loop is valid, if defined
+            if self.for_loop is not None:
+                if self.for_loop.over not in self.inputs:
+                    raise RecipeValidationError(f"for_loop list '{self.for_loop.over}' is not a defined input", log=log)
+                # this becomes a required input
+                self.inputs[self.for_loop.over].required = True
+                # mark loop variable as unresolved
+                self.update_parameter(self.for_loop.var, validate.Unresolved(self.for_loop.var))
 
 
     def prevalidate(self, params: Optional[Dict[str, Any]]):
@@ -363,20 +387,27 @@ class Recipe(Cargo):
         self.log.info("prevalidating recipe")
         errors = []
 
+        # check params
+        if self.for_loop and self.for_loop.var in self.params and type(self.params[self.for_loop.var]) is not validate.Unresolved:
+            errors.append(RecipeValidationError(f"value of for_loop variable '{self.for_loop.var}' cannot be set explicitly", log=self.log))
+
         # validate our own parameters without substitutions
         try:
             Cargo.prevalidate(self, params)
         except ScabhaBaseException as exc:
-            msg = f"recipe parameters failed to validate: {exc}"
+            msg = f"recipe pre-validation failed: {exc}"
             errors.append(RecipeValidationError(msg, log=self.log))
 
-        # propagate parameters parameters to substeps
+        # propagate aliases up to substeps
         for name, value in self.params.items():
             self._propagate_parameter(name, value)
+        # mark loop variable as an unresolved substitution for now
+        if self.for_loop is not None:
+            self.update_parameter(self.for_loop.var, validate.Unresolved(self.for_loop.var))
 
         # check for missing ones
         if self.missing_params:
-            msg = f"recipe '{self.name}' is missing the following required parameters: {', '.join(self.missing_params)}"
+            msg = f"""recipe '{self.name}' is missing the following required parameters: {join_quote(self.missing_params)}"""
             errors.append(RecipeValidationError(msg, log=self.log))
 
         # prevalidate step parameters 
@@ -393,14 +424,29 @@ class Recipe(Cargo):
         self.log.info("recipe pre-validated")
         return
 
+    def validate_inputs(self, params: Dict[str, Any], subst: Optional[Dict[str, Any]]):
+        # for loops, and an unresolved loop variable to the parameters so that it validates
+        if self.for_loop is not None:
+            self._for_loop_values = self.params[self.for_loop.over]
+            if not isinstance(self._for_loop_values, (list, tuple)):
+                self._for_loop_values = [iter_values]
+            self.log.info(f"recipe is a for-loop with '{self.for_loop.var}' iterating over {len(self._for_loop_values)} values")
+            params = params.copy()
+            params[self.for_loop.var] = self._for_loop_values[0]
+        else:
+            self._for_loop_values = [None]
+        return Cargo.validate_inputs(self, params, subst)
+
+
     def _propagate_parameter(self, name, value):
-        if type(value) is not validate.Unresolved:
-            for step, step_param_name in self._alias_list.get(name, []):
-                if self.inputs_outputs[name].implicit:
-                    if step_param_name in step.cargo.params:
-                        self.params[name] = step.cargo.params[name]
-                else:
-                    step.update_parameter(step_param_name, value)
+        ### OMS: not sure why I had this, why not propagae unresolveds?
+        ## if type(value) is not validate.Unresolved:
+        for step, step_param_name in self._alias_list.get(name, []):
+            if self.inputs_outputs[name].implicit:
+                if step_param_name in step.cargo.params:
+                    self.params[name] = step.cargo.params[name]
+            else:
+                step.update_parameter(step_param_name, value)
 
     def update_parameter(self, name: str, value: Any):
         """[summary]
@@ -471,24 +517,31 @@ class Recipe(Cargo):
         subst1.steps  = OmegaConf.create()
         subst1.previous = None
 
-        for label, step in self.steps.items():
-            try:
-                step_outputs = step.run(subst1)
-            except StimelaBaseException as exc:
-                if not exc.logged:
-                    self.log.error(f"error running step '{label}': {exc}")
-                raise
-            # put all step parameters into the substitution dict, as they're all validated now
-            subst1.previous = OmegaConf.create(step.cargo.params)
-            subst1.steps[label] = subst1.previous
+        # iterate over for-loop values (if not looping, this is set up to [None] in advance)
+        for count, iter_var in enumerate(self._for_loop_values):
+            if self.for_loop:
+                self.log.info(f"for loop iteration {count}: {self.for_loop.var} = {iter_var}")
+                self.update_parameter(self.for_loop.var, iter_var)
+                subst1.recipe[self.for_loop.var] = iter_var
 
-            # check aliases, our outputs need to be retrieved from the step
-            for name, schema in self.outputs.items():
-                for step1, step_param_name in self._alias_list.get(name, []):
-                    if step1 is step and step_param_name in step_outputs:
-                        self.params[name] = step_outputs[step_param_name]
-                        # clear implicit setting
-                        self.outputs[name].implicit = None
+            for label, step in self.steps.items():
+                try:
+                    step_outputs = step.run(subst1)
+                except StimelaBaseException as exc:
+                    if not exc.logged:
+                        self.log.error(f"error running step '{label}': {exc}")
+                    raise
+                # put all step parameters into the substitution dict, as they're all validated now
+                subst1.previous = OmegaConf.create(step.cargo.params)
+                subst1.steps[label] = subst1.previous
+
+                # check aliases, our outputs need to be retrieved from the step
+                for name, schema in self.outputs.items():
+                    for step1, step_param_name in self._alias_list.get(name, []):
+                        if step1 is step and step_param_name in step_outputs:
+                            self.params[name] = step_outputs[step_param_name]
+                            # clear implicit setting
+                            self.outputs[name].implicit = None
 
         self.log.info(f"recipe '{self.name}' executed successfully")
         return {name: value for name, value in self.params.items() if name in self.outputs}

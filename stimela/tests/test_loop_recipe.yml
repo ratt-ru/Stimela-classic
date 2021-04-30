@@ -1,0 +1,47 @@
+cabs:
+  cubical:
+    command: echo # just a dummy for now 
+    virtual_env: ~/.venv/cc
+    inputs:
+      ms:
+        dtype: str
+        required: true
+        writeable: true
+        alias: data-ms
+
+  myclean:
+    command: echo # just a dummy for now 
+    inputs:
+      ms:
+        dtype: str
+        required: true
+        writeable: true
+        alias: data-ms
+
+recipe:
+  name: "test loop"
+  for_loop:
+    var: ms
+    over: ms_list
+  aliases:
+    ms: ['cubical_image.ms']
+  inputs:
+    ms_list:
+      dtype: List[str]
+      required: true
+  defaults:
+    ms_list: [a,b,c]
+  steps:
+    cubical_image:
+      recipe:
+        name: "cubical_image"
+        info: 'does one step of cubical, followed by one step of imaging'
+        dirs:
+          log: logs
+        aliases:
+          ms: [calibrate.ms, image.ms]
+        steps: 
+          calibrate: 
+              cab: cubical
+          image:
+              cab: myclean

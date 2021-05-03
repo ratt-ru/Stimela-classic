@@ -114,6 +114,12 @@ def resolve_config_refs(conf, name: str, *sources):
     return conf
 
 
+def load_using(path: str, conf: DictConfig, name: Optional[str]=None, selfrefs: bool=True):
+    subconf = OmegaConf.load(path)
+    name = name or os.path.basename(path)
+    return resolve_config_refs(subconf, name, *((conf, subconf) if selfrefs else (conf,)))
+
+
 def build_nested_config(conf, filelist: List[str], schema,
                         section_name: Optional[str] = None,  
                         nameattr: Union[Callable, str, None] = None,

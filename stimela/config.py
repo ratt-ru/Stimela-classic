@@ -7,6 +7,7 @@ from omegaconf.omegaconf import MISSING, OmegaConf
 from omegaconf.errors import OmegaConfBaseException
 from collections import OrderedDict
 import stimela
+from stimela import configuratt
 
 from stimela.exceptions import *
 
@@ -61,6 +62,7 @@ class StimelaOptions(object):
 @dataclass
 class StimelaLibrary(object):
     params: Dict[str, Any] = EmptyDictDefault()
+    recipes: Dict[str, Any] = EmptyDictDefault()
 
 def DefaultDirs():
     return field(default_factory=lambda:dict(indir='.', outdir='.'))
@@ -129,7 +131,7 @@ def load_config(extra_configs=List[str]):
         global CONFIG_LOADED
         log.info(f"loading config from {config_file}")
         try:
-            newconf = OmegaConf.load(config_file)
+            newconf = configuratt.load_using(config_file, conf)
             conf = merge_extra_config(conf, newconf)
             if not CONFIG_LOADED:
                 CONFIG_LOADED = config_file

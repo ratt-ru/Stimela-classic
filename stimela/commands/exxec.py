@@ -1,3 +1,4 @@
+from stimela import configuratt
 from stimela.exceptions import RecipeValidationError, StimelaBaseException
 from scabha.exceptions import ScabhaBaseException
 from omegaconf.omegaconf import OmegaConf, OmegaConfBaseException
@@ -37,7 +38,7 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
 
         # if file contains a recipe entry, treat it as a full config (that can include cabs etc.)
         try:
-            conf = OmegaConf.load(what)
+            conf = configuratt.load_using(what, stimela.CONFIG)
             if 'recipe' in conf:
                 stimela.CONFIG = config.merge_extra_config(stimela.CONFIG, conf)
             else:

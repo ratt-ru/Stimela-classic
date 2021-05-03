@@ -18,6 +18,22 @@ cabs:
         writeable: true
         alias: data-ms
 
+lib:
+  recipes:
+    cubical_image:
+      name: "cubical_image"
+      info: 'does one step of cubical, followed by one step of imaging'
+      dirs:
+        log: logs
+      aliases:
+        ms: [calibrate.ms, image.ms]
+      steps: 
+        calibrate: 
+            cab: cubical
+        image:
+            cab: myclean
+
+
 recipe:
   name: "test loop"
   for_loop:
@@ -34,14 +50,4 @@ recipe:
   steps:
     cubical_image:
       recipe:
-        name: "cubical_image"
-        info: 'does one step of cubical, followed by one step of imaging'
-        dirs:
-          log: logs
-        aliases:
-          ms: [calibrate.ms, image.ms]
-        steps: 
-          calibrate: 
-              cab: cubical
-          image:
-              cab: myclean
+        _use: lib.recipes.cubical_image

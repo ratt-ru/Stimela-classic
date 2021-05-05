@@ -87,7 +87,7 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
             if not exc.logged:
                 context.log.error(f"recipe run failed with exception {exc}")
             return 1
-        if retcode is not 0:
+        if retcode != 0:
             context.log.error(f"recipe run returns an error code of {retcode}")
             return 1 if retcode is None else retcode
 

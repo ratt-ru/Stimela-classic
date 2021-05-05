@@ -18,7 +18,7 @@ inputs:
   ms:
     info: Measurement set to plot
     required: true
-    writeable: true
+    writable: true
     dtype: MS
     policies:
       positional: true

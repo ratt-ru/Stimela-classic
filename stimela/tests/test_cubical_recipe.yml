@@ -7,7 +7,7 @@ cabs:
       ms:
         dtype: MS
         required: true
-        writeable: true
+        writable: true
         alias: data-ms
       parset:
         required: false
@@ -16,6 +16,15 @@ cabs:
 
   wsclean:
     image: null
+    inputs:
+      ms:
+        dtype: Directory
+        required: true
+        writable: true
+      prefix:
+        dtype: str
+        policies:
+          positional_head: true
     command: echo # just a dummy for now 
 
 recipe:
@@ -24,7 +33,6 @@ recipe:
   dirs:
     log: logs
   aliases:
-    ms: [calibrate.ms, image.ms]
     image: image.prefix
   defaults:
     calibrate_parset: solve-x.parset

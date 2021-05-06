@@ -1,5 +1,6 @@
 import click
-from stimela.main import StimelaContext, cli, pass_stimela_context
+import stimela
+from stimela.main import cli
 
 
 @cli.command(
@@ -8,13 +9,13 @@ from stimela.main import StimelaContext, cli, pass_stimela_context
     short_help="list known stimela images")
 @click.option("-i", "--print-ids", is_flag=True, 
                 help="list in the more terse image+ID format.")
-@pass_stimela_context
-def images(context: StimelaContext, print_ids=False):
-
-    available = context.backend.available_images()
+def images(print_ids=False):
+    from stimela.main import BACKEND
+    log = stimela.logger()
+    available = BACKEND.available_images()
 
     if not print_ids:
-        context.log.info("image list follows")
+        log.info("image list follows")
 
         header = f"{'IMAGE':19} {'VERSION':19} {'DESCRIPTION':19} BUILT BY"
         print(header)

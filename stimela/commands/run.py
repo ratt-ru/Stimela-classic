@@ -1,7 +1,8 @@
 import click
+import stimela
 from stimela import config, GLOBALS
 from stimela.kitchen import recipe
-from stimela.main import StimelaContext, cli, pass_stimela_context
+from stimela.main import cli
 from typing import Optional, List
 
 
@@ -15,9 +16,11 @@ from typing import Optional, List
                 help="MS folder. MSs should be placed here. Also, empty MSs will be placed here")
 @click.option("-g", "--globals", "myglobals", metavar="KEY=VALUE[:TYPE]", multiple=True,
                 help="Global variables to pass to script. The type is assumed to string unless specified")
-@pass_stimela_context
-def run(context: StimelaContext, script: str, outdir: str=None, 
+def run(script: str, outdir: str=None, 
         indir: str=None, msdir: str=None, myglobals: List[str]=[]):
+    from stimela.main import BACKEND
+    from stimela import CONFIG
+    log = stimela.logger()
     
     global GLOBALS
     _globals = dict(_STIMELA_INPUT=indir, _STIMELA_OUTPUT=outdir,

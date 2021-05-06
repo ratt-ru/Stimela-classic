@@ -1,17 +1,16 @@
+import dataclasses
 from stimela import configuratt
-from stimela.exceptions import RecipeValidationError, StimelaBaseException
 from scabha.exceptions import ScabhaBaseException
 from omegaconf.omegaconf import OmegaConf, OmegaConfBaseException
 import click
 import logging
 import os.path
-from typing import List
+from typing import List, Optional
 import stimela
-from stimela import config, logger
-from stimela.main import StimelaContext, cli, pass_stimela_context
-
-from stimela.kitchen.recipe import Recipe, Step
-
+from stimela import logger
+from stimela.main import cli
+from stimela.kitchen.recipe import Recipe, Step, join_quote
+from stimela.config import get_config_class
 
 
 @cli.command("exec",
@@ -19,19 +18,19 @@ from stimela.kitchen.recipe import Recipe, Step
     " parameters and settings for the cab or recipe",
     short_help="execute a cab or a YML recipe",
     no_args_is_help=True)
+@click.option("-r", "--recipe", "recipe_name", default="recipe", metavar="SECTION",
+                help="selects recipe to run from YML file, default is 'recipe'")
 @click.argument("what", metavar="RECIPE.yml|CAB") 
 @click.argument("params", nargs=-1, metavar="KEY=VALUE", required=False) 
-@pass_stimela_context
-def exxec(context: StimelaContext, what: str, params: List[str] = []):
+def exxec(what: str, params: List[str] = [], recipe_name: str = "recipe"):
 
+    log = logger()
     invalid = [p for p in params if "=" not in p]
     if invalid:
-        context.log.error(f"invalid parameters: {' '.join(invalid)}")
+        log.error(f"invalid parameters: {' '.join(invalid)}")
         return 2
     
     params = dict(p.split("=", 1) for p in params if "=" in p)
-
-    log = logger()
 
     if os.path.isfile(what):
         log.info(f"loading recipe/config {what}")
@@ -39,20 +38,41 @@ def exxec(context: StimelaContext, what: str, params: List[str] = []):
         # if file contains a recipe entry, treat it as a full config (that can include cabs etc.)
         try:
             conf = configuratt.load_using(what, stimela.CONFIG)
-            if 'recipe' in conf:
-                stimela.CONFIG = config.merge_extra_config(stimela.CONFIG, conf)
-            else:
-                recipeconf = OmegaConf.structured(Recipe)
-                recipeconf = OmegaConf.merge(recipeconf, conf)
-                stimela.CONFIG.recipe = recipeconf
         except OmegaConfBaseException as exc:
             log.error(f"Error loading {what}: {exc}")
             return 2
 
-        # create recipe object from the config, wrapped in a step
-        step = Step(recipe=Recipe(**stimela.CONFIG.recipe), info=what, params=params)
+        # anything that is not a standard config section will be treated as a recipe
+        all_recipe_names = [name for name in conf if name not in stimela.CONFIG]
+        log.info(f"{what} contains the following recipe sections: {join_quote(all_recipe_names)}")
 
-    elif what in context.config.cabs:
+        if recipe_name not in conf:
+            log.error(f"{what} does not contain a '{recipe_name}' section")
+            return 2
+        if recipe_name in stimela.CONFIG:
+            log.error(f"'{recipe_name}' is not a valid recipe name")
+            return 2
+        
+        # merge into config, treating each section as a recipe
+        config_fields = []
+        for section in conf:
+            if section not in stimela.CONFIG:
+                config_fields.append((section, Optional[Recipe], dataclasses.field(default=None)))
+        dcls = dataclasses.make_dataclass("UpdatedStimelaConfig", config_fields, bases=(get_config_class(),)) 
+        config_schema = OmegaConf.structured(dcls)
+
+        try:
+            stimela.CONFIG = OmegaConf.merge(stimela.CONFIG, config_schema, conf)
+        except OmegaConfBaseException as exc:
+            log.error(f"Error loading {what}: {exc}")
+            return 2
+
+        log.info(f"selected recipe is '{recipe_name}'")
+
+        # create recipe object from the config, wrapped in a step
+        step = Step(recipe=Recipe(**stimela.CONFIG[recipe_name]), info=what, params=params)
+
+    elif what in stimela.CONFIG.cabs:
         cabname = what
         log.info(f"setting up cab {cabname}")
 

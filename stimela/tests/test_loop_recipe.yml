@@ -1,3 +1,5 @@
+
+## recipes may define or redefine or augment cabs
 cabs:
   cubical:
     command: echo # just a dummy for now 
@@ -18,6 +20,7 @@ cabs:
         writeable: true
         alias: data-ms
 
+## lib.recipes.* may be added to and invoked via _use
 lib:
   recipes:
     cubical_image:
@@ -33,7 +36,46 @@ lib:
         image:
             cab: myclean
 
+    test-loop-recipe:
+      name: "test loop"
+      for_loop:
+        var: ms
+        over: ms_list
+      aliases:
+        ms: ['cubical_image.ms']
+      inputs:
+        ms_list:
+          dtype: List[str]
+          required: true
+      defaults:
+        ms_list: [a,b,c]
+      steps:
+        cubical_image:
+          recipe:
+            _use: lib.recipes.cubical_image
 
+opts:
+  log:
+    dir: logs-{datetime} 
+    nest: 3
+
+
+## but also top-level sections are treated as recipe names
+cubical_image:
+  name: "cubical_image"
+  info: 'does one step of cubical, followed by one step of imaging'
+  dirs:
+    log: logs
+  aliases:
+    ms: [calibrate.ms, image.ms]
+  steps: 
+    calibrate: 
+        cab: cubical
+    image:
+        cab: myclean
+
+## ....and can be invoked via _use, see below
+## The current default recipe to run is called "recipe", but use exec -r to override
 recipe:
   name: "test loop"
   for_loop:
@@ -47,7 +89,8 @@ recipe:
       required: true
   defaults:
     ms_list: [a,b,c]
+  logname: "{name}.MS{params.ms}"
   steps:
     cubical_image:
       recipe:
-        _use: lib.recipes.cubical_image
+        _use: cubical_image

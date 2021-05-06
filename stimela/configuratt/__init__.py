@@ -172,3 +172,5 @@ def build_nested_config(conf, filelist: List[str], schema,
             raise RuntimeError(f"config error in {path}:\n  {exc}")
 
     return section_content
+
+

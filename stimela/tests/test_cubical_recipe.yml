@@ -20,6 +20,10 @@ cabs:
     image: null
     command: echo # just a dummy for now 
 
+opts:
+  log:
+    nest: 2
+
 recipe:
   name: "cubical-loop"
   for_loop:

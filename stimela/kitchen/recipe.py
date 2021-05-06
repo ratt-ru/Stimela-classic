@@ -1,13 +1,13 @@
-import glob
+import glob, time
 import os, os.path, re, logging
 from typing import Any, List, Dict, Optional, Union
 from enum import Enum
 from dataclasses import dataclass
 from omegaconf import MISSING, OmegaConf, DictConfig
 from collections import OrderedDict
-from stimela.config import EmptyDictDefault
+from stimela.config import EmptyDictDefault, StimelaLogConfig
 import stimela
-from stimela import logger
+from stimela import logger, stimelogging
 
 from stimela.exceptions import *
 
@@ -16,10 +16,10 @@ from scabha.validate import join_quote
 
 from . import runners
 
-
 Conditional = Optional[str]
 
 from scabha.cargo import Cargo, Cab
+
 
 @dataclass
 class Step:
@@ -40,6 +40,9 @@ class Step:
         # convert params into stadard dict, else lousy stuff happens when we imnsetr non-standard objects
         if isinstance(self.params, DictConfig):
             self.params = OmegaConf.to_container(self.params)
+
+        # logger for the step
+        self.log = None
 
     @property
     def summary(self):
@@ -84,10 +87,11 @@ class Step:
         if self.cargo is not None and self.prevalidated:
             self.cargo.update_parameter(name, value)
 
-    def finalize(self, config=None, log=None, full_name=None):
+    def finalize(self, config=None, log=None, hier_name=None, nesting=0):
         if not self.finalized:
-            self.log = log or stimela.logger()
             self.config = config or stimela.CONFIG
+            self.log = self.log or log or stimela.logger()
+
             if bool(self.cab) == bool(self.recipe):
                 raise StepValidationError("step must specify either a cab or a nested recipe, but not both")
             # if recipe, validate the recipe with our parameters
@@ -101,7 +105,9 @@ class Step:
                     raise StepValidationError(f"unknown cab {self.cab}")
                 self.cargo = Cab(**config.cabs[self.cab])
             # note that cargo is passed log (which could be None), so it can sort out its own logger
-            self.cargo.finalize(config, log=log, full_name=full_name)
+            self.cargo.finalize(config, log=self.log, hier_name=hier_name, nesting=nesting+1)
+            # cargo might change its logger, so back-propagate it here
+            self.log = self.cargo.log
 
     def prevalidate(self):
         if not self.prevalidated:
@@ -208,16 +214,14 @@ class Recipe(Cargo):
     # make recipe a for_loop-gather (i.e. parallel for loop)
     for_loop: Optional[ForLoopClause] = None
 
-    # logging control
-    logfile: Optional[str] = "log-{name}.txt"       # recipe logfile. None uses default logger. {name} is substituted
-    loglevel: str = "INFO"                          # level at which we log
-    nest_logs: bool = True                          # if True, each step gets an individual logfile. 
+    # logging control, overrides opts.log.init_logname and opts.log.logname 
+    init_logname: Optional[str] = None
+    logname: Optional[str] = None
     
-
-    # if not None, do a while loop with the conditional
-    _while: Conditional = None
-    # if not None, do an until loop with the conditional
-    _until: Conditional = None
+    # # if not None, do a while loop with the conditional
+    # _while: Conditional = None
+    # # if not None, do an until loop with the conditional
+    # _until: Conditional = None
 
     def __post_init__ (self):
         Cargo.__post_init__(self)
@@ -240,6 +244,7 @@ class Recipe(Cargo):
         # map of aliases
         self._alias_map = None
         self.log = logger()
+        # loggers for substeps and their handlers
 
  
     @property
@@ -301,51 +306,68 @@ class Recipe(Cargo):
         self._alias_list.setdefault(alias_name, []).append((step, step_param_name))
 
 
-    def _make_file_logger(self, name):
-        log = logger().getChild(name)
-        log.propagate = True # propagate to main stimela logger
+    def _update_log_basename(self, name: str = None, params: Optional[Dict[str, Any]] = None):
+        # if we're a subrecipe, then name is something like "recipe.A1.stepname"
+        if name is not None:
+            self._hier_name = name
+        else:
+            name = self._hier_name
 
-        # finalize logfile name
-        name = re.sub(r'[^a-zA-Z0-9_.-]', '_', name)
-        logfile = self.logfile.format(name=name)
+        if stimelogging.has_file_logger(self.log):
+            # substitute name and parameters into base logname 
+            # so for self.logname="{name}.B{b}", logname becomes "recipeA1.stepname.B1"
+            template = (params and self.logname) or self.init_logname or self.config.opts.log.name
+            try:
+                logname = stimelogging.make_filename_substitutions(template, dict(name=name, params=params))
+            except Exception as exc:
+                self.log.error(f"bad substitution in logname '{template}': {exc}")
+                return
 
-        if "log" in self.dirs:
-            if "/" not in logfile:
-                logfile = os.path.join(self.dirs.log, logfile)
-
-        # ensure directory exists
-        log_dir = os.path.dirname(logfile) or "."
-        if not os.path.exists(log_dir):
-            log.info(f'creating log directory {log_dir}')
-            os.makedirs(log_dir)
-
-        log_fh = logging.FileHandler(logfile, 'w', delay=True)
-        log_fh.setLevel(getattr(logging, self.loglevel))
-        log_fh.setFormatter(stimela.log_formatter)
-        log.addHandler(log_fh)
-        return log
+            # update our file handler accordingly
+            stimelogging.update_file_logger(self.log, logname, dict(name=self._hier_name))
+            
+            # do the same for substeps 
+            for label, step in self.steps.items():
+                if stimelogging.has_file_logger(step.log):
+                    step_logname = f"{logname}.{label}"
+                    # for nested recipes, recursively invoke with name="recipeA1.stepname.B1.stepname", but no parameters
+                    if type(step.cargo) is Recipe:
+                        step.cargo._update_log_basename(name=step_logname)
+                    # for other types of steps, simly update the logfile using that as the name
+                    else:
+                        stimelogging.update_file_logger(step.log, template, dict(name=step_logname))
 
 
-    def finalize(self, config=None, log=None, full_name=None):
+    def finalize(self, config=None, log=None, hier_name=None, nesting=0):
         if not self.finalized:
             config = config or stimela.CONFIG
             log = log or stimela.logger()
-            full_name = full_name or self.name
-            # setup recipe-level logging
-            if log is None:
-                if not self.logfile:
-                    log = logger()
-                else:
-                    log = self._make_file_logger(full_name)
+            self._nesting = nesting
 
-            Cargo.finalize(self, config, log=log, full_name=full_name)
+            # hierarchical name, i.e. recipe_name.step_name.step_name etc.
+            self._hier_name = hier_name = hier_name or self.name
+
+            # a top-level recipe (nesting <= 1) will have its own logger object, which we make here. 
+            # (For nesting levels lower down, we trust the parent to make us a logger)
+            if nesting <= 1:
+                log = log.getChild(hier_name)
+                log.propagate = True
+                if config.opts.log.enable and config.opts.log.nest >= 1:
+                    stimelogging.update_file_logger(log, self.init_logname or config.opts.log.name, dict(name=hier_name))
+
+            # now make loggers for our children
+            for label, step in self.steps.items():
+                # make nested logger for each child step
+                step.log = log.getChild(label)
+                step.log.propagate = True
+                if config.opts.log.enable and config.opts.log.nest > nesting:
+                    stimelogging.update_file_logger(step.log, self.init_logname or config.opts.log.name, dict(name=f"{hier_name}.{label}"))
+
+            Cargo.finalize(self, config, log=log, hier_name=hier_name)
 
             # finalize step cargos
             for label, step in self.steps.items():
-                step_full_name = f"{full_name}.{label}"
-                if self.nest_logs:
-                    log = self._make_file_logger(step_full_name)
-                step.finalize(config, full_name=step_full_name, log=log)
+                step.finalize(config, hier_name=f"{hier_name}.{label}", nesting=nesting)
 
             # collect aliases
             self._alias_map = OrderedDict()
@@ -429,7 +451,7 @@ class Recipe(Cargo):
         if self.for_loop is not None:
             self._for_loop_values = self.params[self.for_loop.over]
             if not isinstance(self._for_loop_values, (list, tuple)):
-                self._for_loop_values = [iter_values]
+                self._for_loop_values = [self._for_loop_values]
             self.log.info(f"recipe is a for-loop with '{self.for_loop.var}' iterating over {len(self._for_loop_values)} values")
             params = params.copy()
             params[self.for_loop.var] = self._for_loop_values[0]
@@ -523,6 +545,9 @@ class Recipe(Cargo):
                 self.log.info(f"for loop iteration {count}: {self.for_loop.var} = {iter_var}")
                 self.update_parameter(self.for_loop.var, iter_var)
                 subst1.recipe[self.for_loop.var] = iter_var
+
+            # update logfiles, since they might change depending on parameter substitutions
+            self._update_log_basename(params=subst1.recipe)
 
             for label, step in self.steps.items():
                 try:

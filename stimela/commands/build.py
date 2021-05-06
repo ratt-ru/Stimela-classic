@@ -1,6 +1,7 @@
 import click
 from typing import List
-from stimela.main import StimelaContext, cli, pass_stimela_context
+from stimela.main import cli
+import stimela
 
 
 @cli.command(
@@ -15,17 +16,19 @@ from stimela.main import StimelaContext, cli, pass_stimela_context
                 help="build all unavailable images (all images, in combination with --rebuild)")
 @click.option("-r", "--rebuild", is_flag=True, 
                 help="force rebuild of image(s)")
-@pass_stimela_context
-def build(context: StimelaContext, images: List[str], all=False, rebuild=False):
+def build(images: List[str], all=False, rebuild=False):
+    from stimela.main import BACKEND
+    from stimela import CONFIG
+    log = stimela.logger()
 
-    available_images = context.backend.available_images()
+    available_images = BACKEND.available_images()
     if all:
-        build_images = context.config.base.keys()
+        build_images = CONFIG.base.keys()
     else:
         build_images = images
 
     if not build_images:
-        context.log.info("No images specified. Run 'stimela build -h' for help.")
+        log.info("No images specified. Run 'stimela build -h' for help.")
         return 0
 
     for imagename in build_images:
@@ -34,18 +37,18 @@ def build(context: StimelaContext, images: List[str], all=False, rebuild=False):
         else:
             version = None
 
-        if imagename not in context.config.base:
-            context.error(f"base image '{imagename}' is not known to Stimela")
+        if imagename not in CONFIG.base:
+            log.error(f"base image '{imagename}' is not known to Stimela")
             return 2
 
-        image = context.config.base[imagename]
+        image = CONFIG.base[imagename]
 
         if version is None:
             build_versions = image.images.keys()
         elif version in image.images:
             build_versions = [version]
         else:
-            context.log.error(f"version '{version}' is not defined for base image '{imagename}'")
+            log.error(f"version '{version}' is not defined for base image '{imagename}'")
             return 2
 
         # now loop over build versions
@@ -54,7 +57,7 @@ def build(context: StimelaContext, images: List[str], all=False, rebuild=False):
             # check if already exists
             if imagename in available_images and version in available_images[imagename]:
                 if not rebuild:
-                    context.log.info(f"image '{imagename}:{version}' already exists, skipping")
+                    log.info(f"image '{imagename}:{version}' already exists, skipping")
                     continue
 
-            context.backend.build(image, version)
+            BACKEND.build(image, version)

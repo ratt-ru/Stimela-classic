@@ -1,5 +1,5 @@
 import glob
-import os, os.path
+import os, os.path, time, re, logging
 from typing import Any, List, Dict, Optional, Union
 from enum import Enum
 from dataclasses import dataclass, field
@@ -41,11 +41,27 @@ class StimelaImage:
     management: Dict[str, CabManagement] = EmptyDictDefault()
 
 
-## schema for a cab definition file
+@dataclass 
+class StimelaLogConfig(object):
+    enable: bool = True                          
+    dir: str = "."                               # Default directory for log files
+
+    name: Optional[str] = "{name}"               # Initial recipe logfile, before a recipe is running. {name} {date} {time} {datetime} is substituted.
+    
+    # prepended to and appended after logfile name
+    prefix: str = "log-"
+    suffix: str = ".txt"
+
+    # how deep to nest individual log files. 0 means one log per recipe, 1 means one per step, 2 per each substep, etc. 
+    nest: int = 999                             
+    
+    level: str = "INFO"                          # level at which we log
 
 
 
 ## overall Stimela config schema
+
+
 import stimela.backends.docker
 import stimela.backends.singularity
 import stimela.backends.podman
@@ -58,6 +74,7 @@ class StimelaOptions(object):
     registry: str = "quay.io"
     basename: str = "stimela/v2-"
     singularity_image_dir: str = "~/.singularity"
+    log: StimelaLogConfig = StimelaLogConfig()
 
 @dataclass
 class StimelaLibrary(object):
@@ -90,20 +107,24 @@ def merge_extra_config(conf, newconf):
     return OmegaConf.merge(conf, newconf)
 
 
+StimelaConfig = None
+
+def get_config_class():
+    return StimelaConfig
+
 def load_config(extra_configs=List[str]):
     log = stimela.logger()
 
     stimela_dir = os.path.dirname(stimela.__file__)
     from stimela.kitchen.recipe import Recipe, Cab
 
+    global StimelaConfig
     @dataclass 
     class StimelaConfig:
         base: Dict[str, StimelaImage] = EmptyDictDefault()
         lib: StimelaLibrary = StimelaLibrary()
         cabs: Dict[str, Cab] = MISSING
         opts: StimelaOptions = StimelaOptions()
-        recipe: Optional[Recipe] = MISSING
-
 
     # start with empty structured config containing schema
     base_schema = OmegaConf.structured(StimelaImage) 
@@ -159,17 +180,11 @@ def load_config(extra_configs=List[str]):
     return OmegaConf.create(conf)
 
 
-    # print(conf.cab.casa_applycal.inputs)
-    # print(OmegaConf.to_yaml(conf, resolve=True))
-    # print(f"prefix: {conf.cab.casa_applycal.prefix} type {type(conf.cab.casa_applycal.prefix)}")
 
+_ds = time.strftime("%Y%m%d")
+_ts = time.strftime("%H%M%S")
 
-# # %%
-# from omegaconf import OmegaConf
-# cfg = OmegaConf.create({"foo": {"bar" : 10, "y": 11}})
-# print(cfg)
-# cfg.merge_with({"x":  20, "foo": {"bar": 20}})
-# print(cfg)
-# # %%
+# dictionary of standard substitutions
 
- 
+SUBSTITUTIONS = OmegaConf.create(dict(date=_ds, time=_ts, datetime=f"{_ds}-{_ts}"))
+

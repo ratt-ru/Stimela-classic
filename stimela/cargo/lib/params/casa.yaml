@@ -3,7 +3,7 @@ mssel_inputs:  # a standard section for CASA tasks that have a vis argument, and
   vis:
     info: "Name of input visibility file"
     dtype: dir
-    writeable: True
+    writable: True
     required: true
     alias: msname
 

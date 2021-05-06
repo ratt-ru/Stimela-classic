@@ -1,5 +1,4 @@
 import shlex
-
 from scabha.cargo import Cab
 from stimela import logger
 from stimela.utils.xrun_poll import xrun

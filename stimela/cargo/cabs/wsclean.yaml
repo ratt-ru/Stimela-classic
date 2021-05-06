@@ -13,7 +13,7 @@ policies:
 inputs:
   ms:
     info: Measurement set(s)
-    writeable: true
+    writable: true
     dtype: MS
     required: true
     policies:

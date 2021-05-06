@@ -5,10 +5,12 @@ info: Rapid Measurement Set plotting with xarray-ms and datashader.
 
 defaults:
   weight: "briggs 0."
+  column: DATA
 
 policies:
   positional: false
   prefix: "-"
+  replace: { '_': '-' }
 
 inputs:
   ms:
@@ -23,10 +25,13 @@ inputs:
     dtype: str
     alias: name
     required: true
-  channels-out:
+  column:
+    dtype: str
+    alias: data-column
+  nchan:
     info: Channels out
     dtype: int
-    alias: nchan
+    alias: channels-out
   j:
     info: Threads
     dtype: int
@@ -54,6 +59,28 @@ inputs:
   niter:
     info: Number of minor clean iterations
     dtype: int
+  auto_threshold:
+    dtype: float
+  auto_mask:
+    dtype: float
+  gain:
+    dtype: float
+  mgain:
+    dtype: float
+  join_channels:
+    dtype: bool
+  fit_spectral_pol:
+    dtype: int
+  fit_beam:
+    dtype: bool
+  elliptical_beam:
+    dtype: bool
+  padding:
+    dtype: float
+  nwlayers:
+    dtype: int
+  nwlayers_factor:
+    dtype: float
 
 outputs:
   msout:

@@ -148,7 +148,7 @@ def setup_file_logger(log: logging.Logger, logfile: str, level: Optional[Union[i
     
     # does the logger need a new FileHandler created
     if current_logfile != logfile:
-        log.info(f"starting new logfile {logfile} (previous was {current_logfile})")
+        log.debug(f"starting new logfile {logfile} (previous was {current_logfile})")
 
         # remove old FH if so
         if fh is not None:

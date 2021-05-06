@@ -125,6 +125,7 @@ def load_config(extra_configs=List[str]):
         lib: StimelaLibrary = StimelaLibrary()
         cabs: Dict[str, Cab] = MISSING
         opts: StimelaOptions = StimelaOptions()
+        vars: Dict[str, Any] = EmptyDictDefault()
 
     # start with empty structured config containing schema
     base_schema = OmegaConf.structured(StimelaImage) 

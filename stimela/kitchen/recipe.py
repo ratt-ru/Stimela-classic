@@ -3,7 +3,7 @@ import os, os.path, re, logging
 from typing import Any, List, Dict, Optional, Union
 from enum import Enum
 from dataclasses import dataclass
-from omegaconf import MISSING, OmegaConf, DictConfig
+from omegaconf import MISSING, OmegaConf, DictConfig, ListConfig
 from collections import OrderedDict
 from stimela.config import EmptyDictDefault, StimelaLogConfig
 import stimela
@@ -182,10 +182,10 @@ class Step:
 class ForLoopClause(object):
     # name of list variable
     var: str 
-    # This should be the name of an input that provides a list.
-    over: str
-    # If True, this is a for_loop not a loop -- things may be evaluated in parallel
-    for_loop: bool = False
+    # This should be the name of an input that provides a list, or a list
+    over: Any
+    # If True, this is a scatter not a loop -- things may be evaluated in parallel
+    scatter: bool = False
 
 
 
@@ -227,7 +227,7 @@ class Recipe(Cargo):
         Cargo.__post_init__(self)
         for name, alias_list in self.aliases.items():
             if name in self.inputs_outputs:
-                raise RecipeValidationError(f"alias '{name}'' also appears under inputs or outputs")
+                raise RecipeValidationError(f"alias '{name}' also appears under inputs or outputs")
             if type(alias_list) is str:
                 alias_list = self.aliases[name] = [alias_list]
             if not hasattr(alias_list, '__iter__') or not all(type(x) is str for x in alias_list):
@@ -379,7 +379,7 @@ class Recipe(Cargo):
                     step_label, step_param_name = alias.split('.', 1)
                     step = self.steps.get(step_label)
                     if step is None:
-                        raise RecipeValidationError(f"alias {name} refers to unknown step '{step_label}'", log=log)
+                        raise RecipeValidationError(f"alias '{name}' refers to unknown step '{step_label}'", log=log)
                     self._add_alias(name, step_label, step, step_param_name)
 
             # automatically make aliases for unset required parameters 
@@ -396,17 +396,24 @@ class Recipe(Cargo):
 
             # check that for-loop is valid, if defined
             if self.for_loop is not None:
-                if self.for_loop.over not in self.inputs:
-                    raise RecipeValidationError(f"for_loop list '{self.for_loop.over}' is not a defined input", log=log)
-                # this becomes a required input
-                self.inputs[self.for_loop.over].required = True
+                if type(self.for_loop.over) is str:
+                    if self.for_loop.over not in self.inputs:
+                        raise RecipeValidationError(f"for_loop: over: '{self.for_loop.over}' is not a defined input", log=log)
+                    # this becomes a required input
+                    self.inputs[self.for_loop.over].required = True
+                elif type(self.for_loop.over) in (list, tuple, ListConfig):
+                    self._for_loop_values = list(self.for_loop.over)
+                    self.for_loop.over = None
+                else:
+                    raise RecipeValidationError(f"for_loop: over is of invalid type {type(self.for_loop.over)}", log=log)
+
                 # mark loop variable as unresolved
                 self.update_parameter(self.for_loop.var, validate.Unresolved(self.for_loop.var))
 
 
     def prevalidate(self, params: Optional[Dict[str, Any]]):
         self.finalize()
-        self.log.info("prevalidating recipe")
+        self.log.debug("prevalidating recipe")
         errors = []
 
         # check params
@@ -443,15 +450,15 @@ class Recipe(Cargo):
         if errors:
             raise RecipeValidationError(f"{len(errors)} error(s) validating the recipe '{self.name}'", log=self.log)
 
-        self.log.info("recipe pre-validated")
-        return
+        self.log.debug("recipe pre-validated")
 
     def validate_inputs(self, params: Dict[str, Any], subst: Optional[Dict[str, Any]]):
         # for loops, and an unresolved loop variable to the parameters so that it validates
         if self.for_loop is not None:
-            self._for_loop_values = self.params[self.for_loop.over]
-            if not isinstance(self._for_loop_values, (list, tuple)):
-                self._for_loop_values = [self._for_loop_values]
+            if self.for_loop.over is not None:
+                self._for_loop_values = self.params[self.for_loop.over]
+                if not isinstance(self._for_loop_values, (list, tuple)):
+                    self._for_loop_values = [self._for_loop_values]
             self.log.info(f"recipe is a for-loop with '{self.for_loop.var}' iterating over {len(self._for_loop_values)} values")
             params = params.copy()
             params[self.for_loop.var] = self._for_loop_values[0]

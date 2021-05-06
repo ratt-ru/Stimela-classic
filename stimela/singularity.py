@@ -31,7 +31,7 @@ def pull(image, name, docker=True, directory=".", force=False):
         pull an image
     """
     if docker:
-        fp = "docker://quay.io/{0:s}".format(image)
+        fp = "docker://{0:s}".format(image)
     else:
         fp = image
     if not os.path.exists(directory):

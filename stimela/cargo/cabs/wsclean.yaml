@@ -85,41 +85,40 @@ inputs:
 outputs:
   msout:
     info: Output MS
-    dtype: Directory
+    dtype: MS
     implicit: "{self.ms}"
   dirty:
     info: Dirty images
-    dtype: File
-    implicit: "{self.prefix}*[0-9]-dity.fits"
+    dtype: List[File]
+    implicit: "{self.prefix}-????-dirty.fits"
   restored: 
     info: Restored images
-    dtype: File
-    implicit: "{self.prefix}*-[0-9]-image.fits"
+    dtype: List[File]
+    implicit: "{self.prefix}-????-image.fits"
   residual:
-    info: Residual images
-    dtype: File
-    implicit: "{self.prefix}*-[0-9]-residual.fits"
+    dtype: List[File]
+    implicit: "{self.prefix}-????-residual.fits"
   model:
     info: Model images
-    dtype: File
-    implicit: "{self.prefix}-*[0-9]-model.fits"
+    dtype: List[File]
+    implicit: "{self.prefix}-????-model.fits"
   restored_mfs:
     info: Restored MFS image
     dtype: File
-    implicit: "{self.prefix}-*-MFS-image.fits"
+    implicit: "{self.prefix}-MFS-image.fits"
   residual_mfs:
     info: Residual MFS image
     dtype: File
-    implicit: "{self.prefix}-*-MFS-residual.fits"
+    implicit: "{self.prefix}-MFS-residual.fits"
   model_mfs:
     info: Model MFS image
     dtype: File
-    implicit: "{self.prefix}-*-MFS-model.fits"
+    implicit: "{self.prefix}-MFS-model.fits"
   dirty_mfs:
     info: Dirty MFS image
     dtype: File
-    implicit: "{self.prefix}-*-MFS-dirty.fits"
+    implicit: "{self.prefix}-MFS-dirty.fits"
   source_list:
     info: Source list
     dtype: File
-    implicit: "{self.prefix}-*.txt"
+    implicit: "{self.prefix}-source-list.txt"

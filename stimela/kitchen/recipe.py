@@ -382,10 +382,10 @@ class Recipe(Cargo):
                         raise RecipeValidationError(f"alias '{name}' refers to unknown step '{step_label}'", log=log)
                     self._add_alias(name, step_label, step, step_param_name)
 
-            # automatically make aliases for unset required parameters 
+            # automatically make aliases for unset step parameters 
             for label, step in self.steps.items():
                 for name, schema in step.inputs_outputs.items():
-                    if (label, name) not in self._alias_map and name not in step.params and schema.required:
+                    if (label, name) not in self._alias_map and name not in step.params: # and schema.required:
                         auto_name = f"{label}_{name}"
                         if auto_name in self.inputs or auto_name in self.outputs:
                             raise RecipeValidationError(f"auto-generated parameter name '{auto_name}' conflicts with another name. Please define an explicit alias for this.", log=log)

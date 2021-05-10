@@ -27,13 +27,16 @@ for param in cab['parameters']:
             value = list(map(int, value))
         except ValueError:
             pass
-    if name == "outfile":
-        outfile = value
-        continue
     args[name] = value
 
 try:
-    stats = flag_stats.antenna_flags_field(**args)
+    if args['plot']:
+        args.pop("plot")
+        flag_stats.plot_statistics(**args)
+    else:
+        args.pop("plot")
+        args.pop("htmlfile")
+        flag_stats.save_statistics(**args)
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
@@ -43,7 +46,3 @@ finally:
                     os.remove(f)
                 elif os.path.isdir(f):
                     shutil.rmtree(f)
-
-with codecs.open(outfile, 'w', 'utf8') as stdw:
-    a = json.dumps(stats, ensure_ascii=False)
-    stdw.write(a)

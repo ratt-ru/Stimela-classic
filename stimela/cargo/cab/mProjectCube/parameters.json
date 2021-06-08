@@ -1,7 +1,7 @@
 {
     "task": "mProjectCube", 
     "base": "stimela/montage", 
-    "tag": "1.2.0", 
+    "tag": "1.7.1-dev", 
     "description": "mProjectCube reprojects a single cube to the scale defined in a FITS header template file (read more about header templates here). The program produces a pair of files: the reprojected cube and an 'area' image consisting of the fraction input pixel sky area that went into each output pixel. The 'drizzle' algorithm is implemented. The algorithm proceeds by mapping pixel corners (as adjusted by drizzle, if called) from the input pixel space to the output pixel space, calculating overlap area with each output pixel, and accumulating an appropriate fraction of the input flux into the output cube pixels. In addition, the appropriate fraction of the input pixel area is accumulated into the area image pixels. Projection of points from input pixel space to output pixel space is calculated in two steps: first map from input pixel space to sky coordinates; second map from sky coordinates to output pixel space.", 
     "prefix": "-", 
     "binary": "mProjectCube",

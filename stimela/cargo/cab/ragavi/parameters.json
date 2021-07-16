@@ -1,7 +1,7 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.5.0",
+    "tag": "1.7.3",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-gains",
@@ -14,19 +14,6 @@
             "required": true,
             "name": "table",
             "io": "input"
-        },
-        {
-            "info": "Type of gain table(s) to be plotted. Specify as a single character or space separated list for multiple tables.",
-            "dtype": "list:str",
-            "required": true,
-            "name": "gaintype",
-            "choices": [
-                "B",
-                "D",
-                "F", 
-                "G", 
-                "K"
-            ]
         },
         {
             "info": "Plot only a specific antenna, or comma-separated list of antennas. Defaults to all",
@@ -54,15 +41,16 @@
             "name": "ddid"
         },
         {
-            "info": "Plot amplitude & phase (ap) or real and imaginary (ri). Defaults to ap.",
+            "info": "Enabling debugging messages",
+            "dtype": "bool",
+            "required": false,
+            "name": "debug"
+        },
+        {
+            "info": "Y-axes to plot, either amplitude & phase (ap) or real and imaginary (ri) or (all). Defaults to ap.",
             "name": "doplot",
             "dtype": "str",
             "required": false,
-            "default": "ap",
-            "choices": [
-                "ap",
-                "ri"
-            ]
         },
         {
             "info": "Field ID(s) / NAME(s) to plot. Defaults to all",
@@ -73,22 +61,44 @@
             "name": "field"
         },
         {
-            "info": "Output HTML file name (without .html suffix)",
+            "info": "Type of gain table(s) to be plotted. Table type is auto-detected and will soon be deprecated.",
+            "dtype": "list:str",
+            "required": false,
+            "name": "gaintype",
+            "deprecated": true
+        },
+        {
+            "info": "File in which to store logs. Default is ragavi.log",
+            "dtype": "str",
+            "required": false,
+            "name": "logfile"
+        },
+        {
+            "info": "Output HTML file name (with or without .html suffix)",
             "dtype": "str",
             "required": false,
             "name": "htmlname",
             "io": "output"
         },
         {
-            "info": "Choose the x-xaxis for the K table.",
+            "info": "Choose an x-axis for the plots, otherwise an appropriate one will be chosen automatically.",
+            "dtype": "str",
+            "required": false,
+            "name": "xaxis",
+        },
+        {
+            "info": "Choose an x-axis for the plots, otherwise an appropriate one will be chosen automatically. Deprecated alias for xaxis.",
             "dtype": "str",
             "required": false,
             "name": "k-xaxis",
-            "choices": [
-                "time",
-                "antenna"
-            ],
-            "default": "time"
+            "deprecated": true
+        },
+        {
+            "info": "Static output file name (with suffix). The suffixes can be '.png' or '.svg' and will determine the output type.",
+            "dtype": "str",
+            "required": false,
+            "name": "plotname",
+            "io": "output"
         },
         {
             "info": "Min time to plot [in seconds]. Defaults to full range]",

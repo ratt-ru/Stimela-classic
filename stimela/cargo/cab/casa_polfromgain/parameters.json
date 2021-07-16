@@ -1,0 +1,72 @@
+{
+  "task": "casa_polfromgain", 
+  "base": "stimela/casa", 
+  "tag": [
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "version": [
+    "4.7.2", 
+    "5.6.1-8"
+  ], 
+  "description": "Derive linear polarization from gain ratio", 
+  "prefix": "-", 
+  "binary": "polfromgain", 
+  "junk": [
+    "polfromgain.last"
+  ], 
+  "msdir": true, 
+  "wranglers_demo": {
+    "PIPELINE CASA": [
+      "replace:MI CASA ES TU CASA", 
+      "ERROR"
+    ], 
+    "[tT]elemetry": "SUPPRESS", 
+    "(Begin|End) Task:": [
+      "replace:Sisyphus, \\1 your task", 
+      "WARN"
+    ], 
+    "End Task:": [
+      "DECLARE_FAILURE"
+    ]
+  }, 
+  "parameters": [
+    {
+      "info": "Name of input visibility file", 
+      "name": "msname", 
+      "io": "msfile", 
+      "default": null, 
+      "dtype": "file", 
+      "required": true, 
+      "mapping": "vis"
+    }, 
+    {
+      "info": "Input calibration table", 
+      "dtype": "file", 
+      "default": null, 
+      "name": "tablein", 
+      "required": true, 
+      "io": "input"
+    }, 
+    {
+      "info": "Output calibration table (forces polarization correction if specified)", 
+      "dtype": "file", 
+      "default": null, 
+      "name": "caltable", 
+      "io": "output"
+    }, 
+    {
+      "info": "Manual position angle offset", 
+      "dtype": "float", 
+      "default": null, 
+      "name": "paoffset"
+    }, 
+    {
+      "info": "Output pickle file to the result from task", 
+      "dtype": "file", 
+      "default": null, 
+      "name": "save_result", 
+      "io": "output"
+    }
+  ]
+}

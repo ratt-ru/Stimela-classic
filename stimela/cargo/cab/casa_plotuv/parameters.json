@@ -1,0 +1,95 @@
+{
+  "task": "casa47_plotuv", 
+  "base": "stimela/casa", 
+  "tag": [
+    "0.3.0-2", 
+    "1.6.3"
+  ], 
+  "description": "Plot the uv distribution", 
+  "prefix": "", 
+  "version": [
+    "4.7.2", 
+    "5.6.1-8"
+  ], 
+  "binary": "plotuv", 
+  "junk": [
+    "plotuv.last"
+  ], 
+  "msdir": true, 
+  "parameters": [
+    {
+      "info": "Name of measurement set", 
+      "name": "msname", 
+      "io": "msfile", 
+      "default": null, 
+      "dtype": "file", 
+      "mapping": "vis"
+    }, 
+    {
+      "info": "Save the plotted figure to this file", 
+      "default": null, 
+      "name": "figfile", 
+      "io": "output", 
+      "dtype": "file"
+    }, 
+    {
+      "info": "Select field using ID(s) or name(s)", 
+      "default": "", 
+      "name": "field", 
+      "dtype": "str"
+    }, 
+    {
+      "info": "Select data based on antenna/baseline", 
+      "default": "", 
+      "name": "antenna", 
+      "dtype": "str"
+    }, 
+    {
+      "info": "Select spectral window/channels", 
+      "default": "", 
+      "name": "spw", 
+      "dtype": "str"
+    }, 
+    {
+      "info": "Select by observation ID(s)", 
+      "default": "", 
+      "name": "observation", 
+      "dtype": "str"
+    }, 
+    {
+      "info": "Select (sub)array(s) by array ID number", 
+      "default": "", 
+      "name": "array", 
+      "dtype": "str"
+    }, 
+    {
+      "info": "Maximum number of points per plot.", 
+      "default": 100000, 
+      "name": "maxnpts", 
+      "dtype": "int"
+    }, 
+    {
+      "info": "a list of matplotlib color codes", 
+      "default": [
+        "r", 
+        "y", 
+        "g", 
+        "b"
+      ], 
+      "name": "colors", 
+      "dtype": "list:str"
+    }, 
+    {
+      "info": "A matplotlib plot symbol code", 
+      "default": ",", 
+      "name": "symb", 
+      "dtype": "str"
+    }, 
+    {
+      "info": "How many times to cycle through colors per plot.", 
+      "default": 1, 
+      "name": "ncycles", 
+      "dtype": "int"
+    }
+  ]
+}

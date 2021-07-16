@@ -12,7 +12,6 @@ import tempfile
 import hashlib
 from shutil import which
 
-
 binary = which("singularity")
 if binary:
     __version_string = subprocess.check_output([binary, "--version"]).decode("utf8")
@@ -27,7 +26,7 @@ else:
 class SingularityError(Exception):
     pass
 
-def pull(image, store_path, docker=True, directory=".", force=False):
+def pull(image, name, docker=True, directory=".", force=False):
     """ 
         pull an image
     """
@@ -38,12 +37,15 @@ def pull(image, store_path, docker=True, directory=".", force=False):
     if not os.path.exists(directory):
         os.mkdir(directory)
 
-    utils.xrun("singularity", ["build", 
-        	"--force" if force else "", 
-         	os.path.join(directory,store_path), fp])
+    image_path = os.path.abspath(os.path.join(directory, name))
+    if os.path.exists(image_path) and not force:
+        stimela.logger().info(f"Singularity image already exists at '{image_path}'. To replace it, please re-run with the 'force' option")
+    else:
+        utils.xrun(f"cd {directory} && singularity", ["pull", 
+        	"--force" if force else "", "--name", 
+         	name, fp])
 
     return 0
-
 
 class Container(object):
     def __init__(self, image, name,

@@ -11,7 +11,6 @@ import inspect
 import re
 from stimela.exceptions import *
 from stimela.dismissable import dismissable
-from stimela.main import get_cabs
 from stimela.cargo.cab import StimelaCabParameterError
 from datetime import datetime
 import traceback
@@ -53,6 +52,9 @@ class StimelaJob(object):
                  logfile=None,
                  cabpath=None,
                  workdir=None,
+                 tag=None,
+                 version=None,
+                 force_tag=False,
                  shared_memory=None):
         """
 
@@ -61,10 +63,14 @@ class StimelaJob(object):
 
         logfile:  name of logfile, False to disable recipe-level logfiles, or None to form a default name
         """
+        self.tag = tag
+        self.version = version
+        self.force_tag = force_tag
         self.name = name
         self.recipe = recipe
         self.label = label or '{0}({1})'.format(name, id(name))
         self.log = recipe.log
+        self._log_fh = None
         self.active = False
         self.jtype = jtype  # ['docker', 'python', singularity']
         self.job = None
@@ -100,9 +106,9 @@ class StimelaJob(object):
                 log_dir = os.path.dirname(self.logfile) or "."
                 if not os.path.exists(log_dir):
                     os.mkdir(log_dir)
-                fh = logging.FileHandler(self.logfile, 'w', delay=True)
-                fh.setLevel(getattr(logging, loglevel))
-                self.log.addHandler(fh)
+                self._log_fh = logging.FileHandler(self.logfile, 'w', delay=True)
+                self._log_fh.setLevel(getattr(logging, loglevel))
+                self.log.addHandler(self._log_fh)
 
             self.log.propagate = True            # propagate also to main stimela logger
 
@@ -153,8 +159,7 @@ class StimelaJob(object):
 
     def setup_job(self, image, config,
                    indir=None, outdir=None, msdir=None, 
-                   singularity_image_dir=None,
-                   **kw):
+                   singularity_image_dir=None, repository=None):
         """
             Setup job
 
@@ -221,17 +226,76 @@ class StimelaJob(object):
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
 
+#
+#Example
+#        ----------------
+# casa_listobs:
+#   tag: <tag>               ## optional
+#   version: <version>       ## optional. If version is a dict, then ignore tag and priority and use <tag>:<version> pairs in dict
+#   force: true              ## Continue even if tag is specified in the parameters.json file
+
+        no_tag_version = False
+        if self.tag or self.version:
+            tvi = None
+            if self.tag:
+                try:
+                    tvi = _cab.tag.index(self.tag)
+                except ValueError:
+                    pass
+            elif self.version:
+                try:
+                    tvi = _cab.version.index(self.version)
+                except ValueError:
+                    self.log.error(f"The version, {self.version}, specified for cab '{_cab.task}' is unknown. Available versions are {_cab.version}")
+                    raise ValueError 
+            if tvi is None:
+                tvi = -1
+            self.tag = _cab.tag[tvi]
+            self.version = _cab.version[tvi]
+        else:
+            self.tag = _cab.tag[-1]
+            self.version = _cab.version[-1]
+
+        cabspecs = self.recipe.cabspecs.get(cont.cabname, None)
+        if cabspecs:
+            _tag = cabspecs.get("tag", None)
+            _version = cabspecs.get("version", None)
+            _force_tag = cabspecs.get("force", False)
+            if isinstance(_version, dict):
+                if self.version in _version:
+                    self.tag = _version[self.version]
+            elif _version:
+                self.version = _version
+            else:
+                self.tag = _tag
+            if self.version and self.version not in _cab.version:
+                self.log.error(f"The version, {self.version}, specified for cab '{_cab.task}' is unknown. Available versions are {_cab.version}")
+                raise ValueError
+            if not _tag:
+                idx = _cab.version.index(self.version)
+                self.tag = _cab.tag[idx]
+            self.force_tag = _force_tag
+
+        if self.tag not in _cab.tag:
+            if self.force_tag:
+                self.log.warn(f"You have chosen to use an unverified base image '{_cab.base}:{self.tag}'. May the force be with you.")
+            else:
+                raise StimelaBaseImageError(f"The base image '{_cab.base}' with tag '{self.tag}' has not been verified. If you wish to continue with it, please add the 'force_tag' when adding it to your recipe")
+        if repository:
+            image_url = f"{repository}/{_cab.base}:{self.tag}"
+        else:
+            image_url = f"{_cab.base}:{self.tag}"
+
         if self.jtype == "singularity":
             simage = _cab.base.replace("/", "_")
-            if singularity_image_dir is None:
-                singularity_image_dir = os.path.join(CDIR, "stimela_singularity_images")
             cont.image = '{0:s}/{1:s}_{2:s}{3:s}'.format(singularity_image_dir,
-                    simage, _cab.tag, singularity.suffix)
+                    simage, self.tag, singularity.suffix)
             cont.image = os.path.abspath(cont.image)
             if not os.path.exists(cont.image):
-                main.pull(f"-s -cb {cont.cabname} -pf {singularity_image_dir}".split())
+                singularity.pull(image_url, 
+                        os.path.basename(cont.image), directory=singularity_image_dir)
         else:
-            cont.image = ":".join([_cab.base, _cab.tag])
+            cont.image = image_url
 
         # Container parameter file will be updated and validated before the container is executed
         cont._cab = _cab
@@ -351,7 +415,7 @@ class StimelaJob(object):
 
         if hasattr(self.job, '_cab'):
             self.job._cab.update(self.job.config,
-                                 self.job.parameter_file_name)
+                                 self.job.parameter_file_name, tag=self.tag)
 
         if self.jtype == "singularity":
             self.created = True
@@ -363,22 +427,34 @@ class StimelaJob(object):
             self.job.start(output_wrangler=self.apply_output_wranglers)
         return 0
 
+    def close(self):
+        """Call this to explicitly clean up after the job"""
+        if self._log_fh is not None:
+            self._log_fh.close()
+
+    def __del__(self):
+        self.close()
+
 
 class Recipe(object):
     def __init__(self, name, data=None,
                  parameter_file_dir=None, ms_dir=None,
-                 tag=None, build_label=None,
+                 build_label=None,
                  singularity_image_dir=None, JOB_TYPE='docker',
                  cabpath=None,
                  logger=None,
+                 msdir=None,
+                 indir=None,
+                 outdir=None,
                  log_dir=None, logfile=None, logfile_task=None,
+                 cabspecs=None,
+                 repository="quay.io",
                  loglevel="INFO"):
         """
         Deifine and manage a stimela recipe instance.        
 
         name    :   Name of stimela recipe
         msdir   :   Path of MSs to be used during the execution of the recipe
-        tag     :   Use cabs with a specific tag
         parameter_file_dir :   Will store task specific parameter files here
 
         logger:   if set to a logger object, uses the specified logger.
@@ -392,24 +468,26 @@ class Recipe(object):
                       logfile_task may contain a "{task}" entry which will be substituted for a task name.
         """
         self.name = name
+        self.repository = repository
         self.name_ = re.sub(r'\W', '_', name)  # pausterized name
-        self.ms_dir = ms_dir
 
         self.stimela_context = inspect.currentframe().f_back.f_globals
         self.stimela_path = os.path.dirname(docker.__file__)
         # Update I/O with values specified on command line
-        script_context = self.stimela_context
-        self.indir = script_context.get('_STIMELA_INPUT', None)
-        self.outdir = script_context.get('_STIMELA_OUTPUT', None)
-        self.msdir = script_context.get('_STIMELA_MSDIR', None)
-        self.loglevel = script_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
-        self.JOB_TYPE = script_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
+        self.indir = indir
+        self.outdir = outdir
+        self.msdir = self.ms_dir = msdir or ms_dir
+        self.loglevel = self.stimela_context.get('_STIMELA_LOG_LEVEL', None) or loglevel
+        self.JOB_TYPE = self.stimela_context.get('_STIMELA_JOB_TYPE', None) or JOB_TYPE
 
         self.cabpath = cabpath
+        self.cabspecs = cabspecs or {}
 
         # set default name for task-level logfiles
         self.logfile_task = "{0}/log-{1}-{{task}}".format(log_dir or ".", self.name_) \
             if logfile_task is None else logfile_task
+
+        self._log_fh = None
 
         if logger is not None:
             self.log = logger
@@ -434,16 +512,13 @@ class Recipe(object):
                     self.log.info('creating log directory {0:s}'.format(log_dir))
                     os.makedirs(log_dir)
 
-                fh = logging.FileHandler(logfile, 'w', delay=True)
-                fh.setLevel(getattr(logging, self.loglevel))
-                fh.setFormatter(stimela.log_formatter)
-                self.log.addHandler(fh)
-
+                self._log_fh = logging.FileHandler(logfile, 'w', delay=True)
+                self._log_fh.setLevel(getattr(logging, self.loglevel))
+                self._log_fh.setFormatter(stimela.log_formatter)
+                self.log.addHandler(self._log_fh)
 
         self.resume_file = '.last_{}.json'.format(self.name_)
         # set to default if not set
-
-        self.tag = tag
         # create a folder to store config files
         # if it doesn't exist. These config
         # files can be resued to re-run the
@@ -455,16 +530,16 @@ class Recipe(object):
         self.remaining = []
 
         self.pid = os.getpid()
-        self.singularity_image_dir = singularity_image_dir or PULLFOLDER
+
+        cmd_line_pf = self.stimela_context.get('_STIMELA_PULLFOLDER', None)
+        self.singularity_image_dir = cmd_line_pf or singularity_image_dir or PULLFOLDER
         if self.singularity_image_dir and not self.JOB_TYPE:
             self.JOB_TYPE = "singularity"
 
         self.log.info('---------------------------------')
         self.log.info('Stimela version {0}'.format(stimela.__version__))
-        self.log.info('Sphesihle Makhathini <sphemakh@gmail.com>')
         self.log.info('Running: {:s}'.format(self.name))
         self.log.info('---------------------------------')
-
         
         self.workdir = None
         self.__make_workdir()
@@ -503,7 +578,10 @@ class Recipe(object):
             time_out=-1,
             logger=None,
             logfile=None,
-            cabpath=None):
+            cabpath=None,
+            tag=None,
+            version=None,
+            force_tag=False):
 
         if logfile is None:
             logfile = False if self.logfile_task is False else self.logfile_task.format(task=name)
@@ -515,23 +593,25 @@ class Recipe(object):
                          jtype=self.JOB_TYPE,
                          logger=logger, logfile=logfile,
                          cabpath=cabpath or self.cabpath,
-                         workdir=self.workdir)
+                         workdir=self.workdir, tag=tag, version=version, force_tag=force_tag)
 
         if callable(image):
             job.jtype = 'python'
         
+        _indir = self.stimela_context.get('_STIMELA_INPUT', None) or input
+        _outdir = self.stimela_context.get('_STIMELA_OUTPUT', None) or  output
+        _msdir = self.stimela_context.get('_STIMELA_MSDIR', None) or msdir
         # The hirechy is command line, Recipe.add, and then Recipe
-        indir = self.indir or input
-        outdir = self.outdir or output
-        msdir = self.msdir or msdir or self.ms_dir
+        indir = _indir or self.indir
+        outdir = _outdir or self.outdir
+        msdir = _msdir or self.msdir
 
         job.setup_job(image=image, config=config,
              indir=indir, outdir=outdir, msdir=msdir,
-             singularity_image_dir=self.singularity_image_dir,
-             time_out=time_out)
+             singularity_image_dir=self.singularity_image_dir, 
+             repository=self.repository)
 
-        self.log.info('Adding cab \'{0}\' to recipe. The container will be named \'{1}\''.format(
-            job.image, name))
+        self.log.info(f'Adding cab \'{job.image}\' ({job.version}) to recipe, container name \'{name}\'')
         self.jobs.append(job)
 
         return 0
@@ -687,7 +767,15 @@ class Recipe(object):
 
         return 0
 
-    def __del__(self):
-        """Failsafe"""
+    def close(self):
+        """Call this to explicitly close the recipe and clean up. Don't call run() after close()!"""
+        for job in self.jobs:
+            job.close()
         if os.path.exists(self.workdir):
             shutil.rmtree(self.workdir)
+        if self._log_fh is not None:
+            self._log_fh.close()
+
+    def __del__(self):
+        """Failsafe"""
+        self.close()

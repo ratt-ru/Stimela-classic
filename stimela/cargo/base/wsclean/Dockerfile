@@ -1,4 +1,4 @@
-FROM stimela/base:1.2.0
+FROM stimela/base:1.6.0
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \
     wget \
@@ -25,12 +25,13 @@ RUN docker-apt-install cmake \
     liblog4cplus-dev \
     libhdf5-dev \
     casacore-dev
-RUN wget https://tenet.dl.sourceforge.net/project/wsclean/wsclean-2.8/wsclean-2.8.tar.bz2
-RUN tar xvf wsclean-2.8.tar.bz2
-RUN mkdir wsclean-2.8/build
-RUN cd wsclean-2.8/build && \
+RUN wget https://tenet.dl.sourceforge.net/project/wsclean/wsclean-2.9/wsclean-2.9.tar.bz2
+RUN tar xvf wsclean-2.9.tar.bz2
+RUN mkdir wsclean-2.9/build
+RUN cd wsclean-2.9/build && \
     cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \
     make -j 10 && \
     make install
-RUN pip install astropy
 RUN ulimit -p 9000
+RUN pip install scabha
+RUN wsclean

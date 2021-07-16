@@ -115,6 +115,14 @@ class kat7_reduce(unittest.TestCase):
             label='listobs:: some stats',
             time_out=300)
 
+        recipe.add("cab/owlcat_plotelev", "plotobs", {
+            "msname" : MS,
+            "output-name" : "obsplot.png",
+        },
+            input=INPUT,
+            output=OUTPUT,
+            label="plotobs:: Plot elevation/azimuth vs LST/UTC")
+
         # It is common for the array to require a small amount of time to settle down at the start of a scan. Consequently, it has
         # become standard practice to flag the initial samples from the start
         # of each scan. This is known as 'quack' flagging
@@ -249,7 +257,8 @@ class kat7_reduce(unittest.TestCase):
             input=INPUT,
             output=OUTPUT,
             label="gaincal:: Gain calibration",
-            time_out=300)
+            time_out=300, 
+            version=None)
 
         # Set fluxscale
         recipe.add('cab/casa_fluxscale', 'fluxscale', {
@@ -258,6 +267,7 @@ class kat7_reduce(unittest.TestCase):
             "fluxtable": FLUXSCALE_TABLE,
             "reference": [BPCAL],
             "transfer": [GCAL],
+            "save_result" : "fluxinfo.pickle",
             "incremental": False,
         },
             input=INPUT,
@@ -426,7 +436,7 @@ class kat7_reduce(unittest.TestCase):
                    },
                    input=INPUT, output=OUTPUT, shared_memory="8gb",
                    label="image_target_field_r0ddfacet:: Make a test image using ddfacet",
-                   time_out=120)
+                   time_out=520)
 
         lsm1 = PREFIX + '-LSM0'
         # Source finding for initial model

@@ -21,11 +21,13 @@ LSM = "nvss1deg.lsm.html"
 # Start stimela Recipe instance
 pipeline = stimela.Recipe("Simulation Example",     # Recipe name
                           ms_dir=MSDIR,
+                          indir=INPUT,
+                          outdir=OUTPUT,
                           singularity_image_dir=SINGULARTITY_IMAGE_DIR,
                           log_dir=os.path.join(OUTPUT, "logs"),
                           )
 
-pipeline.JOB_TYPE = "singularity"
+#pipeline.JOB_TYPE = "docker"
 
 # 1: Make empty MS
 pipeline.add("cab/simms",                   # Executor image to start container from
@@ -34,67 +36,84 @@ pipeline.add("cab/simms",                   # Executor image to start container 
                 "msname":   MS,
                 "telescope":   "meerkat",              # Telescope name
                 "direction":   "J2000,0deg,-30deg",    # Phase tracking centre of observation
-                "synthesis":   0.128,                  # Synthesis time of observation
-                "dtime":   10,                      # Integration time in seconds
+                "synthesis":   2,                  # Synthesis time of observation
+                "dtime":   30,                      # Integration time in seconds
                 "freq0":   "750MHz",               # Start frequency of observation
                 "dfreq":   "1MHz",                 # Channel width
-                "nchan":   1                       # Number of channels
+                "nchan":   16                       # Number of channels
              },
-             input=INPUT,                               # Input folder
-             output=OUTPUT,                             # Output folder
              label="Creating MS",                       # Process label
              cpus=2.5,
              memory_limit="2gb")
+# 2
+pipeline.add("cab/casa_listobs", "obsinfo",
+        {
+            "vis" : MS,
+            "listfile" : MS + "-obsinfo.txt",
+            "overwrite": True,
+            }, 
+        label="obsinfo:: Observation information")
 
-
-# 2: Simulate visibilities into it
+# 3: Simulate visibilities into it
 pipeline.add("cab/simulator",
              "simulator_example",
              {
                  "msname":   MS,
                  "skymodel":   LSM,                    # Sky model to simulate into MS
                  "addnoise":   True,                   # Add thermal noise to visibilities
-                 "column":   "CORRECTED_DATA",       # Simulated data will be saved in this column
+                 "column":   "DATA",
+                 "Gjones": True, # Simulated data will be saved in this column
                  "sefd":   831,                    # Compute noise from this SEFD
                  # Recentre sky model to phase tracking centre of MS
-                 "recenter":   True,
                  "tile-size": 64,
                  "threads": 4,
              },
-             input=INPUT, output=OUTPUT,
              label="Simulating visibilities")
+# 4
+pipeline.add("cab/calibrator",
+             "cal_example",
+             {
+                 "msname":   MS,
+                 "skymodel":   LSM,
+                 "tile-size": 64,
+                 "threads": 4,
+                 "output-data" : 'CORR_DATA',
+             },
+             label="Calibrating visibilities")
 
 
-# 3: Image
+
+# 5,6,7 : Image
 # Make things a bit interesting by imaging with different weights
 # Briggs robust values to use for each image
-briggs_robust = 2, 0, -2
+briggs_robust = [2, 0, -2]
 
 for i, robust in enumerate(briggs_robust):
 
-    pipeline.add("cab/wsclean",
+    pipeline.add("cab/casa_clean",
                  "imager_example_robust_{:d}".format(i),
                  {
                      "msname":   MS,
-                     "weight":   "briggs {:d}".format(robust),
-                     "prefix":   "{:s}_robust-{:d}".format(PREFIX, robust),
-                     "npix":   2048,                   # Image size in pixels
+                     "weighting":   "briggs",
+                     "robust" : 0,
+                     "wprojplanes" : 128,
+                     "prefix":   "casa-{:s}_robust-{:d}".format(PREFIX, robust),
+                     "npix":   4096,                   # Image size in pixels
                      "cellsize":   2,                      # Size of each square pixel
                      # Perform 1000 iterarions of clean (Deconvolution)
-                     "clean_iterations":   1000,
+                     "niter":   5000,
+#                     "mgain" : 0.85,
+                     #"pol" : "I",
+                     #"multiscale": True,
+                     #"multiscale-scales" : [0,2],
                  },
-                 input=INPUT,
-                 output=OUTPUT,
                  label="Imaging MS, robust={:d}".format(robust),
                  cpus=2,
                  memory_limit="2gb")
-
+# 8
 pipeline.add("cab/casa_rmtables", "delete_ms", {
     "tablenames": MS + ":msfile",
 },
-    input=INPUT,
-    output=OUTPUT,
     label="Remove MS")
-# Run recipe. The 'steps' added above will be executed in the sequence that they were adde. The 'steps' added above will be
-# executed in the sequence that they were added
+
 pipeline.run()

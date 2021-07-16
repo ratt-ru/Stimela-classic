@@ -1,7 +1,7 @@
 {
     "task": "ragavi",
     "base": "stimela/ragavi",
-    "tag": "1.5.0",
+    "tag": "1.7.3",
     "description": "Radio Astronomy Gain and Visibility Inspector",
     "prefix": "--",
     "binary": "ragavi-vis",
@@ -26,9 +26,13 @@
                 "antenna1", 
                 "antenna2", 
                 "amplitude",
+                "amp",
                 "channel",
+                "chan",
                 "frequency",
+                "freq",
                 "imaginary",
+                "imag",
                 "phase",
                 "real",
                 "scan", 
@@ -44,8 +48,10 @@
             "name": "yaxis",
             "default": null,
             "choices": [
-                "amplitude", 
-                "imaginary", 
+                "amplitude",
+                "amp",
+                "imaginary",
+                "imag",
                 "phase",
                 "real"
                 ]
@@ -55,14 +61,12 @@
             "dtype": "int",
             "required": false,
             "name": "canvas-height",
-            "default": 1020
         },
         {
             "info": "Set width of the resulting image.",
             "dtype": "int",
             "required": false,
             "name": "canvas-width",
-            "default": 1280
         },
         {
             "info": "Size of channel bins over which to average.",
@@ -86,18 +90,18 @@
             "default": null
         },
         {
-            "info": "Chunk sizes to be applied to the dataset. Defaults to 100,000 in the row axis.",
+            "info": "Chunk sizes to be applied to the dataset. Defaults to 5,000 in the row axis.",
             "dtype": "str",
             "required": false,
             "name": "chunks",
             "default": null
         },
         {
-            "info": "Colour or colour map to use.",
+            "info": "Colour or colour map to use. Defaults to blues.",
             "dtype": "str",
             "required": false,
             "name": "cmap",
-            "default": "blues"
+            "default": null
         },
         {
             "info": "Select column to colourise by.",
@@ -116,18 +120,18 @@
                 ]
         },
         {
-            "info": "Number columns in grid if iteration is active",
+            "info": "Number columns in grid if iteration is active. Defaults to 5.",
             "dtype": "int",
             "required": false,
             "name": "cols",
-            "default": 5
+            "default": null
         },
         {
             "info": "Correlation index or subset to plot. Can be specified using normal python slicing syntax. Defaults to all.",
             "dtype": "str",
             "required": false,
             "name": "corr",
-            "default": "0:"
+            "default": null
         },
         {
             "info": "MS column to use for data.",
@@ -135,6 +139,12 @@
             "required": false,
             "name": "data-column",
             "default": "DATA"
+        },
+        {
+            "info": "Enable debugging messages",
+            "dtype": "bool",
+            "required": false,
+            "name": "debug"
         },
         {
             "info": "DATA_DESC_ID(s) /spw to select. Can be specified as e.g. 5, 5,6,7, 5~7 (inclusive range), 5:8 (exclusive range), 5:(from 5 to last). Defaults to all",
@@ -176,20 +186,26 @@
                 ]
         },
         {
-            "info": "Memory limit per core.",
+            "info": "Desired name of logfile. Default is ragavi.log",
+            "dtype": "str",
+            "required": false,
+            "name": "logfile"
+        },
+        {
+            "info": "Memory limit per core. Default is 1GB.",
             "dtype": "str",
             "required": false,
             "name": "mem-limit",
-            "default": "1GB"
+            "default": null
         },
         {
-            "info": "Plot only unflagged data. Defaults to true.",
+            "info": "Include flagged data in the generated plot. Default is false",
             "dtype": "bool",
             "required": false,
-            "name": "no-flagged"
+            "name": "include-flagged"
         },
         {
-            "info": "Number of CPU cores to be used by Dask. Defaults to half the CPU cores available.",
+            "info": "Number of CPU cores to be used by Dask. Defaults to 10 or less cores",
             "dtype": "int",
             "required": false,
             "name": "num-cores"

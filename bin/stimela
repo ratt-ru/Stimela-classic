@@ -8,7 +8,4 @@ import stimela.main as main
 
 # Ensure that logging infrastructure exists
 
-if not os.path.exists(stimela.LOG_HOME):
-    os.mkdir(stimela.LOG_HOME)
-
 main.main([a for a in sys.argv[1:]])

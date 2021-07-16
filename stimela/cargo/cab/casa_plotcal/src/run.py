@@ -1,26 +1,8 @@
-import os
-import sys
-import logging
+# -*- coding: future_fstrings -*-
 import Crasa.Crasa as crasa
-import yaml
+from scabha import config, parameters_dict, prun
 
-CONFIG = os.environ["CONFIG"]
-INPUT = os.environ["INPUT"]
-OUTPUT = os.environ["OUTPUT"]
-MSDIR = os.environ["MSDIR"]
+print(f"Running CASA task '{config.binary}'")
 
-with open(CONFIG, "r") as _std:
-    cab = yaml.safe_load(_std)
-
-args = {}
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
-
-    if value is None:
-        continue
-
-    args[name] = value
-
-task = crasa.CasaTask(cab["binary"], **args)
+task = crasa.CasaTask(config.binary, **parameters_dict)
 task.run()

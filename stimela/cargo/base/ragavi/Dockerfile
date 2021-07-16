@@ -1,9 +1,13 @@
 FROM stimela/base:1.2.5
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
-RUN pip3 install -U pip setuptools pyyaml
-RUN pip3 install -U python-casacore 
-RUN pip3 install -U ragavi
-RUN pip3 install -I numpy
+RUN apt-get update
+RUN pip3 install -U pip setuptools \
+    pyyaml \
+    python-casacore
+RUN pip install numba==0.48
+RUN pip install scabha
+RUN pip install -I ragavi
 RUN ragavi-gains -h
 RUN ragavi-vis -h
+RUN ragavi-vis -v

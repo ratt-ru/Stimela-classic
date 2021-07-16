@@ -1,10 +1,10 @@
 {
     "task": "rfimasker", 
     "base": "stimela/rfimasker", 
-    "tag": "1.2.0", 
+    "tag": "1.7.0",
     "description": "Tiny tool to apply a numpy boolean array to the spectral flags column of a measurement set to mask out known RFI sources like GSM and satelite in L-band. Typically flagging known RFI sources produces much better backgrounds and tools like the mighty AOFlagger RFI hammer needs fewer iterations to converge to good solutions.", 
     "prefix": "--", 
-    "binary": "rfimasker",
+    "binary": "mask_ms.py",
     "junk": [],
     "msdir": true, 
     "parameters": [

@@ -1,6 +1,7 @@
-FROM stimela/base:1.2.0
-RUN pip install --upgrade pip
-RUN pip install owlcat meqtrees-cattery --upgrade --ignore-installed
-RUN pip uninstall -y python-casacore
-RUN docker-apt-install python-casacore
-ENV MEQTREES_CATTERY_PATH /usr/lib/python2.7/dist-packages/Cattery
+FROM stimela/base:1.6.0
+RUN docker-apt-install python3-casacore \
+    casacore-dev \
+    libcfitsio-dev \
+    wcslib-dev
+RUN pip install -U meqtrees-cattery "python-casacore>=3.3.1" "owlcat>=1.6.3" scabha future-fstrings
+ENV MEQTREES_CATTERY_PATH /usr/local/lib/python3.6/dist-packages/Cattery

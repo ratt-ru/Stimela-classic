@@ -48,7 +48,8 @@ class Parameter(object):
                  choices=None,
                  io=None,
                  mapping=None,
-                 check_io=True):
+                 check_io=True,
+                 deprecated=False):
 
         self.name = name
         self.io = io
@@ -66,6 +67,7 @@ class Parameter(object):
         self.choices = choices or []
         self.mapping = mapping
         self.check_io = check_io
+        self.deprecated = deprecated
 
         self.value = None
 
@@ -89,8 +91,10 @@ class Parameter(object):
                     return True
                 if isinstance(value, t):
                     return True
-                elif isinstance(value, list) and isinstance(value[0], tuple([t]+[int] if t is float else [t])):
-                    return True
+                elif isinstance(value, list):
+                    types = (t,int) if t is float else (t,)      # float permits ints as well
+                    if all(isinstance(x, types) for x in value): # check that all elements are of permitted type
+                        return True
             elif item is "file":
                 return True
             elif isinstance(value, tuple([item]+[int] if item is float else [item])):
@@ -131,24 +135,32 @@ class CabDefinition(object):
                  base=None,
                  binary=None,
                  description=None,
-                 tag=None,
+                 tag=[],
                  prefix=None,
                  parameters=[],
-                 version=None, 
+                 version=[], 
                  junk=[]):
 
         self.indir = indir
         self.outdir = outdir
 
+
         if parameter_file:
             cab = utils.readJson(parameter_file)
+            if not isinstance(cab["tag"], list):
+                tag = [cab["tag"]]
+                version = [cab.get("version", "x.x.x")]
+            else:
+                tag = cab["tag"]
+                version = cab["version"]
+
             self.task = cab["task"]
             self.base = cab["base"]
             self.binary = cab["binary"]
-            self.tag = cab["tag"]
+            self.tag = tag
             self.junk = cab.get("junk", [])
             self.wranglers = cab.get("wranglers", [])
-            self.version = cab.get("version", "x.x.x")
+            self.version = version
             if cab["msdir"]:
                 self.msdir = msdir
             else:
@@ -169,7 +181,8 @@ class CabDefinition(object):
                                   mapping=param.get("mapping", None),
                                   required=param.get("required", False),
                                   choices=param.get("choices", False),
-                                  check_io=param.get("check_io", True))
+                                  check_io=param.get("check_io", True),
+                                  deprecated=param.get("deprecated", False))
                 self.parameters.append(addme)
 
         else:
@@ -274,19 +287,22 @@ class CabDefinition(object):
                 })
         return conf
 
-    def update(self, options, saveconf):
+    def update(self, options, saveconf, tag=None):
         required = filter(lambda a: a.required, self.parameters)
+        tag = tag or self.tag
         for param0 in required:
             if param0.name not in options.keys() and param0.mapping not in options.keys():
                 raise StimelaCabParameterError(
                     "Parameter {} is required but has not been specified".format(param0.name))
-        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{self.tag})")
+        self.log.info(f"Validating parameters for cab {self.task} ({self.base}:{tag})")
 
         for name, value in options.items():
             found = False
             for param in self.parameters:
                 if name in [param.name, param.mapping]:
                     found = True
+                    if param.deprecated:
+                        self.log.warning(f"Parameter {name} for cab {self.task} is deprecated, and will be removed in a future release")
                     if param.io:
                         if value is None:
                             continue

@@ -314,7 +314,7 @@ def pull(argv):
                     singularity.pull(
                         image, simage, directory=pull_folder, force=args.force)
             else:
-                image = "/".join([hub, image])
+                image = "/".join([hub, image]) if hub != "" else image
                 if image not in uniq_pulls:
                     uniq_pulls.append(image)
                     if args.podman:

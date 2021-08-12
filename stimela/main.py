@@ -254,6 +254,7 @@ def pull(argv):
         jtype = "docker"
 
     images_ = []
+    repository_ = []
     for cab in args.cab_base or []:
         if cab in CAB:
             filename = "/".join([stimela.CAB_PATH, cab, "parameters.json"])
@@ -263,25 +264,33 @@ def pull(argv):
                 tags = [tags]
             for tag in tags:
                 images_.append(":".join([param["base"], tag]))
+                repository_.append(param["hub"] if "hub" in param.keys() else args.repository)
 
-    args.image = images_ or args.image
+    repository_ = repository_ + ([args.repository] * len(args.image) if args.image is not None else [])
+    args.image = images_ + (args.image if args.image is not None else [])
+    assert len(args.image) == len(repository_)
     if args.image:
-        for image in args.image:
+        for hub, image in zip(repository_, args.image):
+            if hub == "docker" or hub == "docker.io":
+                hub = ""
             if args.singularity:
                 simage = image.replace("/", "_")
                 simage = simage.replace(":", "_") + singularity.suffix
-                image = "/".join([args.repository, image])
+                image = "/".join([hub, image]) if hub != "" else image
                 singularity.pull(
                     image, simage, directory=pull_folder, force=args.force)
             else:
-                image = "/".join([args.repository, image])
                 if args.podman:
-                    podman.pull(image, force=args.force)
+                    podman.pull("/".join([hub, image]) if hub != "" else image, force=args.force)
                 else:
-                    docker.pull("/".join([args.repository, image]), force=args.force)
-    else:
+                    docker.pull("/".join([hub, image]) if hub != "" else image, force=args.force)
+    else: # no cab bases or images specifically being pulled
         base = []
+        repository_ = []
         for cab_ in CAB:
+            filename = "/".join([stimela.CAB_PATH, cab_, "parameters.json"])
+            param = utils.readJson(filename)
+
             cabdir = "{:s}/{:s}".format(stimela.CAB_PATH, cab_)
             _cab = info(cabdir, display=False)
             tags = _cab.tag
@@ -289,21 +298,29 @@ def pull(argv):
                 tags = [tags]
             for tag in tags:
                 base.append(f"{_cab.base}:{tag}")
-        base = set(base)
+                repository_.append(param["hub"] if "hub" in param.keys() else args.repository)
 
-        for image in base:
+        assert len(base) == len(repository_)
+        uniq_pulls = []
+        for hub, image in zip(repository_, base):
+            if hub == "docker" or hub == "docker.io":
+                hub = ""
             if args.singularity:
                 simage = image.replace("/", "_")
                 simage = simage.replace(":", "_") + singularity.suffix
-                image = "/".join([args.repository, image])
-                singularity.pull(
-                    image, simage, directory=pull_folder, force=args.force)
+                image = "/".join([hub, image]) if hub != "" else image
+                if image not in uniq_pulls:
+                    uniq_pulls.append(image)
+                    singularity.pull(
+                        image, simage, directory=pull_folder, force=args.force)
             else:
-                image = "/".join([args.repository, image])
-                if args.podman:
-                    podman.pull(image, force=args.force)
-                else:
-                    docker.pull(image, force=args.force)
+                image = "/".join([hub, image])
+                if image not in uniq_pulls:
+                    uniq_pulls.append(image)
+                    if args.podman:
+                        podman.pull(image, force=args.force)
+                    else:
+                        docker.pull(image, force=args.force)
 
 
 def main(argv):

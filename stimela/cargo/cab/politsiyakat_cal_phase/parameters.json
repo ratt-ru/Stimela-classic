@@ -39,7 +39,7 @@
         {
             "info": "Output directory", 
             "dtype": "file", 
-            "default": "", 
+            "default": "./", 
             "name": "output_dir", 
             "io": "output"
         }, 

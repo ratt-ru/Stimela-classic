@@ -222,6 +222,8 @@ class StimelaJob(object):
         parameter_file = os.path.join(cabpath, 'parameters.json')
         _cab = cab.CabDefinition(indir=indir, outdir=outdir,
                                  msdir=msdir, parameter_file=parameter_file)
+        param = utils.readJson(parameter_file)
+        _repository = param.get("hub", repository)
         self.setup_output_wranglers(_cab.wranglers)
         cont.IODEST = CONT_IO
         cont.cabname = _cab.task
@@ -281,8 +283,9 @@ class StimelaJob(object):
                 self.log.warn(f"You have chosen to use an unverified base image '{_cab.base}:{self.tag}'. May the force be with you.")
             else:
                 raise StimelaBaseImageError(f"The base image '{_cab.base}' with tag '{self.tag}' has not been verified. If you wish to continue with it, please add the 'force_tag' when adding it to your recipe")
-        if repository:
-            image_url = f"{repository}/{_cab.base}:{self.tag}"
+        if _repository:
+            image_url = f"{_repository}/{_cab.base}:{self.tag}" if _repository == "docker" or _repository == "docker.io" else \
+                        f"{_cab.base}:{self.tag}"
         else:
             image_url = f"{_cab.base}:{self.tag}"
 

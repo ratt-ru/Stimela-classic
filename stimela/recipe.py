@@ -284,7 +284,7 @@ class StimelaJob(object):
             else:
                 raise StimelaBaseImageError(f"The base image '{_cab.base}' with tag '{self.tag}' has not been verified. If you wish to continue with it, please add the 'force_tag' when adding it to your recipe")
         if _repository:
-            image_url = f"{_repository}/{_cab.base}:{self.tag}" if _repository == "docker" or _repository == "docker.io" else \
+            image_url = f"{_repository}/{_cab.base}:{self.tag}" if _repository != "docker" and _repository != "docker.io" else \
                         f"{_cab.base}:{self.tag}"
         else:
             image_url = f"{_cab.base}:{self.tag}"

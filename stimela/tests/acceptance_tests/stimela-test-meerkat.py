@@ -98,6 +98,7 @@ class mk_reduce(unittest.TestCase):
                    {
                        "Data-MS": [MS],
                        "Output-Name": imname1,
+                       "Output-Images": "DdPAMRrIikze",
                        "Image-NPix": 2048,
                        "Image-Cell": 2.0,
                        "Cache-Reset": True,
@@ -131,7 +132,7 @@ class mk_reduce(unittest.TestCase):
         recipe.add("cab/catdagger", "auto_tagger_{}_{}".format("decaltest", "1"), {
             'ds9-reg-file': "{}.{}.dE.reg".format("decaltest", "1"),
             'ds9-tag-reg-file': "{}.{}.dE.clusterleads.reg".format("decaltest", "1"),
-            'sigma': 3.0,
+            'sigma': 1.5,
             'min-distance-from-tracking-centre': 350,
             'noise-map': "{}.app.residual.fits:output".format(imname1),
         }, input=INPUT, output=OUTPUT, label="auto_tagger_{}_{}".format("decaltest", "1"), shared_memory="250g")

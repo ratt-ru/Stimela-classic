@@ -161,7 +161,7 @@ class mk_reduce(unittest.TestCase):
                        'sol-stall-quorum': 0.95,
                        'out-name': "cubicaltest",
                        'out-column': "CORRECTED_DATA",
-                       'log-verbose': "solver=2",
+                       'log-verbose': "solver=0",
                        'g-type': "complex-2x2",
                        'g-freq-int': 0,
                        'dd-freq-int': 0,

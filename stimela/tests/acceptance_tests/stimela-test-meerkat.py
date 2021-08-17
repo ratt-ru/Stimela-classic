@@ -132,7 +132,7 @@ class mk_reduce(unittest.TestCase):
         recipe.add("cab/catdagger", "auto_tagger_{}_{}".format("decaltest", "1"), {
             'ds9-reg-file': "{}.{}.dE.reg".format("decaltest", "1"),
             'ds9-tag-reg-file': "{}.{}.dE.clusterleads.reg".format("decaltest", "1"),
-            'sigma': 2.0,
+            'sigma': 4.5,
             'min-distance-from-tracking-centre': 350,
             'noise-map': "{}.app.residual.fits:output".format(imname1),
         }, input=INPUT, output=OUTPUT, label="auto_tagger_{}_{}".format("decaltest", "1"), shared_memory="250g")
@@ -184,7 +184,7 @@ class mk_reduce(unittest.TestCase):
                    }, input=INPUT, output=OUTPUT,
                    label="cubical",
                    shared_memory="24gb",
-                   time_out=18000)
+                   time_out=3600)
 
         recipe.add("cab/cubical", "cubical_cal2",
                    {

@@ -180,7 +180,6 @@ class mk_reduce(unittest.TestCase):
                        'dd-max-post-error': 0.35,
                        'degridding-NDegridBand': 3,
                        'degridding-MaxFacetSize': 0.15,
-                       'log-verbose': "solver=2",
                        'out-mode': "sr",
                    }, input=INPUT, output=OUTPUT,
                    label="cubical",

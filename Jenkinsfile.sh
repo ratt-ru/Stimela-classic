@@ -47,10 +47,10 @@ LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv/lib:$LD_LIBRARY_PATH
 pip install ${WORKSPACE_ROOT}/projects/Stimela/
 
 stimela --version
-stimela pull --force
+stimela pull #--force
 
 #Run forest run!
 cd $TEST_OUTPUT_DIR
 export SILENT_STDERR=ON
-python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
+python3 -m nose -s --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
 

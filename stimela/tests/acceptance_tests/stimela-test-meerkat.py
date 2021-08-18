@@ -150,7 +150,7 @@ class mk_reduce(unittest.TestCase):
                            imname1+".DicoModel", "{}.{}.dE.reg".format("decaltest", "1"),
                            imname1+".DicoModel", "{}.{}.dE.reg".format("decaltest", "1")),
                            "output", "output", "output", "output"),
-                       'log-verbose': "solver=2",
+                       'log-verbose': "solver=0",
                        'weight-column': "WEIGHT",
                        'flags-apply': "FLAG",
                        'flags-auto-init': "legacy",

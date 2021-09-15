@@ -1,7 +1,7 @@
 {
     "task": "aimfast",
     "base": "stimela/aimfast",
-    "tag": "1.6.6",
+    "tag": "1.7.0",
     "description": "An Astronomical Image Fidelity Assessment Tool",
     "prefix": "--",
     "binary": "aimfast",
@@ -73,6 +73,13 @@
             "required": false,
             "name": "data-range",
             "dtype": "int"
+        },
+        {
+            "info": "Field of view width to querry online catalog in degrees e.g. '1.0d'",
+            "default": null,
+            "required": false,
+            "name": "width",
+            "dtype": "str"
         },
         {
             "info": "Source catalog (text/lsm.html) files to compare",
@@ -212,6 +219,33 @@
             "dtype": "bool"
         },
         {
+            "info": "Cross-match only sources with a maj-axis equal or less than this value",
+            "default": null,
+            "required": false,
+            "name": "shape-limit",
+            "dtype": "float"
+        },
+        {
+            "info": "Plot only cross-matched sources with distance from the phase centre less than this value in degrees",
+            "default": null,
+            "required": false,
+            "name": "only-off-axis",
+            "dtype": "float"
+        },
+        {
+            "info": "Units to represent the results",
+            "default": "micro",
+            "required": false,
+            "name": "units",
+            "dtype": "str",
+            "choices": [
+                "jansky",
+                "milli",
+                "micro",
+                "nano"
+            ]
+        },
+        {
             "info": "Source finder to run if comparing restored images",
             "default": null,
             "required": false,
@@ -231,12 +265,20 @@
             "dtype": "file"
         },
         {
-            "info": "Source finder parameter file",
+            "info": "List of noise-like (fits) files to compare",
+            "delimiter": " ",
             "default": null,
             "required": false,
-            "name": "config",
+            "name": "compare-residual-subimages",
             "io": "input",
-            "dtype": "file"
+            "dtype": "list:file"
+        },
+        {
+            "info": "List of subimage centre pixels and their sizes to compute stats. e.g. ['256,256,100']",
+            "default": null,
+            "required": false,
+            "name": "centre-pixels-size",
+            "dtype": "list:str"
         },
         {
             "info": "Input aimfast fidelity results file (JSON format) to get plots",

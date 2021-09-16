@@ -175,13 +175,15 @@
         {
             "info": "Prefix of output html files",
             "default": null,
-            "required": false,
+            "io": "output",
+            "required": true,
             "name": "html-prefix",
             "dtype": "str"
         },
         {
             "info": "Prefix of output catalog file name",
-            "default": null,
+            "default": "default",
+            "io": "output",
             "required": false,
             "name": "online-catalog-name",
             "dtype": "str"
@@ -291,7 +293,7 @@
         {
             "info": "Name of output file name",
             "default": null,
-            "required": false,
+            "required": true,
             "name": "outfile",
             "io": "output",
             "dtype": "file"

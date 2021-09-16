@@ -33,7 +33,7 @@ for param in cab['parameters']:
                 args += ['{0}{1} {2}'.format(cab['prefix'],
                                              name, " ".join(compare))]
                 compare = []
-    elif name in ['compare-online']:
+    elif name in ['compare-online', 'compare-residual-subimages', 'centre-pixels-size']:
         args += ['{0}{1} {2}'.format(cab['prefix'],
                                      name, " ".join(value))]
     elif param['dtype'] in ['bool']:

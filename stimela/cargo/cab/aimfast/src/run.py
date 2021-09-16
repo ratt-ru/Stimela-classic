@@ -23,8 +23,6 @@ for param in cab['parameters']:
     value = param['value']
     if value is None:
         continue
-    elif value is False:
-        continue
 
     if name in ['compare-images', 'compare-residuals', 'compare-models']:
         compare = []
@@ -38,6 +36,8 @@ for param in cab['parameters']:
     elif name in ['compare-online']:
         args += ['{0}{1} {2}'.format(cab['prefix'],
                                      name, " ".join(value))]
+    elif param['dtype'] in ['bool']:
+        args += ['{0}{1}'.format(cab['prefix'], name)]
     else:
         args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 

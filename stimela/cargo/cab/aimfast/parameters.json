@@ -215,7 +215,7 @@
             "info": "Compare all sources irrespective of shape, otherwise only point-like sources are compared",
             "default": null,
             "required": false,
-            "name": "all-sources",
+            "name": "all-source",
             "dtype": "bool"
         },
         {

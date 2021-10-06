@@ -170,7 +170,12 @@
       "dtype": "bool", 
       "default": false, 
       "name": "listmodels"
-    }, 
+    },
+    {
+        "name": "rotmeas",
+        "info": "Rotation measure (in rad/m^2) Subparameter of standard='manual'. Default: 0.0 Note on the use of polindex, polangle and rotmeas. When the frequnecy-dependent polindex and polangle are used, be sure to include all the coefficients of both polindex and polangle to describe frequency depencency. Otherwise frequency-dependent Q and U flux densities are not calculated correctly. If rotmeas is given, the calculated Q and U flux densities are then corrected for the Faraday rotation.",
+        "default": 0.0
+    },
     {
       "info": "File location for field model", 
       "dtype": "str", 

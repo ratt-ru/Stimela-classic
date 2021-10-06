@@ -203,13 +203,13 @@
     }, 
     {
       "info": "Lower limiting elevation (in degrees)", 
-      "dtype": "int", 
+      "dtype": ["int", "float"],
       "default": 0.0, 
       "name": "lowerlimit"
     }, 
     {
       "info": "Upper limiting elevation (in degrees)", 
-      "dtype": "int", 
+      "dtype": ["int", "float"],
       "default": 90.0, 
       "name": "upperlimit"
     }, 

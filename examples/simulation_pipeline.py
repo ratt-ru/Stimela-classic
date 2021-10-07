@@ -116,4 +116,4 @@ pipeline.add("cab/casa_rmtables", "delete_ms", {
 },
     label="Remove MS")
 
-pipeline.run()
+pipeline.run([5])

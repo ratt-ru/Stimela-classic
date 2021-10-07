@@ -1,134 +1,136 @@
 {
-  "task": "casa_listobs", 
-  "base": "stimela/casa", 
+  "task": "casa_listobs",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
-  ], 
-  "description": "List the summary of a data set in the logger or in a file", 
-  "prefix": "-", 
-  "binary": "listobs", 
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
+  ],
+  "description": "List the summary of a data set in the logger or in a file",
+  "prefix": "-",
+  "binary": "listobs",
   "junk": [
     "listobs.last"
-  ], 
-  "msdir": true, 
+  ],
+  "msdir": true,
   "parameters": [
-        {
-            "info": "Name of input visibility file", 
-            "name": "msname", 
-            "io": "msfile", 
-            "default": null, 
-            "dtype": "file", 
-            "required": true, 
-            "mapping": "vis"
-        }, 
-        {
-            "info": "Name of disk file to write output: ''==>to terminal", 
-            "dtype": "file", 
-            "default": null, 
-            "name": "listfile", 
-            "io": "output",
-            "check_io": false
-        }, 
-        {
-            "info": "If True, tacitly overwrite listfile if it exists.", 
-            "dtype": "bool", 
-            "default": false, 
-            "name": "overwrite"
-        }, 
-        {
-            "info": "Data selection parameters", 
-            "dtype": "bool", 
-            "default": null, 
-            "name": "selectdata"
-        }, 
-        {
-            "info": "Field names or field index numbers. ''==>all, field='0~2,3C286'", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "field"
-        }, 
-        {
-            "info": "spectral-window/frequency/channel", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "spw"
-        }, 
-        {
-            "info": "Antenna/baselines: ''==>all, antenna='3,VA04'", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "antenna"
-        }, 
-        {
-            "info": "time range: ''==>all,timerange='09:14:0~09:54:0'", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "timerange"
-        }, 
-        {
-            "info": "Select data based on correlation", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "correlation"
-        }, 
-        {
-            "info": "scan numbers: ''==>all", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "scan"
-        }, 
-        {
-            "info": "Select data based on observation intent: ''==>all", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "intent"
-        }, 
-        {
-            "info": "Multi-feed numbers: Not yet implemented", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "feed"
-        }, 
-        {
-            "info": "(sub)array numbers: ''==>all", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "array"
-        }, 
-        {
-            "info": "uv range: ''==>all; uvrange ='0~100klambda', default units=meters", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "uvrange"
-        }, 
-        {
-            "info": "Select data based on observation ID: ''==>all", 
-            "dtype": "str", 
-            "default": null, 
-            "name": "observation"
-        }, 
-        {
-            "info": "Verbose output", 
-            "dtype": "bool", 
-            "default": null, 
-            "name": "verbose"
-        }, 
-        {
-            "info": "List unflagged row counts? If true, it can have significant negative performance impact.", 
-            "dtype": "bool", 
-            "default": null, 
-            "name": "listunfl"
-        }, 
-        {
-            "info": "EXPERIMENTAL. Maximum size in megabytes of cache in which data structures can be held.", 
-            "dtype": "int", 
-            "default": null, 
-            "name": "cachesize"
-        }
-    ]
+    {
+      "info": "Name of input visibility file",
+      "name": "msname",
+      "io": "msfile",
+      "default": null,
+      "dtype": "file",
+      "required": true,
+      "mapping": "vis"
+    },
+    {
+      "info": "Name of disk file to write output: ''==>to terminal",
+      "dtype": "file",
+      "default": null,
+      "name": "listfile",
+      "io": "output",
+      "check_io": false
+    },
+    {
+      "info": "If True, tacitly overwrite listfile if it exists.",
+      "dtype": "bool",
+      "default": false,
+      "name": "overwrite"
+    },
+    {
+      "info": "Data selection parameters",
+      "dtype": "bool",
+      "default": null,
+      "name": "selectdata"
+    },
+    {
+      "info": "Field names or field index numbers. ''==>all, field='0~2,3C286'",
+      "dtype": "str",
+      "default": null,
+      "name": "field"
+    },
+    {
+      "info": "spectral-window/frequency/channel",
+      "dtype": "str",
+      "default": null,
+      "name": "spw"
+    },
+    {
+      "info": "Antenna/baselines: ''==>all, antenna='3,VA04'",
+      "dtype": "str",
+      "default": null,
+      "name": "antenna"
+    },
+    {
+      "info": "time range: ''==>all,timerange='09:14:0~09:54:0'",
+      "dtype": "str",
+      "default": null,
+      "name": "timerange"
+    },
+    {
+      "info": "Select data based on correlation",
+      "dtype": "str",
+      "default": null,
+      "name": "correlation"
+    },
+    {
+      "info": "scan numbers: ''==>all",
+      "dtype": "str",
+      "default": null,
+      "name": "scan"
+    },
+    {
+      "info": "Select data based on observation intent: ''==>all",
+      "dtype": "str",
+      "default": null,
+      "name": "intent"
+    },
+    {
+      "info": "Multi-feed numbers: Not yet implemented",
+      "dtype": "str",
+      "default": null,
+      "name": "feed"
+    },
+    {
+      "info": "(sub)array numbers: ''==>all",
+      "dtype": "str",
+      "default": null,
+      "name": "array"
+    },
+    {
+      "info": "uv range: ''==>all; uvrange ='0~100klambda', default units=meters",
+      "dtype": "str",
+      "default": null,
+      "name": "uvrange"
+    },
+    {
+      "info": "Select data based on observation ID: ''==>all",
+      "dtype": "str",
+      "default": null,
+      "name": "observation"
+    },
+    {
+      "info": "Verbose output",
+      "dtype": "bool",
+      "default": null,
+      "name": "verbose"
+    },
+    {
+      "info": "List unflagged row counts? If true, it can have significant negative performance impact.",
+      "dtype": "bool",
+      "default": null,
+      "name": "listunfl"
+    },
+    {
+      "info": "EXPERIMENTAL. Maximum size in megabytes of cache in which data structures can be held.",
+      "dtype": "int",
+      "default": null,
+      "name": "cachesize"
+    }
+  ]
 }

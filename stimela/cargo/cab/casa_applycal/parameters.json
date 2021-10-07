@@ -1,162 +1,164 @@
 {
-  "task": "casa_applycal", 
-  "base": "stimela/casa", 
+  "task": "casa_applycal",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
-  ], 
-  "description": "Apply calibrations solutions(s) to data", 
-  "prefix": "-", 
-  "binary": "applycal", 
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
+  ],
+  "description": "Apply calibrations solutions(s) to data",
+  "prefix": "-",
+  "binary": "applycal",
   "junk": [
     "applycal.last"
-  ], 
-  "msdir": true, 
+  ],
+  "msdir": true,
   "parameters": [
     {
-      "info": "Name of input visibility file", 
-      "name": "msname", 
-      "io": "msfile", 
-      "dtype": "file", 
-      "required": true, 
+      "info": "Name of input visibility file",
+      "name": "msname",
+      "io": "msfile",
+      "dtype": "file",
+      "required": true,
       "mapping": "vis"
-    }, 
+    },
     {
-      "info": "Select field using field id(s) or field name(s)", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select field using field id(s) or field name(s)",
+      "dtype": "str",
+      "default": null,
       "name": "field"
-    }, 
+    },
     {
-      "info": "Select spectral window/channels", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select spectral window/channels",
+      "dtype": "str",
+      "default": null,
       "name": "spw"
-    }, 
+    },
     {
-      "info": "Select observing intent", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select observing intent",
+      "dtype": "str",
+      "default": null,
       "name": "intent"
-    }, 
+    },
     {
-      "info": "Other data selection parameters", 
-      "dtype": "bool", 
-      "default": true, 
+      "info": "Other data selection parameters",
+      "dtype": "bool",
+      "default": true,
       "name": "selectdata"
-    }, 
+    },
     {
-      "info": "Select data based on time range", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data based on time range",
+      "dtype": "str",
+      "default": null,
       "name": "timerange"
-    }, 
+    },
     {
-      "info": "Select data within uvrange (default units meters)", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data within uvrange (default units meters)",
+      "dtype": "str",
+      "default": null,
       "name": "uvrange"
-    }, 
+    },
     {
-      "info": "Select data based on antenna/baseline", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data based on antenna/baseline",
+      "dtype": "str",
+      "default": null,
       "name": "antenna"
-    }, 
+    },
     {
-      "info": "Scan number range", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Scan number range",
+      "dtype": "str",
+      "default": null,
       "name": "scan"
-    }, 
+    },
     {
-      "info": "Select by observation ID(s)", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select by observation ID(s)",
+      "dtype": "str",
+      "default": null,
       "name": "observation"
-    }, 
+    },
     {
-      "info": "Optional complex data selection (ignore for now)", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Optional complex data selection (ignore for now)",
+      "dtype": "str",
+      "default": null,
       "name": "msselect"
-    }, 
+    },
     {
-      "info": "Use callib or traditional cal apply parameters", 
-      "dtype": "bool", 
-      "default": false, 
+      "info": "Use callib or traditional cal apply parameters",
+      "dtype": "bool",
+      "default": false,
       "name": "docallib"
-    }, 
+    },
     {
-      "info": "Cal Library filename", 
-      "dtype": "file", 
-      "default": null, 
-      "name": "callib", 
+      "info": "Cal Library filename",
+      "dtype": "file",
+      "default": null,
+      "name": "callib",
       "io": "input"
-    }, 
+    },
     {
-      "info": "Gain calibration table(s) to apply on the fly", 
-      "dtype": "list:file", 
-      "default": null, 
-      "name": "gaintable", 
+      "info": "Gain calibration table(s) to apply on the fly",
+      "dtype": "list:file",
+      "default": null,
+      "name": "gaintable",
       "io": "input"
-    }, 
+    },
     {
-      "info": "Select a subset of calibrators from gaintable(s)", 
+      "info": "Select a subset of calibrators from gaintable(s)",
       "dtype": [
         "list:str"
-      ], 
-      "default": null, 
+      ],
+      "default": null,
       "name": "gainfield"
-    }, 
+    },
     {
-      "info": "Temporal interpolation for each gaintable (=linear)", 
-      "dtype": "list:str", 
-      "default": null, 
+      "info": "Temporal interpolation for each gaintable (=linear)",
+      "dtype": "list:str",
+      "default": null,
       "name": "interp"
-    }, 
+    },
     {
-      "info": "Spectral windows combinations to form for gaintables(s)", 
-      "dtype": "list:str", 
-      "default": null, 
+      "info": "Spectral windows combinations to form for gaintables(s)",
+      "dtype": "list:str",
+      "default": null,
       "name": "spwmap"
-    }, 
+    },
     {
-      "info": "Calibrate data weights per gaintable.", 
-      "dtype": "list:bool", 
+      "info": "Calibrate data weights per gaintable.",
+      "dtype": "list:bool",
       "default": [
         true
-      ], 
+      ],
       "name": "calwt"
-    }, 
+    },
     {
-      "info": "Apply parallactic angle correction on the fly", 
-      "dtype": "bool", 
-      "default": false, 
+      "info": "Apply parallactic angle correction on the fly",
+      "dtype": "bool",
+      "default": false,
       "name": "parang"
-    }, 
+    },
     {
-      "info": "Calibration mode: '' = 'calflag','calflagstrict','trial','flagonly','flagonlystrict', or 'calonly'", 
-      "dtype": "str", 
-      "default": "", 
-      "name": "applymode", 
+      "info": "Calibration mode: '' = 'calflag','calflagstrict','trial','flagonly','flagonlystrict', or 'calonly'",
+      "dtype": "str",
+      "default": "",
+      "name": "applymode",
       "choices": [
-        "calflag", 
-        "calflagstrict", 
-        "trial", 
-        "flagonly", 
-        "flagonlystrict", 
+        "calflag",
+        "calflagstrict",
+        "trial",
+        "flagonly",
+        "flagonlystrict",
         "calonly"
       ]
-    }, 
+    },
     {
-      "info": "Automatically back up the state of flags before the run?", 
-      "dtype": "bool", 
-      "default": true, 
+      "info": "Automatically back up the state of flags before the run?",
+      "dtype": "bool",
+      "default": true,
       "name": "flagbackup"
     }
   ]

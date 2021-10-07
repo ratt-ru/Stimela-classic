@@ -1,28 +1,30 @@
 {
-  "task": "casa_rmtables", 
-  "base": "stimela/casa", 
+  "task": "casa_rmtables",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
-  "description": "This task removes tables if they are not being currently accessed via the casapy process. Note: if you have multiple sessions running bad things could happen if you remove a table being accessed by another process.", 
-  "prefix": "-", 
-  "binary": "rmtables", 
-  "msdir": true, 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
+  "description": "This task removes tables if they are not being currently accessed via the casapy process. Note: if you have multiple sessions running bad things could happen if you remove a table being accessed by another process.",
+  "prefix": "-",
+  "binary": "rmtables",
+  "msdir": true,
   "junk": [
     "rmtables.last"
-  ], 
+  ],
   "parameters": [
     {
-      "info": "Names of tables", 
-      "dtype": "list:file", 
-      "required": true, 
-      "name": "tablenames", 
+      "info": "Names of tables",
+      "dtype": "list:file",
+      "required": true,
+      "name": "tablenames",
       "io": "input"
     }
-  ], 
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
   ]
 }

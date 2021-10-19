@@ -3,8 +3,7 @@
   "base": "stimela/casa",
   "tag": [
     "0.3.0-2",
-    "1.6.3",
-    "1.7.1"
+    "1.6.3"
   ],
   "description": "CASA tclean task. Clean based algorithm for multi-scale and wideband image reconstruction, widefield imaging correcting for the w-term",
   "prefix": "",

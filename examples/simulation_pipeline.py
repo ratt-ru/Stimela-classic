@@ -59,7 +59,7 @@ pipeline.add("cab/simulator",
              "simulator_example",
              {
                  "msname":   MS,
-                 "skymodel":   LSM,                    # Sky model to simulate into MS
+                 "skymodel":   "dummy.txt",                    # Sky model to simulate into MS
                  "addnoise":   True,                   # Add thermal noise to visibilities
                  "column":   "DATA",
                  "Gjones": True, # Simulated data will be saved in this column

@@ -1,135 +1,137 @@
 {
-  "task": "casa_split", 
-  "base": "stimela/casa", 
+  "task": "casa_split",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
-  "description": "Create a visibility subset from an existing visibility set", 
-  "prefix": "-", 
-  "binary": "split", 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
+  "description": "Create a visibility subset from an existing visibility set",
+  "prefix": "-",
+  "binary": "split",
   "junk": [
     "split.last"
-  ], 
-  "msdir": true, 
+  ],
+  "msdir": true,
   "parameters": [
     {
-      "info": "Name of input visibility file", 
-      "name": "msname", 
-      "io": "msfile", 
-      "dtype": "file", 
-      "required": true, 
+      "info": "Name of input visibility file",
+      "name": "msname",
+      "io": "msfile",
+      "dtype": "file",
+      "required": true,
       "mapping": "vis"
-    }, 
+    },
     {
-      "info": "Name of output measurement set", 
-      "check_io": false, 
-      "name": "output-msname", 
-      "io": "msfile", 
-      "default": null, 
-      "dtype": "file", 
+      "info": "Name of output measurement set",
+      "check_io": false,
+      "name": "output-msname",
+      "io": "msfile",
+      "default": null,
+      "dtype": "file",
       "mapping": "outputvis"
-    }, 
+    },
     {
-      "info": "Which data column(s) to split out", 
-      "dtype": "str", 
-      "default": "corrected", 
+      "info": "Which data column(s) to split out",
+      "dtype": "str",
+      "default": "corrected",
       "name": "datacolumn"
-    }, 
+    },
     {
-      "info": "Select field using ID(s) or name(s). Comma separated string", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select field using ID(s) or name(s). Comma separated string",
+      "dtype": "str",
+      "default": null,
       "name": "field"
-    }, 
+    },
     {
-      "info": "Select spectral window/channels", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select spectral window/channels",
+      "dtype": "str",
+      "default": null,
       "name": "spw"
-    }, 
+    },
     {
-      "info": "Number of channels to average to form one output channel", 
-      "dtype": "int", 
-      "default": 1, 
+      "info": "Number of channels to average to form one output channel",
+      "dtype": "int",
+      "default": 1,
       "name": "width"
-    }, 
+    },
     {
-      "info": "Bin width for time averaging", 
-      "dtype": "str", 
-      "default": "0s", 
+      "info": "Bin width for time averaging",
+      "dtype": "str",
+      "default": "0s",
       "name": "timebin"
-    }, 
+    },
     {
-      "info": "Let time bins span changes in scan and/or state", 
+      "info": "Let time bins span changes in scan and/or state",
       "dtype": [
-        "str", 
+        "str",
         "list:str"
-      ], 
-      "default": "scan", 
-      "name": "combine", 
+      ],
+      "default": "scan",
+      "name": "combine",
       "choices": [
-        "scan", 
+        "scan",
         "state"
       ]
-    }, 
+    },
     {
-      "info": "Select data by time range", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data by time range",
+      "dtype": "str",
+      "default": null,
       "name": "timerange"
-    }, 
+    },
     {
-      "info": "Select data by scan numbers", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data by scan numbers",
+      "dtype": "str",
+      "default": null,
       "name": "scan"
-    }, 
+    },
     {
-      "info": "Select by observation ID(s)", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select by observation ID(s)",
+      "dtype": "str",
+      "default": null,
       "name": "observation"
-    }, 
+    },
     {
-      "info": "Select data by scan intents", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data by scan intents",
+      "dtype": "str",
+      "default": null,
       "name": "intent"
-    }, 
+    },
     {
-      "info": "Select (sub)array(s) by array ID number", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select (sub)array(s) by array ID number",
+      "dtype": "str",
+      "default": null,
       "name": "array"
-    }, 
+    },
     {
-      "info": "Select data by baseline length", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data by baseline length",
+      "dtype": "str",
+      "default": null,
       "name": "uvrange"
-    }, 
+    },
     {
-      "info": "Select data by baseline length", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Select data by baseline length",
+      "dtype": "str",
+      "default": null,
       "name": "correlation"
-    }, 
+    },
     {
-      "info": "If practical, keep *completely flagged rows* instead of dropping them.", 
-      "dtype": "bool", 
-      "default": true, 
+      "info": "If practical, keep *completely flagged rows* instead of dropping them.",
+      "dtype": "bool",
+      "default": true,
       "name": "keepflags"
-    }, 
+    },
     {
-      "info": "If the input is a multi-MS, make the output one, too. (experimental)", 
-      "dtype": "bool", 
-      "default": false, 
+      "info": "If the input is a multi-MS, make the output one, too. (experimental)",
+      "dtype": "bool",
+      "default": false,
       "name": "keepmms"
     }
-  ], 
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
   ]
 }

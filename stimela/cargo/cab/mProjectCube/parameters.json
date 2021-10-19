@@ -1,0 +1,84 @@
+{
+    "task": "mProjectCube", 
+    "base": "stimela/montage", 
+    "tag": "1.7.1", 
+    "description": "mProjectCube reprojects a single cube to the scale defined in a FITS header template file (read more about header templates here). The program produces a pair of files: the reprojected cube and an 'area' image consisting of the fraction input pixel sky area that went into each output pixel. The 'drizzle' algorithm is implemented. The algorithm proceeds by mapping pixel corners (as adjusted by drizzle, if called) from the input pixel space to the output pixel space, calculating overlap area with each output pixel, and accumulating an appropriate fraction of the input flux into the output cube pixels. In addition, the appropriate fraction of the input pixel area is accumulated into the area image pixels. Projection of points from input pixel space to output pixel space is calculated in two steps: first map from input pixel space to sky coordinates; second map from sky coordinates to output pixel space.", 
+    "prefix": "-", 
+    "binary": "mProjectCube",
+    "junk": [],
+    "msdir": false, 
+    "parameters": [
+        {
+            "info": "Input FITS file to be reprojected", 
+            "dtype": "file", 
+            "name": "in.fits", 
+            "io": "input",
+            "positional": true
+        },
+        {
+            "info": "Path of output FITS file to be created.",
+            "dtype":"file",
+            "name": "out.fits",
+            "io": "output",
+            "positional": true
+        },
+        {
+            "info": "FITS header template to be used in generation of output image",
+            "name": "hdr.template",
+            "dtype": "file",
+            "io": "input",
+            "positional": true
+        },
+        {
+            "info": "Processing is done utilizing the drizzle algorithm. factor is a floating point number; recommended drizzle factors are from 0.5 to 1.",
+            "name": "factor",
+            "dtype": "float"
+        },
+        {
+            "info": "Causes additional debugging information to be printed to stdout. Valid levels are 1-5 (for higher debugging levels, it is recommended to redirect the output to a file).",
+            "name": "level",
+            "dtype": "int"
+        },
+        {
+            "info": "Use the specified FITS extension (default is to use the first HDU with image data)",
+            "name": "hdu",
+            "dtype": "str"
+        },
+        {
+            "info": "Apply a correction factor of scale to each pixel.",
+            "name": "scale",
+            "dtype": "bool"
+        },
+        {
+            "info": "Path to a weight map to be used when reading values from the input image.",
+            "name": "weight",
+            "io": "input",
+            "dtype": "file"
+        },
+        {
+            "info": "Use constant weight value for the whole image",
+            "name": "fixed-weight",
+            "dtype": "bool"
+        },
+        {
+            "info": "Pixels with weights below threshold will be treated as blank.",
+            "name": "threshold",
+            "dtype": "float"
+        },
+        {
+            "info": "Makes the output region (originally defined in the header template) big enough to include all of the input images.",
+            "name": "X",
+            "dtype": "bool"
+        },
+        {
+            "info": "Process the data as total energy rather than the default energy density (scale values by relative pixel areas).",
+            "name": "e",
+            "dtype": "bool"
+        },
+        {
+            "info": "Output the full region requested even if there is a border of NULL values (default is to shrinkwrap to just the pixels with values).",
+            "name": "f",
+            "dtype": "bool"
+        }
+    ]
+}

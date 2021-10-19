@@ -1,74 +1,76 @@
 {
-  "task": "casa_flagmanager", 
-  "base": "stimela/casa", 
+  "task": "casa_flagmanager",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
-  "description": "These flag version files are copies of the flag column for a measurement set.  They can be restored to the data set to get back to a previous flag version.  On running importvla, a flag version call 'Original' is automatically produced.", 
-  "prefix": "-", 
-  "binary": "flagmanager", 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
+  "description": "These flag version files are copies of the flag column for a measurement set.  They can be restored to the data set to get back to a previous flag version.  On running importvla, a flag version call 'Original' is automatically produced.",
+  "prefix": "-",
+  "binary": "flagmanager",
   "junk": [
     "flagmanager.last"
-  ], 
-  "msdir": true, 
+  ],
+  "msdir": true,
   "parameters": [
     {
-      "info": "Name of input visibility file", 
-      "name": "msname", 
-      "io": "msfile", 
-      "default": null, 
-      "dtype": "file", 
-      "required": true, 
+      "info": "Name of input visibility file",
+      "name": "msname",
+      "io": "msfile",
+      "default": null,
+      "dtype": "file",
+      "required": true,
       "mapping": "vis"
-    }, 
+    },
     {
-      "info": "Name of input visibility file (MS)", 
-      "dtype": "file", 
-      "default": null, 
-      "name": "vis", 
+      "info": "Name of input visibility file (MS)",
+      "dtype": "file",
+      "default": null,
+      "name": "vis",
       "io": "msfile"
-    }, 
+    },
     {
-      "info": "Flag version operation", 
-      "dtype": "str", 
-      "default": "list", 
-      "name": "mode", 
+      "info": "Flag version operation",
+      "dtype": "str",
+      "default": "list",
+      "name": "mode",
       "choices": [
-        "list", 
-        "save", 
-        "restore", 
-        "delete", 
+        "list",
+        "save",
+        "restore",
+        "delete",
         "rename"
       ]
-    }, 
+    },
     {
-      "info": "Flag version name", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Flag version name",
+      "dtype": "str",
+      "default": null,
       "name": "versionname"
-    }, 
+    },
     {
-      "info": "Flag version to rename", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Flag version to rename",
+      "dtype": "str",
+      "default": null,
       "name": "oldname"
-    }, 
+    },
     {
-      "info": "Short description of a versionname", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Short description of a versionname",
+      "dtype": "str",
+      "default": null,
       "name": "comment"
-    }, 
+    },
     {
-      "info": "Merge option: replace will save or over-write the flags", 
-      "dtype": "str", 
-      "default": "replace", 
+      "info": "Merge option: replace will save or over-write the flags",
+      "dtype": "str",
+      "default": "replace",
       "name": "merge"
     }
-  ], 
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
   ]
 }

@@ -775,7 +775,7 @@ class Recipe(object):
         for job in self.jobs:
             job.close()
         if os.path.exists(self.workdir):
-            shutil.rmtree(self.workdir)
+            pass #shutil.rmtree(self.workdir)
         if self._log_fh is not None:
             self._log_fh.close()
 

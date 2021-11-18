@@ -1,16 +1,12 @@
 {
     "task": "cubical_plot_gain_solutions",
     "base": "stimela/cubical",
-    "tag": "testo",
-    "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.",
+    "tag": "1.6.8",
+    "description": "Plot gain solutions for CubiCal gains",
     "prefix": "--",
-    "version": "testo",
+    "version": "1.6.8",
     "binary": "plot-gain-solutions",
-    "junk": [
-        "cubical.last",
-        "montblanc.log"
-    ],
-    "msdir": true,
+    "msdir": false,
     "parameters": [
         {
             "info": "One or more CubiCal solution databases to plot",
@@ -36,7 +32,7 @@
         },
         {
             "name": "parameter",
-            "info":"Parameter name when plotting parameterized gains. Default is 'gain'",
+            "info":"Parameter name when plotting parameterized gains. Default is 'gain'.(gain |)",
             "dtype": "str",
             "default": null
         },

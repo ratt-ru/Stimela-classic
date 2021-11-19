@@ -59,5 +59,5 @@ _runc = " ".join([config.binary] + parset + opts)
 argslist = shlex.split(_runc)
 
 # run the command
-if prun(argslist) is not 0:
+if prun(argslist) != 0:
     sys.exit(1)

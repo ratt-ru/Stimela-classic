@@ -8,6 +8,7 @@ import shutil
 import shlex
 import subprocess
 import yaml
+import glob
 
 from astLib.astWCS import WCS
 from astropy.table import Table
@@ -130,4 +131,4 @@ model.ra0, model.dec0 = map(numpy.deg2rad, centre)
 
 model.save(tname_lsm)
 # Rename using CORPAT
-utils.xrun("tigger-convert", [tname_lsm, "--rename -f"])
+subprocess.check_call(["tigger-convert", tname_lsm, "--rename", "-f"])

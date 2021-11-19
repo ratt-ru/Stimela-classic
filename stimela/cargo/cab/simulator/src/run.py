@@ -163,7 +163,8 @@ for key, value in options.items():
     args.append('{0}={1}'.format(key, value))
 
 _runc = " ".join([config.binary] + prefix + args + suffix)
-if prun(_runc) != 0:
-    sys.exit(0)
+exitcode = prun(_runc)
+if exitcode != 0:
+    raise RuntimeError(f"Meqtrees failed with exit code {exitcode}. See logs for more details")
 
 

@@ -1,4 +1,4 @@
-FROM kernsuite/base:6
+FROM kernsuite/base:7
 RUN docker-apt-upgrade
 RUN docker-apt-install \
     python3-setuptools \
@@ -8,9 +8,9 @@ RUN docker-apt-install \
     xvfb \
     curl \
     wget
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
-RUN pip3 install --upgrade --force pip
-RUN pip install git+https://github.com/ratt-ru/scabha@437c4220968079419976a713c2d5d7e67732742b
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 10
+RUN pip --version
+RUN python --version
 RUN pip install -U pip setuptools
 RUN pip install pyyaml scabha
 COPY xvfb.init.d /etc/init.d/xvfb

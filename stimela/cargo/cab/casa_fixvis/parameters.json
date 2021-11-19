@@ -1,75 +1,77 @@
 {
-  "task": "casa_fixvis", 
-  "base": "stimela/casa", 
+  "task": "casa_fixvis",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
-  "description": "Recalculates (u, v, w) and/or changes Phase Center", 
-  "prefix": "", 
-  "binary": "fixvis", 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
+  "description": "Recalculates (u, v, w) and/or changes Phase Center",
+  "prefix": "",
+  "binary": "fixvis",
   "junk": [
     "fixvis.last"
-  ], 
-  "msdir": true, 
+  ],
+  "msdir": true,
   "parameters": [
     {
-      "info": "Name of the input visibility set.", 
-      "name": "msname", 
-      "io": "msfile", 
-      "default": null, 
-      "dtype": "file", 
-      "required": true, 
+      "info": "Name of the input visibility set.",
+      "name": "msname",
+      "io": "msfile",
+      "default": null,
+      "dtype": "file",
+      "required": true,
       "mapping": "vis"
-    }, 
+    },
     {
-      "info": "Name of the output visibility set.  (Can be the same as vis.)", 
-      "name": "output-msname", 
-      "io": "msfile", 
-      "default": false, 
-      "dtype": "file", 
-      "required": true, 
+      "info": "Name of the output visibility set.  (Can be the same as vis.)",
+      "name": "output-msname",
+      "io": "msfile",
+      "default": false,
+      "dtype": "file",
+      "required": true,
       "mapping": "outputvis"
-    }, 
+    },
     {
-      "info": "When applying a phase center shift, modify visibilities only in this/these column(s). Comma separated list", 
-      "dtype": "str", 
-      "default": "all", 
+      "info": "When applying a phase center shift, modify visibilities only in this/these column(s). Comma separated list",
+      "dtype": "str",
+      "default": "all",
       "name": "datacolumn"
-    }, 
+    },
     {
-      "info": "Fields to operate on. ''  = all.", 
-      "dtype": "str", 
-      "default": "", 
+      "info": "Fields to operate on. ''  = all.",
+      "dtype": "str",
+      "default": "",
       "name": "field"
-    }, 
+    },
     {
-      "info": "Reference frame to convert UVW coordinates to", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Reference frame to convert UVW coordinates to",
+      "dtype": "str",
+      "default": null,
       "name": "refcode"
-    }, 
+    },
     {
-      "info": "Base UVW calculation on the old values?", 
-      "dtype": "bool", 
-      "default": true, 
+      "info": "Base UVW calculation on the old values?",
+      "dtype": "bool",
+      "default": true,
       "name": "reuse"
-    }, 
+    },
     {
-      "info": "Use this direction as phase center", 
-      "dtype": "str", 
-      "default": null, 
+      "info": "Use this direction as phase center",
+      "dtype": "str",
+      "default": null,
       "name": "phasecenter"
-    }, 
+    },
     {
-      "info": "(experimental) List of the distances (as quanta) of the fields selected by field.", 
-      "dtype": "list:str", 
-      "default": null, 
+      "info": "(experimental) List of the distances (as quanta) of the fields selected by field.",
+      "dtype": "list:str",
+      "default": null,
       "name": "distances"
     }
-  ], 
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
   ]
 }

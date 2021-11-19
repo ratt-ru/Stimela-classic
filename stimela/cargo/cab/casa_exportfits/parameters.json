@@ -1,85 +1,87 @@
 {
-  "task": "casa_exportfits", 
-  "base": "stimela/casa", 
+  "task": "casa_exportfits",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
-  "description": "Convert a CASA image to a FITS file", 
-  "prefix": " ", 
-  "binary": "exportfits", 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
+  "description": "Convert a CASA image to a FITS file",
+  "prefix": " ",
+  "binary": "exportfits",
   "junk": [
     "exportfits.last"
-  ], 
-  "msdir": false, 
+  ],
+  "msdir": false,
   "parameters": [
     {
-      "info": "Name of input image FITS file", 
-      "dtype": "file", 
-      "required": true, 
-      "name": "fitsimage", 
+      "info": "Name of input image FITS file",
+      "dtype": "file",
+      "required": true,
+      "name": "fitsimage",
       "io": "input"
-    }, 
+    },
     {
-      "info": "Name of output CASA image", 
-      "dtype": "file", 
-      "required": true, 
-      "name": "imagename", 
+      "info": "Name of output CASA image",
+      "dtype": "file",
+      "required": true,
+      "name": "imagename",
       "io": "output"
-    }, 
+    },
     {
-      "info": "Use velocity (rather than frequency) as spectral axis", 
-      "dtype": "bool", 
+      "info": "Use velocity (rather than frequency) as spectral axis",
+      "dtype": "bool",
       "name": "velocity"
-    }, 
+    },
     {
-      "info": "Use the optical (rather than radio) velocity convention", 
-      "dtype": "bool", 
+      "info": "Use the optical (rather than radio) velocity convention",
+      "dtype": "bool",
       "name": "optical"
-    }, 
+    },
     {
-      "info": "Bits per pixel", 
-      "dtype": "int", 
+      "info": "Bits per pixel",
+      "dtype": "int",
       "name": "bitpix"
-    }, 
+    },
     {
-      "info": "Minimum pixel value (if minpix > maxpix, value is automatically dertermined)", 
-      "dtype": "float", 
+      "info": "Minimum pixel value (if minpix > maxpix, value is automatically dertermined)",
+      "dtype": "float",
       "name": "minpix"
-    }, 
+    },
     {
-      "info": "dropstokes", 
-      "dtype": "bool", 
+      "info": "dropstokes",
+      "dtype": "bool",
       "name": "maxpix"
-    }, 
+    },
     {
-      "info": "Drop stokes axis?", 
-      "dtype": "bool", 
+      "info": "Drop stokes axis?",
+      "dtype": "bool",
       "name": "dropstokes"
-    }, 
+    },
     {
-      "info": "Put Stokes axis last in header?", 
-      "dtype": "bool", 
+      "info": "Put Stokes axis last in header?",
+      "dtype": "bool",
       "name": "stokeslast"
-    }, 
+    },
     {
-      "info": "Write history to the FITS image?", 
-      "dtype": "bool", 
+      "info": "Write history to the FITS image?",
+      "dtype": "bool",
       "name": "history"
-    }, 
+    },
     {
-      "info": "Drop all degenerate axes (e.g. stokes and/or frequency)", 
-      "dtype": "bool", 
+      "info": "Drop all degenerate axes (e.g. stokes and/or frequency)",
+      "dtype": "bool",
       "name": "dropdeg"
-    }, 
+    },
     {
-      "info": "Overwrite pre-existing imagename", 
-      "dtype": "bool", 
+      "info": "Overwrite pre-existing imagename",
+      "dtype": "bool",
       "name": "overwrite"
     }
-  ], 
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
   ]
 }

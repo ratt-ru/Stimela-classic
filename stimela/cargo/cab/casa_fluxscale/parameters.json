@@ -1,98 +1,100 @@
 {
-  "task": "casa_fluxscale", 
-  "base": "stimela/casa", 
+  "task": "casa_fluxscale",
+  "base": "stimela/casa",
   "tag": [
-    "0.3.0-2", 
-    "1.6.3"
-  ], 
-  "description": "Bootstrap the flux density scale from standard calibrators", 
-  "prefix": "-", 
-  "binary": "fluxscale", 
+    "0.3.0-2",
+    "1.6.3",
+    "1.7.1"
+  ],
+  "description": "Bootstrap the flux density scale from standard calibrators",
+  "prefix": "-",
+  "binary": "fluxscale",
   "junk": [
     "fluxscale.last"
-  ], 
-  "msdir": true, 
+  ],
+  "msdir": true,
   "parameters": [
     {
-      "info": "Name of input visibility file (MS)", 
-      "name": "msname", 
-      "io": "msfile", 
-      "dtype": "file", 
-      "required": true, 
+      "info": "Name of input visibility file (MS)",
+      "name": "msname",
+      "io": "msfile",
+      "dtype": "file",
+      "required": true,
       "mapping": "vis"
-    }, 
+    },
     {
-      "info": "Name of input calibration table", 
-      "dtype": "file", 
-      "default": null, 
-      "name": "caltable", 
+      "info": "Name of input calibration table",
+      "dtype": "file",
+      "default": null,
+      "name": "caltable",
       "io": "input"
-    }, 
+    },
     {
-      "info": "Name of output, flux-scaled calibration table", 
-      "dtype": "file", 
-      "default": null, 
-      "name": "fluxtable", 
+      "info": "Name of output, flux-scaled calibration table",
+      "dtype": "file",
+      "default": null,
+      "name": "fluxtable",
       "io": "output"
-    }, 
+    },
     {
-      "info": "Reference field name(s) (transfer flux scale FROM)", 
-      "dtype": "list:str", 
-      "default": null, 
+      "info": "Reference field name(s) (transfer flux scale FROM)",
+      "dtype": "list:str",
+      "default": null,
       "name": "reference"
-    }, 
+    },
     {
-      "info": "Transfer field name(s) (transfer flux scale TO), '' -> all", 
-      "dtype": "list:str", 
-      "default": null, 
+      "info": "Transfer field name(s) (transfer flux scale TO), '' -> all",
+      "dtype": "list:str",
+      "default": null,
       "name": "transfer"
-    }, 
+    },
     {
-      "info": "Name of listfile that contains the fit information. Default is (no file).", 
-      "dtype": "file", 
-      "default": null, 
-      "name": "listfile", 
+      "info": "Name of listfile that contains the fit information. Default is (no file).",
+      "dtype": "file",
+      "default": null,
+      "name": "listfile",
       "io": "input"
-    }, 
+    },
     {
-      "info": "Append solutions?", 
-      "dtype": "bool", 
-      "default": false, 
+      "info": "Append solutions?",
+      "dtype": "bool",
+      "default": false,
       "name": "append"
-    }, 
+    },
     {
-      "info": "Scale across spectral window boundaries.  See help fluxscale", 
-      "dtype": "list:str", 
-      "default": null, 
+      "info": "Scale across spectral window boundaries.  See help fluxscale",
+      "dtype": "list:str",
+      "default": null,
       "name": "refspwmap"
-    }, 
+    },
     {
-      "info": "incremental caltable", 
-      "dtype": "bool", 
-      "default": false, 
+      "info": "incremental caltable",
+      "dtype": "bool",
+      "default": false,
       "name": "incremental"
-    }, 
+    },
     {
-      "info": "order of spectral fitting", 
-      "dtype": "int", 
-      "default": 1, 
+      "info": "order of spectral fitting",
+      "dtype": "int",
+      "default": 1,
       "name": "fitorder"
-    }, 
+    },
     {
-      "info": "overwrite fluxtable", 
-      "name": "overwrite", 
-      "default": true, 
+      "info": "overwrite fluxtable",
+      "name": "overwrite",
+      "default": true,
       "dtype": "bool"
-    }, 
+    },
     {
-      "info": "Output pickle file to save task result", 
-      "name": "save_result", 
-      "dtype": "file", 
+      "info": "Output pickle file to save task result",
+      "name": "save_result",
+      "dtype": "file",
       "io": "output"
     }
-  ], 
+  ],
   "version": [
-    "4.7.2", 
-    "5.6.1-8"
+    "4.7.2",
+    "5.6.1-8",
+    "5.8.0"
   ]
 }

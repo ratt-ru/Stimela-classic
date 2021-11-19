@@ -49,7 +49,8 @@ class Parameter(object):
                  io=None,
                  mapping=None,
                  check_io=True,
-                 deprecated=False):
+                 deprecated=False,
+                 positional=False):
 
         self.name = name
         self.io = io
@@ -68,11 +69,12 @@ class Parameter(object):
         self.mapping = mapping
         self.check_io = check_io
         self.deprecated = deprecated
+        self.positional = positional
 
         self.value = None
 
     def __iter__(self):
-       for x in ["info", "default", "required", "choices", "mapping",
+       for x in ["info", "default", "positional", "required", "choices", "mapping",
                  "check_io", "value", "name", "io", "dtype"]:
           yield x
 
@@ -180,6 +182,7 @@ class CabDefinition(object):
                                   default=default,
                                   mapping=param.get("mapping", None),
                                   required=param.get("required", False),
+                                  positional=param.get("positional", False),
                                   choices=param.get("choices", False),
                                   check_io=param.get("check_io", True),
                                   deprecated=param.get("deprecated", False))
@@ -282,6 +285,7 @@ class CabDefinition(object):
                     "dtype":   _types,
                     "info":   param.info,
                     "required":   param.required,
+                    "positional":   param.positional,
                     "check_io":   param.check_io,
                     "value":   param.default if param.value is None else param.value
                 })

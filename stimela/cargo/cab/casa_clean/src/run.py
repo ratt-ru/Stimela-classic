@@ -5,6 +5,7 @@ from pyrap.tables import table
 import os
 import sys
 import numpy
+import astropy.io.fits as pyfits
 
 args = parameters_dict
 

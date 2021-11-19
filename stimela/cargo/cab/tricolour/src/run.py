@@ -10,5 +10,5 @@ args = [config.binary] + parse_parameters(repeat=None,
                                           repeat_dict={'field-names':','})
 
 # run the command
-if prun(args) is not 0:
+if prun(args) != 0:
     sys.exit(1)

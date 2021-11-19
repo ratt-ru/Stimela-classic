@@ -86,7 +86,7 @@ def change_Dockerfile_base_image(path, _from, label, destdir="."):
 
 def get_base_images(logfile, index=1):
 
-    with opEn(logfile, "r") as std:
+    with open(logfile, "r") as std:
         string = std.read()
 
     separator = "[================================DONE==========================]"

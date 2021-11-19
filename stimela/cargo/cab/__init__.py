@@ -95,7 +95,7 @@ class Parameter(object):
                     types = (t,int) if t is float else (t,)      # float permits ints as well
                     if all(isinstance(x, types) for x in value): # check that all elements are of permitted type
                         return True
-            elif item is "file":
+            elif item == "file":
                 return True
             elif isinstance(value, tuple([item]+[int] if item is float else [item])):
                 return True

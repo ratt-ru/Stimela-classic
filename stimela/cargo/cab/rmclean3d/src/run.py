@@ -9,5 +9,5 @@ args = [config.binary] + parse_parameters(repeat=True,
                                           positional=["dirty-pdf", "rmsf-fwhm"], mandatory=["dirty-pdf", "rmsf-fwhm"])
 
 # run the command
-if prun(args) is not 0:
+if prun(args) !=0:
     sys.exit(1)

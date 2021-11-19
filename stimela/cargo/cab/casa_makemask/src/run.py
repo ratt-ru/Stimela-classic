@@ -6,7 +6,7 @@ print(f"Running CASA task '{config.binary}'")
 
 makemask_args = {}
 immath_args = {}
-for name, value in parameters_dic.items():
+for name, value in parameters_dict.items():
     if value is None:
         continue
 

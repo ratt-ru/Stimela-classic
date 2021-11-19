@@ -53,7 +53,7 @@ try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [OUTDIR, MSDIR]: # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

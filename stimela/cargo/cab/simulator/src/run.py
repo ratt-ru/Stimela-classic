@@ -147,8 +147,7 @@ if field_center and skymodel:
         field_center = "J2000,%frad,%frad" % (ra, dec)
     tmp = "recentered_"+os.path.basename(skymodel)
 
-    utils.xrun("tigger-convert", ["--recenter",
-                                  field_center, skymodel, tmp, "-f"])
+    prun(["tigger-convert", "--recenter", field_center, skymodel, tmp, "-f"])
     options["tiggerlsm.filename"] = tmp
 
 prefix = ['-s {}'.format(saveconf) if saveconf else ''] + \
@@ -164,6 +163,6 @@ for key, value in options.items():
 
 _runc = " ".join([config.binary] + prefix + args + suffix)
 if prun(_runc) != 0:
-    sys.exit(0)
+    sys.exit(1)
 
 

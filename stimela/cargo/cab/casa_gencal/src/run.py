@@ -1,17 +1,20 @@
 # -*- coding: future_fstrings -*-
 import Crasa.Crasa as crasa
 from scabha import config, parameters_dict, prun
+from casacore.table import table
+import os
+import numpy
 
 print(f"Running CASA task '{config.binary}'")
 
 args = parameters_dict
 
-task = crasa.CasaTask(cab["binary"], **args)
+task = crasa.CasaTask(config.binary, **args)
 task.run()
 
 gtab = args["caltable"]
 if not os.path.exists(gtab):
-    raise RuntimeError(f"The gaintable was not created. Please refer to CASA {config.binary} logfile for further details"
+    raise RuntimeError(f"The gaintable was not created. Please refer to CASA {config.binary} logfile for further details")
 
 tab = table(gtab)
 field_ids = numpy.unique(tab.getcol("FIELD_ID"))

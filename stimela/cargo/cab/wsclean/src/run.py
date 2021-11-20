@@ -5,6 +5,7 @@ import yaml
 import subprocess
 import shlex
 import glob
+import shutil
 
 CONFIG = os.environ['CONFIG']
 INPUT = os.environ['INPUT']

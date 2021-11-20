@@ -10,6 +10,7 @@ OUTPUT = os.environ["OUTPUT"]
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]
 OUTPUT = os.environ["OUTPUT"]
+MSDIR = os.environ["MSDIR"]
 
 with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)

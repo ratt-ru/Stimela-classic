@@ -5,6 +5,7 @@ import sharpener
 import glob
 import shlex
 import subprocess
+import shutil
 
 
 CONFIG = os.environ["CONFIG"]

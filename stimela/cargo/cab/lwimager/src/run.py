@@ -108,7 +108,7 @@ def predict_vis(msname, image, column="MODEL_DATA",
         if chanchunk < nimgchan:
             mschanstep = numchans*chanstep/nimgchan
             if numchans % nimgchan:
-                warn(
+                print(
                     "MS channels not evenly divisible into $nimgchan image channels, chunking may be incorrect")
             chunklist = []
             for chan0 in range(0, nimgchan, chanchunk):
@@ -141,7 +141,7 @@ def predict_vis(msname, image, column="MODEL_DATA",
         if len(chunklist) > 1:
             blc[0], trc[0] = imgch0, imgch1
             print("writing CASA image for slice {0} {1}".format(blc, trc))
-            casaimage1 = II("{0}.{1}.img".format(image, ichunk1))
+            casaimage1 = "{0}.{1}.img".format(image, ichunk)
             rm_fr(casaimage1)
             print("writing CASA image for slice {0} {1} to {2}".format(
                 blc, trc, casaimage1))

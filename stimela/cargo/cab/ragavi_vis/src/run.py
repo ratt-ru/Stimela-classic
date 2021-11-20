@@ -17,6 +17,6 @@ for name, value in parameters.items():
     args += list(map(str, value))
 
 # run the command
-if prun(args) is not 0:
+if prun(args) != 0:
     sys.exit(1)
 

@@ -74,8 +74,8 @@ def build(argv):
         for image in ["base", "meqtrees", "casa", "astropy"] + BASE:
             dockerfile = "{:s}/{:s}".format(stimela.BASE_PATH, image)
             image = "stimela/{0}:{1}".format(image, stimela.__version__)
-            __call__(jtype).build(image,
-                         dockerfile, args=no_cache)
+            #__call__(jtype).build(image,
+            #             dockerfile, args=no_cache)
 
         return 0
     raise SystemExit("DEPRECATION NOTICE: The building of cab images has been deprecated")

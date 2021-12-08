@@ -147,8 +147,7 @@ if field_center and skymodel:
         field_center = "J2000,%frad,%frad" % (ra, dec)
     tmp = "recentered_"+os.path.basename(skymodel)
 
-    utils.xrun("tigger-convert", ["--recenter",
-                                  field_center, skymodel, tmp, "-f"])
+    prun(["tigger-convert", "--recenter", field_center, skymodel, tmp, "-f"])
     options["tiggerlsm.filename"] = tmp
 
 prefix = ['-s {}'.format(saveconf) if saveconf else ''] + \
@@ -163,8 +162,7 @@ for key, value in options.items():
     args.append('{0}={1}'.format(key, value))
 
 _runc = " ".join([config.binary] + prefix + args + suffix)
+
 exitcode = prun(_runc)
 if exitcode != 0:
     raise RuntimeError(f"Meqtrees failed with exit code {exitcode}. See logs for more details")
-
-

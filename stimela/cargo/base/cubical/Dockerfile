@@ -5,5 +5,5 @@ RUN docker-apt-install casacore-dev \
     libboost-all-dev \
     wcslib-dev \
     libcfitsio-dev
-RUN pip install "cubical[lsm-support]@git+https://github.com/ratt-ru/CubiCal.git@v1.5.8" scabha
+RUN pip install "cubical[lsm-support]@git+https://github.com/ratt-ru/CubiCal.git" scabha
 RUN gocubical --help

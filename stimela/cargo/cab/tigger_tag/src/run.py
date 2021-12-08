@@ -51,10 +51,10 @@ else:
 args += ['{0}{1} {2}'.format(cab['prefix'], name, value)
          for name, value in params.iteritems()]
 
-_runc = " ".join([cab['binary']] args+[inlsm, tag])
+_runc = " ".join([cab.binary, inlsm, tag] + args)
 
 try:
-    subprocess.check_call(shlex.split(_runc))
+ subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
         for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container

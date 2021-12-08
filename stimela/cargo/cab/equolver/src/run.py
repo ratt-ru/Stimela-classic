@@ -11,6 +11,6 @@ for i in range(len(args)):
             args.pop(i)
         
 # run the command
-if prun(args) is not 0:
+if prun(args) != 0:
     sys.exit(1)
 

@@ -4,7 +4,7 @@ import subprocess
 import yaml
 import glob
 import shutil
-import shelx
+import shlex
 
 CONFIG = os.environ["CONFIG"]
 INPUT = os.environ["INPUT"]

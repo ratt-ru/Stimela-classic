@@ -18,7 +18,7 @@ prun: function
 args = [config.binary] + parse_parameters(parameters_dict)
 # run the command
 
-if prun(args) is not 0:
+if prun(args) != 0:
     sys.exit(1)
 
 

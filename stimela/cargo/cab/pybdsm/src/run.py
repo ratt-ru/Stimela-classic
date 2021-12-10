@@ -116,7 +116,7 @@ tfile.flush()
 prefix = os.path.splitext(outfile)[0]
 tname_lsm = prefix + ".lsm.html"
 with open(tfile.name, "w") as stdw:
-    stdw.write("#format:name ra_d dec_d i emaj_s emin_s pa_d\n")
+    stdw.write("#format:name ra_d dec_d i q u v emaj_s emin_s pa_d\n")
 
 model = Tigger.load(tfile.name)
 tfile.close()
@@ -126,8 +126,17 @@ def tigger_src(src, idx):
 
     name = "SRC%d" % idx
 
-    flux = ModelClasses.Polarization(
-        src["Total_flux"], 0, 0, 0, I_err=src["E_Total_flux"])
+    try:
+        flux = ModelClasses.Polarization(src["Total_flux"], src["Total_Q"],
+                                         src["Total_U"], src["Total_V"],
+                                         I_err=src["E_Total_flux"],
+                                         Q_err=src["E_Total_Q"],
+                                         U_err=src["E_Total_U"],
+                                         V_err=src["E_Total_V"])
+    except KeyError:
+        flux = ModelClasses.Polarization(src["Total_flux"], 0, 0, 0,
+                                         I_err=src["E_Total_flux"])
+
     ra, ra_err = map(numpy.deg2rad, (src["RA"], src["E_RA"]))
     dec, dec_err = map(numpy.deg2rad, (src["DEC"], src["E_DEC"]))
     pos = ModelClasses.Position(ra, dec, ra_err=ra_err, dec_err=dec_err)

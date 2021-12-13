@@ -1,0 +1,209 @@
+{
+    "task": "cubical_plot_gain_solutions",
+    "base": "stimela/cubical",
+    "tag": "1.6.8",
+    "description": "Plot gain solutions for CubiCal gains",
+    "prefix": "--",
+    "version": "1.6.8",
+    "binary": "plot-gain-solutions",
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "One or more CubiCal solution databases to plot",
+            "dtype": "list:str",
+            "default": null,
+            "name": "files",
+            "required": true,
+            "io": "input",
+            "positional": true
+        },
+        {
+            "name": "output-name",
+            "info": "Output filename",
+            "dtype": "str",
+            "default": null,
+            "io": "output"
+        },
+        {
+            "name": "label",
+            "info":"Force jones label, default auto-detects",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "parameter",
+            "info":"Parameter name when plotting parameterized gains. Default is 'gain'.(gain |)",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "gain",
+            "info": "Force plotting as time-variable gains",
+            "dtype": "bool",
+            "default": null
+        },
+        {
+            "name": "bandpass",
+            "info":"Force plotting as bandpasses",
+            "dtype": "bool",
+            "default": null
+        },
+        {
+            "name": "leakage",
+            "info": "Force plotting as leakages",
+            "dtype": "bool",
+            "default": null
+        },
+        {
+            "name": "diag",
+            "info": "Plot diagonal elements as real/imag or amp/phase. Choices are: ri,ap,none",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "off-diag",
+            "info":  "Also plot off-diagonal elements as real/imag or amp/phase.Choices are: ri,ap,noneq",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "ant",
+            "info": "Antenna subset. You may specify multiple comma-separated names or globs",
+            "dtype": "str",
+            "default": null
+        },
+        {
+            "name": "dir" ,
+            "info": "Direction number, for direction-dependent tables",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "name": "nrow" ,
+            "info": "Plot rows",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "name": "ncol" ,
+            "info": "Plot columns",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "name": "width" ,
+            "info": "Plot width in inches",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "name": "height" ,
+            "info": "Plot height in inches",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "name": "dpi" ,
+            "info": "Plot DPI",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "name": "font-size" ,
+            "info": "Font size",
+            "dtype": "int",
+            "default": null
+        },
+        {
+            "name": "margin-left" ,
+            "info": "Left margin",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "margin-right" ,
+            "info": "Right margin",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "margin-bottom" ,
+            "info": "Bottom margin",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "margin-top" ,
+            "info": "Top margin",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "min-freq" ,
+            "info": "Start frequency in MHz",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "max-freq"  ,
+            "info": "End frequency in MHz",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "min-time"  ,
+            "info": "Start time in seconds",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "max-time"  ,
+            "info": "End time in seconds",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "max-reim" ,
+            "info": "Sets re/im axis limits",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "max-reim-1" ,
+            "info": "Sets re/im axis limits for off-diagonals",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "max-phase" ,
+            "info": "Sets phase axis limits (in degrees)",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "min-ampl",
+            "info": "Sets ampl axis limits",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "max-ampl",
+            "info": "Sets ampl axis limits",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "min-ampl-1" ,
+            "info": "Sets ampl axis limits for off-diagonals",
+            "dtype": "float",
+            "default": null
+        },
+        {
+            "name": "max-ampl-1" ,
+            "info": "Sets ampl axis limits for off-diagonals",
+            "dtype": "float",
+            "default": null
+        }
+    ]
+
+}

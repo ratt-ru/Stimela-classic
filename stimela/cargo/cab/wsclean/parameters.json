@@ -538,7 +538,7 @@
         }, 
         {
             "info": "Set the FWHM beam shape for restoring the clean components. Defaults units for maj and min are arcsec, and degrees for PA. Can be overriden, e.g. 'beamshape 1amin 1amin 3deg'. Default is use PSF FWHM sizes", 
-            "dtype": "list:int", 
+            "dtype": ["list:int","list:float"], 
             "default": null, 
             "name": "beamshape", 
             "mapping": "beam-shape"

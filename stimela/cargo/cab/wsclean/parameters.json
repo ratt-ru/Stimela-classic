@@ -1,9 +1,9 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": ["1.6.0-1", "1.2.3", "1.6.3"],
+    "tag": ["1.6.0-1", "1.2.3", "1.6.3", "1.7.3"],
     "description": "WSClean imaging software", 
-    "version" : ["2.6", "2.8", "2.9"],
+    "version" : ["2.6", "2.8", "2.9", "3.0.1"],
     "prefix": "-", 
     "binary": "wsclean", 
     "junk" : [],

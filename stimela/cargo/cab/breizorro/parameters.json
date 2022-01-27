@@ -1,5 +1,5 @@
 {
-    "task": "aimfast",
+    "task": "breizorro",
     "base": "stimela/breizorro",
     "tag": "1.7.1",
     "description": "A tool for creating a binary mask given a FITS image",
@@ -9,7 +9,7 @@
     "msdir": false,
     "parameters": [
         {
-            "info": "Restored image file from which to build mask
+            "info": "Restored image file from which to build mask",
             "name": "restored-image",
             "io": "input",
             "default": null,
@@ -27,7 +27,6 @@
         {
             "info": "Sigma threshold for masking (default = 6.5)",
             "name": "threshold",
-            "io": "input",
             "dtype": "float",
             "required": false
         },

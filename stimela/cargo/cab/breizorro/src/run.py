@@ -21,13 +21,13 @@ args = []
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
-    delimeter = param['delimeter']
 
     if value is None:
         continue
 
     if param['dtype'] in ['list:str', 'list:file', 'list:int', 'list:float']:
-        args += ['{0}{1} {2}'.format(cab['prefix'], name, delimeter.join(value))]
+        delimiter = param['delimiter']
+        args += ['{0}{1} {2}'.format(cab['prefix'], name, delimiter.join(value))]
     elif param['dtype'] in ['bool']:
         args += ['{0}{1}'.format(cab['prefix'], name)]
     else:

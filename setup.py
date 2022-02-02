@@ -13,11 +13,18 @@ requirements = ["pyyaml",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.7.3"
+__version__ = "1.7.4"
+
+
+def readme():
+    """Get readme content for package long description"""
+    with open(os.path.join(build_root, 'README.rst')) as f:
+        return f.read()
 
 setup(name=PACKAGE_NAME,
       version=__version__,
       description="Dockerized radio interferometry scripting framework",
+      long_description=readme(),
       author="Sphesihle Makhathini & RATT",
       author_email="sphemakh@gmail.com",
       url="https://github.com/ratt-ru/Stimela",

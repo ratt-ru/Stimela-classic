@@ -14,7 +14,7 @@ requirements = ["pyyaml",
 
 PACKAGE_NAME = "stimela"
 __version__ = "1.7.4"
-
+build_root = os.path.dirname(__file__)
 
 def readme():
     """Get readme content for package long description"""

@@ -1,8 +1,8 @@
 {
     "task": "cubical_ddf", 
-    "base": "stimela/cubicalddf",
-    "hub": "docker.io",
-    "tag": "1.4.6", 
+    "base": "stimela/cubical_ddf",
+    "hub": "quay.io",
+    "tag": "1.7.4", 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--",
     "version":"1.6.0",

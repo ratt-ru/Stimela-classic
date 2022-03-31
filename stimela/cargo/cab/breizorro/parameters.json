@@ -1,0 +1,123 @@
+{
+    "task": "breizorro",
+    "base": "stimela/breizorro",
+    "tag": "1.7.1",
+    "description": "A tool for creating a binary mask given a FITS image",
+    "prefix": "--",
+    "binary": "breizorro",
+    "junk":[],
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "Restored image file from which to build mask",
+            "name": "restored-image",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "Input mask file(s). Either --restored-image or --mask-image must be specfied",
+            "name": "mask-image",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": false
+        },
+        {
+            "info": "Sigma threshold for masking (default = 6.5)",
+            "name": "threshold",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Box size over which to compute stats (default = 50)",
+            "default": null,
+            "required": false,
+            "name": "boxsize",
+            "dtype": "int"
+        },
+        {
+            "info": "Merge in one or more masks or region files",
+            "default": null,
+            "required": false,
+            "io": "input",
+            "delimiter": " ",
+            "name": "merge",
+            "dtype": "list:file",
+        },
+        {
+            "info": "Subtract one or more masks or region files",
+            "default": null,
+            "required": false,
+            "io": "input",
+            "delimiter": " ",
+            "name": "subtract",
+            "dtype": "list:file",
+        },
+        {
+            "info": "Number the islands detected (default=do not number islands)",
+            "name": "number-islands",
+            "default": null,
+            "dtype": "bool",
+            "required": false
+        },
+        {
+            "info": "List of islands to remove from input mask. e.g. --remove-islands 1 18 20 20h10m13s,14d15m20s",
+            "default": null,
+            "delimiter": " ",
+            "name": "remove-islands",
+            "dtype": [
+                "list:int",
+                "list:str"
+            ],
+            "required": false
+        },
+        {
+            "info": "List of islands to extract remove from input mask. e.g. --extract-islands 1 18 20 20h10m13s,14d15m20s",
+            "default": null,
+            "name": "extract-islands",
+            "delimiter": " ",
+            "dtype": [
+                "list:int",
+                "list:str"
+            ],
+            "required": false
+        },
+        {
+            "info": "Replace all island numbers with value of 1",
+            "default": null,
+            "required": false,
+            "name": "make-binary",
+            "dtype": "bool"
+        },
+        {
+            "info": "Invert the mask",
+            "default": null,
+            "required": false,
+            "name": "invert",
+            "dtype": "bool"
+        },
+        {
+            "info": "Apply dilation with a radius of R pixels",
+            "default": null,
+            "required": false,
+            "name": "dilate",
+            "dtype": "int"
+        },
+        {
+            "info": "Fill holes (i.e. entirely closed regions) in mask",
+            "default": null,
+            "required": false,
+            "name": "fill-holes",
+            "dtype": "bool"
+        },
+        {
+            "info": "Suffix for mask image (default based on input name)",
+            "default": null,
+            "required": false,
+            "name": "outfile",
+            "dtype": "str"
+        }
+    ]
+}

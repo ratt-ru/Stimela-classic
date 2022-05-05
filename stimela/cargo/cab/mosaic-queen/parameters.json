@@ -78,7 +78,7 @@
         },
         {
             "info": "State 'mad' (median absolute deviation), 'rms' (root mean square) or 'fit' (Gaussian fit) as the statistic to be used for estimating the noise level in the input images. This will be derived using the negative pixel-values. The noise levels set the weights=1/noise**2 used when mosaicking. Not used if the '-u' option is enabled. Default is mad.",
-            "default": mad,
+            "default": "mad",
             "required": false,
             "name": "statistic",
             "dtype": "str",

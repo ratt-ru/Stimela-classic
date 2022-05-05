@@ -1,0 +1,98 @@
+{
+    "task": "mosaic-queen",
+    "base": "stimela/mosaic-queen",
+    "tag": "1.7.4",
+    "version" : "1.0.1",
+    "description": "A package that allows continuum (2D) images and spectral (3D) images to be mosaicked together, using montage commands.",
+    "prefix": "--",
+    "binary": "mosaic-queen",
+    "junk": [],
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "State 'continuum' or 'spectral' as the type of mosaic to be made.",
+            "default": null,
+            "required": true,
+            "name": "mosaic-type",
+            "dtype": "str",
+            "choices": [
+                "spectral",
+                "continuum"]
+        },
+        {
+            "info": "The prefix to be used for output files.",
+            "default": "mymosaic",
+            "required": false,
+            "name": "name",
+            "dtype": "str"
+        },
+        {
+            "info": "The filenames of each target/pointing image to be mosaicked. A suffix of 'image.fits' is expected, and this is replaced by 'pb.fits' in order to locate the corresponding beams (which are also required as input).",
+            "name": "target-images",
+            "io": "input",
+            "default": null,
+            "dtype": "list:file",
+            "required": true
+        },
+        {
+            "info": "Also make mosaics of the associated 'model' and 'residual' .fits files.",
+            "default": null,
+            "required": false,
+            "name": "associated-mosaic",
+            "dtype": "bool"
+        },
+        {
+            "info": "Use montage for regridding the images and beams.",
+            "default": null,
+            "required": false,
+            "name": "regrid",
+            "dtype": "bool"
+        },
+        {
+            "info": "If the user wants newly-regridded files, this '--force-regrid' argument should be enabled. (If '--regrid' is enabled instead, the package will first check whether regridded files already exist. If they are found, regridding will not proceed because this is a time-consuming step.)",
+            "default": null,
+            "required": false,
+            "name": "force-regrid",
+            "dtype": "bool"
+        },
+        {
+            "info": "The cutoff in the primary beam to use. E.g. The default of 0.1 means going down to the 10 percent level for each pointing.",
+            "default": 0.1,
+            "required": false,
+            "name": "beam-cutoff",
+            "dtype": "float"
+        },
+        {
+            "info": "Sensitivity cutoff in the final mosaic. Pixels with a noise level > minimum mosaic noise / cutoff are blanked in all final products. E.g. The default of 0.2 means blanking in the mosaic all pixels with a noise level > 5x the minimum mosaic noise level.",
+            "default": 0.2,
+            "required": false,
+            "name": "mosaic-cutoff",
+            "dtype": "float"
+        },
+        {
+            "info": "Build the mosaic using weight=1 instead of weight=1/noise**2 for the input images.",
+            "default": null,
+            "required": false,
+            "name": "unity-weights",
+            "dtype": "bool"
+        },
+        {
+            "info": "State 'mad' (median absolute deviation), 'rms' (root mean square) or 'fit' (Gaussian fit) as the statistic to be used for estimating the noise level in the input images. This will be derived using the negative pixel-values. The noise levels set the weights=1/noise**2 used when mosaicking. Not used if the '-u' option is enabled. Default is mad.",
+            "default": mad,
+            "required": false,
+            "name": "statistic",
+            "dtype": "str",
+            "choices": [
+                "mad",
+                "rms",
+                "fit"]
+        },
+        {
+            "info": "An initial guess of the noise level in the input images, if user has set '--statistic' to 'fit'. (This is to aid a Gaussian fit to the negative pixel-values.) The default of 0.02 assumes that the pixel values are in units of Jy/beam, so a std of ~ 20 mJy/beam).",
+            "default": 0.01,
+            "required": false,
+            "name": "guess-std",
+            "dtype": "float"
+        }
+    ]
+}

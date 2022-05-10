@@ -2,7 +2,7 @@
     "task": "mosaic-queen",
     "base": "stimela/montage",
     "tag": "1.7.4",
-    "version" : "1.0.1",
+    "version" : "1.0.2",
     "description": "A package that allows continuum (2D) images and spectral (3D) images to be mosaicked together, using montage commands.",
     "prefix": "--",
     "binary": "mosaic-queen",

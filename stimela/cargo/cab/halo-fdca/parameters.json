@@ -1,0 +1,174 @@
+{
+    "task": "halofitting",
+    "base": "stimela/halo-fdca",
+    "tag": "1.7.1",
+    "description": "Automatic flux density (and power) estimations of radio halos in galaxy clusters",
+    "prefix": "-",
+    "binary": "halofitting",
+    "junk":[],
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "Cluster object name",
+            "name": "object",
+            "default": null,
+            "dtype": "str",
+            "required": true
+        },
+        {
+            "info": "Image location (containing radio halo)",
+            "name": "d_file",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": true
+        },
+        {
+            "info": "Cluster redshift",
+            "name": "z",
+            "default": null,
+            "dtype": "float",
+            "required": true
+        },
+        {
+            "info": "Model to use",
+            "default": "circle",
+            "required": false,
+            "name": "model",
+            "dtype": "str",
+            "choices": [
+                "circle",
+                "ellipse",
+                "rotated_ellipse",
+                "skewed"
+            ]
+        },
+        {
+            "info": "Coordinate frame. Default: ICRS",
+            "default": null,
+            "required": false,
+            "name": "frame",
+            "dtype": "str"
+        },
+        {
+            "info": "Sky coordinates of cluster. provide coordinates of the form: 'hh mm ss.ss -dd mm ss.s' in hourangle units. Default: None and image centre is chosen.",
+            "default": null,
+            "required": false,
+            "name": "loc",
+            "dtype": "str"
+        },
+        {
+            "info": "Choose to include mask or not. If True, -m_file should be specified.",
+            "default": true,
+            "required": false,
+            "name": "m",
+            "dtype": "bool"
+        },
+        {
+            "info": "Mask file location",
+            "name": "m_file",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": true
+        },
+        {
+            "info": "Path to code output. Default: directory code is in.",
+            "default": null,
+            "required": false,
+            "name": "out_path",
+            "dtype": "str"
+        },
+        {
+            "info": "Declare if image size has to be decreased before MCMC-ing. Amount of decreasement has been automatically set to 3.5*r_e.",
+            "default": true,
+            "required": false,
+            "name": "fov",
+            "dtype": "bool"
+        },
+        {
+            "info": "Set spectral index of cluster (S ~ nu^alpha). Used to calculate power and extrapolate flux to arbitrary frequencies. Default: -1.2",
+            "default": null,
+            "required": false,
+            "name": "spectr_idx",
+            "dtype": "float"
+        },
+        {
+            "info": "Number of walkers to deploy in the MCMC algorithm.",
+            "default": 200,
+            "required": false,
+            "name": "walkers",
+            "dtype": "int"
+        },
+        {
+            "info": "Number of evauations each walker has to do.",
+            "default": 1200,
+            "required": false,
+            "name": "steps",
+            "dtype": "int"
+        },
+        {
+            "info": "Burn-in time for MCMC walkers. See emcee documentation for info. Default: None. this is 1/4th of the steps.",
+            "default": null,
+            "required": false,
+            "name": "burntime",
+            "dtype": "int"
+        },
+        {
+            "info": "Maximum posiible radius cut-off. Fitted halos cannot have any r > max_radius. In units of kpc. Default: None (implying image_size/2).",
+            "default": null,
+            "required": false,
+            "name": "max_radius",
+            "dtype": "float"
+        },
+        {
+            "info": "Whether to use a gamma distribution as a prior for radii. Default is False. For the gamma parameters: shape = 2.5, scale = 120 kpc.",
+            "default": null,
+            "required": false,
+            "name": "gamma_prior",
+            "dtype": "bool"
+        },
+        {
+            "info": "Whether to use k exponent to change shape of exponential distribution. Default: False",
+            "default": null,
+            "required": false,
+            "name": "k_exp",
+            "dtype": "bool"
+        },
+        {
+            "info": "Whether to save the mcmc sampler chain in a fits file. Default: True.",
+            "default": null,
+            "required": false,
+            "name": "s",
+            "dtype": "bool"
+        },
+        {
+            "info": "Whether to run a MCMC routine or skip it to go straight to processing. can be done if a runned sample already exists in the output path. Default: True",
+            "default": null,
+            "required": false,
+            "name": "run_mcmc",
+            "dtype": "bool"
+        },
+        {
+            "info": "Integration radius in r_e units. Default: inf",
+            "default": null,
+            "required": false,
+            "name": "int_max",
+            "dtype": "float"
+        },
+        {
+            "info": "Frequency in MHz to calculate flux in. When given, the spectral index will be used. Default: image frequency ",
+            "default": null,
+            "required": false,
+            "name": "freq",
+            "dtype": "float"
+        },
+        {
+            "info": "Set manual rms noise level to be used by the code in uJy/beam Default: rms calculated by code",
+            "default": null,
+            "required": false,
+            "name": "rms",
+            "dtype": "float"
+        }
+    ]
+}

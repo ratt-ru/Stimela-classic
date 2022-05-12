@@ -40,4 +40,4 @@ jobs:
         stimela pull --help
         stimela build --help
         stimela run --help
-        stimela cabs -ls
+        stimela cabs

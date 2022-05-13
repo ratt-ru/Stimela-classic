@@ -1,5 +1,4 @@
 set -e
-set -u
 
 WORKSPACE_ROOT="$WORKSPACE/$BUILD_NUMBER"
 TEST_OUTPUT_DIR="$WORKSPACE_ROOT/test-output"
@@ -53,4 +52,5 @@ stimela pull #--force
 #Run forest run!
 cd $TEST_OUTPUT_DIR
 export SILENT_STDERR=ON
+ls
 python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests" -v

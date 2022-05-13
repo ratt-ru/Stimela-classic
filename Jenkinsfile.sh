@@ -1,4 +1,5 @@
 set -e
+set -u
 
 WORKSPACE_ROOT="$WORKSPACE/$BUILD_NUMBER"
 TEST_OUTPUT_DIR="$WORKSPACE_ROOT/test-output"
@@ -30,9 +31,6 @@ podman -v
 singularity -v
 export STIMELA_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
 mkdir $STIMELA_PULLFOLDER
-echo $STIMELA_PULLFOLDER
-ls $STIMELA_PULLFOLDER
-break
 
 #########################################################################
 # PYTHON 3 TEST
@@ -55,5 +53,4 @@ stimela pull #--force
 #Run forest run!
 cd $TEST_OUTPUT_DIR
 export SILENT_STDERR=ON
-python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
-
+python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests" -v

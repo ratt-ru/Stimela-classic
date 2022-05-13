@@ -30,6 +30,9 @@ podman -v
 singularity -v
 export STIMELA_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
 mkdir $STIMELA_PULLFOLDER
+echo $STIMELA_PULLFOLDER
+ls $STIMELA_PULLFOLDER
+break
 
 #########################################################################
 # PYTHON 3 TEST

@@ -335,7 +335,6 @@ class StimelaJob(object):
                 cont.add_environ("LANGUAGE", "en_US.UTF-8")
                 cont.add_environ("LANG", "en_US.UTF-8")
                 cont.add_environ("LC_ALL", "en_US.UTF-8")
-            cont.execdir = self.workdir
         else:
             cont.RUNSCRIPT = f"/{self.jtype}_run"
         

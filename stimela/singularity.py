@@ -122,7 +122,7 @@ class Container(object):
             self.name, self.time_out))
         
         utils.xrun(f"singularity run --workdir {self.execdir} --containall {volumes} {self.image} {self.RUNSCRIPT}",
-		   #list(args) + [volumes, self.image, self.RUNSCRIPT],
+		    list(args),# + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     env=self._env, logfile=self.logfile)
 

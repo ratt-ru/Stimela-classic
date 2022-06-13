@@ -120,8 +120,6 @@ class Container(object):
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        a = list(args) + [volumes, self.image, self.RUNSCRIPT]
-        print(a)
         utils.xrun(f"cd {self.execdir} && singularity run --workdir {self.execdir} --containall",
 		    list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,

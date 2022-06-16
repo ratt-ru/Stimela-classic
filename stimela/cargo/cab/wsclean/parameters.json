@@ -1,9 +1,9 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": ["1.6.0-1", "1.2.3", "1.6.3", "1.7.3"],
+    "tag": ["1.6.0-1", "1.2.3", "1.6.3", "1.7.3", "1.7.4"],
     "description": "WSClean imaging software", 
-    "version" : ["2.6", "2.8", "2.9", "3.0.1"],
+    "version" : ["2.6", "2.8", "2.9", "3.0.1", "3.1"],
     "prefix": "-", 
     "binary": "wsclean", 
     "junk" : [],
@@ -626,6 +626,12 @@
             "dtype": "int",
             "default": null,
             "name": "parallel-deconvolution"
+        },
+        {
+            "info": "Specify the grid size in number of pixels at which to evaluate the primary beam. Typically, the primary beam is calculated at a coarse resolution grid and interpolated, to reduce the time spent in evaluating the beam. This parameter controls the resolution of the grid at which to evaluate the primary beam. For rectangular images, pb-grid-size indicates the number of pixels along the shortest dimension. The total number of pixels in the primary beam grid thus amounts to: max(width, height) / min(width, height) * pb-grid-size**2. Default: 32.",
+            "dtype": "int",
+            "default": null,
+            "name": "pb-grid-size"
         }
     ]
 }

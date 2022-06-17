@@ -26,14 +26,13 @@ mkdir $TEST_OUTPUT_DIR/input
 cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 
 # Load newer version of singularity
-cat /etc/profile.d/modules.sh 
 source /etc/profile.d/modules.sh
 module load singularity/3.8.4
 
 # Check version
 docker -v
 podman -v
-singularity -v
+singularity version
 export STIMELA_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
 mkdir $STIMELA_PULLFOLDER
 

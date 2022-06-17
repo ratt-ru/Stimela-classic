@@ -176,7 +176,7 @@
             "info": "Prefix of output html files",
             "default": null,
             "io": "output",
-            "required": true,
+            "required": false,
             "name": "html-prefix",
             "dtype": "str"
         },
@@ -198,6 +198,13 @@
                 "nvss",
                 "sumss"
             ]
+        },
+        {
+            "info": "Centre of online catalog to compare local image/model in 'RA hh:mm:ss, Dec deg:min:sec'",
+            "default": "0:0:0, -30:0:0",
+            "required": false,
+            "name": "centre_coord",
+            "dtype": "str"
         },
         {
             "info": "Factor to multiply the field of view for random points. i.e. 0.0-1.0'",
@@ -293,7 +300,7 @@
         {
             "info": "Name of output file name",
             "default": null,
-            "required": true,
+            "required": false,
             "name": "outfile",
             "io": "output",
             "dtype": "file"

@@ -1,4 +1,4 @@
-FROM stimela/base:1.7.1
+FROM quay.io/stimela/base:1.7.1
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \
     wget \
@@ -25,7 +25,7 @@ RUN docker-apt-install cmake \
     liblog4cplus-dev \
     libhdf5-dev \
     casacore-dev
-RUN git clone --depth 1 -b v3.0.1 https://gitlab.com/aroffringa/wsclean.git wscleandir
+RUN git clone --depth 1 -b v3.1 https://gitlab.com/aroffringa/wsclean.git wscleandir
 RUN mkdir wscleandir/build
 RUN cd wscleandir/build && \
     cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \

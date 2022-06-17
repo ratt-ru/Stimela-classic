@@ -25,6 +25,13 @@ tar -xvf $TEST_DATA_DIR/DEEP2.ms.tar.gz -C $TEST_OUTPUT_DIR/msdir
 mkdir $TEST_OUTPUT_DIR/input
 cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 
+# Load newer version of singularity
+/bin/bash -c source /etc/profile.d/modules.sh
+module avail
+module load 
+module load singularity/3.8.4
+
+# Check version
 docker -v
 podman -v
 singularity -v

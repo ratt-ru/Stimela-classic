@@ -13,6 +13,7 @@ import subprocess
 from astLib.astWCS import WCS
 from astropy.io.votable import parse_single_table
 from Tigger.Models import SkyModel, ModelClasses
+from stimela import utils
 
 
 CONFIG = os.environ["CONFIG"]

@@ -64,7 +64,7 @@
         {
             "info": "Region of the input data cube to be searched. Only the specified region will be loaded into memory and processed. A region must contain six comma-separated integer values of the following format: x_min, x_max, y_min, y_max, z_min, z_max (all in units of pixels and 0-based). If no region is specified, then the entire data cube will be loaded.", 
             "dtype": "list:int", 
-            "default": [], 
+            "default": null, 
             "name": "input.region"
         },
         {
@@ -108,7 +108,13 @@
             "info": "If set to true, SoFiA will attempt to automatically flag spectral channels and spatial pixels affected by interference or artefacts based on their RMS noise level. If set to channels, only spectral channels will be flagged. If set to pixels, only spatial pixels will be flagged. If set to false, auto-flagging will be disabled. Please see the user manual for details.", 
             "dtype": "str", 
             "default": "false", 
-            "name": "flag.auto"
+            "name": "flag.auto",
+            "choices": [
+                "true",
+                "false",
+                "channels",
+                "pixels"
+            ]
         },
         {
             "info": "Path to a catalogue file containing two columns that specify the longitude and latitude coordinates of sky positions to be flagged in the native coordinate system and units of the input data cube. The two columns can be separated by spaces, tabulators or commas. Also see flag.radius.", 
@@ -132,7 +138,7 @@
         {
             "info": "Region(s) to be flagged in the input data cube prior to processing. The flagging region must contain a multiple of six comma-separated integer values of the following format: x_min, x_max, y_min, y_max, z_min, z_max, ... (all in units of pixels and 0-based). Pixels within those regions will be set to blank in the input cube. If unset, no flagging will occur.", 
             "dtype": "list:int", 
-            "default": [], 
+            "default": null, 
             "name": "flag.region",
         },
         {
@@ -170,6 +176,10 @@
             "dtype": "str", 
             "default": "median", 
             "name": "rippleFilter.statistic",
+            "choices": [
+                "mean",
+                "median"
+            ]
         },
         {
             "info": "Spatial size in pixels of the running window used in the ripple filter. The size must be an odd integer number.", 
@@ -194,6 +204,11 @@
             "dtype": "str", 
             "default": "negative", 
             "name": "scaleNoise.fluxRange",
+            "choices": [
+                "positive",
+                "negative",
+                "full"
+            ]
         },
         {
             "info": "Size of the spatial grid across which noise measurement window will be moved across the data cube. It must be an odd integer value. If set to 0 instead, the spatial grid size will default to half the spatial window size.", 
@@ -218,6 +233,10 @@
             "dtype": "str", 
             "default": "spectral", 
             "name": "scaleNoise.mode",
+            "choices": [
+                "spectral",
+                "local"
+            ]
         },
         {
             "info": "If true and global or local noise scaling is enabled, then noise scaling will additionally be applied after each smoothing operation in the S+C finder. This might be useful in certain situations where large-scale artefacts are present in interferometric data. However, this feature should be used with great caution, as it has the potential to do more harm than good.", 
@@ -230,6 +249,11 @@
             "dtype": "str", 
             "default": "mad", 
             "name": "scaleNoise.statistic",
+            "choices": [
+                "std",
+                "mad",
+                "gauss"
+            ]
         },
         {
             "info": "Spatial size of the window used in determining the local noise level. It must be an odd integer value. If set to 0, the pipeline will use the default value instead.", 
@@ -254,6 +278,11 @@
             "dtype": "str", 
             "default": "negative", 
             "name": "scfind.fluxRange",
+            "choices": [
+                "positive",
+                "negative",
+                "full"
+            ]
         },
         {
             "info": "Comma-separated list of spatial Gaussian kernel sizes to apply. The individual kernel sizes must be floating-point values and denote the full width at half maximum (FWHM) of the Gaussian used to smooth the data in the spatial domain. A value of 0 means that no spatial smoothing will be applied.", 
@@ -287,6 +316,11 @@
             "dtype": "str", 
             "default": "mad",
             "name": "scfind.statistic",
+            "choices": [
+                "std",
+                "mad",
+                "gauss"
+            ]
         },
         {
             "info": "Flux threshold to be used by the S+C finder relative to the measured noise level in each smoothing iteration. In practice, values in the range of about 3 to 5 have proven to be useful in most situations, with lower values in that range requiring use of the reliability filter to reduce the number of false detections.", 
@@ -305,18 +339,32 @@
             "dtype": "str", 
             "default": "negative",
             "name": "threshold.fluxRange",
+            "choices": [
+                "positive",
+                "negative",
+                "full"
+            ]
         },
         {
             "info": "If set to absolute, the flux threshold of the threshold finder will be interpreted as an absolute flux threshold in the native flux unit of the data cube. If set to relative, the threshold will be interpreted in units of the noise level across the data cube.", 
             "dtype": "str", 
             "default": "relative",
             "name": "threshold.mode",
+            "choices": [
+                "absolute",
+                "relative"
+            ]
         },
         {
             "info": "Statistic to be used in the noise measurement process if threshold.mode is set to relative. Possible values are std, mad and gauss for standard deviation, median absolute deviation and Gaussian fitting to the flux histogram, respectively. Standard deviation is by far the fastest algorithm, but it is also the least robust one with respect to emission and artefacts in the data. Median absolute deviation and Gaussian fitting are far more robust in the presence of strong, extended emission or artefacts, but will usually take longer.", 
             "dtype": "str", 
             "default": "mad",
             "name": "threshold.statistic",
+            "choices": [
+                "std",
+                "mad",
+                "gauss"
+            ]
         },
         {
             "info": "Flux threshold to be applied by the threshold finder. Depending on the threshold.mode parameter, this can either be absolute (in native flux units of the data cube) or relative to the noise level of the cube.", 
@@ -403,12 +451,6 @@
             "name": "linker.radiusZ",
         }, 
         {
-            "info": "If set to true, SoFiA will try to automatically determine the optimal reliability kernel scale factor by iteratively increasing the kernel size until the absolute value of the median of the Skellam distribution decreases below reliability.tolerance. If the algorithm fails to converge after reliability.iterations steps, then the default value of reliability.scaleKernel will be used instead.", 
-            "dtype": "bool", 
-            "default": false,
-            "name": "reliability.autoKernel",
-        }, 
-        {
             "info": "Path to a file containing positions on the sky to be excluded from the reliability analysis. The file must contain two columns separated by a space, tabulator or comma that specify the longitude and latitude of the position to be excluded in the native WCS coordinates and units of the input FITS file. Negative detections that contain any of those positions within their bounding box will be excluded from the reliability analysis, although they will still show up in the reliability plot.", 
             "dtype": "file", 
             "default": null,
@@ -426,12 +468,6 @@
             "dtype": "bool", 
             "default": false,
             "name": "reliability.enable",
-        }, 
-        {
-            "info": "Maximum number of iterations for the reliability kernel auto-scaling algorithm to converge. If convergence is not achieved, then reliability.scaleKernel will instead be applied.", 
-            "dtype": "int", 
-            "default": 30,
-            "name": "reliability.iterations",
         }, 
         {
             "info": "Minimum total number of spatial and spectral pixels within the source mask for detections to be considered reliable. The reliability of any detection with fewer pixels will be set to zero by default.", 
@@ -454,6 +490,17 @@
                             "mean",
                         ],
             "name": "reliability.parameters",
+            "choices": [
+                "peak",
+                "sum",
+                "mean",
+                "chan",
+                "pix",
+                "fill",
+                "std",
+                "skew",
+                "kurt"
+            ]
         }, 
         {
             "info": "If set to true, diagnostic plots (in EPS format) will be created to allow the quality of the reliability estimation to be assessed. It is advisable to generate and inspect these plots to ensure that the outcome of the reliability filtering procedure is satisfactory.", 
@@ -472,12 +519,6 @@
             "dtype": "float", 
             "default": 0.9,
             "name": "reliability.threshold",
-        }, 
-        {
-            "info": "Convergence tolerance for the reliability kernel auto-scaling algorithm. Convergence is achieved when the absolute value of the median of the Skellam distribution drops below this tolerance.", 
-            "dtype": "float", 
-            "default": 0.05,
-            "name": "reliability.tolerance",
         }, 
         {
             "info": "Set to true to enable source mask dilation whereby the mask of each source will be grown outwards until the resulting increase in integrated flux drops below a given threshold or the maximum number of iterations is reached.", 
@@ -625,6 +666,7 @@
         },
         {
             "info": null, 
+            "default": false,
             "dtype": "bool", 
             "name": "port2tigger"
         } 

@@ -11,6 +11,7 @@ import glob
 import subprocess
 
 from astLib.astWCS import WCS
+from astropy.io.votable import parse_single_table
 from Tigger.Models import SkyModel, ModelClasses
 
 
@@ -36,13 +37,21 @@ image = None
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
+    dtype = param['dtype']
+
+    # Fix the sofia issue of needing lowercase booleans.
+    if dtype == 'bool':
+        if (value == True) and (not name == 'port2tigger'):
+            value = 'true'
+        elif (not name == 'port2tigger'):
+            value = 'false'
 
     if value is None:
         continue
     if name == "port2tigger":
         port2tigger = value
         continue
-    if name == "output.writeCatASCII":
+    if name == "output.writeCatXML":
         writecat = value
     if name == "parameter.enable":
         parameterise = value
@@ -93,13 +102,14 @@ tfile.close()
 def tigger_src(src, idx):
 
     name = "SRC%d" % idx
-    flux = ModelClasses.Polarization(src["f_sum"], 0, 0, 0) # See if phyiscal option changes this
+    flux = ModelClasses.Polarization(src["f_sum"], 0, 0, 0)
     ra = numpy.deg2rad(src["ra"])
     dec = numpy.deg2rad(src["dec"])
     pos = ModelClasses.Position(ra, dec)
     ex = numpy.deg2rad(src["ell_maj"])
     ey = numpy.deg2rad(src["ell_min"])
     pa = numpy.deg2rad(src["ell_pa"])
+    print(name)
 
     if ex and ey:
         shape = ModelClasses.Gaussian(ex, ey, pa)
@@ -115,19 +125,23 @@ def tigger_src(src, idx):
 
     return source
 
+table = parse_single_table('{0}_cat.xml'.format(prefix))
+data = table.array
 
-with open('{0}_cat.txt'.format(prefix)) as stdr:
-    # Header
-    stdr.readline()
-    # Column names
-    names = stdr.readline().split("#")[1].strip().split()
-    # Units
-    stdr.readline()
-    # Column numbers
-    stdr.readline()
-    sys.stdout.write(" ".join(names))
-    data = numpy.genfromtxt(stdr,
-                            names=names + ["col"])
+#with open('{0}_cat.txt'.format(prefix)) as stdr:
+#    # Header
+#    stdr.readline()
+#    # Column names
+#    names = stdr.readline().split("#")[9].strip().split()
+#    print(names)
+#    # Units
+#    stdr.readline()
+#    # Column numbers
+#    stdr.readline()
+#    sys.stdout.write(" ".join(names))
+#    data = numpy.genfromtxt(stdr,
+#                            names=names + ["col"])
+#    print(data)
 
 for i, src in enumerate(data):
     model.sources.append(tigger_src(src, i))

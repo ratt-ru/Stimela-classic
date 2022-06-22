@@ -303,6 +303,12 @@
       "name": "scan"
     },
     {
+      "info": "Select data based on antenna/baseline",
+      "dtype": "str",
+      "default": null,
+      "name": "antenna"
+    },
+    {
       "info": "Select data by time range",
       "dtype": "str",
       "default": null,

@@ -75,7 +75,7 @@
       {
         "info": "Padding fraction for FFTs (half on either side). Default is 0.5",
         "dtype": "float",
-        "required": true,
+        "required": false,
         "name": "padding-frac",
         "default": null,
         "deprecated": false
@@ -83,7 +83,7 @@
       {
         "info": "Data type of output. Default is single precision",
         "dtype": "str",
-        "required": true,
+        "required": false,
         "name": "out-dtype",
         "default": null,
         "deprecated": false

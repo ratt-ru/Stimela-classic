@@ -1,0 +1,675 @@
+{
+    "task": "sofia2", 
+    "base": "stimela/sofia2", 
+    "tag": "1.7.4", 
+    "version" : "2.4.0",
+    "description": "This is version 2 of the HI Source Finding Application (SoFiA), a source finding pipeline originally designed to detect and characterise galaxies in 3D extragalctic HI data cubes. SoFiA 2 is a reimplementation of the original SoFiA pipeline in the C programming language and provides most of the functionality of SoFiA 1.x", 
+    "prefix": "--", 
+    "binary": "sofia", 
+    "msdir": false,
+    "junk": [],
+    "parameters": [
+        {
+            "info": "If set to true, the pipeline will terminate with an error message if an unknown parameter name is encountered in the input parameter file. If set to false, unknown parameters will instead be ignored.", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "pipeline.pedantic"
+        }, 
+        {
+            "info": "Sets the maximum number of parallel threads that multi-threaded algorithms within SoFiA are allowed to use. If set to 0 (default value), then the OMP_NUM_THREADS environment variable is used to control the number of threads. If the value equals (or exceeds) the number of available threads, then all CPU cores will be utilised, which minimises the runtime of the pipeline at the cost of maximal CPU load.", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "pipeline.threads"
+        }, 
+        {
+            "info": "Determines the level of output messages produced by the pipeline. Additional warning messages can be enabled by setting the value to true.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "pipeline.verbose"
+        }, 
+        {
+            "info": "Name of the input data cube on which to run the source finder. The absolute path to the data file must be provided. If only the file name is specified, the pipeline will assume the file to be located in the current working directory. Currently, only the FITS format is supported.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input.data",
+            "io":"input"
+        }, 
+        {
+            "info": "Name of an optional data cube containing the gain across the image. If specified, the input data cube will be divided by the gain cube prior to source parameterisation to ensure that the correct flux values are extracted. The gain cube must have the same dimensions as the input data cube. The absolute path to the gain file must be provided. If only the file name is specified, the pipeline will assume the file to be located in the current working directory. Currently, only the FITS format is supported.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input.gain",
+            "io":"input"
+        }, 
+        {
+            "info": "If set to true, invert the data cube prior to processing. This is useful when searching for negative rather than positive signals such as absorption lines. Note that all flux-related parameters and maps will be inverted, too, in this case and hence be positive rather than negative.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "input.invert"
+        }, 
+        {
+            "info": "File name of an input mask cube. Any additional pixels detected by the source finder will be added to the input mask. This can be useful if the results from two different source finding runs should be combined into a single mask. The mask cube must have the same dimensions as the input data cube. The absolute path to the mask file must be provided. If only the file name is specified, the pipeline will assume the file to be located in the current working directory. Currently, only the FITS format is supported.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input.mask",
+            "io":"input"
+        }, 
+        {
+            "info": "Name of an optional data cube containing the noise levels across the image. If specified, the input data cube will be divided by the noise cube prior to source finding to ensure that a constant source finding threshold can be applied. The noise cube must have the same dimensions as the input data cube. The absolute path to the noise file must be provided. If only the file name is specified, the pipeline will assume the file to be located in the current working directory. Currently, only the FITS format is supported. Note that either a noise cube or a weights cube can be applied, but not both", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input.noise",
+            "io":"input"
+        }, 
+        {
+            "info": "Region of the input data cube to be searched. Only the specified region will be loaded into memory and processed. A region must contain six comma-separated integer values of the following format: x_min, x_max, y_min, y_max, z_min, z_max (all in units of pixels and 0-based). If no region is specified, then the entire data cube will be loaded.", 
+            "dtype": "list:int", 
+            "default": null, 
+            "name": "input.region"
+        },
+        {
+            "info": "Name of an optional data cube containing the weights across the image. If specified, the input data cube will be multiplied by the square root of the weights cube prior to source finding to ensure that a constant source finding threshold can be applied. The weights cube must have the same dimensions as the input data cube. The absolute path to the weights file must be provided. If only the file name is specified, the pipeline will assume the file to be located in the current working directory. Currently, only the FITS format is supported. Note that either a noise cube or a weights cube can be applied, but not both.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "input.weights",
+            "io":"input"
+        }, 
+        {
+            "info": "If enabled, SoFiA will try to subtract any residual continuum emission from the data cube prior to source finding by fitting and subtracting a polynomial of order 0 (offset) or 1 (offset + slope). The order of the polynomial is defined by contsub.order.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "contsub.enable"
+        },
+        {
+            "info": "Order of the polynomial to be used in continuum subtraction if contsub.enable is set to true. Can either be 0 for a simple offset or 1 for an offset + slope. Higher orders are not currently supported.", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "contsub.order"
+        },
+        {
+            "info": "The amount of additional padding (in channels) applied to either side of channels excluded from the fit.", 
+            "dtype": "int", 
+            "default": 3, 
+            "name": "contsub.padding"
+        },
+        {
+            "info": "The number of channels by which the spectrum will be shifted (symmetrically in both directions) before self-subtraction.", 
+            "dtype": "int", 
+            "default": 4, 
+            "name": "contsub.shift"
+        },
+        {
+            "info": "Relative clipping threshold. All channels with a flux density > contsub.threshold times the noise will be clipped and excluded from the polynomial fit.", 
+            "dtype": "float", 
+            "default": 2.0, 
+            "name": "contsub.threshold"
+        },
+        {
+            "info": "If set to true, SoFiA will attempt to automatically flag spectral channels and spatial pixels affected by interference or artefacts based on their RMS noise level. If set to channels, only spectral channels will be flagged. If set to pixels, only spatial pixels will be flagged. If set to false, auto-flagging will be disabled. Please see the user manual for details.", 
+            "dtype": "str", 
+            "default": "false", 
+            "name": "flag.auto",
+            "choices": [
+                "true",
+                "false",
+                "channels",
+                "pixels"
+            ]
+        },
+        {
+            "info": "Path to a catalogue file containing two columns that specify the longitude and latitude coordinates of sky positions to be flagged in the native coordinate system and units of the input data cube. The two columns can be separated by spaces, tabulators or commas. Also see flag.radius.", 
+            "dtype": "file", 
+            "default": null, 
+            "name": "flag.catalog",
+            "io":"input"
+        },
+        {
+            "info": "If set to true, write a list of the channels and pixels flagged by the auto-flagger to a log file. Note that if no channels or pixels were found to be in need of flagging, then the log file will not be written irrespective of the value of flag.log.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "flag.log",
+        },
+        {
+            "info": "Radius around the sky positions listed in the catalogue provided by flag.catalog that should be flagged. If 0, then only the nearest pixel to the position will be flagged. Otherwise, pixels within the specified radius around the nearest pixel will be flagged.", 
+            "dtype": "int", 
+            "default": 5, 
+            "name": "flag.radius",
+        },
+        {
+            "info": "Region(s) to be flagged in the input data cube prior to processing. The flagging region must contain a multiple of six comma-separated integer values of the following format: x_min, x_max, y_min, y_max, z_min, z_max, ... (all in units of pixels and 0-based). Pixels within those regions will be set to blank in the input cube. If unset, no flagging will occur.", 
+            "dtype": "list:int", 
+            "default": null, 
+            "name": "flag.region",
+        },
+        {
+            "info": "Relative threshold in multiples of the standard deviation to be applied by the automatic flagging algorithm. Only relevant if flag.auto is enabled. Please see the documentation for details", 
+            "dtype": "float", 
+            "default": 5.0, 
+            "name": "flag.threshold",
+        },
+        {
+            "info": "If set to true, then the ripple filter will be applied to the data cube prior to source finding. The filter works by measuring and subtracting either the mean or median across a running window. This can be useful if a DC offset or spatial/spectral ripple is present in the data.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "rippleFilter.enable",
+        },
+        {
+            "info": "Spatial grid separation in pixels for the running window used in the ripple filter. The value must be an odd integer value and specifies the spatial step by which the window is moved. Alternatively, it can be set to 0, in which case it will default to half the spatial window size (see rippleFilter.windowXY).", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "rippleFilter.gridXY",
+        },
+        {
+            "info": "Spectral grid separation in channels for the running window used in the ripple filter. The value must be an odd integer value and specifies the spectral step by which the window is moved. Alternatively, it can be set to 0, in which case it will default to half the spectral window size (see rippleFilter.windowZ).", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "rippleFilter.gridZ",
+        },
+        {
+            "info": "If set to true, then the mean or median values measured across the running window in the ripple filter will be linearly interpolated in between the grid points. If set to false, the mean or median will be subtracted from the entire grid cell without interpolation.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "rippleFilter.interpolate",
+        },
+        {
+            "info": "Controls whether the mean or median should be measured and subtracted in the running window of the ripple filter. The median is strongly recommended, as it is more robust.", 
+            "dtype": "str", 
+            "default": "median", 
+            "name": "rippleFilter.statistic",
+            "choices": [
+                "mean",
+                "median"
+            ]
+        },
+        {
+            "info": "Spatial size in pixels of the running window used in the ripple filter. The size must be an odd integer number.", 
+            "dtype": "int", 
+            "default": 31, 
+            "name": "rippleFilter.windowXY",
+        },
+        {
+            "info": "Spatial size in pixels of the running window used in the ripple filter. The size must be an odd integer number.", 
+            "dtype": "int", 
+            "default": 31, 
+            "name": "rippleFilter.windowZ",
+        },
+        {
+            "info": "If set to true, noise scaling will be enabled. The purpose of the noise scaling modules is to measure the noise level in the input cube and then divide the input cube by the noise. This can be used to correct for spatial or spectral noise variations across the input cube prior to running the source finder.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "scaleNoise.enable",
+        },
+        {
+            "info": "Flux range to be used in the noise measurement. If set to negative or positive, only pixels with negative or positive flux will be used, respectively. This can be useful to prevent real emission or artefacts from affecting the noise measurement. If set to full, all pixels will be used in the noise measurement irrespective of their flux.", 
+            "dtype": "str", 
+            "default": "negative", 
+            "name": "scaleNoise.fluxRange",
+            "choices": [
+                "positive",
+                "negative",
+                "full"
+            ]
+        },
+        {
+            "info": "Size of the spatial grid across which noise measurement window will be moved across the data cube. It must be an odd integer value. If set to 0 instead, the spatial grid size will default to half the spatial window size.", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "scaleNoise.gridXY",
+        },
+        {
+            "info": "Size of the spatial grid across which noise measurement window will be moved across the data cube. It must be an odd integer value. If set to 0 instead, the spatial grid size will default to half the spatial window size.", 
+            "dtype": "int", 
+            "default": 0, 
+            "name": "scaleNoise.gridZ",
+        },
+        {
+            "info": "If set to true, linear interpolation will be used to interpolate the measured local noise values in between grid points. If set to false, the entire grid cell will instead be filled with the measured noise value.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "scaleNoise.interpolate",
+        },
+        {
+            "info": "Noise scaling mode. If set to spectral, the noise level will be determined for each spectral channel by measuring the noise within each image plane. This is useful for data cubes where the noise varies with frequency. If set to local, the noise level will be measured locally in window running across the entire cube in all three dimensions. This is useful for data cubes with more complex noise variations, such as interferometric images with primary-beam correction applied.", 
+            "dtype": "str", 
+            "default": "spectral", 
+            "name": "scaleNoise.mode",
+            "choices": [
+                "spectral",
+                "local"
+            ]
+        },
+        {
+            "info": "If true and global or local noise scaling is enabled, then noise scaling will additionally be applied after each smoothing operation in the S+C finder. This might be useful in certain situations where large-scale artefacts are present in interferometric data. However, this feature should be used with great caution, as it has the potential to do more harm than good.", 
+            "dtype": "bool", 
+            "default": false, 
+            "name": "scaleNoise.scfind",
+        },
+        {
+            "info": "Statistic to be used in the noise measurement process. Possible values are std, mad and gauss for standard deviation, median absolute deviation and Gaussian fitting to the flux histogram, respectively. Standard deviation is by far the fastest algorithm, but it is also the least robust one with respect to emission and artefacts in the data. Median absolute deviation and Gaussian fitting are far more robust in the presence of strong, extended emission or artefacts, but will usually take longer.", 
+            "dtype": "str", 
+            "default": "mad", 
+            "name": "scaleNoise.statistic",
+            "choices": [
+                "std",
+                "mad",
+                "gauss"
+            ]
+        },
+        {
+            "info": "Spatial size of the window used in determining the local noise level. It must be an odd integer value. If set to 0, the pipeline will use the default value instead.", 
+            "dtype": "int", 
+            "default": 25, 
+            "name": "scaleNoise.windowXY",
+        },
+        {
+            "info": "Spectral size of the window used in determining the local noise level. It must be an odd integer value. If set to 0, the pipeline will use the default value instead.", 
+            "dtype": "int", 
+            "default": 15, 
+            "name": "scaleNoise.windowZ",
+        },
+        {
+            "info": "If set to true, the Smooth + Clip (S+C) finder will be enabled. The S+C finder operates by iteratively smoothing the data cube with a user-defined set of smoothing kernels, measuring the noise level on each smoothing scale, and adding all pixels with an absolute flux above a user-defined relative threshold to the source detection mask.", 
+            "dtype": "bool", 
+            "default": true, 
+            "name": "scfind.enable",
+        },
+        {
+            "info": "Flux range to be used in the noise measurement. If set to negative or positive, only pixels with negative or positive flux will be used, respectively. This can be useful to prevent real emission or artefacts from affecting the noise measurement. If set to full, all pixels will be used in the noise measurement irrespective of their flux.", 
+            "dtype": "str", 
+            "default": "negative", 
+            "name": "scfind.fluxRange",
+            "choices": [
+                "positive",
+                "negative",
+                "full"
+            ]
+        },
+        {
+            "info": "Comma-separated list of spatial Gaussian kernel sizes to apply. The individual kernel sizes must be floating-point values and denote the full width at half maximum (FWHM) of the Gaussian used to smooth the data in the spatial domain. A value of 0 means that no spatial smoothing will be applied.", 
+            "dtype": "list:float", 
+            "default": [
+                            0,
+                            3,
+                            6
+                        ], 
+            "name": "scfind.kernelsXY",
+        },
+        {
+            "info": "Comma-separated list of spectral Boxcar kernel sizes to apply. The individual kernel sizes must be odd integer values of 3 or greater and denote the full width of the Boxcar filter used to smooth the data in the spectral domain. A value of 0 means that no spectral smoothing will be applied.", 
+            "dtype": "list:int", 
+            "default": [
+                            0,
+                            3,
+                            7,
+                            15
+                        ], 
+            "name": "scfind.kernelsZ",
+        },
+        {
+            "info": "Before smoothing the data cube during an S+C iteration, every pixel in the data cube that was already detected in a previous iteration will be replaced by this value multiplied by the original noise level in the non-smoothed data cube, while keeping the original sign of the data value. This feature can be disabled altogether by specifying a value of < 0.", 
+            "dtype": "float", 
+            "default": 2.0,
+            "name": "scfind.replacement",
+        },
+        {
+            "info": "Statistic to be used in the noise measurement process. Possible values are std, mad and gauss for standard deviation, median absolute deviation and Gaussian fitting to the flux histogram, respectively. Standard deviation is by far the fastest algorithm, but it is also the least robust one with respect to emission and artefacts in the data. Median absolute deviation and Gaussian fitting are far more robust in the presence of strong, extended emission or artefacts, but will usually take longer.", 
+            "dtype": "str", 
+            "default": "mad",
+            "name": "scfind.statistic",
+            "choices": [
+                "std",
+                "mad",
+                "gauss"
+            ]
+        },
+        {
+            "info": "Flux threshold to be used by the S+C finder relative to the measured noise level in each smoothing iteration. In practice, values in the range of about 3 to 5 have proven to be useful in most situations, with lower values in that range requiring use of the reliability filter to reduce the number of false detections.", 
+            "dtype": "float", 
+            "default": 5.0,
+            "name": "scfind.threshold",
+        },
+        {
+            "info": "If set to true, the threshold finder will be enabled. The threshold finder is a very basic source finder that simply applies a fixed threshold (either absolute or relative to the noise) to the original data cube. It can be useful if a simple flux threshold is to be applied to a pre-processed or filtered data cube", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "threshold.enable",
+        },
+        {
+            "info": "Flux range to be used in the noise measurement. If set to negative or positive, only pixels with negative or positive flux will be used, respectively. This can be useful to prevent real emission or artefacts from affecting the noise measurement. If set to full, all pixels will be used in the noise measurement irrespective of their flux.", 
+            "dtype": "str", 
+            "default": "negative",
+            "name": "threshold.fluxRange",
+            "choices": [
+                "positive",
+                "negative",
+                "full"
+            ]
+        },
+        {
+            "info": "If set to absolute, the flux threshold of the threshold finder will be interpreted as an absolute flux threshold in the native flux unit of the data cube. If set to relative, the threshold will be interpreted in units of the noise level across the data cube.", 
+            "dtype": "str", 
+            "default": "relative",
+            "name": "threshold.mode",
+            "choices": [
+                "absolute",
+                "relative"
+            ]
+        },
+        {
+            "info": "Statistic to be used in the noise measurement process if threshold.mode is set to relative. Possible values are std, mad and gauss for standard deviation, median absolute deviation and Gaussian fitting to the flux histogram, respectively. Standard deviation is by far the fastest algorithm, but it is also the least robust one with respect to emission and artefacts in the data. Median absolute deviation and Gaussian fitting are far more robust in the presence of strong, extended emission or artefacts, but will usually take longer.", 
+            "dtype": "str", 
+            "default": "mad",
+            "name": "threshold.statistic",
+            "choices": [
+                "std",
+                "mad",
+                "gauss"
+            ]
+        },
+        {
+            "info": "Flux threshold to be applied by the threshold finder. Depending on the threshold.mode parameter, this can either be absolute (in native flux units of the data cube) or relative to the noise level of the cube.", 
+            "dtype": "float", 
+            "default": 5.0,
+            "name": "threshold.threshold",
+        },
+        {
+            "info": "If true, then the linker will be run to merge the pixels detected by the source finder into coherent detections that can then be parameterised and catalogued. If false, the pipeline will be terminated after source finding, and no catalogue or source products will be created. Disabling the linker can be useful if only the raw mask from the source finder is needed.", 
+            "dtype": "bool", 
+            "default": true,
+            "name": "linker.enable",
+        },
+        {
+            "info": "If set to true, then the linker will not discard detections with negative flux. Reliability filtering must be disabled for negative sources to be retained. Also note that negative sources will not appear in moment 1 and 2 maps. This option should only ever be used for testing or debugging purposes, but never in production mode.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "linker.keepNegative",
+        },
+        {
+            "info": "Maximum allowed filling factor of a source within its rectangular bounding box, defined as the number of spatial and spectral pixels that make up the source divided by the number of pixels in the bounding box. The default value of 0.0 disables maximum filling factor filtering.", 
+            "dtype": "float", 
+            "default": 0.0,
+            "name": "linker.maxFill",
+        },
+        {
+            "info": "Maximum allowed number of spatial and spectral pixels that a source must not exceed. The default value of 0 disables maximum size filtering.", 
+            "dtype": "int", 
+            "default": 0,
+            "name": "linker.maxPixels",
+        },
+        {
+            "info": "Maximum size of sources in the spatial dimension in pixels. Sources that exceed this limit will be discarded by the linker. If the value is set to 0, maximum size filtering will be disabled.", 
+            "dtype": "int", 
+            "default": 0,
+            "name": "linker.maxSizeXY",
+        },
+        {
+            "info": "Maximum size of sources in the spectral dimension in pixels. Sources that exceed this limit will be discarded by the linker. If the value is set to 0, maximum size filtering will be disabled.", 
+            "dtype": "int", 
+            "default": 0,
+            "name": "linker.maxSizeZ",
+        },        
+        {
+            "info": "Minimum allowed filling factor of a source within its rectangular bounding box, defined as the number of spatial and spectral pixels that make up the source divided by the number of pixels in the bounding box. The default value of 0.0 disables minimum filling factor filtering.", 
+            "dtype": "float", 
+            "default": 0.0,
+            "name": "linker.minFill",
+        },        
+        {
+            "info": "Minimum allowed number of spatial and spectral pixels that a source must have. The default value of 0 disables minimum size filtering.", 
+            "dtype": "int", 
+            "default": 0,
+            "name": "linker.minPixels",
+        }, 
+        {
+            "info": "Minimum size of sources in the spatial dimension in pixels. Sources that fall below this limit will be discarded by the linker.", 
+            "dtype": "int", 
+            "default": 5,
+            "name": "linker.minSizeXY",
+        }, 
+        {
+            "info": "Minimum size of sources in the spectral dimension in pixels. Sources that fall below this limit will be discarded by the linker.", 
+            "dtype": "int", 
+            "default": 5,
+            "name": "linker.minSizeZ",
+        }, 
+        {
+            "info": "If set to true, then the linker will only merge positive pixels and discard all negative pixels by removing them from the mask. This option should be used with extreme caution and will render the reliability filter useless. It can be useful, though, if there are significant negative artefacts such as residual sidelobes in the data.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "linker.positivity",
+        }, 
+        {
+            "info": "Maximum merging length in the spatial dimension. Pixels with a separation of up to this value will be merged into the same source.", 
+            "dtype": "int", 
+            "default": 1,
+            "name": "linker.radiusXY",
+        }, 
+        {
+            "info": "Maximum merging length in the spectral dimension. Pixels with a separation of up to this value will be merged into the same source.", 
+            "dtype": "int", 
+            "default": 1,
+            "name": "linker.radiusZ",
+        }, 
+        {
+            "info": "Path to a file containing positions on the sky to be excluded from the reliability analysis. The file must contain two columns separated by a space, tabulator or comma that specify the longitude and latitude of the position to be excluded in the native WCS coordinates and units of the input FITS file. Negative detections that contain any of those positions within their bounding box will be excluded from the reliability analysis, although they will still show up in the reliability plot.", 
+            "dtype": "file", 
+            "default": null,
+            "name": "reliability.catalog",
+            "io":"input",
+        }, 
+        {
+            "info": "If set to true and the reliability module is enabled, then two catalogue files containing relevant reliability parameters of negative and positive detections are created for debugging purposes. The catalogues will be written in VOTable format.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "reliability.debug",
+        }, 
+        {
+            "info": "If set to true, reliability calculation and filtering will be enabled. This will determine the reliability of each detection with positive total flux by comparing the density of positive and negative detections in a three-dimensional parameter space. Sources below the specified reliability threshold will then be discarded. Note that this will require a sufficient number of negative detections, which can usually be achieved by setting the source finding threshold to somewhere around 3 to 4 times the noise level.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "reliability.enable",
+        }, 
+        {
+            "info": "Minimum total number of spatial and spectral pixels within the source mask for detections to be considered reliable. The reliability of any detection with fewer pixels will be set to zero by default.", 
+            "dtype": "int", 
+            "default": 0,
+            "name": "reliability.minPixels",
+        }, 
+        {
+            "info": "Lower signal-to-noise limit for reliable sources. Detections that fall below this threshold will be deemed unreliable and assigned a reliability of 0. The value denotes the integrated signal-to-noise ratio, SNR = F_sum / [RMS * sqrt(N * Ω)], of the source, where Ω is the solid angle (in pixels) of the point spread function of the data, N is the number of spatial and spectral pixels of the source, F_sum is the summed flux density and RMS is the local RMS noise level (assumed to be constant). Note that the spectral resolution is assumed to be equal to the channel width.", 
+            "dtype": "float", 
+            "default": 3.0,
+            "name": "reliability.minSNR",
+        }, 
+        {
+            "info": "Parameter space to be used in deriving the reliability of detections. This must be a list of parameters the number of which defines the dimensionality of the parameter space. Possible values are peak for the peak flux density, sum for the summed flux density, mean for mean flux density, chan for the number of spectral channels, pix for the total number of spatial and spectral pixels, fill for the filling factor, std for the standard deviation, skew for the skewness and kurt for the kurtosis across the source mask. Flux densities will be divided by the global RMS noise level. peak, sum, mean, pix and fill will be logarithmic, all other parameters linear.", 
+            "dtype": "list:str", 
+            "default": [
+                            "peak",
+                            "sum",
+                            "mean",
+                        ],
+            "name": "reliability.parameters",
+            "choices": [
+                "peak",
+                "sum",
+                "mean",
+                "chan",
+                "pix",
+                "fill",
+                "std",
+                "skew",
+                "kurt"
+            ]
+        }, 
+        {
+            "info": "If set to true, diagnostic plots (in EPS format) will be created to allow the quality of the reliability estimation to be assessed. It is advisable to generate and inspect these plots to ensure that the outcome of the reliability filtering procedure is satisfactory.", 
+            "dtype": "bool", 
+            "default": true,
+            "name": "reliability.plot",
+        }, 
+        {
+            "info": "When estimating the density of positive and negative detections in parameter space, the size of the Gaussian kernel used in this process is determined from the covariance of the distribution of negative detections in parameter space. This parameter setting can be used to scale that kernel by a constant factor.", 
+            "dtype": "float", 
+            "default": 0.4,
+            "name": "reliability.scaleKernel",
+        }, 
+        {
+            "info": "Reliability threshold in the range of 0 to 1. Sources with a reliability below this threshold will be discarded.", 
+            "dtype": "float", 
+            "default": 0.9,
+            "name": "reliability.threshold",
+        }, 
+        {
+            "info": "Set to true to enable source mask dilation whereby the mask of each source will be grown outwards until the resulting increase in integrated flux drops below a given threshold or the maximum number of iterations is reached.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "dilation.enable",
+        }, 
+        {
+            "info": "Sets the maximum number of spatial iterations for the mask dilation algorithm. Once this number of iterations has been reached, mask dilation in the spatial plane will stop even if the flux increase still exceeds the threshold set by dilation.threshold.", 
+            "dtype": "int", 
+            "default": 10,
+            "name": "dilation.iterationsXY",
+        }, 
+        {
+            "info": "Sets the maximum number of spectral iterations for the mask dilation algorithm. Once this number of iterations has been reached, mask dilation in the spectral axis will stop even if the flux increase still exceeds the threshold set by dilation.threshold.", 
+            "dtype": "int", 
+            "default": 5,
+            "name": "dilation.iterationsZ",
+        }, 
+        {
+            "info": "If a positive value is provided, mask dilation will end when the increment in the integrated flux during a single iteration drops below this value times the total integrated flux (from the previous iteration), or when the maximum number of iterations has been reached. Specifying a negative threshold will disable flux checking altogether and always carry out the maximum number of iterations.", 
+            "dtype": "float", 
+            "default": 0.001,
+            "name": "dilation.threshold",
+        }, 
+        {
+            "info": "If set to true, the parametrisation module will be enabled to measure the basic parameters of each detected source.", 
+            "dtype": "bool", 
+            "default": true,
+            "name": "parameter.enable",
+        },
+        {
+            "info": "If set to false and a region of the data cube is read in using the input.region parameter, then the position parameters x, y, z, x_min, x_max, y_min, y_max, z_min and z_max in the source catalogue will be specified relative to the region. If set to true, the position parameters will instead be relative to the full cube. Note that the auto-flagging log file will also adhere to this setting.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "parameter.offset",
+        },
+        {
+            "info": "If set to true, SoFiA will attempt to convert relevant parameters to physical units. This involves conversion of channel widths to frequency/velocity units and division of flux-based parameters by the solid angle of the beam. For this to work, the relevant header parameters, including CTYPE3, CDELT3, BMAJ and BMIN, must have been correctly set. It is further assumed that the beam does not vary with frequency or position.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "parameter.physical",
+        }, 
+        {
+            "info": "Prefix to be used in source names. The default prefix is SoFiA, and the resulting default source name is SoFiA Jhhmmss.ss-ddmmss.s for J2000 equatorial coordinates (and likewise for other coordinate types).", 
+            "dtype": "str", 
+            "default": "SoFiA",
+            "name": "parameter.prefix",
+        },
+        {
+            "info": "If set to true, SoFiA will attempt to convert the source centroid position (x, y, z) to world coordinates using the WCS information stored in the header. In addition, spectra and moment map units will be converted from channels to WCS units as well.", 
+            "dtype": "bool", 
+            "default": true,
+            "name": "parameter.wcs",
+        },                       
+        {
+            "info": "Full path to the directory to which all output files will be written. If unset, the directory of the input data cube will be used by default.", 
+            "dtype": "str", 
+            "default": null,
+            "name": "output.directory",
+        }, 
+        {
+            "info": "File name that will be used as the template for all output files. For example, if output.filename = my_data, then the output files will be named my_data_cat.xml, my_data_mom0.fits, etc. If unset, the name of the input data cube will be used as the file name template by default.", 
+            "dtype": "str", 
+            "default": null,
+            "name": "output.filename",
+        }, 
+        {
+            "info": "Margin (in pixels) around detections to be added when creating cubelets, moment maps and spectra of individual sources. The same margin will be applied to all axes of the cube. A value of 0 will create tight cutouts without any extra margin, thus minimising file sizes. The default is 10 pixels.", 
+            "dtype": "int", 
+            "default": 10,
+            "name": "output.marginCubelets",
+        }, 
+        {
+            "info": "If true, existing output files will be overwritten without warning. If false, SoFiA will refuse to run if any of the output files and directories to be created already exists.", 
+            "dtype": "bool", 
+            "default": true,
+            "name": "output.overwrite",
+        }, 
+        {
+            "info": "If output.cubelets is enabled, then the moment 1 and 2 maps for each individual detection will be created using only those spectral channels where the flux density exceeds this value times the local RMS noise level. E.g., setting output.thresholdMom12 to a value of 3.0 would set a 3-sigma flux density threshold for moments 1 and 2. Note that this setting has no effect on moment 0 maps or global moment 1 and 2 maps.", 
+            "dtype": "float", 
+            "default": 0.0,
+            "name": "output.thresholdMom12",
+        }, 
+        {
+            "info": "If set to true, an output source catalogue will be produced in human-readable ASCII format. The catalogue file will have the suffix _cat.txt.", 
+            "dtype": "bool", 
+            "default": true,
+            "name": "output.writeCatASCII",
+        }, 
+        {
+            "info": "If set to true, an output source catalogue will be produced in SQL format. The catalogue file will have the suffix _cat.sql. The SQL catalogue can be imported into any SQL-compatible database. A new data table containing the source parameters, named SoFiA-Catalogue by default, will be generated.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeCatSQL",
+        }, 
+        {
+            "info": "If set to true, an output source catalogue will be produced in VO-compatible XML format. The catalogue file will have the suffix _cat.xml.", 
+            "dtype": "bool", 
+            "default": true,
+            "name": "output.writeCatXML",
+        }, 
+        {
+            "info": "If set to true, then individual source products for each detected source will be created, including sub-cubes, masks, moment maps and integrated spectra. The source products will be written to a sub-directory with the suffix _cubelets. Each source product will be labelled with the source ID number for identification.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeCubelets",
+        }, 
+        {
+            "info": "If set to true and any input filtering algorithm is enabled, then a data cube containing the filtered data will be written in FITS format. The filtered cube will have the suffix _filtered.fits.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeFiltered",
+        }, 
+        {
+            "info": "If set to true, then a data cube containing the final source mask produced by the source finder will be written in FITS format. The pixel values in the source mask will correspond to the respective source ID numbers in the catalogue. The mask cube will have the suffix _mask.fits.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeMask",
+        },
+        {
+            "info": "If set to true, then an image containing a two-dimensional projection of the 3D mask cube will be written in FITS format. The 2D mask image will have the suffix _mask-2d.fits. Note that some sources may be hidden behind others in this 2D projection.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeMask2d",
+        },
+        {
+            "info": "If set to true, then images of the spectral moments 0, 1 and 2 and the number of channels in each pixel of the moment 0 map will be written in FITS format. The maps will have the suffix _mom0.fits, _mom1.fits, _mom2.fits and _chan.fits. Note that moments 1 and 2 and the number of channels will not be produced if the input data cube is only two-dimensional.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeMoments",
+        },
+        {
+            "info": "If set to true and local noise scaling is enabled, then a data cube containing the measured local noise values will be written in FITS format. The noise cube will have the suffix _noise.fits. If spectral noise scaling is enabled, then the measured noise in each channel (in native data cube flux units) will be written to a plain text file with the suffix _noise.txt.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeNoise",
+        },
+        {
+            "info": "If set to true, then a data cube containing the raw, binary source mask produced by the source finder prior to linking will be written in FITS format. The raw mask cube will have the suffix _mask-raw.fits.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "output.writeRawMask",
+        },
+        {
+            "info": null, 
+            "default": false,
+            "dtype": "bool", 
+            "name": "port2tigger"
+        } 
+    ]
+}
+

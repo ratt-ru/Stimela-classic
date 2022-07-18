@@ -1,9 +1,7 @@
-FROM stimela/base:1.6.0
-RUN docker-apt-install casacore-dev \
-    casacore-data \
-    build-essential \
-    libboost-all-dev \
-    wcslib-dev \
-    libcfitsio-dev
-RUN pip install "cubical[lsm-support]@git+https://github.com/ratt-ru/CubiCal.git" scabha
+FROM stimela/ddfacet:1.7.1
+RUN apt install -y \
+    casacore-data
+RUN . /opt/venv/bin/activate && \
+    python -m pip install 'cubical[lsm-support,degridder-support]==1.6.1' scabha
+RUN DDF.py --help
 RUN gocubical --help

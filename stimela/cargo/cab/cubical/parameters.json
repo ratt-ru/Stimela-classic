@@ -1,10 +1,10 @@
 {
     "task": "cubical", 
     "base": "stimela/cubical", 
-    "tag": ["1.5.8", "1.7.1"], 
+    "tag": ["1.5.8", "1.7.1", "1.7.2"], 
     "description": "CubiCal is a suite of fast radio interferometric calibration routines exploiting complex optimisation.", 
     "prefix": "--",
-    "version":["1.5.8", "1.5.11"],
+    "version":["1.5.8", "1.5.11", "1.6.1"],
     "binary": "gocubical",
     "junk":["cubical.last", "montblanc.log"],
     "msdir": true, 

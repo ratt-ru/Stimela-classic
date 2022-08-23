@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -6,11 +6,12 @@ from setuptools import setup
 import glob
 
 
-requirements = ["pyyaml",
+requirements = [
+                "pyyaml",
                 "nose>=1.3.7",
                 "future-fstrings",
-                "scabha"
-                ],
+                "scabha<=0.3.2"
+                ]
 
 PACKAGE_NAME = "stimela"
 __version__ = "1.7.5"

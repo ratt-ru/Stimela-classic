@@ -5,6 +5,7 @@
     "description": "A tool for creating a binary mask given a FITS image",
     "prefix": "--",
     "binary": "breizorro",
+    "version":"0.1.0",
     "junk":[],
     "msdir": false,
     "parameters": [

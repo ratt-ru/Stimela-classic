@@ -201,7 +201,7 @@
         },
         {
             "info": "Centre of online catalog to compare local image/model in 'RA hh:mm:ss, Dec deg:min:sec'",
-            "default": "0:0:0, -30:0:0",
+            "default": null,
             "required": false,
             "name": "centre_coord",
             "dtype": "str"

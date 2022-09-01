@@ -13,7 +13,7 @@ requirements = ["pyyaml",
                 ],
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.7.4"
+__version__ = "1.7.6"
 build_root = os.path.dirname(__file__)
 
 def readme():

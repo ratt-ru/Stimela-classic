@@ -4,6 +4,10 @@ WORKSPACE_ROOT="$WORKSPACE/$BUILD_NUMBER"
 TEST_OUTPUT_DIR="$WORKSPACE_ROOT/test-output"
 TEST_DATA_DIR="$WORKSPACE/../../../test-data"
 mkdir $TEST_OUTPUT_DIR
+function finish {
+    rm -rf $TMPDIR
+}
+trap finish EXIT
 
 #Custom home for this run's temporary stuff
 mkdir $WORKSPACE_ROOT/tmp

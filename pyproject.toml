@@ -1,7 +1,0 @@
-[build-system]
-requires = [
-            "pip",
-            "pip-tools",
-            "setuptools",
-            "wheel"
-           ]

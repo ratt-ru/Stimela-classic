@@ -1,6 +1,7 @@
 include LICENSE
 include README.rst
 include CHANGES.md
+include requirements.txt
 
 recursive-include Dockerfile
 recursive-include src run.py run.py

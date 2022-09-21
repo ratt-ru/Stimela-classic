@@ -6,9 +6,6 @@ TEST_DATA_DIR="$WORKSPACE/../../../test-data"
 mkdir $TEST_OUTPUT_DIR
 
 #Custom home for this run's temporary stuff
-mkdir $WORKSPACE_ROOT/tmp
-TMPDIR="$WORKSPACE_ROOT/tmp"
-export TMPDIR
 rm -rf ~/.stimela
 HOME=$WORKSPACE_ROOT
 export HOME

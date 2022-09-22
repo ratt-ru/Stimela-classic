@@ -1,10 +1,11 @@
 {
     "task": "breizorro",
     "base": "stimela/breizorro",
-    "tag": "1.7.1",
+    "tag": "1.7.4",
     "description": "A tool for creating a binary mask given a FITS image",
     "prefix": "--",
     "binary": "breizorro",
+    "version":"0.1.0",
     "junk":[],
     "msdir": false,
     "parameters": [
@@ -44,7 +45,7 @@
             "io": "input",
             "delimiter": " ",
             "name": "merge",
-            "dtype": "list:file",
+            "dtype": "list:file"
         },
         {
             "info": "Subtract one or more masks or region files",
@@ -53,7 +54,7 @@
             "io": "input",
             "delimiter": " ",
             "name": "subtract",
-            "dtype": "list:file",
+            "dtype": "list:file"
         },
         {
             "info": "Number the islands detected (default=do not number islands)",
@@ -111,6 +112,13 @@
             "required": false,
             "name": "fill-holes",
             "dtype": "bool"
+        },
+        {
+            "info": "Sum to peak ratio of flux islands to mask in original image",
+            "default": null,
+            "required": false,
+            "name": "sum-peak",
+            "dtype": "float"
         },
         {
             "info": "Suffix for mask image (default based on input name)",

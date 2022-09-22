@@ -1,7 +1,7 @@
 {
     "task": "aimfast",
     "base": "stimela/aimfast",
-    "tag": "1.7.0",
+    "tag": "1.7.5",
     "description": "An Astronomical Image Fidelity Assessment Tool",
     "prefix": "--",
     "binary": "aimfast",
@@ -201,7 +201,7 @@
         },
         {
             "info": "Centre of online catalog to compare local image/model in 'RA hh:mm:ss, Dec deg:min:sec'",
-            "default": "0:0:0, -30:0:0",
+            "default": null,
             "required": false,
             "name": "centre_coord",
             "dtype": "str"

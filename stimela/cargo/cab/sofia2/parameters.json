@@ -1,8 +1,8 @@
 {
     "task": "sofia2", 
     "base": "stimela/sofia2", 
-    "tag": "1.7.4", 
-    "version" : "2.4.0",
+    "tag": "1.7.6", 
+    "version" : "2.5.0",
     "description": "This is version 2 of the HI Source Finding Application (SoFiA), a source finding pipeline originally designed to detect and characterise galaxies in 3D extragalctic HI data cubes. SoFiA 2 is a reimplementation of the original SoFiA pipeline in the C programming language and provides most of the functionality of SoFiA 1.x", 
     "prefix": "--", 
     "binary": "sofia", 
@@ -449,7 +449,13 @@
             "dtype": "int", 
             "default": 1,
             "name": "linker.radiusZ",
-        }, 
+        },
+        {
+            "info": "If set to true, SoFiA will try to automatically determine the optimal reliability kernel scale factor by iteratively increasing the kernel size until the absolute value of the median of the Skellam distribution decreases below reliability.tolerance. If the algorithm fails to converge after reliability.iterations steps, then the default value of reliability.scaleKernel will be used instead.", 
+            "dtype": "bool", 
+            "default": false,
+            "name": "reliability.autoKernel",
+        },  
         {
             "info": "Path to a file containing positions on the sky to be excluded from the reliability analysis. The file must contain two columns separated by a space, tabulator or comma that specify the longitude and latitude of the position to be excluded in the native WCS coordinates and units of the input FITS file. Negative detections that contain any of those positions within their bounding box will be excluded from the reliability analysis, although they will still show up in the reliability plot.", 
             "dtype": "file", 
@@ -468,6 +474,12 @@
             "dtype": "bool", 
             "default": false,
             "name": "reliability.enable",
+        }, 
+        {
+            "info": "Maximum number of iterations for the reliability kernel auto-scaling algorithm to converge. If convergence is not achieved, then reliability.scaleKernel will instead be applied.", 
+            "dtype": "int", 
+            "default": 30,
+            "name": "reliability.iterations",
         }, 
         {
             "info": "Minimum total number of spatial and spectral pixels within the source mask for detections to be considered reliable. The reliability of any detection with fewer pixels will be set to zero by default.", 
@@ -519,7 +531,13 @@
             "dtype": "float", 
             "default": 0.9,
             "name": "reliability.threshold",
-        }, 
+        },
+        {
+            "info": "Convergence tolerance for the reliability kernel auto-scaling algorithm. Convergence is achieved when the absolute value of the median of the Skellam distribution drops below this tolerance.", 
+            "dtype": "float", 
+            "default": 0.05,
+            "name": "reliability.tolerance",
+        },  
         {
             "info": "Set to true to enable source mask dilation whereby the mask of each source will be grown outwards until the resulting increase in integrated flux drops below a given threshold or the maximum number of iterations is reached.", 
             "dtype": "bool", 
@@ -672,4 +690,5 @@
         } 
     ]
 }
+
 

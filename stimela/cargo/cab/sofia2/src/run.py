@@ -13,7 +13,6 @@ import subprocess
 from astLib.astWCS import WCS
 from astropy.io.votable import parse_single_table
 from Tigger.Models import SkyModel, ModelClasses
-from stimela import utils
 
 
 CONFIG = os.environ["CONFIG"]
@@ -129,21 +128,6 @@ def tigger_src(src, idx):
 table = parse_single_table('{0}_cat.xml'.format(prefix))
 data = table.array
 
-#with open('{0}_cat.txt'.format(prefix)) as stdr:
-#    # Header
-#    stdr.readline()
-#    # Column names
-#    names = stdr.readline().split("#")[9].strip().split()
-#    print(names)
-#    # Units
-#    stdr.readline()
-#    # Column numbers
-#    stdr.readline()
-#    sys.stdout.write(" ".join(names))
-#    data = numpy.genfromtxt(stdr,
-#                            names=names + ["col"])
-#    print(data)
-
 for i, src in enumerate(data):
     model.sources.append(tigger_src(src, i))
 
@@ -153,4 +137,16 @@ model.ra0, model.dec0 = map(numpy.deg2rad, centre)
 
 model.save(tname_lsm)
 # Rename using CORPAT
-utils.xrun("tigger-convert", [tname_lsm, "--rename -f"])
+_runc = "tigger-convert %s --rename -f" % tname_lsm
+try:
+    subprocess.check_call(shlex.split(_runc))
+finally:
+    for item in junk:
+        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+            items = glob.glob("{dest}/{item}".format(**locals()))
+            for f in items:
+                if os.path.isfile(f):
+                    os.remove(f)
+                elif os.path.isdir(f):
+                    shutil.rmtree(f)
+

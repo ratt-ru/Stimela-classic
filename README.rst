@@ -22,13 +22,13 @@ To reference *stimela* in a scholary work, please use this citation:
 
 
 `Documentation <https://github.com/SpheMakh/Stimela/wiki>`_  
-==============
+===========================================================
 
 `Installation <https://github.com/SpheMakh/Stimela/wiki/Installation>`_
-==============
+=======================================================================
 
 `Tutorials <https://github.com/SpheMakh/Stimela/wiki/Examples>`_
-===========
+================================================================
 
 
 This project was initially funded by the `SKA/AWS AstroCompute In The Cloud <https://www.skatelescope.org/ska-aws-astrocompute-call-for-proposals>`_ initiative.

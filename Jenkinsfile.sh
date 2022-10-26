@@ -4,8 +4,15 @@ WORKSPACE_ROOT="$WORKSPACE/$BUILD_NUMBER"
 TEST_OUTPUT_DIR="$WORKSPACE_ROOT/test-output"
 TEST_DATA_DIR="$WORKSPACE/../../../test-data"
 mkdir $TEST_OUTPUT_DIR
+function finish {
+    rm -rf $TMPDIR
+}
+trap finish EXIT
 
 #Custom home for this run's temporary stuff
+mkdir $WORKSPACE_ROOT/tmp
+TMPDIR="$WORKSPACE_ROOT/tmp"
+export TMPDIR
 rm -rf ~/.stimela
 HOME=$WORKSPACE_ROOT
 export HOME
@@ -25,9 +32,14 @@ tar -xvf $TEST_DATA_DIR/DEEP2.ms.tar.gz -C $TEST_OUTPUT_DIR/msdir
 mkdir $TEST_OUTPUT_DIR/input
 cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 
+# Load newer version of singularity
+source /etc/profile.d/modules.sh
+module load singularity/3.8.4
+
+# Check version
 docker -v
 podman -v
-singularity -v
+singularity version
 export STIMELA_PULLFOLDER=${WORKSPACE_ROOT}/singularity_images
 mkdir $STIMELA_PULLFOLDER
 
@@ -52,5 +64,4 @@ stimela pull #--force
 #Run forest run!
 cd $TEST_OUTPUT_DIR
 export SILENT_STDERR=ON
-python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests"
-
+python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests" -v

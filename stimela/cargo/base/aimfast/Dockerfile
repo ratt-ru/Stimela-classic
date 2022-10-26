@@ -1,4 +1,4 @@
-FROM stimela/meqtrees:1.6.6
+FROM quay.io/stimela/base:1.7.1
 RUN docker-apt-install python3-pip \
                        python3-numpy \
                        python3-matplotlib \
@@ -10,5 +10,6 @@ RUN docker-apt-install python3-pip \
                        python3-setuptools \
                        pybdsf
 
-
-RUN pip3 install bdsf aimfast
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 10
+RUN pip3 install -U pip bdsf
+RUN pip3 install aimfast

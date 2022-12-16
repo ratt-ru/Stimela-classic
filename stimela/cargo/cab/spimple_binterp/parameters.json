@@ -1,5 +1,5 @@
 {
-    "task": "spimple imconv",
+    "task": "spimple binterp",
     "base": "stimela/spimple",
     "tag": "1.7.1",
     "description": "Beam intrepolation tool.",

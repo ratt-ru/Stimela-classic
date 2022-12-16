@@ -1,7 +1,7 @@
 {
     "task": "spimple SPI fitter",
     "base": "stimela/spimple",
-    "tag": "1.7.1",
+    "tag": "1.7.2b",
     "description": "Simple spectral index fitting tool.",
     "prefix": "--",
     "binary": "spimple-spifit",

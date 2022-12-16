@@ -1,7 +1,7 @@
 {
     "task": "spimple imconv",
     "base": "stimela/spimple",
-    "tag": "1.7.1",
+    "tag": "1.7.2b",
     "description": "Convolve images to a common resolution",
     "prefix": "--",
     "binary": "spimple-imconv",

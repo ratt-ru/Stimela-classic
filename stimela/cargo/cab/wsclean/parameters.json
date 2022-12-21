@@ -632,6 +632,12 @@
             "dtype": "int",
             "default": null,
             "name": "pb-grid-size"
-        }
+        },
+        {
+            "info": "In case of irregular frequency spacing, this option can be used to not try and split channels to make the output channel bandwidth similar, but instead to split largest gaps first."
+            "dtype": "bool",
+            "default": null,
+            "name": "gap-channel-division"
+        }    
     ]
 }

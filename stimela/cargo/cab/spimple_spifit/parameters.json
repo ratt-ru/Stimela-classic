@@ -1,0 +1,188 @@
+{
+    "task": "spimple SPI fitter",
+    "base": "stimela/spimple",
+    "tag": "1.7.2b",
+    "description": "Simple spectral index fitting tool.",
+    "prefix": "--",
+    "binary": "spimple-spifit",
+    "junk":["spifit.log"],
+    "msdir": true,
+    "parameters": [
+      {
+        "info": "Input model name",
+        "dtype": "str",
+        "required": false,
+        "name": "model",
+        "io": "input",
+        "deprecated": false
+      },
+      {
+        "info": "Path to output directory",
+        "dtype": "str",
+        "required": true,
+        "name": "output-filename",
+        "io": "output",
+        "deprecated": false
+      },
+      {
+        "info": "Beam parameters matching FWHM of restoring beam specified as emaj emin pa.",
+        "dtype": "list:float",
+        "required": false,
+        "name": "psf-pars",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Number of threads to use",
+        "dtype": "int",
+        "required": false,
+        "name": "nthreads",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Convolve with a circularised beam, not an elliptical one",
+        "dtype": "bool",
+        "required": false,
+        "name": "circ-psf",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Fits beam model to use. Only real and imageinary beam models currently supported",
+        "dtype": "str",
+        "required": false,
+        "name": "beam-model",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Band to use with JimBeam. L or UHF. Default is 'l'",
+        "dtype": "str",
+        "required": false,
+        "name": "band",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Set image to zero where pb falls below this value. Default is 0.05",
+        "dtype": "float",
+        "required": false,
+        "name": "pb-min",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Padding fraction for FFTs (half on either side). Default is 0.5",
+        "dtype": "float",
+        "required": false,
+        "name": "padding-frac",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Data type of output. Default is single precision",
+        "dtype": "str",
+        "required": false,
+        "name": "out_dtype",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Multiple of the rms in the residual to threshold",
+        "dtype": "float",
+        "required": false,
+        "name": "threshold",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Input residual",
+        "dtype": "str",
+        "required": false,
+        "name": "residual",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Maximum dynamic range used to determine the threshold above which components need to be fit",
+        "dtype": "float",
+        "required": false,
+        "name": "maxDR",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Outputs to write. a - alpha map, e - alpha error map, i - I0 map, k - I0 error map, I - reconstructed cube form alpha and I0, c - restoring beam used for convolution, m - convolved model, r - convolved residual, b - average power beam. Default is 'aeikIcmrb'",
+        "dtype": "str",
+        "required": false,
+        "name": "products",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Passing this flag bypasses the convolution",
+        "dtype": "bool",
+        "required": false,
+        "name": "dont-convolve",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Per-channel weights to use during fit to frequency axis",
+        "dtype": "list:float",
+        "required": false,
+        "name": "channel_weights",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Reference frequency where the I0 map is sought",
+        "dtype": "float",
+        "required": false,
+        "name": "ref-freq",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Add in the convolved residuals before fitting components",
+        "dtype": "bool",
+        "required": false,
+        "name": "add-convolved-residuals",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Mesurement sets used to make the image. Used for parallactic angles in case of primary beam correction",
+        "dtype": "list:str",
+        "required": false,
+        "name": "ms",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Field Id",
+        "dtype": "int",
+        "required": false,
+        "name": "field",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Used to select a subset of time. Default is 10",
+        "dtype": "int",
+        "required": false,
+        "name": "sparsify-time",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Correlation typ i.e. linear or circular.",
+        "dtype": "str",
+        "required": false,
+        "name": "corr-type",
+        "default": null,
+        "deprecated": false
+      }
+    ]
+}

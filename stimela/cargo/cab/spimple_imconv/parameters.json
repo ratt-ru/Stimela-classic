@@ -1,0 +1,92 @@
+{
+    "task": "spimple imconv",
+    "base": "stimela/spimple",
+    "tag": "1.7.2b",
+    "description": "Convolve images to a common resolution",
+    "prefix": "--",
+    "binary": "spimple-imconv",
+    "junk":["image_convolver.log"],
+    "msdir": true,
+    "parameters": [
+      {
+        "info": "Input image name",
+        "dtype": "str",
+        "required": true,
+        "name": "image",
+        "io": "input",
+        "deprecated": false
+      },
+      {
+        "info": "Path to output directory",
+        "dtype": "str",
+        "required": true,
+        "name": "output-filename",
+        "io": "output",
+        "deprecated": false
+      },
+      {
+        "info": "Beam parameters matching FWHM of restoring beam specified as emaj emin pa.",
+        "dtype": "list:float",
+        "required": false,
+        "name": "psf-pars",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Number of threads to use",
+        "dtype": "int",
+        "required": false,
+        "name": "nthreads",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Convolve with a circularised beam, not an elliptical one",
+        "dtype": "bool",
+        "required": false,
+        "name": "circ-psf",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Fits beam model to use",
+        "dtype": "str",
+        "required": false,
+        "name": "beam-model",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Band to use with JimBeam. L or UHF. Default is 'l'",
+        "dtype": "str",
+        "required": false,
+        "name": "band",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Set image to zero where pb falls below this value. Default is 0.05",
+        "dtype": "float",
+        "required": false,
+        "name": "pb-min",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Padding fraction for FFTs (half on either side). Default is 0.5",
+        "dtype": "float",
+        "required": false,
+        "name": "padding-frac",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Data type of output. Default is single precision",
+        "dtype": "str",
+        "required": false,
+        "name": "out-dtype",
+        "default": null,
+        "deprecated": false
+      }
+    ]
+}

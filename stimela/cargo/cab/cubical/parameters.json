@@ -514,11 +514,21 @@
             "info": "Generate summary plots.", 
             "dtype": "bool", 
             "name": "out-plots"
-        },                                                                              {
+        },
+        {
             "info": " If direction-dependent gains are in use and correction is being done, selects direction to correct in. If -1, corrects only for the last direction-independent term. Set to 0 to avoid. ", 
             "dtype": "int", 
             "name": "out-correct-dir"
-        }, 
+        },
+        {
+            "info": "Explicitly enables or disables derotation of output visibilities. Default (None) is to use the –model-pa-rotate and –model-feed-rotate settings", 
+            "dtype": [
+                "str", 
+                "int"
+            ],
+            "name": "out-derotate",
+            "default": null
+        },
         {
             "info": "Number of processes", 
             "dtype": "int", 

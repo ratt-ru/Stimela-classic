@@ -137,7 +137,7 @@ if beam and beam_files_pattern:
             NANT)*rms_perr, numpy.random.randn(NANT)*rms_perr
         ll, mm = " ".join(map(str, perr[0])), " ".join(map(str, perr[-1]))
         options['oms_pointing_errors.pe_l.values_str'] = "'%s'" % ll
-        options['oms_pointing_errors.pe_l.values_str'] = "'%s'" % mm
+        options['oms_pointing_errors.pe_m.values_str'] = "'%s'" % mm
 
 field_center = params.pop("field-center", None)
 if field_center and skymodel:

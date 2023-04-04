@@ -522,10 +522,7 @@
         },
         {
             "info": "Explicitly enables or disables derotation of output visibilities. Default (None) is to use the –model-pa-rotate and –model-feed-rotate settings", 
-            "dtype": [
-                "str", 
-                "int"
-            ],
+            "dtype": "bool",
             "name": "out-derotate",
             "default": null
         },

@@ -39,7 +39,7 @@ for param in params:
         if isinstance(value, (int, float)):
             value = '{0}asec'.format(value)
 
-    elif name in 'size trim nwlayers-for-size beam-shape channel-range interval restore restore-list'.split():
+    elif name in 'size trim nwlayers-for-size beam-shape channel-range interval restore restore-list shift'.split():
         if isinstance(value, int):
             value = '{0} {0}'.format(value)
         elif hasattr(value, '__iter__'):

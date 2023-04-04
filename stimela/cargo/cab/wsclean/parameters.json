@@ -646,6 +646,12 @@
             "name": "restore-list",
             "default": null,
             "io": "output"
+        },
+        {
+            "info": "Shift the phase centre to the given location. The shift is along the tangential plane.",
+            "dtype": "list:str",
+            "name": "shift",
+            "default": null
         }
     ]
 }

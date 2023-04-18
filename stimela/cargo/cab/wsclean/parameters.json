@@ -42,7 +42,8 @@
             "info": "Like 'mem', but this specifies a fixed amount of memory in gigabytes.", 
             "dtype": "float", 
             "default": null, 
-            "name": "absmem"
+            "name": "absmem",
+            "mapping": "abs-mem"
         }, 
         {
             "info": "Increase verbosity of output", 
@@ -115,7 +116,7 @@
             "info": "In spectral mode, calculate the weights as if the image was made using MFS. This makes sure that the sum of channel images equals the MFS weights. Otherwise, the channel image will become a bit more naturally weighted. This is only relevant for weighting modes that require gridding (i.e., Uniform, Briggs').", 
             "dtype": "bool", 
             "name": "nomfsweighting", 
-            "mapping": "no-mfs-weighting"
+            "mapping": "no-mf-weighting"
         }, 
         {
             "info": "Filter the weights and set high weights to the local mean. The level parameter specifies the filter level; any value larger than level*localmean will be set to level*localmean.", 

@@ -258,7 +258,7 @@ class StimelaJob(object):
             self.tag = _cab.tag[-1]
             self.version = _cab.version[-1]
 
-        cabspecs = self.recipe.cabspecs.get(cont.cabname, None)
+        cabspecs = self.recipe.cabspecs
         if cabspecs:
             _tag = cabspecs.get("tag", None)
             _version = cabspecs.get("version", None)

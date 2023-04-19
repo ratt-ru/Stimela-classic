@@ -121,11 +121,12 @@
             "dtype": "float"
         },
         {
-            "info": "Suffix for mask image (default based on input name)",
+            "info": "Name of output mask image (default based on input name)",
             "default": null,
             "required": false,
             "name": "outfile",
-            "dtype": "str"
+            "io": "input",
+            "dtype": "file"
         }
     ]
 }

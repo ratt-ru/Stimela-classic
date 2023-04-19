@@ -60,13 +60,13 @@
             "info": "Set height of the resulting image.",
             "dtype": "int",
             "required": false,
-            "name": "canvas-height",
+            "name": "canvas-height"
         },
         {
             "info": "Set width of the resulting image.",
             "dtype": "int",
             "required": false,
-            "name": "canvas-width",
+            "name": "canvas-width"
         },
         {
             "info": "Size of channel bins over which to average.",

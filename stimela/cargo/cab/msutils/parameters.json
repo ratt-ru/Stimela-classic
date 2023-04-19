@@ -48,7 +48,7 @@
             "name": "outfile", 
             "io": "output", 
             "dtype": "file",
-            "check_io": false,
+            "check_io": false
         }, 
         {
             "info": "Display MS summary to stdout", 

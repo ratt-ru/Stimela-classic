@@ -20,16 +20,25 @@ tab = table(gtab)
 field_ids = numpy.unique(tab.getcol("FIELD_ID"))
 tab.close()
 
-tab = table(gtab+"::FIELD")
-field_names = tab.getcol("NAME")
-tab.close()
-
 field_in = parameters_dict["field"].split(",")
-
 try:
-    ids = list(map(int, field_in))
-except ValueError:
-    ids = list(map(lambda a: field_names.index(a), field_in))
+    tab = table(gtab+"::FIELD")
+    field_names = tab.getcol("NAME")
+    tab.close()
+except RuntimeError:
+    # possible new table format
+    # sadly Field name and Source name columns are empty
+    # will need to figure this out, but ignoring the tests for now
+    tab = table(gtab)
+    field_names = numpy.unique(tab.getcol("FIELD_NAME"))
+    tab.close()
+    pass
 
-if not set(ids).issubset(field_ids):
-    raise RuntimeError(f"Some field(s) do not have solutions after the calibration. Please refer to CASA {config.binary} logfile for further details")
+if field_names:
+    try:
+        ids = list(map(int, field_in))
+    except ValueError:
+        ids = list(map(lambda a: field_names.index(a), field_in))
+    if not set(ids).issubset(field_ids):
+        raise RuntimeError(f"Some field(s) do not have solutions after the calibration. Please refer to CASA {config.binary} logfile for further details")
+

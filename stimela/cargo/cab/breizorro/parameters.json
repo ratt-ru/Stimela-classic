@@ -125,7 +125,7 @@
             "default": null,
             "required": false,
             "name": "outfile",
-            "io": "input",
+            "io": "output",
             "dtype": "file"
         }
     ]

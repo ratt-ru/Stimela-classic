@@ -1,9 +1,9 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": ["1.6.0-1", "1.2.3", "1.6.3", "1.7.3", "1.7.4"],
+    "tag": ["1.6.0-1", "1.2.3", "1.6.3", "1.7.3", "1.7.4", "1.7.7"],
     "description": "WSClean imaging software", 
-    "version" : ["2.6", "2.8", "2.9", "3.0.1", "3.1"],
+    "version" : ["2.6", "2.8", "2.9", "3.0.1", "3.1", "3.3"],
     "prefix": "-", 
     "binary": "wsclean", 
     "junk" : [],
@@ -42,7 +42,8 @@
             "info": "Like 'mem', but this specifies a fixed amount of memory in gigabytes.", 
             "dtype": "float", 
             "default": null, 
-            "name": "absmem"
+            "name": "absmem",
+            "mapping": "abs-mem"
         }, 
         {
             "info": "Increase verbosity of output", 
@@ -115,7 +116,7 @@
             "info": "In spectral mode, calculate the weights as if the image was made using MFS. This makes sure that the sum of channel images equals the MFS weights. Otherwise, the channel image will become a bit more naturally weighted. This is only relevant for weighting modes that require gridding (i.e., Uniform, Briggs').", 
             "dtype": "bool", 
             "name": "nomfsweighting", 
-            "mapping": "no-mfs-weighting"
+            "mapping": "no-mf-weighting"
         }, 
         {
             "info": "Filter the weights and set high weights to the local mean. The level parameter specifies the filter level; any value larger than level*localmean will be set to level*localmean.", 
@@ -632,6 +633,26 @@
             "dtype": "int",
             "default": null,
             "name": "pb-grid-size"
+        },
+        {
+            "info": "Restore the model image onto the residual image and save it in output image. By default, the beam parameters are read from the residual image. If this parameter is given, wsclean will do the restoring and then exit: no cleaning is performed.",
+            "dtype": "list:file",
+            "name": "restore",
+            "default": null,
+            "io": "output"
+        },
+        {
+            "info": "Restore a source list onto the residual image and save it in output image. Except for the model input format, this parameter behaves equal to -restore.",
+            "dtype": "list:file",
+            "name": "restore-list",
+            "default": null,
+            "io": "output"
+        },
+        {
+            "info": "Shift the phase centre to the given location. The shift is along the tangential plane.",
+            "dtype": "list:str",
+            "name": "shift",
+            "default": null
         }
     ]
 }

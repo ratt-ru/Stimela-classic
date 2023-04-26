@@ -25,7 +25,7 @@ RUN docker-apt-install cmake \
     liblog4cplus-dev \
     libhdf5-dev \
     casacore-dev
-RUN git clone --depth 1 -b v3.1 https://gitlab.com/aroffringa/wsclean.git wscleandir
+RUN git clone --depth 1 -b v3.3 https://gitlab.com/aroffringa/wsclean.git wscleandir
 RUN mkdir wscleandir/build
 RUN cd wscleandir/build && \
     cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \

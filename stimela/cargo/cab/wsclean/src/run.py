@@ -39,14 +39,14 @@ for param in params:
         if isinstance(value, (int, float)):
             value = '{0}asec'.format(value)
 
-    elif name in 'size trim nwlayers-for-size beam-shape channel-range interval'.split():
+    elif name in 'size trim nwlayers-for-size beam-shape channel-range interval restore restore-list shift'.split():
         if isinstance(value, int):
             value = '{0} {0}'.format(value)
         elif hasattr(value, '__iter__'):
             if len(value) == 1:
                 value.append(value[0])
             value = ' '.join(map(str, value))
-
+ 
     elif name in 'spws multiscale-scales pol'.split():
         if hasattr(value, '__iter__'):
             value = ','.join(map(str, value))

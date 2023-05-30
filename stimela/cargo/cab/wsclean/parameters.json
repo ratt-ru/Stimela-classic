@@ -629,6 +629,18 @@
             "name": "parallel-deconvolution"
         },
         {
+            "info": "Will execute multiple gridders simultaneously. This can make things faster in certain cases, but will increase memory usage",
+            "dtype": "int",
+            "default": null,
+            "name": "parallel-gridding"
+        },
+        {
+            "info": "Use the w-gridding gridder developed by Martin Reinecke",
+            "dtype": "bool",
+            "default": null,
+            "name": "use-wgridder"
+        },
+        {
             "info": "Specify the grid size in number of pixels at which to evaluate the primary beam. Typically, the primary beam is calculated at a coarse resolution grid and interpolated, to reduce the time spent in evaluating the beam. This parameter controls the resolution of the grid at which to evaluate the primary beam. For rectangular images, pb-grid-size indicates the number of pixels along the shortest dimension. The total number of pixels in the primary beam grid thus amounts to: max(width, height) / min(width, height) * pb-grid-size**2. Default: 32.",
             "dtype": "int",
             "default": null,

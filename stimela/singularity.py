@@ -1,4 +1,3 @@
-# -*- coding: future_fstrings -*-
 import subprocess
 import os
 import sys
@@ -12,16 +11,20 @@ import tempfile
 import hashlib
 from shutil import which
 
-binary = which("singularity")
-if binary:
-    __version_string = subprocess.check_output([binary, "--version"]).decode("utf8")
-    version = __version_string.strip().split()[-1]
-    if version < "3.0.0":
-        suffix = ".img"
-    else:
-        suffix = ".sif"
-else:
-    version = None
+
+version = None
+
+for item in ["apptainer", "singularity"]:
+    BINARY = which(item)
+    BINARY_NAME = item
+    if BINARY:
+        __version_string = subprocess.check_output([BINARY, "--version"]).decode("utf8")
+        version = __version_string.strip().split()[-1]
+        if version < "3.0.0":
+            suffix = ".img"
+        else:
+            suffix = ".sif"
+        break
 
 class SingularityError(Exception):
     pass
@@ -41,7 +44,7 @@ def pull(image, name, docker=True, directory=".", force=False):
     if os.path.exists(image_path) and not force:
         stimela.logger().info(f"Singularity image already exists at '{image_path}'. To replace it, please re-run with the 'force' option")
     else:
-        utils.xrun(f"cd {directory} && singularity", ["pull", 
+        utils.xrun(f"cd {directory} && {BINARY}", ["pull", 
         	"--force" if force else "", "--name", 
          	name, fp])
 
@@ -55,7 +58,8 @@ class Container(object):
                  runscript="/singularity",
                  environs=None,
                  workdir=None,
-                 execdir="."):
+                 execdir=".",
+                ):
         """
         Python wrapper to singularity tools for managing containers.
         """
@@ -95,7 +99,7 @@ class Container(object):
         self.logger.debug("Adding environ varaible [{0}={1}] "\
                     "in container {2}".format(key, value, self.name))
         self.environs.append("=".join([key, value]))
-        key_ = f"SINGULARITYENV_{key}"
+        key_ = f"{BINARY_NAME.upper()}ENV_{key}"
 	
         self.logger.debug(f"Setting singularity environmental variable {key_}={value} on host")
         self._env[key_] = value
@@ -120,7 +124,7 @@ class Container(object):
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun(f"cd {self.execdir} && singularity run --userns --workdir {self.execdir} --containall",
+        utils.xrun(f"{BINARY} run --userns --workdir {self.execdir} --containall",
 		    list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     env=self._env, logfile=self.logfile)

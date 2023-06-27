@@ -349,7 +349,7 @@ class StimelaJob(object):
             raise OSError
 
         cont.add_environ('CONFIG', f'{cab.MOUNT}/configfile')
-        cont.add_environ('HOME', cont.IODEST["output"])
+        #cont.add_environ('HOME', cont.IODEST["output"])
         cont.add_environ('STIMELA_MOUNT', cab.MOUNT)
 
         if msdir:

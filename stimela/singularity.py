@@ -20,7 +20,7 @@ for item in ["apptainer", "singularity"]:
     if BINARY:
         __version_string = subprocess.check_output([BINARY, "--version"]).decode("utf8")
         version = __version_string.strip().split()[-1]
-        if version < "3.0.0":
+        if BINARY_NAME == "singularity" and version < "3.0.0":
             suffix = ".img"
         else:
             suffix = ".sif"

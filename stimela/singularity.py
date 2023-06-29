@@ -124,7 +124,7 @@ class Container(object):
         self.status = "running"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun(f"{BINARY} run --userns --workdir {self.execdir} --containall",
+        utils.xrun(f"{BINARY} run --workdir {self.execdir} --containall --writable-tmpfs",
 		    list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     env=self._env, logfile=self.logfile)

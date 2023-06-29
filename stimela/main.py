@@ -11,9 +11,6 @@ from stimela.cargo import cab
 
 BASE = stimela.BASE
 CAB = stimela.CAB
-USER = stimela.USER
-UID = stimela.UID
-GID = stimela.GID
 GLOBALS = stimela.GLOBALS
 CAB_USERNAME = stimela.CAB_USERNAME
 

@@ -14,9 +14,7 @@ except pkg_resources.DistributionNotFound:
     __version__ = "dev"
 
 # Get to know user
-USER = os.environ["USER"]
-UID = os.getuid()
-GID = os.getgid()
+USER = os.getlogin()
 CAB_USERNAME = re.sub('[^0-9a-zA-Z]+', '_', USER).lower() 
 
 root = os.path.dirname(__file__)

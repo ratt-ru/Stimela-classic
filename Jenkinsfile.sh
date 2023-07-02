@@ -65,3 +65,9 @@ stimela pull #--force
 cd $TEST_OUTPUT_DIR
 export SILENT_STDERR=ON
 python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests" -v
+
+# Re-run unit tests with apptainer
+module unload singularity
+module load apptainer/1.2.0-rc.1
+
+python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests/unit_tests" -v

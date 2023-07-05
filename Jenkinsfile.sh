@@ -34,7 +34,11 @@ cp -r $TEST_DATA_DIR/beams $TEST_OUTPUT_DIR/input/beams
 
 # Load newer version of singularity
 source /etc/profile.d/modules.sh
-module load singularity/3.8.4
+
+# TODO(Ben) Singularity seems to be broken; testing with apptainer
+#module load singularity/3.8.4
+
+module load apptainer/1.2.0-rc.1
 
 # Check version
 docker -v

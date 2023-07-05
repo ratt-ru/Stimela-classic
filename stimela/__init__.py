@@ -7,6 +7,8 @@ import logging
 from logging import StreamHandler
 import re
 from pathlib import Path
+import getpass
+import time
 
 try:
     __version__ = pkg_resources.require("stimela")[0].version
@@ -14,9 +16,11 @@ except pkg_resources.DistributionNotFound:
     __version__ = "dev"
 
 # Get to know user
-USER = os.environ["USER"]
-UID = os.getuid()
-GID = os.getgid()
+try:
+    USER = getpass.getuser()
+except:
+    # The point is to avoid containers with the same name when using there multiple users using docker
+    USER = hex(id(time.ctime()))
 CAB_USERNAME = re.sub('[^0-9a-zA-Z]+', '_', USER).lower() 
 
 root = os.path.dirname(__file__)

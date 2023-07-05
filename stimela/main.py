@@ -11,9 +11,6 @@ from stimela.cargo import cab
 
 BASE = stimela.BASE
 CAB = stimela.CAB
-USER = stimela.USER
-UID = stimela.UID
-GID = stimela.GID
 GLOBALS = stimela.GLOBALS
 CAB_USERNAME = stimela.CAB_USERNAME
 
@@ -230,6 +227,9 @@ def pull(argv):
     add("-cb", "--cab-base", nargs="+",
         help="Pull base image for specified cab")
 
+    add("-at", "--all-tags", action="store_true",
+        help="Pull all tags for this image")
+
     add("-pf", "--pull-folder",
         help="Images will be placed in this folder. Else, if the environmnental variable 'STIMELA_PULLFOLDER' is set, then images will be placed there. "
         "Else, images will be placed in the current directory")
@@ -294,8 +294,12 @@ def pull(argv):
             cabdir = "{:s}/{:s}".format(stimela.CAB_PATH, cab_)
             _cab = info(cabdir, display=False)
             tags = _cab.tag
-            if not isinstance(tags, list):
+            if isinstance(tags, list):
+                if not args.all_tags:
+                    tags = [tags[-1]]
+            else:
                 tags = [tags]
+
             for tag in tags:
                 base.append(f"{_cab.base}:{tag}")
                 repository_.append(param["hub"] if "hub" in param.keys() else args.repository)

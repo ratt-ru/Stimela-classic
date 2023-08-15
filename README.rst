@@ -3,6 +3,8 @@
 Stimela
 =======
 
+**NOTE** This is the repository for *Stimela Classic* (i.e. version 1.x) which is no longer actively developed -- only maintenance releases are done occasionally. New to Stimela and want to write YaML recipes? Then you're certainly looking for the shiny new `Stimela 2 <https://github.com/caracal-pipeline/stimela>`.
+
 
 |Pypi Version|
 |Build Version|  

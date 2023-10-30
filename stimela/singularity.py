@@ -120,10 +120,9 @@ class Container(object):
             raise SystemExit from None
 
         self.status = "running"
-        #extras = "--userns" if BINARY_NAME == "singularity" else "--writable-tmpfs"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun(f"{BINARY} run --workdir {self.execdir} --containall {extras}",
+        utils.xrun(f"{BINARY} run --workdir {self.execdir} --contain",
 		    list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     env=self._env, logfile=self.logfile)

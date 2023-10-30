@@ -43,9 +43,10 @@ def pull(image, name, docker=True, directory=".", force=False):
     image_path = os.path.abspath(os.path.join(directory, name))
     if os.path.exists(image_path) and not force:
         stimela.logger().info(f"Singularity image already exists at '{image_path}'. To replace it, please re-run with the 'force' option")
-    elif force:
-        utils.xrun(f"cd {directory} && {BINARY}", ["pull", "--force", "--name", name, fp])
-
+    else:
+        utils.xrun(f"cd {directory} && {BINARY}", ["pull",
+                "--force" if force else "", "--name",
+                name, fp])
     return 0
 
 class Container(object):

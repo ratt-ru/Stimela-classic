@@ -6,7 +6,7 @@ from setuptools import setup
 import glob
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.7.9"
+__version__ = "1.7.11"
 build_root = os.path.dirname(__file__)
 
 

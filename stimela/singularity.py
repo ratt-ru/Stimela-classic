@@ -44,10 +44,9 @@ def pull(image, name, docker=True, directory=".", force=False):
     if os.path.exists(image_path) and not force:
         stimela.logger().info(f"Singularity image already exists at '{image_path}'. To replace it, please re-run with the 'force' option")
     else:
-        utils.xrun(f"cd {directory} && {BINARY}", ["pull", 
-        	"--force" if force else "", "--name", 
-         	name, fp])
-
+        utils.xrun(f"cd {directory} && {BINARY}", ["pull",
+                "--force" if force else "", "--name",
+                name, fp])
     return 0
 
 class Container(object):
@@ -122,10 +121,9 @@ class Container(object):
             raise SystemExit from None
 
         self.status = "running"
-        extras = "--userns" if BINARY_NAME == "singularity" else "--writable-tmpfs"
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
-        utils.xrun(f"{BINARY} run --workdir {self.execdir} --containall {extras}",
+        utils.xrun(f"{BINARY} run --workdir {self.execdir} --contain",
 		    list(args) + [volumes, self.image, self.RUNSCRIPT],
                     log=self.logger, timeout=self.time_out, output_wrangler=output_wrangler,
                     env=self._env, logfile=self.logfile)

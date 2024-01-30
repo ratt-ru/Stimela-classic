@@ -8,8 +8,6 @@ name: Python Dependants
 #    types:
 #      - completed
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -46,14 +44,15 @@ jobs:
       run: |
        cd ../caracal/
        poetry add stimela@latest --lock
+       git diff
        git add poetry.lock pyproject.toml
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v5
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: Update report
-        committer: GitHub <noreply@github.com>
+        commit-message: Update deps
+        committer: Athanaseus Javas Ramaila <aramaila@ska.ac.za>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         signoff: false
         branch: deps101

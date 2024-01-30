@@ -57,7 +57,7 @@ jobs:
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         signoff: false
         branch: deps101
-        base: ${{ github.head_ref }}
+        base: master
         delete-branch: true
         title: 'Stimela dependency update'
         body: |

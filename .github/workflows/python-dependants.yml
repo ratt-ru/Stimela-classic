@@ -40,7 +40,7 @@ jobs:
     - name: Test poetry
       run: poetry --version
     - name: Git clone caracal
-      run: git clone https://github.com/caracal-pipeline/caracal.git@master ../caracal/
+      run: git clone https://github.com/caracal-pipeline/caracal.git ../caracal/
     - uses: actions/checkout@v4
     - name: Make changes to pull request
       run: |
@@ -56,7 +56,7 @@ jobs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         signoff: false
-        branch: readthedocs
+        branch: deps101
         delete-branch: true
         title: 'Stimela dependency update'
         body: |

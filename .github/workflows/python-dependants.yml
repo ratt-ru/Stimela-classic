@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, creat a PR to caracal-pipeline after a successful version release
+# This workflow will install Python dependencies and create a PR to caracal-pipeline after a successful version release
 name: Python Dependants
 
 # Only trigger, when the publish workflow succeeded
@@ -25,7 +25,7 @@ jobs:
       with:
         python-version: '3.x'
     - name: Git clone caracal
-      run: git clone git+https://github.com/caracal-pipeline/caracal.git ../caracal/
+      run: git clone https://github.com/caracal-pipeline/caracal.git ../caracal/
     - uses: actions/checkout@v4
     - name: Make changes to pull request
       run: |

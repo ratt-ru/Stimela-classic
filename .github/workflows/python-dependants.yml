@@ -39,6 +39,7 @@ jobs:
       run: poetry --version
     - name: Git clone caracal
       run: git clone https://github.com/caracal-pipeline/caracal.git ../caracal/
+
     - uses: actions/checkout@v4
     - name: Make changes to pull request
       run: |
@@ -46,6 +47,7 @@ jobs:
        poetry add stimela@latest --lock
        git diff
        git add poetry.lock pyproject.toml
+
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v5

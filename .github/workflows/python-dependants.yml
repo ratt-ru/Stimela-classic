@@ -37,16 +37,16 @@ jobs:
       if: steps.cache-installs.outputs.cache-hit != 'true'
       run: |
         curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+    - name: Test poetry
+      run: poetry --version
     - name: Git clone caracal
-      run: git clone https://github.com/caracal-pipeline/caracal.git ../caracal/
+      run: git clone https://github.com/caracal-pipeline/caracal.git@master ../caracal/
     - uses: actions/checkout@v4
     - name: Make changes to pull request
       run: |
        cd ../caracal/
        poetry add stimela@latest --lock
        git add poetry.lock pyproject.toml
-    - name: Test poetry
-      run: poetry --version
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v5

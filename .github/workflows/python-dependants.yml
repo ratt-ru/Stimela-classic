@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -40,7 +40,6 @@ jobs:
     - name: Git clone caracal
       run: git clone https://github.com/caracal-pipeline/caracal.git ../caracal/
 
-    - uses: actions/checkout@v4
     - name: Make changes to pull request
       run: |
        cd ../caracal/
@@ -50,7 +49,7 @@ jobs:
 
     - name: Create Pull Request
       id: cpr
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: Update deps

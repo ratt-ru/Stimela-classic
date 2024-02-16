@@ -40,6 +40,7 @@ jobs:
     - name: Git clone caracal
       run: git clone https://github.com/caracal-pipeline/caracal.git ../caracal/
 
+    - uses: actions/checkout@v4
     - name: Make changes to pull request
       run: |
        cd ../caracal/

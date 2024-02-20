@@ -57,6 +57,7 @@ jobs:
         committer: Athanaseus Javas Ramaila <aramaila@ska.ac.za>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         signoff: false
+        path: ../caracal/
         branch: deps101
         base: master
         delete-branch: true

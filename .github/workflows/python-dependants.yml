@@ -50,9 +50,7 @@ jobs:
 
     - name: Create Pull Request
       id: cpr
-      uses: peter-evans/create-pull-request@v6
-      run: |
-        cd ../caracal/
+      uses: peter-evans/create-pull-request@v5
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: Update deps

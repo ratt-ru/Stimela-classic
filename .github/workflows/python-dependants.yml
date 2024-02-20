@@ -54,8 +54,8 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: Update deps
-        committer: Athanaseus Javas Ramaila <aramaila@ska.ac.za>
-        author: Athanaseus Javas Ramaila <aramaila@ska.ac.za>
+        committer: GitHub <noreply@github.com>
+        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         signoff: false
         path: ../caracal/
         branch: deps101

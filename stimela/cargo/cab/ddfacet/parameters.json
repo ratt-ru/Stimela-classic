@@ -914,7 +914,8 @@
             "choices": [
                 "HMP", 
                 "Hogbom", 
-                "SSD", 
+                "SSD",
+                "SSD2",
                 "GAClean"
             ]
         }, 
@@ -1100,6 +1101,13 @@
             "default": 3, 
             "required": false, 
             "name": "Hogbom-PolyFitOrder", 
+            "dtype": "int"
+        },
+        {
+            "info": "SSD2_POLYFITORDER polynomial order for frequency fitting", 
+            "default": 3, 
+            "required": false, 
+            "name": "SSD2-PolyFreqOrder", 
             "dtype": "int"
         }, 
         {

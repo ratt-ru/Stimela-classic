@@ -59,7 +59,6 @@ jobs:
         signoff: false
         path: ../caracal/
         branch: deps101
-        base: master
         delete-branch: true
         title: 'Stimela dependency update'
         body: |

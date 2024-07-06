@@ -36,12 +36,12 @@ for param in cab['parameters']:
     if name in ['support-files']:
         continue
 
-    if name in []'steps']:
-        delimiter = param['delimiter']
+    if name in ['step']:
+        delimiter = ',' #param['delimiter']
         args += ['{0}{1} {2}'.format(cab['prefix'], name, delimiter.join(value))]
 
     if name in  ['params']:
-        delimiter = param['delimiter']
+        delimiter = ' ' #param['delimiter']
         args += ['{0}'.format(delimiter.join(value))]
 
 _runc = " ".join([cab["binary"]] + [recipe, recipe_name] + args)

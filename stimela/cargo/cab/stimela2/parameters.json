@@ -1,13 +1,13 @@
 {
     "task": "stimela2",
     "base": "stimela/stimela2",
-    "tag": "1.7.9",
+    "tag": "1.7.10",
     "description": "a workflow management framework for creating portable and reproducible data processing pipelines",
     "prefix": "--",
     "binary": "stimela run",
     "version":"2.0.0",
     "junk":[],
-    "msdir": false,
+    "msdir": true,
     "parameters": [
         {
             "info": "Recipe file",
@@ -20,7 +20,7 @@
         {
             "info": "Support files",
             "name": "support-files",
-            "io": "input",
+            "io": "output",
             "default": null,
             "dtype": "list:file",
             "required": false
@@ -32,15 +32,15 @@
             "required": false
         },
         {
-            "info": "Steps to run from recipe",
+            "info": "Step(s) to run from recipe",
             "default": null,
             "required": false,
             "delimiter": ",",
-            "name": "steps",
+            "name": "step",
             "dtype": "list:str"
         },
         {
-            "info": "Parameter to override defaults. e.g. ['ms=foo.ms', 'image_size=2048']",
+            "info": "Parameter(s) to override defaults. e.g. ['ms=foo.ms', 'image_size=2048']",
             "default": null,
             "required": false,
             "delimiter": " ",

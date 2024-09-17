@@ -22,7 +22,6 @@ __vol = {
         "mount": "/stimela_mount",
         }
 
-USER_HOME = os.environ["HOME"]
 
 for item in list(__vol.keys()):
     val = __vol[item]

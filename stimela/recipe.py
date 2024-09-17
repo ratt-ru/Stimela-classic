@@ -258,7 +258,7 @@ class StimelaJob(object):
             self.tag = _cab.tag[-1]
             self.version = _cab.version[-1]
 
-        cabspecs = self.recipe.cabspecs.get(cont.cabname, None)
+        cabspecs = self.recipe.cabspecs
         if cabspecs:
             _tag = cabspecs.get("tag", None)
             _version = cabspecs.get("version", None)
@@ -338,6 +338,7 @@ class StimelaJob(object):
             cont.execdir = self.workdir
         else:
             cont.RUNSCRIPT = f"/{self.jtype}_run"
+            cont.add_environ('HOME', cont.IODEST["output"])
         
         runscript = shutil.which("stimela_runscript")
         if runscript:
@@ -349,7 +350,6 @@ class StimelaJob(object):
             raise OSError
 
         cont.add_environ('CONFIG', f'{cab.MOUNT}/configfile')
-        cont.add_environ('HOME', cont.IODEST["output"])
         cont.add_environ('STIMELA_MOUNT', cab.MOUNT)
 
         if msdir:

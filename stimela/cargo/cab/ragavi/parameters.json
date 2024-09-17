@@ -50,7 +50,7 @@
             "info": "Y-axes to plot, either amplitude & phase (ap) or real and imaginary (ri) or (all). Defaults to ap.",
             "name": "doplot",
             "dtype": "str",
-            "required": false,
+            "required": false
         },
         {
             "info": "Field ID(s) / NAME(s) to plot. Defaults to all",
@@ -84,7 +84,7 @@
             "info": "Choose an x-axis for the plots, otherwise an appropriate one will be chosen automatically.",
             "dtype": "str",
             "required": false,
-            "name": "xaxis",
+            "name": "xaxis"
         },
         {
             "info": "Choose an x-axis for the plots, otherwise an appropriate one will be chosen automatically. Deprecated alias for xaxis.",

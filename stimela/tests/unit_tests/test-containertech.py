@@ -29,7 +29,12 @@ class basicrecipe_test(unittest.TestCase):
         global SINGULARITY, PODMAN
         SINGULARITY = False
         PODMAN = False
-        SINGULARITY = singularity.version and singularity.version >= "2.6.0"
+        if singularity.version:
+            if singularity.BINARY_NAME == "singularity":
+                SINGULARITY = singularity.version >= "2.6.0"
+            else:
+                SINGULARITY = True
+
 
     @classmethod
     def tearDownClass(cls):
@@ -55,40 +60,40 @@ class basicrecipe_test(unittest.TestCase):
         if not os.path.isdir(INPUT):
             os.mkdir(INPUT)
 
-#    def test_singularity(self):
-#        global MSDIR
-#        global INPUT
-#        global OUTPUT
-#        global SINGULARITY
-#        
-#        if SINGULARITY is False:
-#            return
-#
-#        stimela.register_globals()
-#        rrr = stimela.Recipe("singularitypaths",
-#                             ms_dir=MSDIR,
-#                             JOB_TYPE="singularity",
-#                             cabpath="cab/",
-#                             singularity_image_dir=os.environ["STIMELA_PULLFOLDER"],
-#                             log_dir="logs")
-#        rrr.add("cab/custom", "test1", {
-#            "bla1": "a", # only accepts a, b or c
-#            "bla5": ["testinput2.txt:input",
-#                     "testinput3.txt:msfile",
-#                     spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
-#        }, input=INPUT, output=OUTPUT)
-#        rrr.run() #validate and run
-#
-#        assert rrr.jobs[0].job._cab.parameters[4].value[0] == os.path.join(rrr.jobs[0].job.IODEST["input"], 
-#                    "testinput2.txt")
-#        assert rrr.jobs[0].job._cab.parameters[4].value[1] == os.path.join(rrr.jobs[0].job.IODEST["msfile"],
-#                    "testinput3.txt")
-#        assert rrr.jobs[0].job._cab.parameters[4].value[2] == \
-#                "{}/hello{{reim}}.fits,{}/to.fits,{}/world.fits".format(
-#                    rrr.jobs[0].job.IODEST["input"],
-#                    rrr.jobs[0].job.IODEST["msfile"],
-#                    rrr.jobs[0].job.IODEST["output"]
-#                )
+    def test_singularity(self):
+        global MSDIR
+        global INPUT
+        global OUTPUT
+        global SINGULARITY
+        
+        if SINGULARITY is False:
+            return
+
+        stimela.register_globals()
+        rrr = stimela.Recipe("singularitypaths",
+                             ms_dir=MSDIR,
+                             JOB_TYPE="singularity",
+                             cabpath="cab/",
+                             singularity_image_dir=os.environ["STIMELA_PULLFOLDER"],
+                             log_dir="logs")
+        rrr.add("cab/custom", "test1", {
+            "bla1": "a", # only accepts a, b or c
+            "bla5": ["testinput2.txt:input",
+                     "testinput3.txt:msfile",
+                     spf("{}hello\{reim\}.fits,{}to.fits,{}world.fits", "input", "msfile", "output")],
+        }, input=INPUT, output=OUTPUT)
+        rrr.run() #validate and run
+
+        assert rrr.jobs[0].job._cab.parameters[4].value[0] == os.path.join(rrr.jobs[0].job.IODEST["input"], 
+                    "testinput2.txt")
+        assert rrr.jobs[0].job._cab.parameters[4].value[1] == os.path.join(rrr.jobs[0].job.IODEST["msfile"],
+                    "testinput3.txt")
+        assert rrr.jobs[0].job._cab.parameters[4].value[2] == \
+                "{}/hello{{reim}}.fits,{}/to.fits,{}/world.fits".format(
+                    rrr.jobs[0].job.IODEST["input"],
+                    rrr.jobs[0].job.IODEST["msfile"],
+                    rrr.jobs[0].job.IODEST["output"]
+                )
 
     def test_podman(self):
         global MSDIR

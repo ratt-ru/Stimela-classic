@@ -1,7 +1,7 @@
 {
     "task": "spimple binterp",
     "base": "stimela/spimple",
-    "tag": "1.7.12b",
+    "tag": "1.7.2b",
     "description": "Beam intrepolation tool.",
     "prefix": "--",
     "binary": "spimple-binterp",

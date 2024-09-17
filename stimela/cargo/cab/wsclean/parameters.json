@@ -652,6 +652,7 @@
             "default": null,
             "name": "gap-channel-division"
         },
+        {
             "info": "Restore the model image onto the residual image and save it in output image. By default, the beam parameters are read from the residual image. If this parameter is given, wsclean will do the restoring and then exit: no cleaning is performed.",
             "dtype": "list:file",
             "name": "restore",

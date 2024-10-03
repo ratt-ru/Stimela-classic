@@ -647,6 +647,12 @@
             "name": "pb-grid-size"
         },
         {
+            "info": "In case of irregular frequency spacing, this option can be used to not try and split channels to make the output channel bandwidth similar, but instead to split largest gaps first.",
+            "dtype": "bool",
+            "default": null,
+            "name": "gap-channel-division"
+        },
+        {
             "info": "Restore the model image onto the residual image and save it in output image. By default, the beam parameters are read from the residual image. If this parameter is given, wsclean will do the restoring and then exit: no cleaning is performed.",
             "dtype": "list:file",
             "name": "restore",

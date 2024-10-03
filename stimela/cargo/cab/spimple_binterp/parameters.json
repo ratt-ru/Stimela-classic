@@ -1,0 +1,76 @@
+{
+    "task": "spimple binterp",
+    "base": "stimela/spimple",
+    "tag": "1.7.2b",
+    "description": "Beam intrepolation tool.",
+    "prefix": "--",
+    "binary": "spimple-binterp",
+    "junk":[],
+    "msdir": true,
+    "parameters": [
+      {
+        "info": "Input image name",
+        "dtype": "str",
+        "required": true,
+        "name": "image",
+        "io": "input",
+        "deprecated": false
+      },
+      {
+        "info": "Path to output directory",
+        "dtype": "str",
+        "required": true,
+        "name": "output-filename",
+        "io": "output",
+        "deprecated": false
+      },
+      {
+        "info": "Number of threads to use",
+        "dtype": "int",
+        "required": false,
+        "name": "nthreads",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Fits beam model to use. Only real and imageinary beam models currently supported",
+        "dtype": "str",
+        "required": false,
+        "name": "beam-model",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Add in the convolved residuals before fitting components",
+        "dtype": "bool",
+        "required": false,
+        "name": "add-convolved-residuals",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Field Id",
+        "dtype": "int",
+        "required": false,
+        "name": "field",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Used to select a subset of time. Default is 10",
+        "dtype": "int",
+        "required": false,
+        "name": "sparsify-time",
+        "default": null,
+        "deprecated": false
+      },
+      {
+        "info": "Correlation typ i.e. linear or circular.",
+        "dtype": "str",
+        "required": false,
+        "name": "corr-type",
+        "default": null,
+        "deprecated": false
+      }
+    ]
+}

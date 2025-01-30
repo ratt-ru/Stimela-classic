@@ -11,7 +11,7 @@
     "parameters": [
         {
             "info": "If set to true, the pipeline will terminate with an error message if an unknown parameter name is encountered in the input parameter file. If set to false, unknown parameters will instead be ignored.", 
-            "dtype": "bool", hoices
+            "dtype": "bool",
             "default": true, 
             "name": "pipeline.pedantic"
         }, 

@@ -21,6 +21,7 @@ targets = None
 for param in cab['parameters']:
     name = param['name']
     value = param['value']
+    dtype = param['dtype']
 
     if value is None:
         continue

@@ -2,7 +2,7 @@
     "task": "mosaic-queen",
     "base": "stimela/mosaic-queen",
     "tag": "1.7.10",
-    "version": "2,0.0",
+    "version": "2.0.0",
     "description": "Run make_mosaic over the targets.",
     "prefix": "-",
     "binary": "mosaic-queen",

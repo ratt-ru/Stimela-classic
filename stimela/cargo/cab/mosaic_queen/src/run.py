@@ -31,7 +31,6 @@ for param in cab['parameters']:
         value = ''
     elif dtype == 'list:str' and value is not None:
         value = " ".join(map(str, value))  # Flatten the list into a string
-        continue
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
 

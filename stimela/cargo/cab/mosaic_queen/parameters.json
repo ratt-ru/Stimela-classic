@@ -10,7 +10,7 @@
     "msdir": false,
     "parameters": [
         {
-            "info": "The directory that contains the (2D or 3D) images and beams.",
+            "info": "The directory name that contains the (2D or 3D) images and beams.",
             "name": "input",
             "io": "input",
             "dtype": "str",

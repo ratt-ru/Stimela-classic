@@ -22,7 +22,6 @@ for param in cab['parameters']:
     name = param['name']
     value = param['value']
     dtype = param['dtype']
-    print(dtype)
 
     if value is None:
         continue
@@ -37,7 +36,7 @@ for param in cab['parameters']:
 
 _runc = " ".join([cab["binary"]] + args)
 print(_runc)
-
+print(cab['parameters'])
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:

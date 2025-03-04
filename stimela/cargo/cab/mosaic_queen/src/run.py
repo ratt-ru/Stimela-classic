@@ -29,7 +29,7 @@ for param in cab['parameters']:
         continue
     elif value is True:
         value = ''
-    elif dtype == 'list:str' and value is not None:
+    elif dtype in ['list:file'] and value is not None:
         value = " ".join(map(str, value))  # Flatten the list into a string
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]

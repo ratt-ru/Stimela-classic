@@ -22,6 +22,7 @@ for param in cab['parameters']:
     name = param['name']
     value = param['value']
     dtype = param['dtype']
+    print(dtype)
 
     if value is None:
         continue
@@ -29,7 +30,7 @@ for param in cab['parameters']:
         continue
     elif value is True:
         value = ''
-    elif dtype in ['list:file'] and value is not None:
+    elif dtype in ['list:file']:
         value = " ".join(map(str, value))  # Flatten the list into a string
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]

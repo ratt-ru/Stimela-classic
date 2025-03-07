@@ -10,28 +10,11 @@
     "msdir": false,
     "parameters": [
         {
-            "info": "The directory name that contains the (2D or 3D) images and beams.",
-            "name": "input",
-            "io": "input",
-            "dtype": "str",
-            "required": true,
-            "mapping": "i"
-        },
-        {
             "info": "Space-separated list of images to be mosaicked. The file names must end with 'image.fits', and this is automatically replaced by 'pb.fits' to locate the corresponding beams (which are also required as input).",
             "name": "target-images",
-            "io": "input",
-            "dtype": "list:file",
+            "dtype": "list:str",
             "required": true,
             "mapping": "t"
-        },
-        {
-            "info": "The directory for all output files.",
-            "name": "output",
-            "io": "output",
-            "dtype": "str",
-            "required": true,
-            "mapping": "o"
         },
         {
             "info": "The prefix to be used for output files.",

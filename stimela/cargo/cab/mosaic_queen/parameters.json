@@ -12,7 +12,8 @@
         {
             "info": "Space-separated list of images to be mosaicked. The file names must end with 'image.fits', and this is automatically replaced by 'pb.fits' to locate the corresponding beams (which are also required as input).",
             "name": "target-images",
-            "dtype": "list:str",
+            "dtype": "list:file",
+            "io": "input",
             "required": true,
             "mapping": "t"
         },

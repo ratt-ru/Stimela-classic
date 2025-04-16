@@ -6,7 +6,7 @@ from setuptools import setup
 import glob
 
 PACKAGE_NAME = "stimela"
-__version__ = "1.7.10"
+__version__ = "1.8.0"
 build_root = os.path.dirname(__file__)
 
 
@@ -39,7 +39,7 @@ setup(name=PACKAGE_NAME,
           "cab/*/parameters.json",
           "cab/*/src/tdlconf.profiles",
       ]},
-      python_requires='>=3.6',
+      python_requires='>=3.8',
       install_requires=requirements(),
       tests_require=['nose'],
       scripts=["bin/" + i for i in os.listdir("bin")] + 

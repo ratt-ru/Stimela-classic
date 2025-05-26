@@ -39,7 +39,7 @@ setup(name=PACKAGE_NAME,
           "cab/*/parameters.json",
           "cab/*/src/tdlconf.profiles",
       ]},
-      python_requires='>=3.8',
+      python_requires='>=3.8,,<3.12',
       install_requires=requirements(),
       tests_require=['nose'],
       scripts=["bin/" + i for i in os.listdir("bin")] + 

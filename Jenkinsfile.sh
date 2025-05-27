@@ -65,7 +65,13 @@ pip install ${WORKSPACE_ROOT}/projects/Stimela/
 stimela --version
 stimela pull #--force
 
-#Run forest run!
-cd $TEST_OUTPUT_DIR
+# Set output directory and environment variable
+cd "$TEST_OUTPUT_DIR"
 export SILENT_STDERR=ON
-python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests" -v
+
+# Run pytest
+# It generates an XML report similar to --xunit for nose.
+python3 -m pytest \
+  --junitxml="$WORKSPACE_ROOT/pytest-results.xml" \
+  "$WORKSPACE_ROOT/projects/Stimela/stimela/tests" \
+  -v

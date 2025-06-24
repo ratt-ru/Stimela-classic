@@ -23,6 +23,7 @@ packages = [
 python = "^3.9, <3.13"
 pyyaml = "^6.0"
 scabha = "0.3.2"
+setuptools = "^69.0"
 pytest = { version = "^8.0", optional=true }
 pytest-flake8 = { version = "^1.1.1", optional=true }
 pytest-cov = { version = "^5.0", optional=true }

@@ -4,36 +4,35 @@ version = "1.8.0"
 description = "Dockerized radio interferometry scripting framework"
 authors = ["Sphesihle Makhathini <sphemakh@gmail.com>", "RATT"]
 readme = "README.rst"
-license = "MIT"
+license = "GPLv2"
 homepage = "https://github.com/ratt-ru/Stimela-classic"
-repository = "https://github.com/ratt-ru/Stimela-classic" # Often good to include this too
-keywords = ["radio astronomy", "interferometry", "pipeline", "docker"] # Example keywords
-
-[tool.poetry.dependencies]
-python = "^3.9, <3.13" # This is your specified Python range
-
-# Your direct dependencies from requirements.in or your understanding of them
-# Poetry automatically handles transitive dependencies.
-pyyaml = "^6.0" # Use caret (^) for compatible updates
-scabha = "0.3.2"
-
-[tool.poetry.group.dev.dependencies] # For development dependencies like testing
-# If you were previously using 'nose', consider switching to 'pytest'
-# as it's the modern standard and better maintained.
-pytest = "^8.0"
-pytest-cov = "^5.0" # For test coverage
-
-[tool.poetry.scripts] # For console scripts (replacing setup.py's scripts= or entry_points)
-stimela = "stimela.cli:main" # Assuming you have stimela/cli.py with a main function
-
-[tool.poetry.packages] # If your package structure is non-standard
-# From your setup.py, your packages list is fine, so this may not be needed unless
-# you have a very complex internal structure.
-# For example, if your code is in a 'src' directory:
- include = [{ include = "stimela"},
-    "stimela/cargo/base/*/Dockerfile",
-    "stimela/cargo/base/*/xvfb.init.d",
-    "stimela/cargo/cab/*/Dockerfile",
-    "stimela/cargo/cab/*/xvfb.init.d",
+repository = "https://github.com/ratt-ru/Stimela-classic"
+keywords = ["radio astronomy", "interferometry", "pipeline", "docker"]
+classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+        "Programming Language :: Python",
+        "Topic :: Scientific/Engineering :: Astronomy"
+]
+packages = [
+  { include = "stimela" }
 ]
 
+[tool.poetry.dependencies]
+python = "^3.9, <3.13"
+pyyaml = "^6.0"
+scabha = "0.3.2"
+pytest = { version = "^8.0", optional=true }
+pytest-flake8 = { version = "^1.1.1", optional=true }
+pytest-cov = { version = "^5.0", optional=true }
+
+[tool.poetry.scripts]
+stimela = "stimela.main:cli" # Assuming you have stimela/cli.py with a main function
+
+[tool.poetry.extras]
+testing = ["pytest", "pytest-flake8", "pytest-cov"]
+
+[build-system]
+requires = ["setuptools", "poetry-core"]
+build-backend = "poetry.core.masonry.api"

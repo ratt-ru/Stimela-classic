@@ -58,8 +58,8 @@ jobs:
 
       - name: Test stimela command
         run: |
-          stimela --help
-          stimela pull --help
-          stimela build --help
-          stimela run --help
-          stimela cabs
+          poetry run stimela --help
+          poetry run stimela pull --help
+          poetry run stimela build --help
+          poetry run stimela run --help
+          poetry run stimela cabs

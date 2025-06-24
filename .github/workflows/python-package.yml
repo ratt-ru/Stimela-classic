@@ -6,7 +6,7 @@ name: Ubuntu CI
 on:
   push:
     branches:
-    - '*' # master
+    - master
     tags:
     - "*"
   pull_request:

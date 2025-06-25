@@ -64,12 +64,9 @@ pip install ${WORKSPACE_ROOT}/projects/Stimela[testing]
 stimela --version
 stimela pull #--force
 
-# Set output directory and environment variable
-cd "$TEST_OUTPUT_DIR"
+#Run forest run!
+cd $TEST_OUTPUT_DIR
 export SILENT_STDERR=ON
-
-# Run pytest
-# It generates an XML report similar to --xunit for nose.
 py.test --cov=stimela \
   --cov-report=term-missing   --cov-report=html \
   --junitxml="$WORKSPACE_ROOT/pytest-results.xml" \

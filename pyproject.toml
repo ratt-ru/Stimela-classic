@@ -29,7 +29,8 @@ flake8 = { version = "*", optional=true }
 pytest-cov = { version = "*", optional=true }
 
 [tool.poetry.scripts]
-stimela = "stimela.main:cli" # Assuming you have stimela/cli.py with a main function
+stimela = "stimela.main:cli"
+stimela_runscript = "stimela.runner:main"
 
 [tool.poetry.extras]
 testing = ["pytest", "flake8", "pytest-cov"]

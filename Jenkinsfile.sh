@@ -70,7 +70,8 @@ export SILENT_STDERR=ON
 
 # Run pytest
 # It generates an XML report similar to --xunit for nose.
-python3 -m pytest \
+py.test --cov=stimela \
+  --cov-report=term-missing   --cov-report=html \
   --junitxml="$WORKSPACE_ROOT/pytest-results.xml" \
   "$WORKSPACE_ROOT/projects/Stimela/stimela/tests" \
-  -v
+  -vvv

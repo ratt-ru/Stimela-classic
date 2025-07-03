@@ -18,6 +18,7 @@ classifiers = [
 packages = [
   { include = "stimela" }
 ]
+include = ["stimela/cargo/cab/stimela_runscript"]
 
 [tool.poetry.dependencies]
 python = "^3.9, <3.13"
@@ -30,7 +31,6 @@ pytest-cov = { version = "*", optional=true }
 
 [tool.poetry.scripts]
 stimela = "stimela.main:cli"
-stimela_runscript = "stimela.runner:main"
 
 [tool.poetry.extras]
 testing = ["pytest", "flake8", "pytest-cov"]

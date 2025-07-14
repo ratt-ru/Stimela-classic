@@ -1,7 +1,40 @@
+[tool.poetry]
+name = "stimela"
+version = "1.8.0"
+description = "Dockerized radio interferometry scripting framework"
+authors = ["Sphesihle Makhathini <sphemakh@gmail.com>", "RATT"]
+readme = "README.rst"
+license = "GPLv2"
+homepage = "https://github.com/ratt-ru/Stimela-classic"
+repository = "https://github.com/ratt-ru/Stimela-classic"
+keywords = ["radio astronomy", "interferometry", "pipeline", "docker"]
+classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+        "Programming Language :: Python",
+        "Topic :: Scientific/Engineering :: Astronomy"
+]
+packages = [
+  { include = "stimela" }
+]
+include = ["stimela/cargo/cab/stimela_runscript"]
+
+[tool.poetry.dependencies]
+python = "^3.9, <3.13"
+pyyaml = "^6.0"
+scabha = "0.3.2"
+setuptools = "^69.0"
+pytest = { version = "*", optional=true }
+flake8 = { version = "*", optional=true }
+pytest-cov = { version = "*", optional=true }
+
+[tool.poetry.scripts]
+stimela = "stimela.main:cli"
+
+[tool.poetry.extras]
+testing = ["pytest", "flake8", "pytest-cov"]
+
 [build-system]
-requires = [
-            "pip",
-            "pip-tools",
-            "setuptools",
-            "wheel"
-           ]
+requires = ["setuptools", "poetry-core"]
+build-backend = "poetry.core.masonry.api"

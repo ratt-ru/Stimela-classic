@@ -4,7 +4,6 @@ import os
 import sys
 import unittest
 import subprocess
-from nose.tools import timed
 import shutil
 import glob
 from stimela.exceptions import *
@@ -12,7 +11,7 @@ from stimela.dismissable import dismissable as sdm
 from stimela.pathformatter import pathformatter as spf
 from stimela import cargo, singularity
 
-class basicrecipe_test(unittest.TestCase):
+class TestBasicRecipe(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         unittest.TestCase.setUpClass()

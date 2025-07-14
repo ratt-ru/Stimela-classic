@@ -4,11 +4,10 @@ from stimela.pathformatter import pathformatter as spf
 import os
 import unittest
 import subprocess
-from nose.tools import timed
 import shutil
 
 
-class mk_reduce(unittest.TestCase):
+class TestMkReduce(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -43,7 +42,7 @@ class mk_reduce(unittest.TestCase):
     def setUp(self):
         unittest.TestCase.setUp(self)
 
-    def testEndToEndReduction(self):
+    def test_end_to_end_reduction(self):
         global INPUT, OUTPUT, MSDIR, MS, LABEL
         recipe = stimela.Recipe('Test reduction script',
                                 ms_dir=MSDIR, JOB_TYPE="docker", log_dir="logs")

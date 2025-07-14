@@ -3,11 +3,10 @@ import stimela
 import os
 import unittest
 import subprocess
-from nose.tools import timed
 import shutil
 
 
-class kat7_reduce(unittest.TestCase):
+class TestKat7Reduce(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -97,7 +96,7 @@ class kat7_reduce(unittest.TestCase):
     def setUp(self):
         unittest.TestCase.setUp(self)
 
-    def testEndToEndReduction(self):
+    def test_end_to_end_reduction(self):
         global INPUT, OUTPUT, MSDIR, MS, LABEL
         global GAINCAL_TABLE2, FLUXSCALE_TABLE, GAINCAL_TABLE, DELAYCAL_TABLE, BPCAL_TABLE, ANTPOS_TABLE
         global REFANT, BPCAL, TARGET, GCAL, PREFIX

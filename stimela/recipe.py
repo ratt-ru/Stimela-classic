@@ -340,14 +340,16 @@ class StimelaJob(object):
             cont.RUNSCRIPT = f"/{self.jtype}_run"
             cont.add_environ('HOME', cont.IODEST["output"])
         
-        runscript = shutil.which("stimela_runscript")
-        if runscript:
-            cont.add_volume(runscript, 
+        runscript = os.path.join(os.path.dirname(__file__), "cargo", "cab", "stimela_runscript")
+        if os.path.exists(runscript):
+            cont.add_volume(runscript,
                     cont.RUNSCRIPT, perm="ro")
         else:
             self.log.error("Stimela container runscript could not found.\
                     This may due to conflicting python or stimela installations in your $PATH.")
             raise OSError
+
+
 
         cont.add_environ('CONFIG', f'{cab.MOUNT}/configfile')
         cont.add_environ('STIMELA_MOUNT', cab.MOUNT)

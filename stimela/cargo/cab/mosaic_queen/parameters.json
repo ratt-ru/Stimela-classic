@@ -33,7 +33,7 @@
             "default": 0
         },
         {
-            "info": "Also make mosaics of the associated .fits files, selecting any of 'mask', 'model' and 'residual'. Users should give their choice as a space-separated list. The defult is to not make any associated mosaics.",
+            "info": "Also make mosaics of the associated .fits files, selecting any of 'mask', 'model' and 'residual'. Users should give their choice as a space-separated list. The default is to not make any associated mosaics.",
             "name": "associated-mosaics",
             "dtype": "list:str",
             "required": false,

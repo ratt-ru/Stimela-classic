@@ -1,5 +1,6 @@
 # -*- coding: future_fstrings -*-
 import os
+import sys
 import argparse
 from argparse import ArgumentParser
 import textwrap as _textwrap
@@ -411,3 +412,7 @@ cabs    : Manage cab images
 
     # Invoke the command
     _cmd(argv)
+
+
+def cli():
+    main(sys.argv[1:])

@@ -57,10 +57,9 @@ OLDLDPATH=$LD_LIBRARY_PATH
 # Install Stimela into a virtual env
 virtualenv -p python3 ${WORKSPACE_ROOT}/projects/pyenv
 . ${WORKSPACE_ROOT}/projects/pyenv/bin/activate
-#pip install pip setuptools -U
 PATH=${WORKSPACE}/projects/pyenv/bin:$PATH
 LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv/lib:$LD_LIBRARY_PATH
-pip install ${WORKSPACE_ROOT}/projects/Stimela/
+pip install ${WORKSPACE_ROOT}/projects/Stimela[testing]
 
 stimela --version
 stimela pull #--force
@@ -68,4 +67,8 @@ stimela pull #--force
 #Run forest run!
 cd $TEST_OUTPUT_DIR
 export SILENT_STDERR=ON
-python3 -m nose --with-xunit --xunit-file $WORKSPACE_ROOT/nosetests.xml "${WORKSPACE_ROOT}/projects/Stimela/stimela/tests" -v
+py.test --cov=stimela \
+  --cov-report=term-missing   --cov-report=html \
+  --junitxml="$WORKSPACE_ROOT/pytest-results.xml" \
+  "$WORKSPACE_ROOT/projects/Stimela/stimela/tests" \
+  -vvv

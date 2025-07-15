@@ -12,25 +12,48 @@ on:
   release:
     types: [published]
 
+env:
+  POETRY_VERSION: 2.0.1
+
 jobs:
   deploy:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
-    - name: Install dependencies
+
+    - name: Cache Installations
+      id: cache-installs
+      uses: actions/cache@v3
+      with:
+        path: ~/.local
+        key: install-${{ env.INSTALL_CACHE_HASH }}-3
+
+    - name: Install Poetry
+      if: steps.cache-installs.outputs.cache-hit != 'true'
       run: |
-        python -m pip install --upgrade pip
-        pip install build
-    - name: Build package
-      run: python -m build
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+        curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+    - name: Test poetry
+      run: poetry --version
+
+    - name: Checkout source
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Install stimela
+      run: poetry install
+
+    - name: Build distribution
+      run: poetry build
+
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__
-        password: ${{ secrets.PYPI_TOKEN_STIMELA }}
+        password: ${{ secrets.PYPI_TOKEN_STIMELA }}        

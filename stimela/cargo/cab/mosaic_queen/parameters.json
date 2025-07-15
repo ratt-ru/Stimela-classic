@@ -54,7 +54,7 @@
             "mapping": "f"
         },
         {
-            "info": "The cutoff in the primary beam to use.E.g. The default of 0.1 means going down to the 10 percent level for each pointing. Set to zero for no primary beam cutoff.",
+            "info": "The cutoff in the primary beam to use. E.g. The default of 0.1 means going down to the 10 percent level for each pointing. Set to zero for no primary beam cutoff.",
             "name": "beam-cutoff",
             "dtype": "float",
             "required": false,

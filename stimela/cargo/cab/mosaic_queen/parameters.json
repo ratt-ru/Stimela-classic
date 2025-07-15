@@ -47,7 +47,7 @@
             "mapping": "r"
         },
         {
-            "info": "If the user wants newly-regridded files, this argument should be enabled.(If '--regrid' is enabled instead, the package will first check whether regridded files already exist.If they are found, regridding will not proceed because this is a time-consuming step.)",
+            "info": "If the user wants newly-regridded files, this argument should be enabled. (If '--regrid' is enabled instead, the package will first check whether regridded files already exist. If they are found, regridding will not proceed because this is a time-consuming step.)",
             "name": "force-regrid",
             "dtype": "bool",
             "required": false,

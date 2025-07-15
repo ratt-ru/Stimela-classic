@@ -31,7 +31,7 @@ for param in cab['parameters']:
     elif dtype in ['list:file', 'list:str']:
         if os.path.exists(value[0]):
             indir = os.path.dirname(value[0])
-        value = map(os.path.basename, value)
+        value = list(map(os.path.basename, value))
         value = ' '.join(value)
 
     args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]

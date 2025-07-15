@@ -86,7 +86,7 @@
             "default": "mad"
         },
         {
-            "info": "An initial guess of the noise level in the input images, if user has set '--statistic' to 'fit'.(This is to aid a Gaussian fit to the negative pixel-values.) The default of 0.02 assumes that the pixel values are in units of Jy/beam, so a std of ~ 20 mJy/beam).",
+            "info": "An initial guess of the noise level in the input images, if user has set '--statistic' to 'fit'. (This is to aid a Gaussian fit to the negative pixel-values.) The default of 0.02 assumes that the pixel values are in units of Jy/beam, so a std of ~ 20 mJy/beam).",
             "name": "guess-std",
             "dtype": "float",
             "required": false,

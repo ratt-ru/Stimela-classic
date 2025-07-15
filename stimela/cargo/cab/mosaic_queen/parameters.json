@@ -1,0 +1,134 @@
+{
+    "task": "mosaic-queen",
+    "base": "stimela/mosaic-queen",
+    "tag": "1.7.10",
+    "version": "2.0.2",
+    "description": "Run make_mosaic over the targets.",
+    "prefix": "-",
+    "binary": "mosaic-queen",
+    "junk": [],
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "Space-separated list of images to be mosaicked. The file names must end with 'image.fits', and this is automatically replaced by 'pb.fits' to locate the corresponding beams (which are also required as input).",
+            "name": "target-images",
+            "dtype": "list:file",
+            "io": "input",
+            "required": true,
+            "mapping": "t"
+        },
+        {
+            "info": "The prefix to be used for output files.",
+            "name": "name",
+            "dtype": "str",
+            "required": true,
+            "mapping": "n"
+        },
+        {
+            "info": "Number of worker threads. Default=0 means all available threads.",
+            "name": "num-workers",
+            "dtype": "int",
+            "required": false,
+            "mapping": "j",
+            "default": 0
+        },
+        {
+            "info": "Also make mosaics of the associated .fits files, selecting any of 'mask', 'model' and 'residual'. Users should give their choice as a space-separated list. The default is to not make any associated mosaics.",
+            "name": "associated-mosaics",
+            "dtype": "list:str",
+            "required": false,
+            "mapping": "a"
+        },
+        {
+            "info": "Use montage for regridding the images and beams. Also regrid the 'mask', 'model' and/or 'residual' files, if '--associated-mosaics' is enabled.",
+            "name": "regrid",
+            "dtype": "bool",
+            "required": false,
+            "mapping": "r"
+        },
+        {
+            "info": "If the user wants newly-regridded files, this argument should be enabled. (If '--regrid' is enabled instead, the package will first check whether regridded files already exist. If they are found, regridding will not proceed because this is a time-consuming step.)",
+            "name": "force-regrid",
+            "dtype": "bool",
+            "required": false,
+            "mapping": "f"
+        },
+        {
+            "info": "The cutoff in the primary beam to use. E.g. The default of 0.1 means going down to the 10 percent level for each pointing. Set to zero for no primary beam cutoff.",
+            "name": "beam-cutoff",
+            "dtype": "float",
+            "required": false,
+            "mapping": "bc",
+            "default": 0.1
+        },
+        {
+            "info": "Sensitivity cutoff in the final mosaic. Pixels with a noise level > minimum mosaic noise / cutoff are blanked in all final products. E.g. The default of 0.2 means blanking in the mosaic all pixels with a noise level > 5x the minimum mosaic noise level. Set to zero for no cutoff (but some cutoff may still result from the -bc setting).",
+            "name": "mosaic-cutoff",
+            "dtype": "float",
+            "required": false,
+            "mapping": "mc",
+            "default": 0.2
+        },
+        {
+            "info": "Build the mosaic using weight=1 instead of weight=1/noise**2 for the input images.",
+            "name": "unity-weights",
+            "dtype": "bool",
+            "required": false,
+            "mapping": "u"
+        },
+        {
+            "info": "State 'mad' (median absolute deviation), 'rms' (root mean square) or 'fit' (Gaussian fit) as the statistic to be used for estimating the noise level in the input images. This will be derived using the negative pixel-values. The noise levels set the weights=1/noise**2 used when mosaicking. Not used if the '-u' option is enabled. Default is mad.",
+            "name": "statistic",
+            "dtype": "str",
+            "required": false,
+            "mapping": "s",
+            "choices": ["mad", "rms", "fit"],
+            "default": "mad"
+        },
+        {
+            "info": "An initial guess of the noise level in the input images, if user has set '--statistic' to 'fit'. (This is to aid a Gaussian fit to the negative pixel-values.) The default of 0.02 assumes that the pixel values are in units of Jy/beam, so a std of ~ 20 mJy/beam).",
+            "name": "guess-std",
+            "dtype": "float",
+            "required": false,
+            "mapping": "g",
+            "default": 0.02
+        },
+        {
+            "info": "Central RA (in degrees) of the output mosaic image/cube, if the user does not want to image the entire FoV covered by the input images/cubes.",
+            "name": "ra",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Central Dec (in degrees) of the output mosaic image/cube, if the user does not want to image the entire FoV covered by the input images/cubes.",
+            "name": "dec",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Central velocity/frequency of the output mosaic cube (in the appropriate units of the input cubes) if the user does not want to image the entire velocity/frequency range covered by the input cubes.",
+            "name": "velocity",
+            "dtype": "float",
+            "required": false,
+            "mapping": "v"
+        },
+        {
+            "info": "RA range of the output mosaic image/cube (in degrees), if the user does not want to image the entire FoV covered by the input images/cubes.",
+            "name": "dra",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Dec range of the output mosaic image/cube (in degrees), if the user does not want to image the entire FoV covered by the input images/cubes.",
+            "name": "ddec",
+            "dtype": "float",
+            "required": false
+        },
+        {
+            "info": "Velocity/frequency range of the output mosaic cube (in the unit used by the input images), if the user does not want to image the entire velocity/frequency range covered by the input cubes.",
+            "name": "dv",
+            "dtype": "float",
+            "required": false
+        }
+    ]
+}

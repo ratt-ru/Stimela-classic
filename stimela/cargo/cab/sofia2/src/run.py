@@ -46,6 +46,12 @@ for param in cab['parameters']:
         elif (not name == 'port2tigger'):
             value = 'false'
 
+    if dtype == 'list:str' and value is not None:
+        try:
+            value = ",".join(map(str, value))  # Flatten the list into a string
+        except ValueError:
+            pass
+    
     if value is None:
         continue
     if name == "port2tigger":

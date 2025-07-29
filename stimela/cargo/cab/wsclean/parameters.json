@@ -130,7 +130,10 @@
         }, 
         {
             "info": "Taper the weights with a Gaussian function. This will reduce the contribution of long baselines. The beamsize is by default in asec, but a unit can be specified as '2amin'", 
-            "dtype": "str", 
+            "dtype": [
+                "float", 
+                "str"
+            ],
             "default": null, 
             "name": "taper-gaussian"
         }, 

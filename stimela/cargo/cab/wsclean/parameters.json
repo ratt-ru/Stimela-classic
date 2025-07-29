@@ -1,9 +1,9 @@
 {
     "task": "wsclean", 
     "base": "stimela/wsclean", 
-    "tag": ["1.6.0-1", "1.2.3", "1.6.3", "1.7.3", "1.7.4", "1.7.7"],
+    "tag": ["1.6.0-1", "1.2.3", "1.6.3", "1.7.3", "1.7.4", "1.7.7", "1.7.10"],
     "description": "WSClean imaging software", 
-    "version" : ["2.6", "2.8", "2.9", "3.0.1", "3.1", "3.3"],
+    "version" : ["2.6", "2.8", "2.9", "3.0.1", "3.1", "3.3", "3.6"],
     "prefix": "-", 
     "binary": "wsclean", 
     "junk" : [],
@@ -130,7 +130,10 @@
         }, 
         {
             "info": "Taper the weights with a Gaussian function. This will reduce the contribution of long baselines. The beamsize is by default in asec, but a unit can be specified as '2amin'", 
-            "dtype": "str", 
+            "dtype": [
+                "float", 
+                "str"
+            ],
             "default": null, 
             "name": "taper-gaussian"
         }, 

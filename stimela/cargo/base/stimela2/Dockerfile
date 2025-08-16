@@ -33,8 +33,10 @@ RUN pip install cult-cargo stimela quartical \
     astro-tigger-lsm \
     bdsf \
     breizorro \
-    casatools \
-    casatasks
+    casaconfig \
+    casadata \
+    casatasks \
+    casatools
 
 RUN ulimit -p 11000
 RUN stimela --help
@@ -45,6 +47,14 @@ RUN docker-apt-install \
     curl
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN mkdir -p /opt/casa/data
+COPY casasiteconfig.py /opt/casa
+ENV CASASITECONFIG /opt/casa/casasiteconfig.py
+RUN python -m casaconfig --measurespath /opt/casa/data --update-all
+RUN python -m casaconfig --measurespath /opt/casa/data --current-data
+# point to CASA data
+RUN mkdir -p /usr/local/share/data/
+RUN ln -s /opt/casa/data /usr/local/share/data/casacore
 COPY xvfb.init.d /etc/init.d/xvfb
 RUN chmod 755 /etc/init.d/xvfb
 RUN chmod 777 /var/run

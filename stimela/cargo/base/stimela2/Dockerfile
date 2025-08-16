@@ -33,7 +33,8 @@ RUN pip install cult-cargo stimela quartical \
     astro-tigger-lsm \
     bdsf \
     breizorro \
-    casatools
+    casatools \
+    casatasks
 
 RUN ulimit -p 11000
 RUN stimela --help

@@ -38,13 +38,16 @@ RUN pip install cult-cargo stimela quartical \
     casatasks \
     casatools
 
-RUN ulimit -p 11000
-RUN stimela --help
-
 RUN docker-apt-install \
     git \
     xvfb \
     curl
+
+RUN pip install -U "git+https://github.com/caracal-pipeline/stimela.git"
+RUN pip install -U "git+https://github.com/caracal-pipeline/cult-cargo.git"
+
+RUN ulimit -p 11000
+RUN stimela --help
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN mkdir -p /opt/casa/data

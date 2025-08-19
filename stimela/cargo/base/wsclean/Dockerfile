@@ -1,4 +1,4 @@
-FROM quay.io/stimela/base:1.7.1
+FROM kernsuite/base:dev
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \
     wget \
@@ -7,25 +7,27 @@ RUN docker-apt-install cmake \
     cmake \
     gfortran \
     g++ \
+    git \
     libncurses5-dev \
     libreadline-dev \
     flex \
     bison \
     libblas-dev \
-    liblapacke-dev \
+    liblapack-dev \
     libcfitsio-dev \
     libgsl-dev \
     wcslib-dev \
     libhdf5-serial-dev \
     libfftw3-dev \
-    python-numpy \
+    python3-numpy \
+    libatlas3-base \
     libboost-python-dev \
     libboost-all-dev \
-    libpython2.7-dev \
+    libpython3-dev \
     liblog4cplus-dev \
     libhdf5-dev \
     casacore-dev
-RUN git clone --depth 1 -b v3.3 https://gitlab.com/aroffringa/wsclean.git wscleandir
+RUN git clone --depth 1 -b v3.6 https://gitlab.com/aroffringa/wsclean.git wscleandir
 RUN mkdir wscleandir/build
 RUN cd wscleandir/build && \
     cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \

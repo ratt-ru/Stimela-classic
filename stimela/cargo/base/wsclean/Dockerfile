@@ -1,4 +1,4 @@
-FROM kernsuite/base:dev
+FROM quay.io/stimela/base:1.8.0
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \
     wget \
@@ -31,7 +31,7 @@ RUN git clone --depth 1 -b v3.6 https://gitlab.com/aroffringa/wsclean.git wsclea
 RUN mkdir wscleandir/build
 RUN cd wscleandir/build && \
     cmake .. -DPORTABLE=Yes -DCMAKE_BUILD_TYPE=Release && \
-    make -j 10 && \
+    make -j 4 && \
     make install
 RUN ulimit -p 11000
 RUN wsclean

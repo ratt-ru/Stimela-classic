@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "stimela"
-version = "1.8.0"
+version = "1.8.1"
 description = "Dockerized radio interferometry scripting framework"
 authors = ["Sphesihle Makhathini <sphemakh@gmail.com>", "RATT"]
 readme = "README.rst"
@@ -21,7 +21,7 @@ packages = [
 include = ["stimela/cargo/cab/stimela_runscript"]
 
 [tool.poetry.dependencies]
-python = "^3.9, <3.13"
+python = "^3.9, <3.14"
 pyyaml = "^6.0"
 scabha = "0.3.2"
 setuptools = "^69.0"

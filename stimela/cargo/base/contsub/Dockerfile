@@ -17,4 +17,4 @@ ENV STIMELA_VENV_BIN="${STIMELA_VENV}/bin"
 RUN python -m venv $STIMELA_VENV
 ENV PATH="${STIMELA_VENV_BIN}/:$PATH"
 
-RUN $STIMELA_VENV_BIN/pip install git+https://github.com/laduma-dev/contsub
+RUN $STIMELA_VENV_BIN/pip install "contsub>=1.0.5"

@@ -63,7 +63,7 @@
             "dtype": "bool"
         },
         {
-            "info": "Field of view width to querry online catalog in degrees e.g. '1.0d'",
+            "info": "Field of view width to query online catalog in degrees e.g. '1.0d'",
             "default": null,
             "required": false,
             "name": "width",

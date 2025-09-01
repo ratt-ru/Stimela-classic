@@ -51,7 +51,7 @@
             ]
         },
         {
-            "info": "Minimum perentage of valid spectrum data points required to do a fit. Spectra below this tolerance will be set to NaN. Leaving this usnet may result in poor or NaN spectra in the output cubes",
+            "info": "Minimum percentage of valid spectrum data points required to do a fit. Spectra below this tolerance will be set to NaN. Leaving this usnet may result in poor or NaN spectra in the output cubes",
             "dtype": "float",
             "name": "cont-fit-tol",
             "default": 0.50

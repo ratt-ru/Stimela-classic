@@ -41,6 +41,8 @@ for param in cab['parameters']:
 binary = f"{os.environ['STIMELA_VENV_BIN']}/{cab['binary']}"
 _runc = " ".join([binary] + args + [infits])
 
+
+subprocess.check_call(shlex.split(f"echo '{_runc}'"))
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:

@@ -25,9 +25,9 @@ class pathformatter:
     to include base directories
     expect:
         pattern: of the format (({})?[\s\S-[{}]]*)*, {} indicate placeholders where
-                 paths are to be inserted. \{ and \} escapes these groups
+                paths are to be inserted. \{ and \} escapes these groups
         *args: of special string types input, output and
-               msfile. Will attempt to replace placeholders in order
+                msfile. Will attempt to replace placeholders in order
                of *args specification
     Example:
         ...
@@ -64,7 +64,7 @@ class pathformatter:
                         expr_list.append(m.groupdict()["T"])
             if delim:
                 if len(expr_list) > 0:
-                     expr_list[-1] += delim[-1]
+                    expr_list[-1] += delim[-1]
                 else:
                     expr_list.append(delim[-1])
         if len(args) != 0:
@@ -73,7 +73,7 @@ class pathformatter:
 
 if __name__ == "__main__":
     p = pathformatter("MODEL_DATA+-{}/bla\{ab\}.DicoModel@{}/poly.reg:{}/abc.lsm",
-                  "output",
-                  "output",
-                  "input")
+                "output",
+                "output",
+                "input")
     print(p())

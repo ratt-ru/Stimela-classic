@@ -1,10 +1,9 @@
 # -*- coding: future_fstrings -*-
 import os
-import sys
 import pwd, grp
 import time
 import stimela
-from stimela import docker, singularity, utils, cargo, podman, main
+from stimela import docker, singularity, utils, podman
 from stimela.cargo import cab
 import logging
 import inspect
@@ -45,21 +44,21 @@ _DECLARE_FAILURE = _actions["DECLARE_FAILURE"] = "DECLARE_FAILURE"
 class StimelaJob(object):
     logs_avail = dict()
     def __init__(self, name, recipe, label=None,
-                 jtype='docker', cpus=None, memory_limit=None,
-                 singularity_dir=None,
-                 time_out=-1,
-                 logger=None,
-                 logfile=None,
-                 cabpath=None,
-                 workdir=None,
-                 tag=None,
-                 version=None,
-                 force_tag=False,
-                 shared_memory=None):
+                jtype='docker', cpus=None, memory_limit=None,
+                singularity_dir=None,
+                time_out=-1,
+                logger=None,
+                logfile=None,
+                cabpath=None,
+                workdir=None,
+                tag=None,
+                version=None,
+                force_tag=False,
+                shared_memory=None):
         """
 
-        logger:   if set to a logger object, uses the specified logger.
-                  if None, sets up its own logger using the parameters below
+        logger: if set to a logger object, uses the specified logger.
+                if None, sets up its own logger using the parameters below
 
         logfile:  name of logfile, False to disable recipe-level logfiles, or None to form a default name
         """

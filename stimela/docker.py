@@ -1,11 +1,9 @@
 # -*- coding: future_fstrings -*-
 import subprocess
 import os
-import sys
 from io import StringIO
 from stimela import utils
 import json
-import stimela
 import time
 import datetime
 import tempfile
@@ -38,13 +36,13 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
                 stdw.write(line)
         stdw.flush()
         utils.xrun("docker build", args+["--force-rm", "-f", stdw.name,
-                                         "-t", image,
-                                         bdir])
+                                        "-t", image,
+                                        bdir])
 
         stdw.close()
     else:
         utils.xrun("docker build", args+["--force-rm", "-t", image,
-                                         bdir])
+                                        bdir])
 
     os.system('rm -rf {:s}'.format(bdir))
 
@@ -63,13 +61,13 @@ def seconds_hms(seconds):
 
 class Container(object):
     def __init__(self, image, name,
-                 volumes=None, environs=None,
-                 label="", logger=None,
-                 time_out=-1,
-                 workdir=None,
-                 log_container=None,
-                 cabname=None,
-                 runscript=None):
+                volumes=None, environs=None,
+                label="", logger=None,
+                time_out=-1,
+                workdir=None,
+                log_container=None,
+                cabname=None,
+                runscript=None):
         """
         Python wrapper to docker engine tools for managing containers.
         """
@@ -121,10 +119,10 @@ class Container(object):
         self._print(
             "Instantiating container [{}]. The container ID is printed below.".format(self.name))
         utils.xrun("docker create", list(args) + [volumes, environs, "--rm",
-                                                  "-w %s" % (self.WORKDIR),
-                                                  "--name", self.name,
-                                                  self.image,
-                                                  self.RUNSCRIPT or ""], log=self.logger)
+                                                "-w %s" % (self.WORKDIR),
+                                                "--name", self.name,
+                                                self.image,
+                                                self.RUNSCRIPT or ""], log=self.logger)
 
         self.status = "created"
 
@@ -141,7 +139,7 @@ class Container(object):
     def get_log(self):
         stdout = open(self.logfile, 'w')
         exit_status = subprocess.call("docker logs {0}".format(self.name),
-                                      stdout=stdout, stderr=stdout, shell=True)
+                                    stdout=stdout, stderr=stdout, shell=True)
         if exit_status != 0:
             self.logger.warn(
                 'Could not log container: {}. Something went wrong durring execution'.format(self.name))
@@ -154,17 +152,16 @@ class Container(object):
         return output
 
     def start(self, output_wrangler=None):
-        running = True
         tstart = time.time()
         self.status = "running"
 
         self._print("Starting container [{0:s}]. Timeout set to {1:d}. The container ID is printed below.".format(
             self.name, self.time_out))
         utils.xrun("docker", ["start", "-a", self.name],
-                       timeout=self.time_out,
-                       logfile=self.logfile,
-                       log=self.logger, output_wrangler=output_wrangler,
-                       kill_callback=lambda: utils.xrun("docker", ["kill", self.name]))
+                    timeout=self.time_out,
+                    logfile=self.logfile,
+                    log=self.logger, output_wrangler=output_wrangler,
+                    kill_callback=lambda: utils.xrun("docker", ["kill", self.name]))
         uptime = seconds_hms(time.time() - tstart)
         self.uptime = uptime
         self._print(

@@ -1,9 +1,6 @@
-# -*- coding: future_fstrings -*-
 import stimela
 import os
 import unittest
-import subprocess
-import shutil
 
 
 class TestKat7Reduce(unittest.TestCase):

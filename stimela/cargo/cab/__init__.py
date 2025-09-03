@@ -1,4 +1,3 @@
-# -*- coding: future_fstrings -*-
 import stimela
 from stimela import utils
 import os

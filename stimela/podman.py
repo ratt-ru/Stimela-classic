@@ -1,4 +1,3 @@
-# -*- coding: future_fstrings -*-
 import subprocess
 import os
 from io import StringIO

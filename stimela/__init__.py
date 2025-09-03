@@ -1,18 +1,15 @@
-# -*- coding: future_fstrings -*-
 import os
 import sys
 import inspect
-import pkg_resources
+from importlib import metadata
 import logging
 from logging import StreamHandler
 import re
 import getpass
 import time
 
-try:
-    __version__ = pkg_resources.require("stimela")[0].version
-except pkg_resources.DistributionNotFound:
-    __version__ = "dev"
+
+__version__ = metadata.version(__package__)
 
 # Get to know user
 try:

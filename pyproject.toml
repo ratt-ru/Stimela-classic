@@ -22,8 +22,6 @@ include = ["stimela/cargo/cab/stimela_runscript"]
 
 [tool.poetry.dependencies]
 python = "^3.9, <3.13"
-ruamel.yaml = "*"
-setuptools = "*"
 pytest = { version = "*", optional=true }
 flake8 = { version = "*", optional=true }
 pytest-cov = { version = "*", optional=true }

@@ -1,13 +1,7 @@
 import subprocess
 import os
-import sys
 from stimela import utils
-from stimela.cargo import cab
-import json
 import stimela
-import time
-import datetime
-import tempfile
 import hashlib
 from shutil import which
 
@@ -51,13 +45,13 @@ def pull(image, name, docker=True, directory=".", force=False):
 
 class Container(object):
     def __init__(self, image, name,
-                 volumes=None,
-                 logger=None,
-                 time_out=-1,
-                 runscript="/singularity",
-                 environs=None,
-                 workdir=None,
-                 execdir=".",
+                volumes=None,
+                logger=None,
+                time_out=-1,
+                runscript="/singularity",
+                environs=None,
+                workdir=None,
+                execdir=".",
                 ):
         """
         Python wrapper to singularity tools for managing containers.

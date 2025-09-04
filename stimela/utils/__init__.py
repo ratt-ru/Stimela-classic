@@ -1,13 +1,8 @@
 import os
-import sys
 import json
-import yaml
-import time
 import tempfile
 import inspect
-import warnings
 import re
-import math
 import codecs
 
 class StimelaCabRuntimeError(RuntimeError):
@@ -29,7 +24,7 @@ def assign(key, value):
 
 def readJson(conf):
     with open(conf, "r") as _std:
-        jdict = yaml.safe_load(_std)
+        jdict = json.load(_std)
         return jdict
 
 

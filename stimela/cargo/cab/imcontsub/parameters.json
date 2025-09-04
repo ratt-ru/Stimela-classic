@@ -1,0 +1,95 @@
+{
+    "task": "imcontsub",
+    "base": "stimela/contsub",
+    "tag": "1.0.5",
+    "description": "Image-plane continuum subtraction",
+    "prefix": "--",
+    "binary": "imcontsub",
+    "junk":[],
+    "msdir": false,
+    "parameters": [
+        {
+            "info": "Input FITS cube",
+            "name": "infits",
+            "io": "input",
+            "default": null,
+            "dtype": "file",
+            "required": true
+        },
+        {
+            "info": "Order of B-spline",
+            "name": "order",
+            "default": null,
+            "dtype": "list:int"
+        },
+        {
+            "info": "Width of spline segments in km/s",
+            "name": "segments",
+            "default": null,
+            "dtype": "list:float"
+        },
+        {
+            "info": "Mask image",
+            "default": null,
+            "name": "mask-image",
+            "dtype": "file",
+            "io": "input"
+        },
+        {
+            "info": "Sigma clip",
+            "name": "sigma-clip",
+            "default": null,
+            "dtype": "list:float"
+        },
+        {
+            "info": "Fit model. **NOT IMPLEMENTED. ONLY B-Spline is available**",
+            "name": "fit-model",
+            "default": "spline",
+            "dtype": "str",
+            "choices": [
+                "spline"
+            ]
+        },
+        {
+            "info": "Minimum percentage of valid spectrum data points required to do a fit. Spectra below this tolerance will be set to NaN. Leaving this usnet may result in poor or NaN spectra in the output cubes",
+            "dtype": "float",
+            "name": "cont-fit-tol"
+        },
+        {
+            "info": "Overwrite outputs if they exist.",
+            "default": false,
+            "name": "overwrite",
+            "dtype": "bool"
+        },
+        {
+            "info": "Field of view width to query online catalog in degrees e.g. '1.0d'",
+            "default": null,
+            "required": false,
+            "name": "width",
+            "dtype": "str"
+        },
+        {
+            "info": "Chunks along ra-axis",
+            "name": "ra-chunks",
+            "default": 128,
+            "dtype": "int"
+        },
+        {
+            "info": "Maximum number of CPUs to use",
+            "name": "nworkers",
+            "default": 4,
+            "dtype": "int"
+        },
+        {
+            "info": "Prefix for output products",
+            "name": "output-prefix",
+            "default": null,
+            "dtype": "str"
+        },
+        {
+            "info": "Rest frequency in MHz",
+            "name": "rest-freq",
+            "dtype": "float"
+        }
+    ]
+}

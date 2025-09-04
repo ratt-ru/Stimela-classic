@@ -1,13 +1,9 @@
-# -*- coding: future_fstrings -*-
 import stimela
 import os
-import sys
 import unittest
-import subprocess
 import shutil
 import glob
 from stimela.exceptions import *
-from stimela.dismissable import dismissable as sdm
 from stimela.pathformatter import pathformatter as spf
 from stimela import cargo, singularity
 

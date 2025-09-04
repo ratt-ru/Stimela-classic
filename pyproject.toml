@@ -21,10 +21,7 @@ packages = [
 include = ["stimela/cargo/cab/stimela_runscript"]
 
 [tool.poetry.dependencies]
-python = "^3.9, <3.14"
-pyyaml = "^6.0"
-scabha = "0.3.2"
-setuptools = "^69.0"
+python = "^3.9, <3.13"
 pytest = { version = "*", optional=true }
 flake8 = { version = "*", optional=true }
 pytest-cov = { version = "*", optional=true }

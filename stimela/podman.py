@@ -1,11 +1,8 @@
-# -*- coding: future_fstrings -*-
 import subprocess
 import os
-import sys
 from io import StringIO
 from stimela import utils
 import json
-import stimela
 import time
 import datetime
 import tempfile
@@ -39,13 +36,13 @@ def build(image, build_path, tag=None, build_args=None, fromline=None, args=[]):
                 stdw.write(line)
         stdw.flush()
         utils.xrun("podman build", args+["--force-rm", "--no-cache", "-f", stdw.name,
-                                         "-t", image,
-                                         bdir])
+                                        "-t", image,
+                                        bdir])
 
         stdw.close()
     else:
         utils.xrun("podman build", args+["--force-rm", "--no-cache", "-t", image,
-                                         bdir])
+                                        bdir])
 
     os.system('rm -rf {:s}'.format(bdir))
 
@@ -64,13 +61,13 @@ def seconds_hms(seconds):
 
 class Container(object):
     def __init__(self, image, name,
-                 volumes=None, environs=None,
-                 label="", logger=None,
-                 shared_memory="1gb",
-                 time_out=-1,
-                 log_container=None, 
-                 workdir=None,
-                 runscript=None):
+                volumes=None, environs=None,
+                label="", logger=None,
+                shared_memory="1gb",
+                time_out=-1,
+                log_container=None, 
+                workdir=None,
+                runscript=None):
         """
         Python wrapper to podman engine tools for managing containers.
         """

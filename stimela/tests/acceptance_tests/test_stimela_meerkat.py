@@ -1,10 +1,6 @@
-# -*- coding: future_fstrings -*-
 import stimela
 from stimela.pathformatter import pathformatter as spf
-import os
 import unittest
-import subprocess
-import shutil
 
 
 class TestMkReduce(unittest.TestCase):

@@ -1,13 +1,10 @@
-# -*- coding: future_fstrings -*-
 import os
 import sys
 import argparse
 from argparse import ArgumentParser
 import textwrap as _textwrap
-import signal
 import stimela
 from stimela import docker, singularity, podman, utils
-from stimela.utils import logger
 from stimela.cargo import cab
 
 BASE = stimela.BASE
@@ -336,7 +333,7 @@ def main(argv):
     parser = ArgumentParser(description='Stimela: Dockerized Radio Interferometric Scripting Framework. '
                             '|n version {:s} |n install path {:s} |n '
                             'Sphesihle Makhathini <sphemakh@gmail.com>'.format(stimela.__version__,
-                                                                               os.path.dirname(__file__)),
+                                                                            os.path.dirname(__file__)),
                             formatter_class=MultilineFormatter,
                             add_help=False)
 

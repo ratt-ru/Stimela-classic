@@ -1,19 +1,15 @@
-# -*- coding: future_fstrings -*-
 import os
 import sys
 import inspect
-import pkg_resources
+from importlib import metadata
 import logging
 from logging import StreamHandler
 import re
-from pathlib import Path
 import getpass
 import time
 
-try:
-    __version__ = pkg_resources.require("stimela")[0].version
-except pkg_resources.DistributionNotFound:
-    __version__ = "dev"
+
+__version__ = metadata.version(__package__)
 
 # Get to know user
 try:
@@ -63,11 +59,11 @@ def is_logger_initialized():
     return _logger is not None
 
 def logger(name="STIMELA", propagate=False, console=True, boring=False,
-           fmt="{asctime} {name} {levelname}: {message}",
-           col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
-           sub_fmt="# {message}",
-           col_sub_fmt="%s# {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
-           datefmt="%Y-%m-%d %H:%M:%S", loglevel="INFO"):
+            fmt="{asctime} {name} {levelname}: {message}",
+            col_fmt="{asctime} {name} %s{levelname}: {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
+            sub_fmt="# {message}",
+            col_sub_fmt="%s# {message}%s"%(ConsoleColors.BEGIN, ConsoleColors.END),
+            datefmt="%Y-%m-%d %H:%M:%S", loglevel="INFO"):
     """Returns the global Stimela logger (initializing if not already done so, with the given values)"""
     global _logger
     if _logger is None:
@@ -88,7 +84,7 @@ def logger(name="STIMELA", propagate=False, console=True, boring=False,
         log_colourful_formatter = SelectiveFormatter(
                     ColorizingFormatter(col_fmt, datefmt, style="{"),
                     [(_is_from_subprocess, ColorizingFormatter(fmt=col_sub_fmt, datefmt=datefmt, style="{",
-                                                               default_color=ConsoleColors.DIM))])
+                                                            default_color=ConsoleColors.DIM))])
 
         log_formatter = log_boring_formatter if boring else log_colourful_formatter
 

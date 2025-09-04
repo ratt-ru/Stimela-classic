@@ -1,9 +1,6 @@
-# -*- coding: future_fstrings -*-
 import stimela
-from stimela import utils, recipe
-import logging
+from stimela import utils
 import os
-import sys
 import textwrap
 from stimela.pathformatter import pathformatter, placeholder
 from stimela.exceptions import *

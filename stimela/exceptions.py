@@ -1,4 +1,3 @@
-# -*- coding: future_fstrings -*-
 class StimelaCabParameterError(Exception):
     pass
 

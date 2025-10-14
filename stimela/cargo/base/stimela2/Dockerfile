@@ -1,30 +1,31 @@
 FROM kernsuite/base:9
 MAINTAINER <ramaila.jat@gmail.com>
 RUN docker-apt-install cmake \
-    wget \
-    subversion \
+    bison \
     build-essential \
+    casacore-dev \
     cmake \
+    flex \
     gfortran \
     g++ \
     libncurses5-dev \
     libreadline-dev \
-    flex \
-    bison \
     libblas-dev \
     liblapacke-dev \
     libcfitsio-dev \
     libgsl-dev \
-    wcslib-dev \
     libhdf5-serial-dev \
     libfftw3-dev \
-    python3-numpy \
     libboost-python-dev \
     libboost-all-dev \
     libpython2.7-dev \
     liblog4cplus-dev \
     libhdf5-dev \
-    casacore-dev \
+    montage \
+    subversion \
+    wcslib-dev \
+    python3-numpy \
+    wget \
     wsclean
 
 RUN docker-apt-install python3-pip
@@ -36,7 +37,8 @@ RUN pip install cult-cargo stimela quartical \
     casaconfig \
     casadata \
     casatasks \
-    casatools
+    casatools \
+    mosaic-queen
 
 RUN docker-apt-install \
     git \

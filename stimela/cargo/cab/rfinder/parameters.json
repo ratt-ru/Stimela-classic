@@ -130,6 +130,12 @@
             "name": "plot_noise"
         },
         {
+            "info": "Threshold for RFI identification", 
+            "dtype": "int", 
+            "default": null, 
+            "name": "rms_clip"
+        },
+        {
             "info": "Minimum and maximum frequency (Hz) where to measure average std of visibilities", 
             "dtype": "list:float", 
             "default": null, 

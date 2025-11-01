@@ -40,6 +40,10 @@ for param in cab['parameters']:
         list_doc['general']['msname'] = value.split('/')[-1]
         continue
 
+    if name == 'plot_enable' and value is not None:
+        list_doc['plots']['plot_details']['enable'] = bool(value)
+        continue
+
     for key, val in list_doc.items():
         if type(val) == dict:
             for k1, v1 in val.items():

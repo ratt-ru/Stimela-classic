@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "stimela"
-version = "1.8.1"
+version = "1.8.2"
 description = "Dockerized radio interferometry scripting framework"
 authors = ["Sphesihle Makhathini <sphemakh@gmail.com>", "RATT"]
 readme = "README.rst"

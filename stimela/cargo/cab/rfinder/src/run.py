@@ -24,7 +24,7 @@ pkg_path = os.path.dirname(os.path.realpath(rfinder.__file__))
 rfinder_file = '{:s}/rfinder_default.yml'.format(pkg_path)
 
 with open(rfinder_file) as f:
-    list_doc = yaml.load(f)
+    list_doc = yaml.load(f, Loader=yaml.FullLoader)
 
 list_doc['general']['outdir'] = '{:s}/'.format(OUTPUT)
 list_doc['general']['workdir'] = '{:s}/'.format(MSDIR)
@@ -62,6 +62,7 @@ with open(edited_file, "w") as f:
 _runc = 'rfinder -c %s' % edited_file
 
 try:
+    subprocess.check_call(["pip", "install", "setuptools"])
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:

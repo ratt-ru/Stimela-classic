@@ -62,7 +62,6 @@ with open(edited_file, "w") as f:
 _runc = 'rfinder -c %s' % edited_file
 
 try:
-    subprocess.check_call(["pip", "install", "setuptools"])
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:

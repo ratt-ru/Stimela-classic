@@ -1,8 +1,4 @@
 import os
-import sys
-import Tigger
-import numpy
-import tempfile
 import json
 import codecs
 import shlex
@@ -10,8 +6,6 @@ import shutil
 import glob
 import subprocess
 
-from astLib.astWCS import WCS
-from Tigger.Models import SkyModel, ModelClasses
 
 
 CONFIG = os.environ["CONFIG"]
@@ -26,18 +20,18 @@ junk = cab["junk"]
 args = []
 msname = None
 
-sofia_file = 'sofia_parameters.par'
-wstd = open(sofia_file, 'w')
+sofia_file = "sofia_parameters.par"
+wstd = open(sofia_file, "w")
 
-wstd.write('writeCat.outputDir={:s}\n'.format(OUTPUT))
+wstd.write("writeCat.outputDir={:s}\n".format(OUTPUT))
 port2tigger = False
 image = None
 writecat = False
 parameterise = False
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
 
     if value is None:
         continue
@@ -51,17 +45,20 @@ for param in cab['parameters']:
     if name == "import.inFile":
         image = value
 
-    wstd.write('{0}={1}\n'.format(name, value))
+    wstd.write("{0}={1}\n".format(name, value))
 
 wstd.close()
 
-_runc = " ".join(['sofia_pipeline.py', sofia_file])
+_runc = " ".join(["sofia_pipeline.py", sofia_file])
 
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

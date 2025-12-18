@@ -1,5 +1,4 @@
 import os
-import sys
 import glob
 import yaml
 import shutil
@@ -18,18 +17,18 @@ junk = cab["junk"]
 
 args = []
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
     if value is None:
         continue
     elif value is False:
         continue
 
     if value is bool:
-        args += ['{0}{1}'.format(cab['prefix'], name)]
+        args += ["{0}{1}".format(cab["prefix"], name)]
     else:
-        args += ['{0}'.format(value)]
+        args += ["{0}".format(value)]
 
 _runc = " ".join([cab["binary"]] + args)
 
@@ -37,7 +36,10 @@ try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

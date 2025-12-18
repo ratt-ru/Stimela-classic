@@ -1,21 +1,31 @@
 class StimelaCabParameterError(Exception):
     pass
 
+
 class StimelaRecipeExecutionError(Exception):
     pass
+
 
 class StimelaBaseImageError(Exception):
     pass
 
 
+class StimelaCabRuntimeError(RuntimeError):
+    pass
+
+
+class StimelaProcessRuntimeError(RuntimeError):
+    pass
+
+
 class PipelineException(Exception):
-    """ 
+    """
     Encapsulates information about state of pipeline when an
     exception occurs
     """
 
     def __init__(self, exception, completed, failed, remaining):
-        message = ("Job '%s' failed: %s" % (failed.label, str(exception)))
+        message = "Job '%s' failed: %s" % (failed.label, str(exception))
 
         super(PipelineException, self).__init__(message)
 
@@ -34,4 +44,3 @@ class PipelineException(Exception):
     @property
     def remaining(self):
         return self._remaining
-

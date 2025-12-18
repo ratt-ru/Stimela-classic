@@ -1,4 +1,3 @@
-import sys
 import os
 import json
 import yaml
@@ -19,9 +18,9 @@ junk = cab["junk"]
 
 args = {}
 tasksuite = None
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
 
     if value is None:
         continue
@@ -30,16 +29,17 @@ for param in cab['parameters']:
 
 kwargs = "'{}'".format(json.dumps(args))
 
-ARGS = ["flag_phase_drifts",
-        "-s antenna_mod",
-        kwargs]
+ARGS = ["flag_phase_drifts", "-s antenna_mod", kwargs]
 
-_runc = " ".join([cab['binary']] + ARGS)
+_runc = " ".join([cab["binary"]] + ARGS)
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

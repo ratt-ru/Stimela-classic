@@ -27,31 +27,31 @@ junk = cab["junk"]
 args = []
 msname = None
 
-sofia_file = 'sofia_parameters.par'
-wstd = open(sofia_file, 'w')
+sofia_file = "sofia_parameters.par"
+wstd = open(sofia_file, "w")
 
-wstd.write('output.directory={:s}\n'.format(OUTPUT))
+wstd.write("output.directory={:s}\n".format(OUTPUT))
 port2tigger = False
 image = None
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
-    dtype = param['dtype']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
+    dtype = param["dtype"]
 
     # Fix the sofia issue of needing lowercase booleans.
-    if dtype == 'bool':
-        if (value == True) and (not name == 'port2tigger'):
-            value = 'true'
-        elif (not name == 'port2tigger'):
-            value = 'false'
+    if dtype == "bool":
+        if value and (not name == "port2tigger"):
+            value = "true"
+        elif not name == "port2tigger":
+            value = "false"
 
-    if dtype == 'list:str' and value is not None:
+    if dtype == "list:str" and value is not None:
         try:
             value = ",".join(map(str, value))  # Flatten the list into a string
         except ValueError:
             pass
-    
+
     if value is None:
         continue
     if name == "port2tigger":
@@ -64,17 +64,20 @@ for param in cab['parameters']:
     if name == "input.data":
         image = value
 
-    wstd.write('{0}={1}\n'.format(name, value))
+    wstd.write("{0}={1}\n".format(name, value))
 
 wstd.close()
 
-_runc = " ".join([cab['binary'], sofia_file])
+_runc = " ".join([cab["binary"], sofia_file])
 
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):
@@ -88,7 +91,7 @@ if not port2tigger:
 
 # convert to data file to Tigger LSM
 # First make dummy tigger model
-tfile = tempfile.NamedTemporaryFile(suffix='.txt')
+tfile = tempfile.NamedTemporaryFile(suffix=".txt")
 tfile.flush()
 
 if image and writecat and parameterise:
@@ -106,7 +109,6 @@ tfile.close()
 
 
 def tigger_src(src, idx):
-
     name = "SRC%d" % idx
     flux = ModelClasses.Polarization(src["f_sum"], 0, 0, 0)
     ra = numpy.deg2rad(src["ra"])
@@ -131,7 +133,8 @@ def tigger_src(src, idx):
 
     return source
 
-table = parse_single_table('{0}_cat.xml'.format(prefix))
+
+table = parse_single_table("{0}_cat.xml".format(prefix))
 data = table.array
 
 for i, src in enumerate(data):
@@ -148,11 +151,13 @@ try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):
                     os.remove(f)
                 elif os.path.isdir(f):
                     shutil.rmtree(f)
-

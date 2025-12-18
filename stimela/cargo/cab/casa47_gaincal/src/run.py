@@ -1,6 +1,4 @@
 import os
-import sys
-import logging
 import Crasa.Crasa as crasa
 from casacore.tables import table
 import numpy
@@ -19,9 +17,9 @@ with open(CONFIG, "r") as _std:
 junk = cab["junk"]
 
 args = {}
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
 
     if value is None:
         continue
@@ -33,7 +31,10 @@ try:
     task.run()
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):
@@ -44,13 +45,17 @@ finally:
 
 gtab = args["caltable"]
 if not os.path.exists(gtab):
-    raise RuntimeError("The gaintable was not created. Please refer to CASA {0:s} logfile for further details".format(cab["binary"]))
+    raise RuntimeError(
+        "The gaintable was not created. Please refer to CASA {0:s} logfile for further details".format(
+            cab["binary"]
+        )
+    )
 
 tab = table(gtab)
 field_ids = numpy.unique(tab.getcol("FIELD_ID"))
 tab.close()
 
-tab = table(gtab+"::FIELD")
+tab = table(gtab + "::FIELD")
 field_names = tab.getcol("NAME")
 tab.close()
 
@@ -62,4 +67,8 @@ except ValueError:
     ids = map(lambda a: field_names.index(a), field_in)
 
 if not set(ids).intersection(field_ids):
-    raise RuntimeError("None of the fields has solutions after the calibration. Please refer to CASA the {} logfile for further details".format(cab["binary"]))
+    raise RuntimeError(
+        "None of the fields has solutions after the calibration. Please refer to CASA the {} logfile for further details".format(
+            cab["binary"]
+        )
+    )

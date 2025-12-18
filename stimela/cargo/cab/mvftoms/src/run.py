@@ -1,5 +1,4 @@
 import os
-import sys
 import glob
 import subprocess
 import shutil
@@ -20,9 +19,9 @@ junk = cab["junk"]
 args = []
 overwrite = False
 
-for param in cab['parameters']:
-    value = param['value']
-    name = param['name']
+for param in cab["parameters"]:
+    value = param["value"]
+    name = param["name"]
 
     if value in [None, False]:
         continue
@@ -31,7 +30,7 @@ for param in cab['parameters']:
         continue
     elif value is True:
         value = ""
-    elif name == 'mvffiles':
+    elif name == "mvffiles":
         files = value
         continue
     elif name == "output-ms" and value:
@@ -43,7 +42,7 @@ for param in cab['parameters']:
         files = value
         continue
 
-    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+    args += ["{0}{1} {2}".format(cab["prefix"], name, value)]
 
 if overwrite:
     os.system("rm -fr {0:s}".format(ms))
@@ -53,7 +52,10 @@ try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTDIR, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTDIR,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

@@ -1,5 +1,4 @@
 import os
-import sys
 import shlex
 import shutil
 import yaml
@@ -20,9 +19,9 @@ params = cab["parameters"]
 
 args = []
 for param in params:
-    if param['value'] in [False, None]:
+    if param["value"] in [False, None]:
         continue
-    elif param['value'] is True:
+    elif param["value"] is True:
         arg = "{0}{1}".format(cab["prefix"], param["name"])
     else:
         arg = "{0}{1} {2}".format(cab["prefix"], param["name"], param["value"])
@@ -35,11 +34,13 @@ try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):
                     os.remove(f)
                 elif os.path.isdir(f):
                     shutil.rmtree(f)
-

@@ -5,8 +5,9 @@ from scabha import config, parse_parameters, prun
 
 # If a list of fields is given, insert them as repeated arguments.
 # Other arguments not allowed to be lists.
-args = [config.binary] + parse_parameters(repeat=True,
-                                          positional=["dataFile"], mandatory=["dataFile"])
+args = [config.binary] + parse_parameters(
+    repeat=True, positional=["dataFile"], mandatory=["dataFile"]
+)
 
 # run the command
 if prun(args) != 0:

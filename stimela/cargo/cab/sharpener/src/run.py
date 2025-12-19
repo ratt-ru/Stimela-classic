@@ -23,7 +23,7 @@ pkg_path = os.path.dirname(os.path.realpath(sharpener.__file__))
 sharpener_file = "{:s}/sharpener_default.yml".format(pkg_path)
 
 with open(sharpener_file) as f:
-    list_doc = yaml.load(f)
+    list_doc = yaml.safe_load(f)
 
 for param in cab["parameters"]:
     name = param["name"]

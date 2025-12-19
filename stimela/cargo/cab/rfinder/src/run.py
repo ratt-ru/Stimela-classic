@@ -23,7 +23,7 @@ pkg_path = os.path.dirname(os.path.realpath(rfinder.__file__))
 rfinder_file = "{:s}/rfinder_default.yml".format(pkg_path)
 
 with open(rfinder_file) as f:
-    list_doc = yaml.load(f)
+    list_doc = yaml.safe_load(f)
 
 list_doc["general"]["outdir"] = "{:s}/".format(OUTPUT)
 list_doc["general"]["workdir"] = "{:s}/".format(MSDIR)

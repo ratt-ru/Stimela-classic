@@ -1,11 +1,8 @@
-import sys
 import os
 from sunblocker.sunblocker import Sunblocker
 import inspect
 import yaml
-import subprocess
 import glob
-import shlex
 import shutil
 
 CONFIG = os.environ["CONFIG"]
@@ -18,9 +15,9 @@ with open(CONFIG, "r") as _std:
 junk = cab["junk"]
 
 args = {}
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
 
     if name == "command":
         function = value
@@ -30,11 +27,10 @@ for param in cab['parameters']:
 
     args[name] = value
 
-args['showdir'] = OUTPUT
+args["showdir"] = OUTPUT
 run_func = getattr(Sunblocker(), function, None)
 if run_func is None:
-    raise RuntimeError(
-        "Function '{}' is not part of Sunblocker()".format(function))
+    raise RuntimeError("Function '{}' is not part of Sunblocker()".format(function))
 
 func_args = inspect.getargspec(run_func)[0]
 for arg in args.keys():
@@ -45,7 +41,10 @@ try:
     run_func(**args)
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

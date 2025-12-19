@@ -20,5 +20,3 @@ args = [config.binary] + parse_parameters(parameters_dict)
 
 if prun(args) != 0:
     sys.exit(1)
-
-

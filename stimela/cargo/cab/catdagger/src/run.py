@@ -1,5 +1,4 @@
 import os
-import sys
 import shlex
 import shutil
 import subprocess
@@ -17,9 +16,9 @@ junk = cab["junk"]
 
 args = []
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
     if name == "noise-map":
         args += [value]
         continue
@@ -28,16 +27,19 @@ for param in cab['parameters']:
     elif value is False:
         continue
     if param["dtype"] == "bool" and value:
-        args += ['{0}{1}'.format(cab['prefix'], name)]
+        args += ["{0}{1}".format(cab["prefix"], name)]
         continue
-    args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+    args += ["{0}{1} {2}".format(cab["prefix"], name, value)]
 
 _runc = " ".join([cab["binary"]] + args)
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

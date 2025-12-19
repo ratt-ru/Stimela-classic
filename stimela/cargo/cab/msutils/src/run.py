@@ -19,9 +19,9 @@ with open(CONFIG, "r") as _std:
 
 junk = cab["junk"]
 args = {}
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
 
     if name == "command":
         function = value
@@ -29,31 +29,36 @@ for param in cab['parameters']:
 
     args[name] = value
 
-if function == 'sumcols':
-    args['outcol'] = args.pop('colname')
+if function == "sumcols":
+    args["outcol"] = args.pop("colname")
 
 if function == "estimate_weights":
-    msnoise = esw.MSNoise(args['msname'])
-    if isinstance(args['stats_data'], str) and args['stats_data'].find('use_package_meerkat_spec') >= 0:
-        args['stats_data'] = esw.MEERKAT_SEFD
+    msnoise = esw.MSNoise(args["msname"])
+    if (
+        isinstance(args["stats_data"], str)
+        and args["stats_data"].find("use_package_meerkat_spec") >= 0
+    ):
+        args["stats_data"] = esw.MEERKAT_SEFD
 
     # Calculate noise/weights from spec
-    noise, weights = msnoise.estimate_weights(stats_data=args['stats_data'],
-                                              smooth=args['smooth'],
-                                              fit_order=args['fit_order'],
-                                              plot_stats=args.get('plot_stats', None))
+    noise, weights = msnoise.estimate_weights(
+        stats_data=args["stats_data"],
+        smooth=args["smooth"],
+        fit_order=args["fit_order"],
+        plot_stats=args.get("plot_stats", None),
+    )
 
-    if args['write_to_ms']:
-        msnoise.write_toms(noise, columns=args['noise_columns'])
-        msnoise.write_toms(weights, columns=args['weight_columns'])
+    if args["write_to_ms"]:
+        msnoise.write_toms(noise, columns=args["noise_columns"])
+        msnoise.write_toms(weights, columns=args["weight_columns"])
     sys.exit(0)
 
 if function == "plot_gains":
-    tab = args['ctable']
-    tabtype = args['tabtype']
-    dpi = args['plot_dpi']
-    scale = args['subplot_scale']
-    outfile = args['plot_file']
+    tab = args["ctable"]
+    tabtype = args["tabtype"]
+    dpi = args["plot_dpi"]
+    scale = args["subplot_scale"]
+    outfile = args["plot_file"]
     gain_plotter(tab, tabtype, outfile, scale, dpi)
     sys.exit(0)
 
@@ -73,7 +78,10 @@ try:
     run_func(**_args)
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

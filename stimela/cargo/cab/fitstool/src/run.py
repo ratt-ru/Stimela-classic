@@ -1,9 +1,7 @@
 import os
-import sys
 import shutil
 import shlex
 import subprocess
-import shutil
 import glob
 import yaml
 
@@ -26,60 +24,62 @@ axis = None
 chunk = 1
 file_pattern = False
 
-for param in cab['parameters']:
-    value = param['value']
-    name = param['name']
+for param in cab["parameters"]:
+    value = param["value"]
+    name = param["name"]
 
     if value in [None, False]:
         continue
 
-    if name == 'image':
-        inimage = ' '.join(value)
+    if name == "image":
+        inimage = " ".join(value)
         continue
-    elif name == 'output':
+    elif name == "output":
         outimage = value
         continue
-    elif name == 'stack':
+    elif name == "stack":
         stack = True
         continue
-    elif name == 'unstack':
+    elif name == "unstack":
         unstack = True
         continue
-    elif name == 'unstack-chunk':
+    elif name == "unstack-chunk":
         chunk = value
         continue
-    elif name == 'fits-axis':
+    elif name == "fits-axis":
         axis = value
         continue
-    elif name == 'file_pattern':
+    elif name == "file_pattern":
         value = '"%s"' % value
         file_pattern = True
 
     elif value is True:
         value = ""
 
-    args.append('{0}{1} {2}'.format(cab['prefix'], name, value))
+    args.append("{0}{1} {2}".format(cab["prefix"], name, value))
 
 if stack and axis:
-    args.append('{0}stack {1}:{2}'.format(cab['prefix'], outimage, axis))
+    args.append("{0}stack {1}:{2}".format(cab["prefix"], outimage, axis))
     outimage = None
 elif unstack and axis:
-    args.append('{0}unstack {1}:{2}:{3}'.format(
-        cab['prefix'], outimage, axis, chunk))
+    args.append("{0}unstack {1}:{2}:{3}".format(cab["prefix"], outimage, axis, chunk))
     outimage = None
 else:
-    outimage = '{0}output {1}'.format(cab['prefix'], outimage)
+    outimage = "{0}output {1}".format(cab["prefix"], outimage)
 
 if file_pattern:
     inimage = ""
 
-_runc = " ".join([cab['binary']] + args + [inimage, outimage or ""])
+_runc = " ".join([cab["binary"]] + args + [inimage, outimage or ""])
 
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

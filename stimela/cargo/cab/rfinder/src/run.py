@@ -1,5 +1,4 @@
 import os
-import sys
 import yaml
 import rfinder
 import glob
@@ -21,29 +20,29 @@ args = []
 msname = None
 
 pkg_path = os.path.dirname(os.path.realpath(rfinder.__file__))
-rfinder_file = '{:s}/rfinder_default.yml'.format(pkg_path)
+rfinder_file = "{:s}/rfinder_default.yml".format(pkg_path)
 
 with open(rfinder_file) as f:
-    list_doc = yaml.load(f)
+    list_doc = yaml.safe_load(f)
 
-list_doc['general']['outdir'] = '{:s}/'.format(OUTPUT)
-list_doc['general']['workdir'] = '{:s}/'.format(MSDIR)
+list_doc["general"]["outdir"] = "{:s}/".format(OUTPUT)
+list_doc["general"]["workdir"] = "{:s}/".format(MSDIR)
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
 
     if value is None:
         continue
 
-    if name == 'msname':
-        list_doc['general']['msname'] = value.split('/')[-1]
+    if name == "msname":
+        list_doc["general"]["msname"] = value.split("/")[-1]
         continue
 
     for key, val in list_doc.items():
-        if type(val) == dict:
+        if isinstance(val, dict):
             for k1, v1 in val.items():
-                if type(v1) == dict:
+                if isinstance(v1, dict):
                     for k2, v2 in v1.items():
                         if k2 == name:
                             list_doc[key][k1][k2] = value
@@ -54,18 +53,21 @@ for param in cab['parameters']:
             if key == name:
                 list_doc[key] = value
 
-edited_file = 'rfinder_default.yml'
+edited_file = "rfinder_default.yml"
 with open(edited_file, "w") as f:
     yaml.dump(list_doc, f)
 
 
-_runc = 'rfinder -c %s' % edited_file
+_runc = "rfinder -c %s" % edited_file
 
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):
@@ -73,4 +75,3 @@ finally:
                 elif os.path.isdir(f):
                     shutil.rmtree(f)
                 # Leave other types
-

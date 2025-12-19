@@ -3,7 +3,6 @@ import sys
 import numpy
 import Tigger
 import tempfile
-import pyfits
 import shutil
 import shlex
 import subprocess
@@ -23,25 +22,25 @@ with open(CONFIG, "r") as _std:
     cab = yaml.safe_load(_std)
 junk = cab["junk"]
 
-write_catalog = ['port2tigger', 'table']
+write_catalog = ["port2tigger", "table"]
 
 write_opts = {}
 img_opts = {}
 
 args = []
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
     if value is None:
         continue
     elif value is False:
         continue
-    if name == 'filename':  # positional argument
-        args += ['{0}'.format(value)]
+    if name == "filename":  # positional argument
+        args += ["{0}".format(value)]
     else:
         if name != "port2tigger":
-            args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+            args += ["{0}{1} {2}".format(cab["prefix"], name, value)]
     if name in write_catalog:
         write_opts[name] = value
     else:
@@ -53,7 +52,10 @@ try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):
@@ -62,12 +64,12 @@ finally:
                     shutil.rmtree(f)
                 # Leave other types
 
-port2tigger = write_opts.pop('port2tigger')
-outfile = write_opts.pop('table')
-image = img_opts.pop('filename')
+port2tigger = write_opts.pop("port2tigger")
+outfile = write_opts.pop("table")
+image = img_opts.pop("filename")
 
 if port2tigger:
-    write_opts['format'] = 'fits'
+    write_opts["format"] = "fits"
 
 if not port2tigger:
     sys.exit(0)
@@ -75,7 +77,7 @@ if not port2tigger:
 
 # convert to data file to Tigger LSM
 # First make dummy tigger model
-tfile = tempfile.NamedTemporaryFile(suffix='.txt')
+tfile = tempfile.NamedTemporaryFile(suffix=".txt")
 tfile.flush()
 
 prefix = os.path.splitext(outfile)[0]
@@ -88,13 +90,12 @@ tfile.close()
 
 
 def tigger_src(src, idx):
-
     name = "SRC%d" % idx
-    flux = ModelClasses.Polarization(float(src["int_flux"]), 0, 0, 0,
-                                     I_err=float(src["err_int_flux"]))
+    flux = ModelClasses.Polarization(
+        float(src["int_flux"]), 0, 0, 0, I_err=float(src["err_int_flux"])
+    )
     ra, ra_err = map(numpy.deg2rad, (float(src["ra"]), float(src["err_ra"])))
-    dec, dec_err = map(numpy.deg2rad, (float(src["dec"]),
-                                       float(src["err_dec"])))
+    dec, dec_err = map(numpy.deg2rad, (float(src["dec"]), float(src["err_dec"])))
     pos = ModelClasses.Position(ra, dec, ra_err=ra_err, dec_err=dec_err)
     ex, ex_err = map(numpy.deg2rad, (float(src["a"]), float(src["err_a"])))
     ey, ey_err = map(numpy.deg2rad, (float(src["b"]), float(src["err_b"])))
@@ -102,7 +103,8 @@ def tigger_src(src, idx):
 
     if ex and ey:
         shape = ModelClasses.Gaussian(
-            ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err)
+            ex, ey, pa, ex_err=ex_err, ey_err=ey_err, pa_err=pa_err
+        )
     else:
         shape = None
     source = SkyModel.Source(name, pos, flux, shape=shape)
@@ -118,11 +120,12 @@ def tigger_src(src, idx):
     return source
 
 
-data = Table.read('{0}_comp.{1}'.format(outfile.split('.')[0], outfile.split('.')[-1]),
-                  format=outfile.split('.')[-1])
+data = Table.read(
+    "{0}_comp.{1}".format(outfile.split(".")[0], outfile.split(".")[-1]),
+    format=outfile.split(".")[-1],
+)
 
 for i, src in enumerate(data):
-
     model.sources.append(tigger_src(src, i))
 
 wcs = WCS(image)

@@ -1,5 +1,4 @@
 import os
-import sys
 import shlex
 import shutil
 import subprocess
@@ -18,39 +17,40 @@ with open(CONFIG, "r") as _std:
 junk = cab["junk"]
 args = []
 
-for param in cab['parameters']:
-    name = param['name']
-    value = param['value']
+for param in cab["parameters"]:
+    name = param["name"]
+    value = param["value"]
     if value is None:
         continue
 
-    if name in ['compare-images', 'compare-residuals', 'compare-models']:
+    if name in ["compare-images", "compare-residuals", "compare-models"]:
         compare = []
         for i, val in enumerate(value):
             compare.append(val)
             # Compare models/images in pairs
-            if i%2:
-                args += ['{0}{1} {2}'.format(cab['prefix'],
-                                             name, " ".join(compare))]
+            if i % 2:
+                args += ["{0}{1} {2}".format(cab["prefix"], name, " ".join(compare))]
                 compare = []
-    elif name in ['compare-online']:
+    elif name in ["compare-online"]:
         for val in value:
-            args += ['{0}{1} {2}'.format(cab['prefix'], name, val)]
-    elif name in ['compare-residual-subimages', 'centre-pixels-size']:
-        args += ['{0}{1} {2}'.format(cab['prefix'],
-                                     name, " ".join(value))]
-    elif param['dtype'] in ['bool']:
-        args += ['{0}{1}'.format(cab['prefix'], name)]
+            args += ["{0}{1} {2}".format(cab["prefix"], name, val)]
+    elif name in ["compare-residual-subimages", "centre-pixels-size"]:
+        args += ["{0}{1} {2}".format(cab["prefix"], name, " ".join(value))]
+    elif param["dtype"] in ["bool"]:
+        args += ["{0}{1}".format(cab["prefix"], name)]
     else:
-        args += ['{0}{1} {2}'.format(cab['prefix'], name, value)]
+        args += ["{0}{1} {2}".format(cab["prefix"], name, value)]
 
-_runc = " ".join([cab["binary"]]+ args)
+_runc = " ".join([cab["binary"]] + args)
 
 try:
     subprocess.check_call(shlex.split(_runc))
 finally:
     for item in junk:
-        for dest in [OUTPUT, MSDIR]: # these are the only writable volumes in the container
+        for dest in [
+            OUTPUT,
+            MSDIR,
+        ]:  # these are the only writable volumes in the container
             items = glob.glob("{dest}/{item}".format(**locals()))
             for f in items:
                 if os.path.isfile(f):

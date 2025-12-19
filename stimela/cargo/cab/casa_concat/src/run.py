@@ -1,6 +1,6 @@
 # -*- coding: future_fstrings -*-
 import Crasa.Crasa as crasa
-from scabha import config, parameters_dict, prun
+from scabha import config, parameters_dict
 
 print(f"Running CASA task '{config.binary}'")
 

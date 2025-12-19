@@ -1,13 +1,13 @@
 # -*- coding: future_fstrings -*-
 import Crasa.Crasa as crasa
-from scabha import config, parameters_dict, prun
+from scabha import config, parameters_dict
 import os
 
 print(f"Running CASA task '{config.binary}'")
 
 save_result = parameters_dict.pop("save_result", None)
 overwrite = parameters_dict.pop("overwrite", False)
-fluxtable = parameters_dict['fluxtable']
+fluxtable = parameters_dict["fluxtable"]
 if overwrite:
     os.system(f"rm -fr {fluxtable}")
 

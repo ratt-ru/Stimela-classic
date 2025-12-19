@@ -9,7 +9,7 @@ args = [config.binary]
 for name, value in parameters.items():
     if value in [None, "", " ", False]:
         continue
-    args.append(f'{config.prefix}{name}')
+    args.append(f"{config.prefix}{name}")
 
     if not isinstance(value, list):
         value = [value]
@@ -19,4 +19,3 @@ for name, value in parameters.items():
 # run the command
 if prun(args) != 0:
     sys.exit(1)
-

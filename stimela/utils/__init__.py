@@ -6,10 +6,11 @@ import re
 import codecs
 
 from .xrun_poll import xrun
+import stimela.exceptions
 
-
+# for backwards compatibility
+StimelaCabRuntimeError = stimela.exceptions.StimelaCabRuntimeError
 CPUS = 1
-
 
 def assign(key, value):
     frame = inspect.currentframe().f_back

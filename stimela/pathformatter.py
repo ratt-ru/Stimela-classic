@@ -24,7 +24,7 @@ class placeholder:
 
 
 class pathformatter:
-    """
+    r"""
     Wrapper for path variables that need further expansion
     to include base directories
     expect:
@@ -76,13 +76,3 @@ class pathformatter:
         if len(args) != 0:
             raise RuntimeError("could not replace all arguments")
         return expr_list
-
-
-if __name__ == "__main__":
-    p = pathformatter(
-        "MODEL_DATA+-{}/bla\{ab\}.DicoModel@{}/poly.reg:{}/abc.lsm",
-        "output",
-        "output",
-        "input",
-    )
-    print(p())

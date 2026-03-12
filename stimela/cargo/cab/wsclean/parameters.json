@@ -222,7 +222,7 @@
             "dtype": "int", 
             "default": null, 
             "name": "nwlayers-factor",
-	    "mapping": "wstack-nwlayers-factor"
+            "mapping": "wstack-nwlayers-factor"
         }, 
         {
             "info": "Perform inversion at the Nyquist resolution and upscale the image to the requested image size afterwards. This speeds up inversion considerably, but makes aliasing slightly worse. This effect is in most cases <1%", 

@@ -1,7 +1,7 @@
 {
   "task": "correct_parang",
-  "base": "stimela/casarest",
-  "tag": "1.2.0",
+  "base": "stimela/cubical",
+  "tag": "1.7.1",
   "description": "Parallactic angle correction for MeerKAT measurement sets",
   "prefix": "--",
   "binary": "python",

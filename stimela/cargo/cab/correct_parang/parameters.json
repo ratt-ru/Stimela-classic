@@ -1,0 +1,108 @@
+{
+  "task": "correct_parang",
+  "base": "stimela/cubical",
+  "tag": "1.7.2",
+  "description": "Parallactic angle correction for MeerKAT measurement sets",
+  "prefix": "--",
+  "binary": "python",
+  "msdir": true,
+  "junk": [],
+  "parameters": [
+    {
+      "info": "Measurement set to correct",
+      "name": "msname",
+      "io": "msfile",
+      "default": null,
+      "dtype": "file",
+      "required": true
+    },
+    {
+      "info": "Field index to correct",
+      "name": "field",
+      "dtype": "int",
+      "required": true
+    },
+    {
+      "info": "Use special ephemeris body as defined in PyEphem",
+      "name": "specialEphem",
+      "dtype": "str"
+    },
+    {
+      "info": "Make plots for specified field",
+      "name": "doPlot",
+      "dtype": "bool"
+    },
+    {
+      "info": "Simulate only; make no modifications to database",
+      "name": "simulate",
+      "dtype": "bool"
+    },
+    {
+      "info": "Parallactic angle correction step size in minutes",
+      "name": "parangstep",
+      "dtype": "float"
+    },
+    {
+      "info": "Chunk size in rows",
+      "name": "chunksize",
+      "dtype": "int"
+    },
+    {
+      "info": "Select data descriptor (SPW)",
+      "name": "datadiscriptor",
+      "dtype": "int"
+    },
+    {
+      "info": "Apply anti-diagonal matrix; flips the visibility hands",
+      "name": "applyantidiag",
+      "dtype": "bool"
+    },
+    {
+      "info": "Override the receptor angle stored in FEED for all antennae",
+      "name": "overridefeedangle",
+      "dtype": "str"
+    },
+    {
+      "info": "Column to store corrected data to; default DATA - must exist",
+      "name": "storecolumn",
+      "dtype": "str",
+      "default": "DATA"
+    },
+    {
+      "info": "Column to read uncorrected data from; default DATA - must exist",
+      "name": "rawcolumn",
+      "dtype": "str",
+      "default": "DATA"
+    },
+    {
+      "info": "Apply no parallactic angle derotation; useful only to apply feedflip matrix",
+      "name": "noparang",
+      "dtype": "bool"
+    },
+    {
+      "info": "Apply parallactic angle corruption instead of correction",
+      "name": "invertPA",
+      "dtype": "bool"
+    },
+    {
+      "info": "Apply crosshand phase in degrees",
+      "name": "crosshandphase",
+      "dtype": "float"
+    },
+    {
+      "info": "Telescope latitude dd:mm:ss",
+      "name": "telescopelat",
+      "dtype": "str"
+    },
+    {
+      "info": "Telescope longitude dd:mm:ss",
+      "name": "telescopelon",
+      "dtype": "str"
+    },
+    {
+      "info": "Telescope altitude in meters",
+      "name": "telescopealt",
+      "dtype": "float"
+    }
+  ]
+}

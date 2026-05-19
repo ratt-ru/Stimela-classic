@@ -57,9 +57,10 @@ OLDLDPATH=$LD_LIBRARY_PATH
 # Install Stimela into a virtual env
 virtualenv -p python3 ${WORKSPACE_ROOT}/projects/pyenv
 . ${WORKSPACE_ROOT}/projects/pyenv/bin/activate
-PATH=${WORKSPACE}/projects/pyenv/bin:$PATH
-LD_LIBRARY_PATH=${WORKSPACE}/projects/pyenv/lib:$LD_LIBRARY_PATH
-pip install -e "$WORKSPACE[testing]"
+PATH=${WORKSPACE_ROOT}/projects/pyenv/bin:$PATH
+LD_LIBRARY_PATH=${WORKSPACE_ROOT}/projects/pyenv/lib:$LD_LIBRARY_PATH
+pip install --upgrade pip setuptools wheel
+pip install -e "${WORKSPACE_ROOT}/projects/Stimela[testing]"
 
 stimela --version
 stimela pull #--force
@@ -70,5 +71,5 @@ export SILENT_STDERR=ON
 py.test --cov=stimela \
   --cov-report=term-missing   --cov-report=html \
   --junitxml="$WORKSPACE_ROOT/pytest-results.xml" \
-  "$WORKSPACE/stimela/tests" \
+  "$WORKSPACE_ROOT/projects/Stimela/stimela/tests" \
   -vvv

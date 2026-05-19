@@ -451,7 +451,12 @@
             "default": null, 
             "name": "out-name", 
             "io": "output"
-        }, 
+        },
+        {
+            "info": "Apply solver flags",
+            "dtype": "bool",
+            "name": "out-apply-solver-flags"
+        },
         {
             "info": "Allow overwriting of existing output files. If this is set, and the output parset file exists, will raise an exception", 
             "dtype": "bool", 

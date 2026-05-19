@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Attribution & Provenance Information
+# Co-authored / Written by: Benjamin Hugo
+# Source Repository: https://github.com/bennahugo/LunaticPolarimetry
+# Retrieved on: 18 May 2026
+# -----------------------------------------------------------------------------
 import ephem
 import numpy as np
 import datetime

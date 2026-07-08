@@ -1,0 +1,83 @@
+name: Build Multi-Arch Stimela Cabs
+
+on:
+  workflow_dispatch: # Allows manual trigger from the Actions tab
+on:
+  push:
+    branches:
+      - '*' #master # Automatically runs when code is pushed/merged to master
+  workflow_dispatch: # Allows manual trigger from the Actions tab as a fallback
+
+jobs:
+  # ----------------------------------------------------
+  # STAGE 1: Build the Base Image First
+  # ----------------------------------------------------
+  build-base:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Quay
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
+
+      - name: Build and Push Base Image
+        uses: docker/build-push-action@v4
+        with:
+          context: stimela/cargo/base/base
+          platforms: linux/amd64,linux/arm64
+          push: true
+          # Make sure this tag matches what the other Dockerfiles expect!
+          tags: quay.io/stimela/base:1.9.0
+
+  # ----------------------------------------------------
+  # STAGE 2: Build Downstream Cabs in Parallel
+  # ----------------------------------------------------
+  build-cabs:
+    needs: build-base # Forces this job to wait until base is finished
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Start with a small list of tools you know need to run on ARM.
+        # Add more tools to this list once you confirm these work.
+        cab: 
+          - casa
+          - cubical
+          - shadems
+          - tigger
+          - wsclean
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Quay
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
+
+      - name: Build and Push ${{ matrix.cab }}
+        uses: docker/build-push-action@v4
+        with:
+          context: stimela/cargo/base/${{ matrix.cab }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: quay.io/stimela/${{ matrix.cab }}:1.9.0

@@ -1,8 +1,6 @@
 name: Build Multi-Arch Stimela Cabs
 
 on:
-  workflow_dispatch: # Allows manual trigger from the Actions tab
-on:
   push:
     branches:
       - '*' #master # Automatically runs when code is pushed/merged to master

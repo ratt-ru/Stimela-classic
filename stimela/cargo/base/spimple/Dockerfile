@@ -1,4 +1,4 @@
-FROM quay.io/stimela/base:1.7.1
+FROM quay.io/stimela/base:1.9.0
 RUN pip3 install -U pip setuptools
 RUN pip install scabha spimple
 RUN spimple-spifit -h

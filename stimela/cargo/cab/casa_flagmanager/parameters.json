@@ -4,8 +4,9 @@
   "tag": [
     "0.3.0-2",
     "1.6.3",
-    "1.7.1"
-  ],
+    "1.7.1",
+    "1.9.0"
+],
   "description": "These flag version files are copies of the flag column for a measurement set.  They can be restored to the data set to get back to a previous flag version.  On running importvla, a flag version call 'Original' is automatically produced.",
   "prefix": "-",
   "binary": "flagmanager",
@@ -71,6 +72,7 @@
   "version": [
     "4.7.2",
     "5.6.1-8",
+    "5.8.0",
     "5.8.0"
-  ]
+]
 }

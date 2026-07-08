@@ -1,4 +1,4 @@
-FROM stimela/base:1.6.0
+FROM quay.io/stimela/base:1.9.0
 
 RUN docker-apt-install libblitz0-dev python3-dev libblas-dev liblapack-dev libqdbm-dev wcslib-dev \
  libfftw3-dev python3-numpy libcfitsio-dev libboost-all-dev libboost-system-dev cmake g++ wget gfortran \

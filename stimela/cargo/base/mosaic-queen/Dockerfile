@@ -1,4 +1,4 @@
-FROM quay.io/stimela/base:1.7.1
+FROM quay.io/stimela/base:1.9.0
 RUN docker-apt-install montage python3-montagepy vim
 # Install Python 3.10
 RUN apt-get update && \

@@ -1,4 +1,4 @@
-FROM stimela/base:1.2.0
+FROM quay.io/stimela/base:1.9.0
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \	
     build-essential \	

@@ -1,4 +1,4 @@
-FROM stimela/base:1.7.1
+FROM quay.io/stimela/base:1.9.0
 RUN docker-apt-install libfreetype6 \
     libsm6 \
     libxi6 \

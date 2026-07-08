@@ -1,4 +1,4 @@
-FROM stimela/base:1.6.0
+FROM quay.io/stimela/base:1.9.0
 mAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install casacore-dev \
     libboost-python-dev \

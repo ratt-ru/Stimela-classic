@@ -1,4 +1,4 @@
-FROM quay.io/stimela/base:1.7.1
+FROM quay.io/stimela/base:1.9.0
 RUN docker-apt-install python3-pip \
                        python3-numpy \
                        python3-matplotlib \

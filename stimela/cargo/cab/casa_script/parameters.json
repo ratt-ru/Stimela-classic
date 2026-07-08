@@ -4,8 +4,9 @@
   "tag": [
     "0.3.0-2",
     "1.6.3",
-    "1.7.1"
-  ],
+    "1.7.1",
+    "1.9.0"
+],
   "description": "Runs a user defined script within CASA",
   "prefix": "",
   "binary": "casa",
@@ -30,6 +31,7 @@
   "version": [
     "4.7.2",
     "5.6.1-8",
+    "5.8.0",
     "5.8.0"
-  ]
+]
 }

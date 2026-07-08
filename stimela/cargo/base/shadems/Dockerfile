@@ -1,4 +1,4 @@
-FROM stimela/base:1.6.0
+FROM quay.io/stimela/base:1.9.0
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install python3-casacore \
     casacore-dev \

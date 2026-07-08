@@ -1,4 +1,4 @@
-FROM stimela/base:1.7.1
+FROM quay.io/stimela/base:1.9.0
 RUN pip install astropy \
         numpy \
         scipy \

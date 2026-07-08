@@ -1,4 +1,4 @@
-FROM stimela/base:1.6.0
+FROM quay.io/stimela/base:1.9.0
 RUN docker-apt-install gfortran libboost-python-dev libboost-numpy-dev
 RUN pip install pip -U
 RUN pip install numpy scipy

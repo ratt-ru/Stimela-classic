@@ -24,7 +24,7 @@ RUN curl -L -o ${SUCASA}.tar.gz $CASAURL
 RUN tar xvf ${SUCASA}.tar.gz -C $DIRCASA
 RUN rm ${SUCASA}.tar.gz
 ENV PATH $PATH:${SUCASA}/bin
-RUN pip install git+https://github.com/SpheMakh/crasa.git python-casacore astropy git+https://github.com/ratt-ru/simms.git
+RUN pip install --break-system-packages git+https://github.com/SpheMakh/crasa.git python-casacore astropy git+https://github.com/ratt-ru/simms.git
 RUN python -c "import Crasa.Crasa"
 ENV LANGUAGE  en_US.UTF-8
 ENV LANG en_US.UTF-8

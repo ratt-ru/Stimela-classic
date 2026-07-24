@@ -4,7 +4,7 @@ RUN docker-apt-install python3-casacore \
     casacore-dev \
     libcfitsio-dev \
     wcslib-dev
-RUN pip install -I numpy scabha
+RUN pip install --break-system-packages -I numpy scabha
 RUN pip install --break-system-packages git+https://github.com/ratt-ru/shadeMS.git
 #RUN pip install git+https://github.com/o-smirnov/datashader
 RUN shadems -h

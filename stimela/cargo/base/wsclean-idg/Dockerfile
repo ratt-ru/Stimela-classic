@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
     libboost-filesystem-dev \
     libboost-program-options-dev \
     libcfitsio-dev \
+    libdeflate-dev \
     libfftw3-dev \
     libgsl-dev \
     libhdf5-dev \
@@ -37,7 +38,7 @@ RUN mkdir -p /usr/share/casacore/data && \
 # Ubuntu 24.04's casacore is too old to support C++20.
 RUN mkdir -p /external && \
     cd /external && \
-    git clone --depth 1 https://github.com/casacore/casacore.git && \
+    git clone --depth 1 --branch v3.8.1 https://github.com/casacore/casacore.git && \
     mkdir /external/casacore/build && \
     cd /external/casacore/build && \
     cmake .. -DBUILD_TESTING=OFF -DDATA_DIR=/usr/share/casacore/data && \

@@ -51,7 +51,7 @@ RUN cd /external && \
     git clone --depth 1 https://git.astron.nl/RD/EveryBeam.git && \
     mkdir /external/EveryBeam/build && \
     cd /external/EveryBeam/build && \
-    cmake .. && \
+    cmake .. -DPORTABLE=ON && \
     make -j"$(nproc)" && \
     make install && \
     rm -rf /external/EveryBeam
@@ -60,7 +60,7 @@ RUN cd /external && \
     git clone --depth 1 https://git.astron.nl/RD/idg.git && \
     mkdir /external/idg/build && \
     cd /external/idg/build && \
-    cmake .. && \
+    cmake .. -DPORTABLE=ON && \
     make -j"$(nproc)" && \
     make install && \
     rm -rf /external/idg

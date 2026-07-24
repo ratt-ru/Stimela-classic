@@ -48,7 +48,7 @@ RUN mkdir -p /external && \
 
 # EveryBeam and IDG are required for WSClean's IDG backend.
 RUN cd /external && \
-    git clone --depth 1 https://git.astron.nl/RD/EveryBeam.git && \
+    git clone --depth 1 --branch v0.7.4 https://git.astron.nl/RD/EveryBeam.git && \
     mkdir /external/EveryBeam/build && \
     cd /external/EveryBeam/build && \
     cmake .. -DPORTABLE=ON && \
@@ -65,12 +65,13 @@ RUN cd /external && \
     make install && \
     rm -rf /external/idg
 
-RUN git clone --depth 1 https://gitlab.com/aroffringa/wsclean.git /wsclean && \
+RUN git clone --depth 1 --branch v3.7 https://gitlab.com/aroffringa/wsclean.git /wsclean && \
     mkdir /wsclean/build && \
     cd /wsclean/build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release -DPORTABLE=Yes && \
     make -j"$(nproc)" && \
     make install && \
-    rm -rf /wsclean && \
     ldconfig && \
+    cd / && \
+    rm -rf /wsclean && \
     wsclean --version

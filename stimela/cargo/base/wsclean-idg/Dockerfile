@@ -38,7 +38,8 @@ RUN mkdir -p /usr/share/casacore/data && \
     tar -C /usr/share/casacore/data -xzf -
 
 # EveryBeam and IDG are required for WSClean's IDG backend.
-RUN cd /external && \
+RUN mkdir -p /external && \
+    cd /external && \
     git clone --depth 1 --branch v0.7.4 https://git.astron.nl/RD/EveryBeam.git && \
     mkdir /external/EveryBeam/build && \
     cd /external/EveryBeam/build && \

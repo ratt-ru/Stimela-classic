@@ -1,12 +1,14 @@
-FROM ubuntu:24.04
+FROM quay.io/stimela/base:1.9.0
 
-RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
-    apt-get install -y \
+RUN docker-apt-upgrade
+RUN docker-apt-install \
+    casacore-dev \
     cmake \
     g++ \
     git \
     pkg-config \
     libblas-dev \
+    libboost-date-time-dev \
     libboost-filesystem-dev \
     libboost-program-options-dev \
     libcfitsio-dev \
@@ -34,17 +36,6 @@ RUN mkdir -p /usr/share/casacore/data && \
     ln -s /usr/share/casacore /var/lib/casacore && \
     wget -qO - https://www.astron.nl/iers/WSRT_Measures.ztar | \
     tar -C /usr/share/casacore/data -xzf -
-
-# Ubuntu 24.04's casacore is too old to support C++20.
-RUN mkdir -p /external && \
-    cd /external && \
-    git clone --depth 1 --branch v3.8.1 https://github.com/casacore/casacore.git && \
-    mkdir /external/casacore/build && \
-    cd /external/casacore/build && \
-    cmake .. -DBUILD_TESTING=OFF -DDATA_DIR=/usr/share/casacore/data && \
-    make -j"$(nproc)" && \
-    make install -j"$(nproc)" && \
-    rm -rf /external/casacore
 
 # EveryBeam and IDG are required for WSClean's IDG backend.
 RUN cd /external && \

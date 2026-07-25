@@ -27,6 +27,7 @@ RUN docker-apt-install \
     python3-numpy \
     libboost-python-dev \
     libreadline-dev \
+    nvidia-cuda-toolkit \
     wcslib-dev \
     wget && \
     rm -rf /var/lib/apt/lists/*
@@ -52,7 +53,7 @@ RUN cd /external && \
     git clone --depth 1 https://git.astron.nl/RD/idg.git && \
     mkdir /external/idg/build && \
     cd /external/idg/build && \
-    cmake .. -DPORTABLE=ON && \
+    cmake .. -DPORTABLE=ON -DBUILD_LIB_CUDA=ON && \
     make -j"$(nproc)" && \
     make install && \
     rm -rf /external/idg

@@ -11,17 +11,17 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and install common build-time Python tooling
-RUN python3 -m pip install --upgrade pip setuptools wheel && \
-	python3 -m pip install --default-timeout=1000 cmake ninja numpy scipy scikit-build-core pybind11 fasteners
+RUN python3 -m pip install --break-system-packages --upgrade pip setuptools wheel && \
+	python3 -m pip install --break-system-packages --default-timeout=1000 cmake ninja numpy scipy scikit-build-core pybind11 fasteners
 
 # Build mpi4py from source to ensure it links against the system MPI
-RUN MPICC=/usr/bin/mpicc python3 -m pip install --no-binary mpi4py --no-build-isolation --no-cache-dir mpi4py
+RUN MPICC=/usr/bin/mpicc python3 -m pip install --break-system-packages --no-binary mpi4py --no-build-isolation --no-cache-dir mpi4py
 
 # Install DDFacet from PyPI (or pinned version)
 RUN if [ -n "${DDFACET_PYPI_VERSION}" ]; then \
-		python3 -m pip install --no-cache-dir DDFacet==${DDFACET_PYPI_VERSION}; \
+		python3 -m pip install --break-system-packages --no-cache-dir DDFacet==${DDFACET_PYPI_VERSION}; \
 	else \
-		python3 -m pip install --no-cache-dir DDFacet; \
+		python3 -m pip install --break-system-packages --no-cache-dir DDFacet; \
 	fi
 
 # Sanity checks

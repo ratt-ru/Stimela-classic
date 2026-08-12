@@ -1,5 +1,4 @@
 FROM quay.io/stimela/base:1.9.0
-MAINTAINER Ben Hugo "bhugo@ska.ac.za"
 
 # Allow pinning a PyPI version (default: latest)
 ARG DDFACET_PYPI_VERSION=""

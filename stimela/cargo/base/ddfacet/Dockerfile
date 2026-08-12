@@ -2,6 +2,7 @@ FROM quay.io/stimela/base:1.9.0
 
 # Allow pinning a PyPI version (default: latest)
 ARG DDFACET_PYPI_VERSION=""
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 # Install apt build/runtime dependencies needed for building from source and MPI
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \

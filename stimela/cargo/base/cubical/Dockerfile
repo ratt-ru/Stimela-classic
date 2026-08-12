@@ -1,4 +1,4 @@
-FROM quay.io/stimela/ddfacet:1.7.1
+FROM quay.io/stimela/ddfacet:1.9.0
 RUN apt install -y \
     casacore-data
 RUN . /opt/venv/bin/activate && \

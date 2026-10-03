@@ -14,9 +14,6 @@ on:
   schedule:
     - cron: '30 2 * * 1,4' # Every Monday and Thursday @ 2h30am UTC
 
-env:
-  POETRY_VERSION: 2.0.1
-
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -27,40 +24,37 @@ jobs:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install latest setuptools, wheel, pip
-        run: python3 -m pip install -U pip setuptools wheel
-
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v3
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          poetry-version: ${{ env.POETRY_VERSION }}
+          enable-cache: true
 
       - name: Checkout source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
       - name: Install stimela
-        run: poetry install --extras "testing"
+        run: uv sync --extra testing
 
       - name: Check installed version command
-        run: poetry run stimela --version
+        run: uv run stimela --version
 
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
-          poetry run flake8 . --count --select=E9,F63,F7,F82  --ignore=F824 --show-source --statistics
+          uv run flake8 . --count --select=E9,F63,F7,F82  --ignore=F824 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          uv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Test stimela command
         run: |
-          poetry run stimela --help
-          poetry run stimela pull --help
-          poetry run stimela build --help
-          poetry run stimela run --help
-          poetry run stimela cabs
+          uv run stimela --help
+          uv run stimela pull --help
+          uv run stimela build --help
+          uv run stimela run --help
+          uv run stimela cabs

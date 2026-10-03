@@ -1,0 +1,26 @@
+{
+    "task": "prepkat",
+    "base": "stimela/prepkat",
+    "tag": ["1.8.0"],
+    "version": ["1.8.0"],
+    "description": "Flip feed correlations in a measurement set and zero FEED receptor angles",
+    "prefix": "",
+    "binary": "python",
+    "junk": [],
+    "msdir": true,
+    "parameters": [
+        {
+            "info": "Measurement set to update",
+            "dtype": "file",
+            "required": true,
+            "name": "ms_path",
+            "io": "msfile"
+        },
+        {
+            "info": "Columns to flip. Specify multiple columns as a list.",
+            "dtype": "list:str",
+            "default": ["DATA", "WEIGHT_SPECTRUM", "FLAG"],
+            "name": "columns"
+        }
+    ]
+}

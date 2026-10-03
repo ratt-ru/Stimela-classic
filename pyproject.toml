@@ -1,37 +1,44 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "stimela"
-version = "1.8.3"
+version = "1.8.4"
 description = "Dockerized radio interferometry scripting framework"
-authors = ["Sphesihle Makhathini <sphemakh@gmail.com>", "RATT"]
+authors = [
+  { name = "Sphesihle Makhathini", email = "sphemakh@gmail.com" },
+  { name = "RATT" }
+]
 readme = "README.rst"
-license = "GPLv2"
-homepage = "https://github.com/ratt-ru/Stimela-classic"
-repository = "https://github.com/ratt-ru/Stimela-classic"
+license = "GPL-2.0-only"
+license-files = ["LICENSE"]
+requires-python = ">=3.9,<=3.13"
 keywords = ["radio astronomy", "interferometry", "pipeline", "docker"]
 classifiers = [
-        "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
-        "Programming Language :: Python",
-        "Topic :: Scientific/Engineering :: Astronomy"
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Astronomy",
 ]
-packages = [
-  { include = "stimela" }
-]
-include = ["stimela/cargo/cab/stimela_runscript"]
 
-[tool.poetry.dependencies]
-python = ">=3.9,<=3.13"
-pytest = { version = "*", optional=true }
-flake8 = { version = "*", optional=true }
-pytest-cov = { version = "*", optional=true }
+[project.urls]
+Homepage = "https://github.com/ratt-ru/Stimela-classic"
+Repository = "https://github.com/ratt-ru/Stimela-classic"
 
-[tool.poetry.scripts]
+[project.scripts]
 stimela = "stimela.main:cli"
 
-[tool.poetry.extras]
+[project.optional-dependencies]
 testing = ["pytest", "flake8", "pytest-cov"]
 
-[build-system]
-requires = ["setuptools", "poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools]
+packages = ["stimela"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+stimela = ["cargo/cab/stimela_runscript"]

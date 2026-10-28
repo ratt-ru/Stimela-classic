@@ -50,13 +50,15 @@ RUN mkdir -p /external && \
     rm -rf /external/EveryBeam
 
 RUN cd /external && \
-    git clone --depth 1 https://git.astron.nl/RD/idg.git && \
+    git clone --depth 1 --branch 1.3.0 https://git.astron.nl/RD/idg.git && \
+    git clone --depth 1 --branch 1.0.0 https://github.com/nlesc-recruit/cudawrappers.git && \
     mkdir /external/idg/build && \
     cd /external/idg/build && \
-    cmake .. -DPORTABLE=ON -DBUILD_LIB_CUDA=ON && \
+    cmake .. -DPORTABLE=ON -DBUILD_LIB_CUDA=ON \
+        -DFETCHCONTENT_SOURCE_DIR_CUDAWRAPPERS=/external/cudawrappers && \
     make -j"$(nproc)" && \
     make install && \
-    rm -rf /external/idg
+    rm -rf /external/idg /external/cudawrappers
 
 RUN git clone --depth 1 --branch v3.7 https://gitlab.com/aroffringa/wsclean.git /wsclean && \
     mkdir /wsclean/build && \

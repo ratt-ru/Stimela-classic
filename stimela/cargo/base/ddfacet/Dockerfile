@@ -11,8 +11,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	python3-pip python3-dev libhdf5-dev libatlas-base-dev libgsl-dev libcurl4-openssl-dev \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install common build-time Python tooling
-RUN python3 -m pip install --break-system-packages --upgrade pip setuptools wheel && \
+# Upgrade build tooling (pip itself is the Debian package and can't be upgraded in place)
+RUN python3 -m pip install --break-system-packages --upgrade setuptools wheel && \
 	python3 -m pip install --break-system-packages --default-timeout=1000 cmake ninja numpy scipy scikit-build-core pybind11 fasteners
 
 # Build mpi4py from source to ensure it links against the system MPI

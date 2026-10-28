@@ -1,4 +1,4 @@
-FROM quay.io/stimela/base:1.8.0
+FROM quay.io/stimela/base:1.9.0
 
 RUN docker-apt-install \
 	build-essential \

@@ -57,6 +57,8 @@ jobs:
           - tigger
           - wsclean
           - prepkat
+          - meqtrees
+          - codex-africanus
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

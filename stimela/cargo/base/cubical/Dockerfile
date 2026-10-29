@@ -1,8 +1,5 @@
 FROM quay.io/stimela/ddfacet:1.9.0
-RUN apt install -y \
-    casacore-data
-RUN . /opt/venv/bin/activate && \
-    #python -m pip install 'cubical[lsm-support,degridder-support]==1.6.3' 'scabha==0.3.2'
-    python -m pip install git+https://github.com/ratt-ru/CubiCal.git scabha==0.3.2
+RUN python3 -m pip install --break-system-packages --no-cache-dir \
+    git+https://github.com/ratt-ru/CubiCal.git
 RUN DDF.py --help
 RUN gocubical --help

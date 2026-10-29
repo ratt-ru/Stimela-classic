@@ -7,7 +7,7 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
 # Install apt build/runtime dependencies needed for building from source and MPI
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	cmake gcc g++ git curl build-essential \
-	libfftw3-dev libopenmpi-dev openmpi-bin libpmix-dev libpmi2-0-dev \
+	libfftw3-dev libopenmpi-dev openmpi-bin libpmix-dev libpmi2-0-dev casacore-data \
 	python3-pip python3-dev libhdf5-dev libatlas-base-dev libgsl-dev libcurl4-openssl-dev \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 

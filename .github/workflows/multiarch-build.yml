@@ -59,6 +59,7 @@ jobs:
           - prepkat
           - meqtrees
           - codex-africanus
+          - ragavi
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

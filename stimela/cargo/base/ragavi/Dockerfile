@@ -1,13 +1,13 @@
 FROM quay.io/stimela/base:1.9.0
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
-RUN apt-get update
-RUN pip3 install -U pip setuptools \
-    pyyaml \
-    python-casacore
-RUN pip install numba==0.48
-RUN pip install scabha
-RUN pip install -I ragavi
+# casacore-dev and boost-python are needed to build python-casacore on arm64,
+# where PyPI has no wheel
+RUN docker-apt-install casacore-dev \
+    casacore-data \
+    libboost-python-dev \
+    libcfitsio-dev \
+    wcslib-dev
+RUN pip install --break-system-packages --no-cache-dir \
+    git+https://github.com/ratt-ru/ragavi.git@master
 RUN ragavi-gains -h
 RUN ragavi-vis -h
-RUN ragavi-vis -v
+RUN ragavi-vis --version

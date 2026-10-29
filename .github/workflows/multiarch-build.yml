@@ -60,6 +60,8 @@ jobs:
           - meqtrees
           - codex-africanus
           - ragavi
+          - tricolour
+          - aoflagger
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

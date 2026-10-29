@@ -1,24 +1,9 @@
-FROM kernsuite/base:dev
+FROM quay.io/stimela/base:1.9.0
 MAINTAINER <sphemakh@gmail.com>
-RUN docker-apt-install python3-casacore \
-    casacore-dev \
-    python3-numpy \
-    python3-setuptools \
+RUN docker-apt-install casacore-dev \
+    casacore-data \
     libboost-python-dev \
     libcfitsio-dev \
-    wcslib-dev \
-    python3-pip \ 
-    git \
-    xvfb
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
-RUN pip3 install -U pip setuptools 
-RUN pip3 install astropy pyyaml tricolour>=0.1.7
-ENV DISPLAY :99
-
-# so we can use use e.g. docker build --build-arg SCABHA=git+https://github.com/ratt-ru/scabha.git@branch to
-# install from a dev version, instead of a release package
-ARG SCABHA=scabha
-RUN pip install $SCABHA
-
-
+    wcslib-dev
+RUN pip install --break-system-packages --no-cache-dir tricolour==0.2.1
 RUN tricolour --help

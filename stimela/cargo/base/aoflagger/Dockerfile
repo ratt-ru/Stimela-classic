@@ -1,2 +1,3 @@
 FROM quay.io/stimela/base:1.9.0
-RUN docker-apt-install aoflagger
+RUN docker-apt-install aoflagger casacore-data
+RUN aoflagger -version

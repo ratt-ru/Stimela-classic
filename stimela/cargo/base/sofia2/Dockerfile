@@ -1,14 +1,13 @@
 FROM quay.io/stimela/base:1.9.0
 RUN docker-apt-install build-essential \
+        wcslib-dev \
         casacore-dev \
-        python3 \
-        python3-pip \
-        wcslib-dev
-RUN pip install -U setuptools \
-        astro-tigger-lsm
-RUN git clone https://github.com/SoFiA-Admin/SoFiA-2.git
-RUN cd /SoFiA-2 && git fetch && git fetch --tags
-RUN cd /SoFiA-2 && git checkout v2.5.0
-RUN cd /SoFiA-2 && ./compile.sh -fopenmp
-RUN cd /SoFiA-2 && ln sofia /usr/bin/sofia
-
+        casacore-data \
+        libboost-python-dev \
+        libcfitsio-dev
+RUN git clone --depth 1 --branch v2.7.1 https://gitlab.com/SoFiA-Admin/SoFiA-2.git /SoFiA-2 && \
+    cd /SoFiA-2 && make OMP=true && make install && \
+    rm -rf /SoFiA-2
+RUN pip install --break-system-packages --no-cache-dir astro-tigger-lsm astLib
+RUN sofia -h
+RUN python3 -c "import Tigger; from astLib.astWCS import WCS"

@@ -1,11 +1,11 @@
 {
     "task": "breizorro",
     "base": "stimela/breizorro",
-    "tag": "1.7.4",
+    "tag": "1.9.0",
+    "version": "0.2.0",
     "description": "A tool for creating a binary mask given a FITS image",
     "prefix": "--",
     "binary": "breizorro",
-    "version":"0.1.0",
     "junk":[],
     "msdir": false,
     "parameters": [

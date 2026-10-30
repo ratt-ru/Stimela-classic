@@ -1,14 +1,3 @@
-FROM stimela/meqtrees:1.6.3
-RUN docker-apt-install python3-pip \
-                       python3-numpy \
-                       python3-matplotlib \
-                       gfortran \
-                       python-dev \
-                       libboost-all-dev \
-                       libboost-python-dev \
-                       libboost-numpy-dev \
-                       python3-setuptools \
-                       pybdsf
-
-
-RUN pip3 install breizorro
+FROM quay.io/stimela/base:1.9.0
+RUN pip install --break-system-packages --no-cache-dir breizorro==0.2.0
+RUN breizorro --help

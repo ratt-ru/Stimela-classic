@@ -64,6 +64,12 @@ jobs:
           - aoflagger
           - breizorro
           - sofia2
+          - montage
+          - mosaic-queen
+          - pybdsf
+          - aimfast
+          - msutils
+          - owlcat
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7

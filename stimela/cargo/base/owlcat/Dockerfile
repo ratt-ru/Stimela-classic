@@ -1,7 +1,13 @@
 FROM quay.io/stimela/base:1.9.0
-RUN docker-apt-install python3-casacore \
-    casacore-dev \
-    libcfitsio-dev \
-    wcslib-dev
-RUN pip install -U meqtrees-cattery "python-casacore>=3.3.1" "owlcat>=1.6.3" scabha future-fstrings
-ENV MEQTREES_CATTERY_PATH /usr/local/lib/python3.6/dist-packages/Cattery
+# Cattery and casacore come prebuilt from KERN 10 for amd64 and arm64
+RUN docker-apt-install python3-meqtrees-cattery \
+    casacore-data \
+    python3-matplotlib \
+    python3-six
+# --no-deps keeps pip from replacing the KERN python-casacore/Cattery
+RUN pip install --break-system-packages --no-cache-dir --no-deps owlcat==1.8.1 && \
+    pip install --break-system-packages --no-cache-dir bokeh
+RUN python3 -c "import Owlcat, Cattery, pyrap.tables"
+RUN flag-ms.py --help
+RUN fitstool.py --help
+RUN plot-elevation-tracks.py --help

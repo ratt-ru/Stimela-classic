@@ -1,7 +1,8 @@
 {
     "task": "aimfast",
     "base": "stimela/aimfast",
-    "tag": "1.7.5",
+    "tag": "1.9.0",
+    "version": "1.4.0",
     "description": "An Astronomical Image Fidelity Assessment Tool",
     "prefix": "--",
     "binary": "aimfast",

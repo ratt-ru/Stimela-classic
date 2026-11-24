@@ -1,7 +1,7 @@
 {
     "task": "flagstats",
     "base": "stimela/msutils",
-    "tag": "1.6.9",
+    "tag": "1.9.0",
     "version" : "1.2.0",
     "description": "Extract flag statistics for a set of fields and antennas from an MS",
     "prefix": " ",

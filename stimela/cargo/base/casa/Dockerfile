@@ -19,7 +19,7 @@ ENV DIRCASA /casa
 RUN mkdir $DIRCASA
 ENV CASA_VERSION casa-release-5.8.0-109.el7
 ENV SUCASA ${DIRCASA}/${CASA_VERSION}
-ENV CASAURL https://alma-dl.mtk.nao.ac.jp/ftp/casa/distro/casa/release/el7/casa-release-5.8.0-109.el7.tar.gz
+ENV CASAURL https://casa.nrao.edu/download/distro/casa/release/el7/casa-release-5.8.0-109.el7.tar.gz
 RUN curl -L -o ${SUCASA}.tar.gz $CASAURL
 RUN tar xvf ${SUCASA}.tar.gz -C $DIRCASA
 RUN rm ${SUCASA}.tar.gz

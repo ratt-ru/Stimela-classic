@@ -1,7 +1,7 @@
 {
     "task": "mosaic-queen",
     "base": "stimela/mosaic-queen",
-    "tag": "1.7.10",
+    "tag": "1.9.0",
     "version": "2.0.2",
     "description": "Run make_mosaic over the targets.",
     "prefix": "-",

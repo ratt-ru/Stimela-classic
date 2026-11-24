@@ -37,6 +37,8 @@ jobs:
           push: true
           # Make sure this tag matches what the other Dockerfiles expect!
           tags: quay.io/stimela/base:1.9.0
+          cache-from: type=registry,ref=quay.io/stimela/base:buildcache
+          cache-to: type=registry,ref=quay.io/stimela/base:buildcache,mode=max
 
   # ----------------------------------------------------
   # STAGE 2: Build Downstream Cabs in Parallel
@@ -94,6 +96,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: quay.io/stimela/${{ matrix.cab }}:1.9.0
+          cache-from: type=registry,ref=quay.io/stimela/${{ matrix.cab }}:buildcache
+          cache-to: type=registry,ref=quay.io/stimela/${{ matrix.cab }}:buildcache,mode=max
 
   # ----------------------------------------------------
   # STAGE 3: Build CUDA Cabs (AMD64 Only)
@@ -118,3 +122,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: quay.io/stimela/wsclean-idg:1.9.0
+          cache-from: type=registry,ref=quay.io/stimela/wsclean-idg:buildcache
+          cache-to: type=registry,ref=quay.io/stimela/wsclean-idg:buildcache,mode=max

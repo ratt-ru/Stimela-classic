@@ -1,12 +1,10 @@
 FROM quay.io/stimela/base:1.9.0
 MAINTAINER <sphemakh@gmail.com>
-# casacore-dev and boost-python are needed to build python-casacore on arm64,
-# where PyPI has no wheel
-RUN docker-apt-install casacore-dev \
+# python-casacore, numpy, scipy and matplotlib come prebuilt from KERN 10
+RUN docker-apt-install python3-casacore \
     casacore-data \
-    libboost-python-dev \
-    libcfitsio-dev \
-    wcslib-dev
-# msutils 3.x is a rewrite without the MSUtils module the cabs use
-RUN pip install --break-system-packages --no-cache-dir msutils==1.2.0
-RUN python3 -c "import MSUtils.msutils, MSUtils.ClassESW, MSUtils.imp_plotter, MSUtils.flag_stats"
+    python3-numpy \
+    python3-scipy \
+    python3-matplotlib
+RUN pip install --break-system-packages --no-cache-dir msutils==1.2.0 dask-ms==0.2.21 bokeh
+RUN python3 -c "import numpy, MSUtils.msutils, MSUtils.ClassESW, MSUtils.imp_plotter, MSUtils.flag_stats; assert numpy.__version__.startswith('1.'), numpy.__version__"

@@ -1,11 +1,9 @@
 FROM quay.io/stimela/base:1.9.0
 MAINTAINER <sphemakh@gmail.com>
-RUN docker-apt-install libboost-dev \
-    casacore-dev \
-    gfortran
-RUN pip install -U six numpy
-RUN pip install katdal[ms,s3]
-RUN export NUMBA_CACHE_DIR=/dat
+# katdal and its dependencies (python-casacore, katpoint, katsdptelstate, ...)
+# come prebuilt from KERN 10 for amd64 and arm64
+RUN docker-apt-install python3-katdal \
+    python3-casacore \
+    casacore-data
+ENV NUMBA_CACHE_DIR=/tmp
 RUN mvftoms.py -h
-RUN python --version
-

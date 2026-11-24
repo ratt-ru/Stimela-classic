@@ -17,4 +17,5 @@ ENV STIMELA_VENV_BIN="${STIMELA_VENV}/bin"
 RUN python -m venv $STIMELA_VENV
 ENV PATH="${STIMELA_VENV_BIN}/:$PATH"
 
-RUN $STIMELA_VENV_BIN/pip install "contsub>=1.0.5"
+RUN $STIMELA_VENV_BIN/pip install --no-cache-dir contsub==1.0.5
+RUN imcontsub --help

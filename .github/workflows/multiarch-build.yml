@@ -72,6 +72,9 @@ jobs:
           - aimfast
           - msutils
           - owlcat
+          - sunblocker
+          - chgcentre
+          - contsub
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7

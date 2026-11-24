@@ -1,7 +1,8 @@
 {
     "task": "imcontsub",
     "base": "stimela/contsub",
-    "tag": "1.0.5",
+    "tag": "1.9.0",
+    "version": "1.0.5",
     "description": "Image-plane continuum subtraction",
     "prefix": "--",
     "binary": "imcontsub",

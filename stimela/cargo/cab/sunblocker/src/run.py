@@ -32,7 +32,7 @@ run_func = getattr(Sunblocker(), function, None)
 if run_func is None:
     raise RuntimeError("Function '{}' is not part of Sunblocker()".format(function))
 
-func_args = inspect.getargspec(run_func)[0]
+func_args = inspect.getfullargspec(run_func).args
 for arg in args.keys():
     if arg not in func_args:
         args.pop(arg, None)

@@ -1,7 +1,7 @@
 {
     "task": "sofia2",
     "base": "stimela/sofia2",
-    "tag": "1.7.6",
+    "tag": "1.9.0",
     "version" : "2.7.1",
     "description": "This is version 2 of the HI Source Finding Application (SoFiA), a source finding pipeline originally designed to detect and characterise galaxies in 3D extragalctic HI data cubes. SoFiA 2 is a reimplementation of the original SoFiA pipeline in the C programming language and provides most of the functionality of SoFiA 1.x",
     "prefix": "--",

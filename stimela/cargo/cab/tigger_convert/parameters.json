@@ -1,7 +1,7 @@
 {
     "task": "tigger_convert", 
     "base": "stimela/tigger", 
-    "tag": "1.2.0", 
+    "tag": "1.9.0",
     "description": "Source finding in radio images", 
     "version" : "1.6.0",
     "prefix": "--", 

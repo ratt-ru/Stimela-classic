@@ -181,12 +181,7 @@
         "cubic"
       ]
     },
-    {
-      "info": "Re-restore the cube image to a common beam when True",
-      "dtype": "bool",
-      "default": null,
-      "name": "resmooth"
-    },
+
     {
       "info": "velocity frame of output image",
       "dtype": "str",
@@ -511,18 +506,8 @@
       "default": true,
       "name": "restart"
     },
-    {
-      "info": "Automatically adjust automask threshold to a higher value at the begging",
-      "dtype": "bool",
-      "default": null,
-      "name": "autoadjust"
-    },
-    {
-      "info": "Maximum number of mask regions to be added by automasking at the beginning each minor cycles run",
-      "dtype": "int",
-      "default": null,
-      "name": "nmask"
-    },
+
+
     {
       "info": "Primary beam mask",
       "dtype": "float",
@@ -541,18 +526,8 @@
       "default": "user",
       "name": "usemask"
     },
-    {
-      "info": "Threshold for automasking (with a unit e.g. 1.0mJy or in sigma e.g 3.0",
-      "dtype": "str",
-      "default": null,
-      "name": "maskthreshold"
-    },
-    {
-      "info": "Resolution for automasking (e.g. 10arcsec)",
-      "dtype": "str",
-      "default": null,
-      "name": "maskresolution"
-    },
+
+
     {
       "info": "Primary beam gain level at which to cut off normalizations",
       "dtype": "float",
@@ -601,12 +576,7 @@
       "default": true,
       "name": "aterm"
     },
-    {
-      "info": "Number of channel chunks to grid separately",
-      "dtype": "int",
-      "default": 1,
-      "name": "chanchunks"
-    },
+
     {
       "info": "VP table saved via the vpmanager",
       "dtype": "str",

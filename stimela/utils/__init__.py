@@ -4,6 +4,7 @@ import tempfile
 import inspect
 import re
 import codecs
+import platform
 
 from .xrun_poll import xrun
 import stimela.exceptions
@@ -11,6 +12,24 @@ import stimela.exceptions
 # for backwards compatibility
 StimelaCabRuntimeError = stimela.exceptions.StimelaCabRuntimeError
 CPUS = 1
+
+# Images that are only published for linux/amd64 (CASA and casatools have no
+# Linux arm64 releases). Other hosts must ask for the amd64 image explicitly
+# and run it under emulation (e.g. Rosetta or QEMU).
+AMD64_ONLY_IMAGES = ("stimela/casa", "stimela/wsclean-idg")
+
+
+def needs_amd64_emulation(image):
+    """True if image is amd64-only and this host is not x86_64"""
+    if platform.machine().lower() in ("x86_64", "amd64"):
+        return False
+    name = image.split("://")[-1].rsplit(":", 1)[0]
+    return name.endswith(AMD64_ONLY_IMAGES)
+
+
+def platform_args(image):
+    """Extra docker/podman arguments needed to pull or run image on this host"""
+    return ["--platform", "linux/amd64"] if needs_amd64_emulation(image) else []
 
 def assign(key, value):
     frame = inspect.currentframe().f_back

@@ -23,30 +23,15 @@
       "dtype": "file",
       "mapping": "vis"
     },
-    {
-      "info": "Use rms instead of stddev",
-      "dtype": "bool",
-      "default": false,
-      "name": "dorms"
-    },
-    {
-      "info": "Estimate the noise per antenna -not implemented (vs. per baseline)",
-      "dtype": "bool",
-      "default": false,
-      "name": "byantenna"
-    },
+
+
     {
       "info": "The signal-free spectral window:channels to estimate the scatter from",
       "dtype": "str",
       "default": null,
       "name": "fitspw"
     },
-    {
-      "info": "The signal-free correlation(s) to estimate the scatter from (not implemented)",
-      "dtype": "str",
-      "default": null,
-      "name": "fitcorr"
-    },
+
     {
       "info": "Let estimates span changes in spw, corr, scan and/or state",
       "dtype": "str",
@@ -83,18 +68,8 @@
       "default": null,
       "name": "spw"
     },
-    {
-      "info": "Select data based on antenna/baseline",
-      "dtype": "str",
-      "default": null,
-      "name": "antenna"
-    },
-    {
-      "info": "Select data by time range",
-      "dtype": "str",
-      "default": null,
-      "name": "timerange"
-    },
+
+
     {
       "info": "Select data by scan numbers",
       "dtype": "str",

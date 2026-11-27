@@ -44,7 +44,9 @@ def pull(image, name, docker=True, directory=".", force=False):
     else:
         utils.xrun(
             f"cd {directory} && {BINARY}",
-            ["pull", "--force" if force else "", "--name", name, fp],
+            ["pull", "--force" if force else ""]
+            + (["--arch", "amd64"] if utils.needs_amd64_emulation(image) else [])
+            + ["--name", name, fp],
         )
     return 0
 

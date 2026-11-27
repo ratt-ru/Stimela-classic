@@ -4,8 +4,9 @@
   "tag": [
     "0.3.0-2",
     "1.6.3",
-    "1.7.1"
-  ],
+    "1.7.1",
+    "1.9.0"
+],
   "description": "Reweight visibilities according to their scatter (Experimental)",
   "prefix": "",
   "binary": "statwt",
@@ -22,30 +23,15 @@
       "dtype": "file",
       "mapping": "vis"
     },
-    {
-      "info": "Use rms instead of stddev",
-      "dtype": "bool",
-      "default": false,
-      "name": "dorms"
-    },
-    {
-      "info": "Estimate the noise per antenna -not implemented (vs. per baseline)",
-      "dtype": "bool",
-      "default": false,
-      "name": "byantenna"
-    },
+
+
     {
       "info": "The signal-free spectral window:channels to estimate the scatter from",
       "dtype": "str",
       "default": null,
       "name": "fitspw"
     },
-    {
-      "info": "The signal-free correlation(s) to estimate the scatter from (not implemented)",
-      "dtype": "str",
-      "default": null,
-      "name": "fitcorr"
-    },
+
     {
       "info": "Let estimates span changes in spw, corr, scan and/or state",
       "dtype": "str",
@@ -82,18 +68,8 @@
       "default": null,
       "name": "spw"
     },
-    {
-      "info": "Select data based on antenna/baseline",
-      "dtype": "str",
-      "default": null,
-      "name": "antenna"
-    },
-    {
-      "info": "Select data by time range",
-      "dtype": "str",
-      "default": null,
-      "name": "timerange"
-    },
+
+
     {
       "info": "Select data by scan numbers",
       "dtype": "str",
@@ -129,6 +105,7 @@
   "version": [
     "4.7.2",
     "5.6.1-8",
+    "5.8.0",
     "5.8.0"
-  ]
+]
 }

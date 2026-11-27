@@ -1,15 +1,14 @@
-FROM quay.io/stimela/base:1.7.1
-RUN docker-apt-install python3-pip \
-                       python3-numpy \
-                       python3-matplotlib \
-                       gfortran \
-                       python-dev \
-                       libboost-all-dev \
-                       libboost-python-dev \
-                       libboost-numpy-dev \
-                       python3-setuptools \
-                       pybdsf
-
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 10
-RUN pip3 install -U pip bdsf
-RUN pip3 install aimfast
+FROM quay.io/stimela/base:1.9.0
+# gfortran and Boost.Python/NumPy are needed to build bdsf on arm64, where
+# PyPI has no wheel; casacore-dev for python-casacore (via astro-tigger-lsm)
+RUN docker-apt-install gfortran \
+    g++ \
+    python3-dev \
+    libboost-python-dev \
+    libboost-numpy-dev \
+    casacore-dev \
+    casacore-data \
+    libcfitsio-dev \
+    wcslib-dev
+RUN pip install --break-system-packages --no-cache-dir aimfast==1.4.0 bdsf==1.14.1
+RUN aimfast --help

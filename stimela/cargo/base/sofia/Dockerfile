@@ -1,4 +1,4 @@
-FROM stimela/base:1.2.0
+FROM quay.io/stimela/base:1.9.0
 RUN docker-apt-install python \
         qt5-qmake \
         qt5-default \

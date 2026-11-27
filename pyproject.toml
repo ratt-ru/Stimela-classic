@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stimela"
-version = "1.8.4"
+version = "1.9.0"
 description = "Dockerized radio interferometry scripting framework"
 authors = [
   { name = "Sphesihle Makhathini", email = "sphemakh@gmail.com" },
@@ -13,16 +13,17 @@ authors = [
 readme = "README.rst"
 license = "GPL-2.0-only"
 license-files = ["LICENSE"]
-requires-python = ">=3.9,<3.14"
+requires-python = ">=3.10,<3.15"
 keywords = ["radio astronomy", "interferometry", "pipeline", "docker"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Science/Research",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Astronomy",
 ]
 

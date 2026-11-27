@@ -1,8 +1,12 @@
-FROM stimela/base:1.6.0
-RUN docker-apt-install python3-tk
-RUN pip install RM-Tools pymultinest "git+https://github.com/ratt-ru/scabha@local-prefix"
+FROM quay.io/stimela/base:1.9.0
+# cmake, g++ and FFTW are needed to build finufft on arm64, where PyPI has no
+# wheel
+RUN docker-apt-install python3-tk \
+    cmake \
+    g++ \
+    libfftw3-dev
+RUN pip install --break-system-packages --no-cache-dir RM-Tools==1.5.0 pymultinest
 RUN rmsynth1d --help
 RUN rmclean1d --help
 RUN rmsynth3d --help
 RUN rmclean3d --help
-#RUN qufit --help

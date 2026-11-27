@@ -1,8 +1,8 @@
 {
     "task": "fitstool", 
     "base": "stimela/owlcat", 
-    "tag": "1.2.5-1",
-    "version" : "1.6.0",
+    "tag": "1.9.0",
+    "version" : "1.8.1",
     "description": "Convinience tools for manipulating FITS images", 
     "prefix": "--", 
     "binary": "fitstool.py",

@@ -1,4 +1,4 @@
-FROM kernsuite/base:dev
+FROM kernsuite/base:10
 RUN docker-apt-upgrade
 RUN docker-apt-install \
     python3-setuptools \

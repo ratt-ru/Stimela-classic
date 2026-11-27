@@ -1,4 +1,4 @@
-FROM quay.io/stimela/base:1.8.0
+FROM quay.io/stimela/base:1.9.0
 MAINTAINER <sphemakh@gmail.com>
 RUN docker-apt-install cmake \
     wget \

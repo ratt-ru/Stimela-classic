@@ -54,7 +54,7 @@ def pull(image, tag=None, force=False):
     if tag:
         image = ":".join([image, tag])
 
-    utils.xrun("podman", ["pull", "docker.io/" + image])
+    utils.xrun("podman", ["pull"] + utils.platform_args(image) + ["docker.io/" + image])
 
 
 def seconds_hms(seconds):
@@ -147,6 +147,7 @@ class Container(object):
         utils.xrun(
             "podman create",
             args
+            + utils.platform_args(self.image)
             + [
                 volumes,
                 environs,

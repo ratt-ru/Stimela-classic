@@ -50,7 +50,7 @@ def pull(image, tag=None, force=False):
     if tag:
         image = ":".join([image, tag])
 
-    utils.xrun("docker", ["pull", image])
+    utils.xrun("docker", ["pull"] + utils.platform_args(image) + [image])
 
 
 def seconds_hms(seconds):
@@ -135,6 +135,7 @@ class Container(object):
         utils.xrun(
             "docker create",
             list(args)
+            + utils.platform_args(self.image)
             + [
                 volumes,
                 environs,

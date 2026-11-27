@@ -1,7 +1,7 @@
 {
     "task": "cubical_plot_gain_solutions",
     "base": "stimela/cubical",
-    "tag": "1.6.8",
+    "tag": "1.9.0",
     "description": "Plot gain solutions for CubiCal gains",
     "prefix": "--",
     "version": "1.6.8",

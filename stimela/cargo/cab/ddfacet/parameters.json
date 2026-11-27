@@ -1,11 +1,12 @@
 {
     "task": "ddfacet", 
     "base": "stimela/ddfacet", 
-    "tag": "1.7.1",
-    "description": "DDFacet: a facet-based imager", 
-    "prefix": "--", 
-    "binary": "DDF.py", 
-    "msdir": "true", 
+    "tag": "1.9.0",
+    "version": "1.0.0.0",
+    "description": "DDFacet: a facet-based imager",
+    "prefix": "--",
+    "binary": "DDF.py",
+    "msdir": "true",
     "junk": [],
     "parameters": [
         {
@@ -643,25 +644,21 @@
             "dtype": "bool"
         }, 
         {
-            "info": "Beam model to use.", 
-            "name": "Beam-Model", 
-            "default": null, 
-            "dtype": "str", 
-            "required": false, 
-            "choices": [
-                null, 
-                "LOFAR", 
-                "FITS"
-            ]
-        }, 
+            "info": "Beam model to use.",
+            "name": "Beam-Model",
+            "default": null,
+            "dtype": "str",
+            "required": false,
+            "choices": [null, "LOFAR", "FITS", "GMRT", "ATCA", "NENUFAR", "Everybeam"]
+        },
         {
-            "info": "LOFAR beam mode.", 
-            "name": "Beam-LOFARBeamMode", 
-            "default": "AE", 
-            "dtype": "str", 
-            "required": false, 
+            "info": "PhasedArrayMode beam mode (renamed from LOFARBeamMode in DDFacet 1.0).",
+            "name": "Beam-PhasedArrayMode",
+            "default": "AE",
+            "dtype": "str",
+            "required": false,
             "choices": [
-                "A", 
+                "A",
                 "AE"
             ]
         }, 

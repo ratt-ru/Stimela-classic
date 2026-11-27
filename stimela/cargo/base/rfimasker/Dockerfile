@@ -1,4 +1,4 @@
-FROM stimela/base:1.2.5
+FROM quay.io/stimela/base:1.9.0
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 10
 RUN pip3 install -U --force pip
 RUN docker-apt-install python-numpy python-casacore
